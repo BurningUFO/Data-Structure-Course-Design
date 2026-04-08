@@ -1,0 +1,9 @@
+{
+    "edges": [
+        {"from": "node_001", "to": "node_002", "distance": 200, "congestion": 1.0, "ideal_speed": 1.5},
+        {"from": "node_002", "to": "node_003", "distance": 150, "congestion": 0.8, "ideal_speed": 1.5},
+        {"from": "node_003", "to": "node_004", "distance": 300, "congestion": 0.9, "ideal_speed": 1.5},
+        {"from": "node_004", "to": "node_005", "distance": 100, "congestion": 0.7, "ideal_speed": 1.5},
+        {"from": "node_005", "to": "node_001", "distance": 500, "congestion": 1.0, "ideal_speed": 1.5}
+    ]
+}

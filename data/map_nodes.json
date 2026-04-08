@@ -1,0 +1,9 @@
+{
+    "nodes": [
+        {"id": "node_001", "name": "北门", "type": "entrance"},
+        {"id": "node_002", "name": "图书馆", "type": "building"},
+        {"id": "node_003", "name": "第一教学楼", "type": "building"},
+        {"id": "node_004", "name": "学生宿舍1", "type": "dormitory"},
+        {"id": "node_005", "name": "校内便利店", "type": "facility"}
+    ]
+}
