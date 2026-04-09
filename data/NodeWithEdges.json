@@ -1,0 +1,125 @@
+{
+ "graph_id": "campus_zone_a",
+ "graph_type": "outdoor",
+ "nodes": [
+ {
+ "node_id": "gate_north",
+ "name": "北门",
+ "is_gate": true,
+ "sub_graph_id": "teaching_building_floor_1",
+ "connected_nodes": [
+ { "target": "road_T1", "distance": 45.5 },
+ { "target": "gate_east", "distance": 120.0 }
+ ]
+ },
+ {
+ "node_id": "gate_south",
+ "name": "南门",
+ "is_gate": true,
+ "sub_graph_id": "library_floor_1",
+ "connected_nodes": [
+ { "target": "road_T2", "distance": 38.2 },
+ { "target": "gate_east", "distance": 95.5 }
+ ]
+ },
+ {
+ "node_id": "gate_east",
+ "name": "东门",
+ "is_gate": true,
+ "sub_graph_id": "canteen_floor_1",
+ "connected_nodes": [
+ { "target": "gate_north", "distance": 120.0 },
+ { "target": "gate_south", "distance": 95.5 },
+ { "target": "square_center", "distance": 65.0 }
+ ]
+ },
+ {
+ "node_id": "road_T1",
+ "name": "T字路口北",
+ "is_gate": false,
+ "sub_graph_id": null,
+ "connected_nodes": [
+ { "target": "gate_north", "distance": 45.5 },
+ { "target": "road_cross", "distance": 28.3 },
+ { "target": "road_T3", "distance": 52.0 }
+ ]
+ },
+ {
+ "node_id": "road_T2",
+ "name": "T字路口南",
+ "is_gate": false,
+ "sub_graph_id": null,
+ "connected_nodes": [
+ { "target": "gate_south", "distance": 38.2 },
+ { "target": "road_cross", "distance": 32.5 },
+ { "target": "square_center", "distance": 42.8 }
+ ]
+ },
+ {
+ "node_id": "road_T3",
+ "name": "T字路口西",
+ "is_gate": false,
+ "sub_graph_id": null,
+ "connected_nodes": [
+ { "target": "road_T1", "distance": 52.0 },
+ { "target": "square_center", "distance": 35.6 },
+ { "target": "parking_exit", "distance": 18.5 }
+ ]
+ },
+ {
+ "node_id": "road_cross",
+ "name": "十字路口",
+ "is_gate": false,
+ "sub_graph_id": null,
+ "connected_nodes": [
+ { "target": "road_T1", "distance": 28.3 },
+ { "target": "road_T2", "distance": 32.5 },
+ { "target": "square_center", "distance": 15.0 },
+ { "target": "road_T4", "distance": 40.2 }
+ ]
+ },
+ {
+ "node_id": "road_T4",
+ "name": "T字路口东",
+ "is_gate": false,
+ "sub_graph_id": null,
+ "connected_nodes": [
+ { "target": "road_cross", "distance": 40.2 },
+ { "target": "gate_east", "distance": 65.0 },
+ { "target": "parking_entrance", "distance": 22.0 }
+ ]
+ },
+ {
+ "node_id": "square_center",
+ "name": "广场中心",
+ "is_gate": false,
+ "sub_graph_id": null,
+ "connected_nodes": [
+ { "target": "gate_east", "distance": 65.0 },
+ { "target": "road_T2", "distance": 42.8 },
+ { "target": "road_T3", "distance": 35.6 },
+ { "target": "road_cross", "distance": 15.0 }
+ ]
+ },
+ {
+ "node_id": "parking_entrance",
+ "name": "停车场入口",
+ "is_gate": true,
+ "sub_graph_id": "parking_b1",
+ "connected_nodes": [
+ { "target": "road_T4", "distance": 22.0 },
+ { "target": "parking_exit", "distance": 45.0 }
+ ]
+ },
+ {
+ "node_id": "parking_exit",
+ "name": "停车场出口",
+ "is_gate": true,
+ "sub_graph_id": "parking_b1",
+ "connected_nodes": [
+ { "target": "road_T3", "distance": 18.5 },
+ { "target": "parking_entrance", "distance": 45.0 }
+ ]
+ }
+ ]
+}
