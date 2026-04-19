@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>第七周工作周报</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1, h2, h3 { color: #2c3e50; }
+        h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        blockquote { border-left: 4px solid #4CAF50; margin: 0; padding-left: 15px; background-color: #f9f9f9; padding: 10px 15px; }
+        ul { margin-top: 5px; }
+        li { margin-bottom: 8px; }
+        .success { color: #2e7d32; font-weight: bold; }
+        .highlight { background-color: #f0f7ff; padding: 2px 4px; border-radius: 4px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+    <h1>第七周工作周报（4月13日 - 4月19日）</h1>
+
+    <blockquote>
+        <p><strong>项目名称</strong>：智能校园/景区导览系统<br>
+        <strong>汇报人</strong>：项目大总管 (Member A)</p>
+    </blockquote>
+
+    <p>本周团队核心目标为“从静态数据加载转向动态逻辑运算”。目前核心路由算法与初版业务查询链路已实现并完成各自的单元测试，并在数据准备方面取得了初步进展，为后续的系统集成奠定了基础。</p>
+
+    <p>以下是本周各成员的工作总结及后续计划：</p>
+
+    <h2>1. 团队整体进展概览</h2>
+    <ul>
+        <li><strong>Member A (算法与图结构)</strong>：<span class="success">✅</span> 按时完成 Dijkstra 核心算法及多策略权重分配，并交付 <span class="highlight">query_distance</span> 等关键接口，单元测试全部通过。</li>
+        <li><strong>Member B (业务与推荐)</strong>：<span class="success">✅</span> 成功跑通“查-排-推”基础业务闭环，建立统一了响应结构，并提供了 CLI 演示程序，单元测试全部通过。</li>
+        <li><strong>Member C (数据与集成)</strong>：<span class="success">✅</span> 扩充了景区及路线等测试数据文件。后续需进一步梳理文件存放目录规范并补充接口对接文档。</li>
+    </ul>
+
+    <h2>2. 成员详细工作汇报</h2>
+
+    <h3>【Member A：图结构与路径规划】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>Dijkstra 核心算法落地</strong>：在 <span class="highlight">src/routing/router.py</span> 中实现了单源最短路径搜索，并使用 <span class="highlight">heapq</span> 进行优先级队列优化，保证了算法在大规模图场景下的高效性。</li>
+        <li><strong>多策略动态权重支持</strong>：实现了 <strong>最短距离</strong> 和 <strong>最短时间</strong> 两种策略切换。引入了理想速度和拥挤系数换算，支持拥挤路段的避堵绕行。</li>
+        <li><strong>交付核心接口</strong>：
+            <ul>
+                <li>提供 <span class="highlight">query_routing</span>：返回完整路径和权重，兼容分层图设计。</li>
+                <li>提供 <span class="highlight">query_distance</span>：专供 Member B 调用，用于推荐系统的距离排序。</li>
+            </ul>
+        </li>
+        <li><strong>单元测试通过</strong>：在 <span class="highlight">tests/test_routing.py</span> 中构建综合测试图验证了上述逻辑，孤立点拦截和绕行逻辑均测试通过。</li>
+    </ol>
+
+    <h3>【Member B：查询、排序与推荐业务】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>基础查询逻辑实现</strong>：在 <span class="highlight">src/search/</span> 下实现了精确查询、按类别过滤、以及轻量级模糊匹配逻辑。</li>
+        <li><strong>业务闭环打通</strong>：编写 <span class="highlight">cli_demo.py</span>，将第六周的 Top-K 和排序模块整合，跑通了“输入关键字 -&gt; 查询过滤 -&gt; Top-K 排序 -&gt; 返回结果”的演示链路。</li>
+        <li><strong>统一响应规范</strong>：在 <span class="highlight">response.py</span> 中定义了通用响应结构（包含 success, data, message 等字段），为前后端联调提供标准。</li>
+        <li><strong>单元测试通过</strong>：编写并运行了 <span class="highlight">tests/test_search.py</span>，完整覆盖了多种查询场景及主链路功能。</li>
+    </ol>
+
+    <h3>【Member C：数据测试与系统集成】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>测试数据扩充</strong>：扩充了系统的基础测试数据（约 1100 行），为后续联调准备了丰富的测试用例，主要包含：
+            <ul>
+                <li><span class="highlight">NodeWithEdges.json</span>：包含节点与连通边的数据。</li>
+                <li><span class="highlight">scenic_spots.json</span>：包含约 60 条景点信息。</li>
+                <li><span class="highlight">diary_test.json</span>：旅游日记及评价数据。</li>
+            </ul>
+        </li>
+    </ol>
+    <p><strong>后续需跟进事项：</strong></p>
+    <ul>
+        <li>需进一步将新增的数据文件整合至标准的 <span class="highlight">data/</span> 根目录，以便系统统一加载。</li>
+        <li>计划在下周补充三模块联调过程中的《联调问题记录表》，并同步更新 <span class="highlight">docs/数据字典.md</span> 中的接口规范。</li>
+    </ul>
+
+    <h2>3. 下周工作计划（第八周）</h2>
+
+    <ol>
+        <li><strong>三模块联调落地</strong>：由 Member C 牵头，结合本周更新的数据集，验证完整系统查询-推荐-排序-距离规划的综合链路，打通各模块间的数据流。</li>
+        <li><strong>目录与文档规范化</strong>：Member C 将调整数据存放目录，并补充完善数据字典，确保数据字段与 A、B 模块接口完全对齐。</li>
+        <li><strong>接口接入验证</strong>：Member B 将把 Member A 提供的 <span class="highlight">query_distance</span> 真正接入推荐排序逻辑中，确认距离/时间的度量单位。</li>
+        <li><strong>进阶算法与业务扩展</strong>：
+            <ul>
+                <li>Member A：预研多目标路径规划（简化版 TSP）和交通工具过滤逻辑。</li>
+                <li>Member B：为后续的美食、场所查询复用当前主链路结构。</li>
+            </ul>
+        </li>
+    </ol>
+
+</body>
+</html>
