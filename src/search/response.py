@@ -20,12 +20,14 @@ def build_success_response(
     message: str = "query success",
     query_type: str = "query",
     filters: dict[str, Any] | None = None,
+    metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return {
         "success": True,
         "message": message,
         "query_type": query_type,
         "filters": filters or {},
+        "metadata": metadata or {},
         "total": len(data),
         "data": data,
     }
@@ -36,12 +38,14 @@ def build_error_response(
     *,
     query_type: str = "query",
     filters: dict[str, Any] | None = None,
+    metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return {
         "success": False,
         "message": message,
         "query_type": query_type,
         "filters": filters or {},
+        "metadata": metadata or {},
         "total": 0,
         "data": [],
     }
