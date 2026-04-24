@@ -8,8 +8,8 @@
 - 返回统一格式的 Top-10 结果
 
 当前演示数据使用：
-- data/scenic_spots.json
-- 可选 data/成员Cdata/scenic_spots.json
+- 默认标准数据：data/sites/PKU/*.json
+- 兼容旧参考数据：data/成员Cdata/scenic_spots.json
 """
 
 from __future__ import annotations
@@ -149,15 +149,16 @@ def _parse_yes_no(value: str, default: bool = True) -> bool:
 
 def main() -> None:
     print("成员 B 第八周：查询 -> 推荐 -> 距离 -> 统一 Response CLI 演示")
-    print("提示：当前 A 默认地图起点示例为 node_001；C 的真实景点数据暂缺 node_id，会显示 missing_node_id。")
+    print("提示：当前默认使用标准分层数据 data/sites/PKU/*.json。")
+    print("起点节点示例：gate_north、library、lib_entrance。")
     keyword = input("请输入关键字：").strip()
     category = input("请输入类别（可留空）：").strip()
-    start_node_id = input("请输入起点节点 ID（可留空，例如 node_001）：").strip()
+    start_node_id = input("请输入起点节点 ID（可留空，例如 gate_north）：").strip()
     sort_field = _parse_sort_field(input("排序字段 heat/rating/distance_m（默认 heat）："))
     limit = _parse_limit(input("返回数量（默认 10）："), default=10)
     prefer_member_c_data = _parse_yes_no(
-        input("是否使用成员C真实景点数据？Y/n（默认 Y）："),
-        default=True,
+        input("是否改用旧参考景点数据 data/成员Cdata/scenic_spots.json？y/N（默认 N）："),
+        default=False,
     )
 
     response = query_and_recommend(

@@ -31,12 +31,12 @@ Record = dict[str, Any]
 
 
 def get_default_scenic_data_path() -> Path:
-    """返回默认景点数据路径。"""
+    """返回历史兼容景点数据路径。"""
     return Path(__file__).resolve().parents[2] / "data" / "scenic_spots.json"
 
 
 def get_member_c_scenic_data_path() -> Path:
-    """返回成员 C 第七周提交的真实景点数据路径。"""
+    """返回成员 C 第七周提交的旧景点数据路径。"""
     return Path(__file__).resolve().parents[2] / "data" / "成员Cdata" / "scenic_spots.json"
 
 
@@ -44,8 +44,8 @@ def resolve_scenic_data_path(
     data_path: str | Path | None = None,
     *,
     prefer_member_c: bool = False,
-) -> Path:
-    """解析本次查询应使用的景点数据文件。"""
+) -> Path | None:
+    """解析本次查询应使用的旧版景点数据文件。"""
     if data_path is not None:
         return Path(data_path)
 
@@ -53,7 +53,228 @@ def resolve_scenic_data_path(
     if prefer_member_c and member_c_path.exists():
         return member_c_path
 
-    return get_default_scenic_data_path()
+    default_path = get_default_scenic_data_path()
+    if default_path.exists():
+        return default_path
+
+    return None
+
+
+def get_global_sites_path() -> Path:
+    """返回全局景区注册表路径。"""
+    return Path(__file__).resolve().parents[2] / "data" / "global_sites.json"
+
+
+def load_global_sites() -> list[Record]:
+    """加载全局景区注册信息。"""
+    path = get_global_sites_path()
+    if not path.exists():
+        return []
+
+    with path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    sites = data.get("sites", [])
+    return sites if isinstance(sites, list) else []
+
+
+def get_default_site_id() -> str:
+    """返回默认景区 ID。"""
+    sites = load_global_sites()
+    if sites:
+        return str(sites[0].get("id", "PKU")).strip() or "PKU"
+    return "PKU"
+
+
+def get_site_dir(site_id: str | None = None) -> Path:
+    """返回景区分层数据目录。"""
+    target_site_id = site_id or get_default_site_id()
+    return Path(__file__).resolve().parents[2] / "data" / "sites" / target_site_id
+
+
+def get_site_graph_paths(site_id: str | None = None) -> list[Path]:
+    """返回景区分层图文件列表。"""
+    target_site_id = site_id or get_default_site_id()
+    site_dir = get_site_dir(target_site_id)
+    if not site_dir.exists():
+        return []
+
+    target_names: list[str] = []
+    for site in load_global_sites():
+        if str(site.get("id", "")).strip() == target_site_id:
+            target_names = [str(name).strip() for name in site.get("sub_graphs", []) if str(name).strip()]
+            break
+
+    if target_names:
+        paths = [site_dir / f"{name}.json" for name in target_names]
+        return [path for path in paths if path.exists()]
+
+    outdoor_path = site_dir / "outdoor.json"
+    if outdoor_path.exists():
+        return [outdoor_path]
+
+    return sorted(site_dir.glob("*.json"))
+
+
+def load_json_records(path: Path) -> list[Record]:
+    """从 JSON 列表文件中加载记录。"""
+    with path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if not isinstance(data, list):
+        raise ValueError(f"records data must be a list: {path}")
+
+    return data
+
+
+def load_site_records(site_id: str | None = None) -> list[Record]:
+    """加载标准分层目录中的站点节点记录。"""
+    target_site_id = site_id or get_default_site_id()
+    records: list[Record] = []
+
+    for graph_path in get_site_graph_paths(target_site_id):
+        records.extend(normalize_site_graph_records(target_site_id, graph_path))
+
+    return records
+
+
+def normalize_site_graph_records(site_id: str, graph_path: Path) -> list[Record]:
+    """将分层图 JSON 中的节点标准化为成员 B 可搜索/可推荐记录。"""
+    with graph_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    graph_type = str(data.get("graph_type", "")).strip().lower() or "outdoor"
+    building_name = str(data.get("building_name", "")).strip()
+    source_graph_id = str(data.get("graph_id", graph_path.stem)).strip()
+    normalized_records: list[Record] = []
+
+    for node in data.get("nodes", []):
+        node_id = str(node.get("id", "")).strip()
+        if not node_id:
+            continue
+
+        category = str(node.get("category", node.get("type", ""))).strip()
+        record: Record = {
+            "id": node_id,
+            "node_id": node_id,
+            "map_node_id": node_id,
+            "site_id": site_id,
+            "name": node.get("name", node_id),
+            "category": category,
+            "heat": int(node.get("heat", estimate_heat(node, graph_type))),
+            "rating": float(node.get("rating", estimate_rating(node, graph_type))),
+            "tags": list(node.get("tags", [])),
+            "keywords": build_keywords(node, graph_type, building_name),
+            "description": node.get("description", ""),
+            "type": node.get("type", ""),
+            "graph_type": graph_type,
+            "source_graph_id": source_graph_id,
+            "source_graph_file": graph_path.name,
+            "sub_graph_id": node.get("sub_graph_id"),
+            "is_gate": bool(node.get("is_gate", False)),
+            "is_indoor": bool(node.get("is_indoor", graph_type == "indoor")),
+            "indoor_building": node.get(
+                "indoor_building",
+                building_name if graph_type == "indoor" else "",
+            ),
+            "building_name": building_name,
+            "facilities": list(node.get("facilities", [])),
+            "open_hours": node.get("open_hours"),
+        }
+        normalized_records.append(record)
+
+    return normalized_records
+
+
+def build_keywords(node: Record, graph_type: str, building_name: str) -> list[str]:
+    """为标准节点构造关键词列表。"""
+    keywords: list[str] = []
+    for value in (
+        node.get("name"),
+        node.get("category"),
+        node.get("type"),
+        building_name,
+        node.get("indoor_building"),
+    ):
+        if value:
+            keywords.append(str(value))
+
+    for key in ("tags", "facilities"):
+        for item in node.get(key, []):
+            if item:
+                keywords.append(str(item))
+
+    if graph_type == "indoor":
+        keywords.append("室内")
+    else:
+        keywords.append("室外")
+
+    return unique_strings(keywords)
+
+
+def unique_strings(values: list[str]) -> list[str]:
+    """按输入顺序去重字符串列表。"""
+    seen: set[str] = set()
+    result: list[str] = []
+
+    for value in values:
+        normalized = str(value).strip()
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        result.append(normalized)
+
+    return result
+
+
+def estimate_heat(node: Record, graph_type: str) -> int:
+    """为标准节点生成默认热度。"""
+    category = str(node.get("category", node.get("type", ""))).strip()
+    base_values = {
+        "landmark": 92,
+        "education": 88,
+        "reading_room": 86,
+        "hall": 80,
+        "entrance": 78,
+        "dormitory": 75,
+        "catering": 74,
+        "shopping": 70,
+        "sports": 72,
+        "service": 68,
+        "restroom": 62,
+        "parking": 58,
+        "passage": 54,
+        "road": 50,
+    }
+    base = base_values.get(category, 65)
+    if graph_type == "indoor":
+        base += 2
+    return base
+
+
+def estimate_rating(node: Record, graph_type: str) -> float:
+    """为标准节点生成默认评分。"""
+    category = str(node.get("category", node.get("type", ""))).strip()
+    base_values = {
+        "landmark": 4.8,
+        "education": 4.7,
+        "reading_room": 4.8,
+        "hall": 4.6,
+        "entrance": 4.5,
+        "dormitory": 4.4,
+        "catering": 4.5,
+        "shopping": 4.3,
+        "sports": 4.5,
+        "service": 4.4,
+        "restroom": 4.2,
+        "parking": 4.1,
+        "passage": 4.0,
+        "road": 4.0,
+    }
+    base = base_values.get(category, 4.3)
+    if graph_type == "indoor":
+        base += 0.1
+    return round(min(base, 5.0), 1)
 
 
 def load_scenic_spots(
@@ -61,15 +282,12 @@ def load_scenic_spots(
     *,
     prefer_member_c: bool = False,
 ) -> list[Record]:
-    """加载景点数据。"""
+    """加载成员 B 查询所需记录，优先兼容标准分层目录。"""
     target_path = resolve_scenic_data_path(data_path, prefer_member_c=prefer_member_c)
-    with target_path.open("r", encoding="utf-8") as f:
-        data = json.load(f)
+    if target_path is not None:
+        return load_json_records(target_path)
 
-    if not isinstance(data, list):
-        raise ValueError(f"scenic spots data must be a list: {target_path}")
-
-    return data
+    return load_site_records()
 
 
 def search_and_recommend(

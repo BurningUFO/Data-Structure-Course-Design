@@ -2,7 +2,9 @@
 
 ## 一、本周任务目标
 
-第八周成员B的核心任务是完成“查询、推荐、距离、统一响应”的主链路联调，使第七周已有的查询、排序、Top-K 和 CLI 演示能力能够接入成员A的距离接口，并使用成员C提供的真实景点数据进行验证。
+第八周成员B的核心任务是完成“查询、推荐、距离、统一响应”的主链路联调，使第七周已有的查询、排序、Top-K 和 CLI 演示能力能够接入成员A的距离接口，并使用仓库中的真实数据进行验证。
+
+在本周后半段，仓库远端数据结构发生更新：原 `data/scenic_spots.json` 被删除，标准数据迁移为 `data/global_sites.json` 与 `data/sites/PKU/*.json`。成员B已根据该变化补做适配，保证当前主线版本下查询、推荐和距离联调链路仍可运行。
 
 本周主链路目标如下：
 
@@ -25,15 +27,21 @@
 - 支持按 `heat`、`rating`、`distance_m` 进行推荐排序。
 - 输出统一 Response 结构。
 
-### 2. 接入成员C真实数据
+### 2. 接入标准分层真实数据并兼容旧参考数据
 
-成员C当前提交的真实景点数据位于 `data/成员Cdata/scenic_spots.json`。成员B未直接修改成员C原始数据，而是在服务层中增加 `prefer_member_c_data=True` 参数，允许联调时显式读取成员C真实景点数据。
+成员B已将默认数据源切换为仓库当前标准数据目录：
+
+- `data/global_sites.json`
+- `data/sites/PKU/outdoor.json`
+- `data/sites/PKU/indoor_LIB.json`
+
+服务层会优先读取标准分层数据，并将节点 `id` 规范化为成员B侧可直接使用的 `node_id`。同时保留 `prefer_member_c_data=True` 参数，用于兼容旧参考数据 `data/成员Cdata/scenic_spots.json`。
 
 已验证：
 
-- 能够加载成员C真实景点数据。
-- 能够基于真实数据查询“故宫博物院”等景点。
-- 能够在真实数据缺少节点映射字段时保持查询推荐链路可用。
+- 能够加载标准分层真实数据并完成查询推荐。
+- 能够基于标准数据查询“图书馆”“中文社科阅览室”等节点。
+- 能够在旧参考数据缺少节点映射字段时保持查询推荐链路可用。
 
 ### 3. 接入成员A距离接口
 
@@ -46,6 +54,12 @@ build_distance_provider()
 -> RouterDistanceAdapter
 -> Router.query_distance(start_node_id, target_node_id, strategy)
 ```
+
+在远端切换到标准分层数据后，成员B还补充了以下兼容处理：
+
+- 支持从 `data/sites/PKU/*.json` 直接构建距离图。
+- 支持读取 `nodes + edges` 同文件结构。
+- 在 B 侧补充室外门节点与室内入口节点之间的桥接边，保证跨层路径可计算。
 
 成员B服务层通过距离适配层接入成员A接口，不直接修改成员A代码。如果后续成员A升级为带 `site_id` 的分层距离接口，只需要调整 `distance_adapter.py`。
 
@@ -94,7 +108,8 @@ build_distance_provider()
 - 输入起点节点 ID。
 - 选择排序字段：`heat`、`rating`、`distance_m`。
 - 设置返回数量。
-- 选择是否使用成员C真实景点数据。
+- 默认读取标准分层真实数据。
+- 选择是否改用旧参考数据 `data/成员Cdata/scenic_spots.json`。
 - 展示统一 Response、metadata、Top 结果、目标节点、距离字段和距离状态。
 
 ### 7. 补充测试
@@ -103,7 +118,8 @@ build_distance_provider()
 
 测试覆盖内容包括：
 
-- 成员C真实景点数据加载与查询。
+- 标准分层真实数据加载与查询。
+- 旧参考数据兼容查询。
 - 成员A距离接口适配器调用。
 - 服务层距离字段注入。
 - 按距离字段进行 Top-K 推荐排序。
@@ -119,11 +135,11 @@ build_distance_provider()
 | 类型 | 文件位置 | 说明 |
 | --- | --- | --- |
 | 服务层 | `src/search/search_service.py` | 查询、过滤、距离补充、推荐排序、统一响应的主业务入口。 |
-| 距离适配层 | `src/search/distance_adapter.py` | 封装成员A当前 `query_distance` 接口。 |
+| 距离适配层 | `src/search/distance_adapter.py` | 封装成员A当前 `query_distance` 接口，并兼容标准分层图数据。 |
 | 推荐策略层 | `src/recommend/ranking.py` | 封装距离排序和 Top-K 推荐策略。 |
-| CLI 演示 | `src/search/cli_demo.py` | 展示完整搜索推荐链路和统一 Response。 |
+| CLI 演示 | `src/search/cli_demo.py` | 默认展示标准分层真实数据上的完整搜索推荐链路和统一 Response。 |
 | Response 结构 | `src/search/response.py` | 增加 metadata 输出。 |
-| 查询测试 | `tests/test_search.py` | 补充服务层、距离、真实数据、CLI、异常场景测试。 |
+| 查询测试 | `tests/test_search.py` | 补充服务层、标准数据、距离、CLI、异常场景测试。 |
 | 推荐测试 | `tests/test_recommend.py` | 补充距离 Top-K 推荐排序测试。 |
 | 联调问题记录 | `工作进度/第八周/memberB第8周联调遗漏与待完善项.md` | 记录 A/C 接口和数据待完善问题。 |
 
@@ -151,22 +167,29 @@ python tests\test_routing.py
 工作进度/第八周/memberB第8周联调遗漏与待完善项.md
 ```
 
-当前关键问题：
+当前剩余关键问题：
 
 - 成员A文档中的分层接口包含 `site_id`，但当前代码中的 `query_distance` 暂未包含该参数。
-- 成员C真实景点数据缺少 `node_id` 或 `map_node_id`，无法直接映射到图节点。
-- `NodeWithEdges.json` 与当前 `GraphLoader.load_from_json(...)` 所需格式不一致。
-- 成员C真实数据仍位于 `data/成员Cdata/`，尚未规范化到标准 `data/` 根目录。
+- 旧参考数据 `data/成员Cdata/scenic_spots.json` 缺少 `node_id` 或 `map_node_id`，若继续保留该数据口径则无法直接映射到图节点。
+- 成员A当前 `GraphLoader.load_from_json(...)` 仍不直接兼容标准分层目录下的 `nodes + edges` 同文件结构；成员B已在适配层中绕开该问题。
 
 成员B当前处理方式：
 
 - 通过 `distance_adapter.py` 隔离成员A接口变动风险。
+- 通过 `search_service.py` 将默认数据源切换到标准分层目录。
 - 对缺少节点 ID 的结果输出 `distance_status="missing_node_id"`。
 - 对不可达、接口缺失、异常距离值进行统一状态转换。
 - 在 Response metadata 中统计距离状态，方便 A/C 后续联调排查。
 
-## 六、后续建议
+## 六、当前仍需协作方补充的内容
 
-- 等成员C补充景点数据的 `node_id` 或 `map_node_id` 后，成员B可直接使用现有服务层计算真实距离。
-- 等成员A确认是否升级分层 `query_distance(site_id, ...)` 后，成员B只需调整 `distance_adapter.py`。
-- 若后续扩展美食推荐和场所查询，可复用 `search_and_recommend(...)` 的数据注入、距离补充、Top-K 推荐和 Response 输出流程。
+- 成员A需要明确后续是否将 `query_distance` 升级为带 `site_id` 的分层接口。
+- 成员A需要明确 `shortest_time` 的返回单位，以及是否需要同时返回距离与时间。
+- 如果成员A希望路由层直接采用标准分层数据，需补充对 `data/sites/PKU/*.json` 的原生加载支持。
+- 如果组内仍保留旧参考数据 `data/成员Cdata/scenic_spots.json` 作为演示或回归数据，成员C需要补齐 `node_id` 或 `map_node_id`。
+
+## 七、后续建议
+
+- 当前成员B代码已可在主线标准数据结构下直接提交和联调。
+- 等成员A明确接口后，成员B只需局部调整 `distance_adapter.py`。
+- 如果后续扩展美食推荐和场所查询，可复用 `search_and_recommend(...)` 的数据注入、距离补充、Top-K 推荐和 Response 输出流程。

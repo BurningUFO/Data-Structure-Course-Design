@@ -19,7 +19,6 @@ from src.search.response import build_error_response, build_success_response
 from src.search.search_service import (
     attach_distance_fields,
     count_distance_status,
-    get_member_c_scenic_data_path,
     load_scenic_spots,
     search_and_recommend,
 )
@@ -122,7 +121,7 @@ def test_response_builder():
 
 def test_query_and_recommend_flow():
     response = query_and_recommend(
-        keyword="黄山",
+        keyword="图书馆",
         category="",
         match_mode="fuzzy",
         sort_field="heat",
@@ -132,14 +131,15 @@ def test_query_and_recommend_flow():
     assert response["success"] is True
     assert response["query_type"] == "scenic_search"
     assert response["total"] >= 1
-    assert response["data"][0]["name"] == "黄山风景区"
+    assert response["data"][0]["name"] == "图书馆"
+    assert response["data"][0]["node_id"] == "library"
     print("test_query_and_recommend_flow passed.")
 
 
 def test_cli_wrapper_distance_response_and_print():
     response = query_and_recommend(
         keyword="图书馆",
-        start_node_id="node_001",
+        start_node_id="gate_north",
         sort_field="distance_m",
         records=[
             {
@@ -151,7 +151,7 @@ def test_cli_wrapper_distance_response_and_print():
                 "tags": ["学习"],
                 "keywords": ["图书馆"],
                 "description": "适合学习和借阅图书。",
-                "node_id": "node_002",
+                "node_id": "library",
             }
         ],
         limit=1,
@@ -168,42 +168,41 @@ def test_cli_wrapper_distance_response_and_print():
     assert response["data"][0]["distance_status"] == "available"
     assert "Unified Response" in output
     assert "metadata:" in output
-    assert "distance=200.0m" in output
+    assert "distance=110.0m" in output
     print("test_cli_wrapper_distance_response_and_print passed.")
 
 
-def test_member_c_real_data_load():
-    data_path = get_member_c_scenic_data_path()
-    records = load_scenic_spots(prefer_member_c=True)
+def test_default_site_data_load():
+    records = load_scenic_spots()
 
-    assert data_path.exists()
-    assert len(records) >= 40
-    assert any(record.get("name") == "故宫博物院" for record in records)
-    print("test_member_c_real_data_load passed.")
+    assert len(records) >= 20
+    assert any(record.get("name") == "图书馆" for record in records)
+    assert any(record.get("name") == "中文社科阅览室" for record in records)
+    print("test_default_site_data_load passed.")
 
 
-def test_member_c_real_data_query_flow():
+def test_default_site_data_query_flow():
     response = search_and_recommend(
-        keyword="故宫",
-        category="历史文化景区",
+        keyword="图书馆",
+        category="education",
         match_mode="fuzzy",
         sort_field="heat",
         limit=5,
-        prefer_member_c_data=True,
     )
 
     assert response["success"] is True
     assert response["query_type"] == "scenic_search"
     assert response["total"] == 1
-    assert response["data"][0]["name"] == "故宫博物院"
-    print("test_member_c_real_data_query_flow passed.")
+    assert response["data"][0]["name"] == "图书馆"
+    assert response["data"][0]["node_id"] == "library"
+    print("test_default_site_data_query_flow passed.")
 
 
 def test_distance_adapter_uses_member_a_router():
     provider = build_distance_provider()
-    distance = provider("node_001", "node_002", "shortest_distance")
+    distance = provider("gate_north", "library", "shortest_distance")
 
-    assert distance == 200
+    assert distance == 110
     print("test_distance_adapter_uses_member_a_router passed.")
 
 
@@ -218,13 +217,13 @@ def test_search_service_distance_integration():
             "tags": ["学习"],
             "keywords": ["图书馆"],
             "description": "适合学习和借阅图书。",
-            "node_id": "node_002",
+            "node_id": "library",
         }
     ]
 
     response = search_and_recommend(
         keyword="图书馆",
-        start_node_id="node_001",
+        start_node_id="gate_north",
         sort_field="distance_m",
         records=records,
         limit=1,
@@ -232,8 +231,8 @@ def test_search_service_distance_integration():
 
     assert response["success"] is True
     assert response["data"][0]["distance_status"] == "available"
-    assert response["data"][0]["distance_m"] == 200
-    assert response["data"][0]["target_node_id"] == "node_002"
+    assert response["data"][0]["distance_m"] == 110
+    assert response["data"][0]["target_node_id"] == "library"
     assert response["metadata"]["ranking"]["sort_field"] == "distance_m"
     assert response["metadata"]["ranking"]["distance_used_for_ranking"] is True
     assert response["metadata"]["distance"]["requested"] is True
@@ -259,7 +258,7 @@ def test_missing_node_id_distance_status():
 
     result = attach_distance_fields(
         records,
-        start_node_id="node_001",
+        start_node_id="gate_north",
         distance_provider=build_distance_provider(),
     )
 
@@ -272,7 +271,7 @@ def test_member_c_real_data_missing_node_id_metadata():
     response = search_and_recommend(
         keyword="故宫",
         category="历史文化景区",
-        start_node_id="node_001",
+        start_node_id="gate_north",
         sort_field="distance_m",
         limit=5,
         prefer_member_c_data=True,
@@ -305,7 +304,7 @@ def test_distance_provider_disabled_status():
 
     response = search_and_recommend(
         keyword="教学楼",
-        start_node_id="node_001",
+        start_node_id="gate_north",
         records=records,
         use_default_distance_provider=False,
     )
@@ -337,7 +336,7 @@ def test_unreachable_distance_status():
 
     response = search_and_recommend(
         keyword="不可达",
-        start_node_id="node_001",
+        start_node_id="gate_north",
         records=records,
         distance_provider=unreachable_provider,
     )
@@ -369,7 +368,7 @@ def test_distance_provider_error_status():
 
     response = search_and_recommend(
         keyword="异常距离",
-        start_node_id="node_001",
+        start_node_id="gate_north",
         records=records,
         distance_provider=error_provider,
     )
@@ -407,8 +406,8 @@ def run_all_tests():
     test_response_builder()
     test_query_and_recommend_flow()
     test_cli_wrapper_distance_response_and_print()
-    test_member_c_real_data_load()
-    test_member_c_real_data_query_flow()
+    test_default_site_data_load()
+    test_default_site_data_query_flow()
     test_distance_adapter_uses_member_a_router()
     test_search_service_distance_integration()
     test_missing_node_id_distance_status()

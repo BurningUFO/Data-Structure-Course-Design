@@ -23,6 +23,7 @@ SortRule = dict[str, str]
 
 DISTANCE_FIELD = "distance_m"
 DISTANCE_RANK_FIELD = "_distance_rank"
+MATCH_SCORE_FIELD = "_match_score"
 
 
 def recommend_top_k(
@@ -46,6 +47,13 @@ def recommend_top_k(
     effective_order = resolve_recommend_order(sort_field, sort_order)
     prepared_records = prepare_ranking_records(records)
     ranking_field = resolve_ranking_field(sort_field)
+
+    if has_match_scores(prepared_records):
+        sorted_selected = sort_records(
+            prepared_records,
+            build_match_first_sort_rules(sort_field, ranking_field, effective_order),
+        )
+        return strip_internal_ranking_fields(sorted_selected[:limit])
 
     if len(prepared_records) > limit:
         selected = top_k(
@@ -87,6 +95,11 @@ def get_distance_rank_value(record: Record) -> float:
     return distance
 
 
+def has_match_scores(records: list[Record]) -> bool:
+    """判断当前结果是否来自模糊匹配链路。"""
+    return any(MATCH_SCORE_FIELD in record for record in records)
+
+
 def resolve_ranking_field(sort_field: str) -> str:
     """将业务排序字段映射到底层 Top-K 使用的字段。"""
     if sort_field == DISTANCE_FIELD:
@@ -126,6 +139,17 @@ def build_recommend_sort_rules(
             rules.append({"field": "heat", "order": "desc"})
         rules.append({"field": DISTANCE_RANK_FIELD, "order": "asc"})
 
+    return rules
+
+
+def build_match_first_sort_rules(
+    sort_field: str,
+    ranking_field: str,
+    sort_order: str,
+) -> list[SortRule]:
+    """构造“先按匹配分，再按业务排序”的规则。"""
+    rules: list[SortRule] = [{ "field": MATCH_SCORE_FIELD, "order": "desc" }]
+    rules.extend(build_recommend_sort_rules(sort_field, ranking_field, sort_order))
     return rules
 
 
