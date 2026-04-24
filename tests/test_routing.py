@@ -90,5 +90,89 @@ class TestRouting(unittest.TestCase):
         self.assertFalse(res["success"])
         self.assertEqual(res["message"], "无法从起点到达终点。")
 
+    def test_transport_mode_filter(self):
+        # 添加一条仅允许自行车通过的快速边
+        self.graph.add_edge(
+            "node_1",
+            "node_5",
+            distance=5,
+            congestion=1.0,
+            ideal_speed=1.0,
+            allowed_transports=["bike"],
+        )
+        self.graph.add_edge(
+            "node_5",
+            "node_1",
+            distance=5,
+            congestion=1.0,
+            ideal_speed=1.0,
+            allowed_transports=["bike"],
+        )
+
+        # 步行不应使用仅限自行车的边
+        walk_distance = self.router.query_distance(
+            "node_1",
+            "node_5",
+            strategy="shortest_distance",
+            transport_mode="walk",
+        )
+        self.assertEqual(walk_distance, 27)
+
+        # 自行车可以直接走快速边
+        bike_distance = self.router.query_distance(
+            "node_1",
+            "node_5",
+            strategy="shortest_distance",
+            transport_mode="bike",
+        )
+        self.assertEqual(bike_distance, 5)
+
+        bike_route = self.router.query_routing(
+            "node_1",
+            "node_5",
+            strategy="shortest_distance",
+            transport_mode="bike",
+        )
+        self.assertTrue(bike_route["success"])
+        self.assertEqual(bike_route["path"], ["node_1", "node_5"])
+        self.assertEqual(bike_route["transport_mode"], "bike")
+
+    def test_multi_target_routing(self):
+        graph = Graph(layer_id="multi_target")
+        for node_id in ["start", "a", "b", "c"]:
+            graph.add_node(node_id, name=node_id)
+
+        directed_edges = [
+            ("start", "a", 2),
+            ("a", "start", 2),
+            ("start", "b", 8),
+            ("b", "start", 6),
+            ("start", "c", 20),
+            ("c", "start", 1),
+            ("a", "b", 2),
+            ("b", "a", 2),
+            ("b", "c", 2),
+            ("c", "b", 2),
+            ("a", "c", 10),
+            ("c", "a", 10),
+        ]
+
+        for u, v, dist in directed_edges:
+            graph.add_edge(u, v, distance=dist, congestion=1.0, ideal_speed=1.0)
+
+        router = Router(graph)
+        result = router.query_multi_target(
+            "start",
+            ["a", "c"],
+            strategy="shortest_distance",
+            return_to_start=True,
+        )
+
+        self.assertTrue(result["success"])
+        self.assertEqual(result["visit_order"], ["start", "a", "c", "start"])
+        self.assertEqual(result["path"], ["start", "a", "b", "c", "start"])
+        self.assertEqual(result["total_weight"], 7)
+        self.assertEqual(len(result["leg_results"]), 3)
+
 if __name__ == '__main__':
     unittest.main()
