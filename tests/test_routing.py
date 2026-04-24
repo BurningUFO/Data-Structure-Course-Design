@@ -6,6 +6,7 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from src.graph.graph import Graph
+from src.graph.loader import GraphLoader
 from src.routing.router import Router
 
 class TestRouting(unittest.TestCase):
@@ -172,7 +173,60 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(result["visit_order"], ["start", "a", "c", "start"])
         self.assertEqual(result["path"], ["start", "a", "b", "c", "start"])
         self.assertEqual(result["total_weight"], 7)
+        self.assertEqual(result["total_distance_m"], 7)
+        self.assertEqual(result["estimated_time_s"], 7)
+        self.assertEqual(result["total_distance"], 7)
+        self.assertEqual(result["estimated_time"], 7)
         self.assertEqual(len(result["leg_results"]), 3)
+        self.assertEqual(result["leg_results"][0]["weight_unit"], "meter")
+        self.assertEqual(result["leg_results"][0]["total_distance_m"], 2)
+
+    def test_standard_site_distance_with_optional_site_id(self):
+        router = Router(GraphLoader.load_site_graph("PKU"))
+
+        default_distance = router.query_distance("gate_north", "library")
+        scoped_distance = router.query_distance("gate_north", "library", site_id="PKU")
+        route = router.query_routing("gate_north", "library", site_id="PKU")
+
+        self.assertEqual(default_distance, 110)
+        self.assertEqual(scoped_distance, 110)
+        self.assertTrue(route["success"])
+        self.assertEqual(route["site_id"], "PKU")
+        self.assertEqual(route["path"], ["gate_north", "square_center", "library"])
+        self.assertEqual(route["weight_unit"], "meter")
+        self.assertEqual(route["total_distance_m"], 110)
+        self.assertAlmostEqual(route["estimated_time_s"], (80 / (1.5 * 0.6)) + (30 / (1.5 * 0.4)))
+        self.assertEqual(route["segments"][0]["layer"], "outdoor")
+
+    def test_site_id_mismatch_is_rejected(self):
+        router = Router(GraphLoader.load_site_graph("PKU"))
+        route = router.query_routing("gate_north", "library", site_id="THU")
+
+        self.assertFalse(route["success"])
+        self.assertIn("site_id 不匹配", route["message"])
+
+    def test_shortest_time_uses_seconds_and_supports_cross_layer_path(self):
+        router = Router(GraphLoader.load_site_graph("PKU"))
+        route = router.query_routing(
+            "gate_north",
+            "lib_reading_room_1",
+            strategy="shortest_time",
+            site_id="PKU",
+        )
+
+        expected_time = (
+            (80 / (1.5 * 0.6))
+            + (30 / (1.5 * 0.4))
+            + (25 / (1.5 * 0.4))
+        )
+
+        self.assertTrue(route["success"])
+        self.assertEqual(route["path"], ["gate_north", "square_center", "library", "lib_entrance", "lib_reading_room_1"])
+        self.assertEqual(route["weight_unit"], "second")
+        self.assertEqual(route["total_distance_m"], 135)
+        self.assertAlmostEqual(route["total_weight"], expected_time)
+        self.assertAlmostEqual(route["estimated_time_s"], expected_time)
+        self.assertEqual([segment["layer"] for segment in route["segments"]], ["outdoor", "indoor_LIB"])
 
 if __name__ == '__main__':
     unittest.main()

@@ -7,6 +7,45 @@ class Router:
     def __init__(self, graph):
         self.graph = graph
 
+    def _normalize_site_id(self, site_id):
+        """标准化 site_id；空值表示不限定景区。"""
+        if site_id is None:
+            return None
+
+        normalized = str(site_id).strip()
+        return normalized or None
+
+    def _resolve_graph_site_id(self):
+        """返回当前图对象绑定的景区 ID；不存在时返回空字符串。"""
+        site_id = getattr(self.graph, "site_id", "")
+        if site_id:
+            return str(site_id).strip()
+
+        layer_id = getattr(self.graph, "layer_id", "")
+        return str(layer_id).strip()
+
+    def _validate_site_id(self, site_id):
+        """
+        校验本次查询的 site_id 是否与当前图对象一致。
+
+        兼容策略：
+        - 未传 site_id：直接通过
+        - 图对象未绑定 site_id：直接通过
+        - 二者都存在时必须一致
+        """
+        normalized_site_id = self._normalize_site_id(site_id)
+        if normalized_site_id is None:
+            return True, None
+
+        graph_site_id = self._resolve_graph_site_id()
+        if not graph_site_id:
+            return True, normalized_site_id
+
+        if graph_site_id != normalized_site_id:
+            return False, normalized_site_id
+
+        return True, normalized_site_id
+
     def _normalize_transport_modes(self, value):
         """
         将边上的交通方式配置统一转成小写列表，便于做兼容判断。
@@ -33,6 +72,7 @@ class Router:
         支持的边字段：
         - allowed_transports / transport_modes / transport_mode
         - blocked_transports
+        - vehicle_access: all / pedestrian_only / vehicle_only
         """
         if transport_mode is None:
             return True
@@ -40,6 +80,12 @@ class Router:
         normalized_mode = str(transport_mode).strip().casefold()
         if not normalized_mode or normalized_mode == "any":
             return True
+
+        vehicle_access = str(edge.get("vehicle_access", "")).strip().casefold()
+        if vehicle_access == "pedestrian_only" and normalized_mode not in {"walk", "pedestrian", "foot"}:
+            return False
+        if vehicle_access == "vehicle_only" and normalized_mode in {"walk", "pedestrian", "foot"}:
+            return False
 
         blocked_modes = self._normalize_transport_modes(edge.get("blocked_transports"))
         if normalized_mode in blocked_modes:
@@ -57,6 +103,105 @@ class Router:
 
         return normalized_mode in normalized_allowed
 
+    def _get_travel_time_seconds(self, edge):
+        """按秒计算边的预计通行时间。"""
+        distance = edge.get("distance", float('inf'))
+        speed = edge.get("ideal_speed", 1.0)
+        congestion = edge.get("congestion", 1.0)
+
+        if speed <= 0 or congestion <= 0:
+            return float('inf')
+
+        return distance / (speed * congestion)
+
+    def _summarize_path_metrics(self, path_edges):
+        """
+        统计一条路径的总距离和总时间。
+        """
+        total_distance_m = 0.0
+        total_time_s = 0.0
+
+        for edge in path_edges:
+            total_distance_m += float(edge.get("distance", 0))
+            edge_time = self._get_travel_time_seconds(edge)
+            if edge_time == float('inf'):
+                total_time_s = None
+            elif total_time_s is not None:
+                total_time_s += edge_time
+
+        return total_distance_m, total_time_s
+
+    def _resolve_node_layer(self, node_id):
+        """
+        解析节点所属层；标准分层数据优先使用 source_sub_graph_id。
+        """
+        node_data = self.graph.nodes.get(node_id, {})
+        layer = str(node_data.get("source_sub_graph_id", "")).strip()
+        if layer:
+            return layer
+
+        graph_layer = str(getattr(self.graph, "layer_id", "")).strip()
+        return graph_layer or "default"
+
+    def _build_segments(self, path, path_edges):
+        """
+        根据路径构造分段信息。
+
+        对标准分层数据：
+        - 同层连续边会被合并为同一段
+        - 跨层 gate_link 边并入目标层分段，便于业务层直接展示跨层进入动作
+        """
+        if not path:
+            return []
+
+        if not path_edges:
+            return [
+                {
+                    "layer": self._resolve_node_layer(path[0]),
+                    "path": path[:],
+                    "distance": 0.0,
+                    "distance_m": 0.0,
+                    "estimated_time_s": 0.0,
+                }
+            ]
+
+        segments = []
+
+        for index, edge in enumerate(path_edges):
+            start_node_id = path[index]
+            end_node_id = path[index + 1]
+            start_layer = self._resolve_node_layer(start_node_id)
+            end_layer = self._resolve_node_layer(end_node_id)
+            segment_layer = end_layer if start_layer != end_layer else start_layer
+            edge_distance = float(edge.get("distance", 0))
+            edge_time = self._get_travel_time_seconds(edge)
+            edge_time_s = None if edge_time == float('inf') else edge_time
+
+            if segments and segments[-1]["layer"] == segment_layer:
+                segment = segments[-1]
+                if segment["path"][-1] != start_node_id:
+                    segment["path"].append(start_node_id)
+                segment["path"].append(end_node_id)
+                segment["distance"] += edge_distance
+                segment["distance_m"] += edge_distance
+                if segment["estimated_time_s"] is None or edge_time_s is None:
+                    segment["estimated_time_s"] = None
+                else:
+                    segment["estimated_time_s"] += edge_time_s
+                continue
+
+            segments.append(
+                {
+                    "layer": segment_layer,
+                    "path": [start_node_id, end_node_id],
+                    "distance": edge_distance,
+                    "distance_m": edge_distance,
+                    "estimated_time_s": edge_time_s,
+                }
+            )
+
+        return segments
+
     def _get_weight(self, edge, strategy):
         """
         根据当前策略计算边的权重。
@@ -64,16 +209,8 @@ class Router:
         if strategy == "shortest_distance":
             return edge.get("distance", float('inf'))
         elif strategy == "shortest_time":
-            distance = edge.get("distance", float('inf'))
-            speed = edge.get("ideal_speed", 1.0)
-            congestion = edge.get("congestion", 1.0)
-            
-            # 防御性除零保护
-            if speed <= 0 or congestion <= 0:
-                return float('inf')
-            
-            # 时间 = 距离 / (理想速度 * 拥挤系数)
-            return distance / (speed * congestion)
+            # 时间单位：秒 (distance: 米, ideal_speed: 米/秒)
+            return self._get_travel_time_seconds(edge)
         else:
             raise ValueError(f"Unknown routing strategy: {strategy}")
 
@@ -83,6 +220,7 @@ class Router:
         target_node_id,
         strategy="shortest_distance",
         transport_mode=None,
+        site_id=None,
     ):
         """
         完整路径查询接口
@@ -90,8 +228,16 @@ class Router:
         :param target_node_id: 终点 ID
         :param strategy: 规划策略 ('shortest_distance' 或 'shortest_time')
         :param transport_mode: 交通方式，可选；未提供时表示不过滤
-        :return: 包含路径信息、总权重、分段信息的字典
+        :param site_id: 景区 ID，可选；未提供时默认使用当前图对象绑定景区
+        :return: 包含路径信息、总权重、距离、时间和分段信息的字典
         """
+        site_is_valid, normalized_site_id = self._validate_site_id(site_id)
+        if not site_is_valid:
+            return {
+                "success": False,
+                "message": f"site_id 不匹配，当前图仅支持景区 {self._resolve_graph_site_id()}。",
+            }
+
         if start_node_id not in self.graph.nodes or target_node_id not in self.graph.nodes:
             return {"success": False, "message": "起点或终点不存在于图中。"}
 
@@ -138,28 +284,37 @@ class Router:
 
         # 回溯重构路径
         path = []
+        path_edges = []
         curr = target_node_id
         while curr is not None:
             path.append(curr)
-            prev, _ = came_from.get(curr, (None, None))
+            prev, edge_used = came_from.get(curr, (None, None))
+            if edge_used is not None:
+                path_edges.append(edge_used)
             curr = prev
             
         path.reverse()
-        
+        path_edges.reverse()
+
+        total_distance_m, estimated_time_s = self._summarize_path_metrics(path_edges)
+        total_weight = distances[target_node_id]
+        weight_unit = "meter" if strategy == "shortest_distance" else "second"
+        segments = self._build_segments(path, path_edges)
+
         # 返回符合文档约定的数据结构
         return {
             "success": True,
+            "site_id": normalized_site_id or self._resolve_graph_site_id() or None,
             "path": path,
-            "total_weight": distances[target_node_id],
+            "total_weight": total_weight,
+            "weight_unit": weight_unit,
+            "total_distance_m": total_distance_m,
+            "estimated_time_s": estimated_time_s,
+            "total_distance": total_distance_m,
+            "estimated_time": estimated_time_s,
             "strategy": strategy,
             "transport_mode": transport_mode,
-            "segments": [
-                {
-                    "layer": getattr(self.graph, 'layer_id', 'default'),
-                    "path": path,
-                    "distance": distances[target_node_id] if strategy == "shortest_distance" else None
-                }
-            ]
+            "segments": segments,
         }
 
     def query_distance(
@@ -168,16 +323,21 @@ class Router:
         target_node_id,
         strategy="shortest_distance",
         transport_mode=None,
+        site_id=None,
     ):
         """
         轻量级查询接口，专供 Member B 推荐系统排序使用。
-        :return: 仅返回两点之间的最短距离/时间的数值。不可达则返回 infinity。
+        :return: 仅返回两点之间的最短距离/时间数值。
+                 - shortest_distance: 米
+                 - shortest_time: 秒
+                 不可达则返回 infinity。
         """
         result = self.query_routing(
-            start_node_id,
-            target_node_id,
-            strategy,
-            transport_mode,
+            start_node_id=start_node_id,
+            target_node_id=target_node_id,
+            strategy=strategy,
+            transport_mode=transport_mode,
+            site_id=site_id,
         )
         if result["success"]:
             return result["total_weight"]
@@ -206,6 +366,7 @@ class Router:
         strategy="shortest_distance",
         transport_mode=None,
         return_to_start=True,
+        site_id=None,
     ):
         """
         多目标路径基础版接口。
@@ -215,6 +376,13 @@ class Router:
         2. 再使用状态压缩 DP 搜索最优访问顺序
         3. 最后将各段最短路径拼接成完整路线
         """
+        site_is_valid, normalized_site_id = self._validate_site_id(site_id)
+        if not site_is_valid:
+            return {
+                "success": False,
+                "message": f"site_id 不匹配，当前图仅支持景区 {self._resolve_graph_site_id()}。",
+            }
+
         if start_node_id not in self.graph.nodes:
             return {"success": False, "message": "起点不存在于图中。"}
 
@@ -231,9 +399,15 @@ class Router:
         if not unique_targets:
             return {
                 "success": True,
+                "site_id": normalized_site_id or self._resolve_graph_site_id() or None,
                 "path": [start_node_id],
                 "visit_order": [start_node_id],
                 "total_weight": 0,
+                "weight_unit": "meter" if strategy == "shortest_distance" else "second",
+                "total_distance_m": 0,
+                "estimated_time_s": 0,
+                "total_distance": 0,
+                "estimated_time": 0,
                 "strategy": strategy,
                 "transport_mode": transport_mode,
                 "return_to_start": return_to_start,
@@ -260,6 +434,7 @@ class Router:
                     target,
                     strategy=strategy,
                     transport_mode=transport_mode,
+                    site_id=normalized_site_id,
                 )
 
         target_count = len(unique_targets)
@@ -347,8 +522,14 @@ class Router:
             leg_result = {
                 "start_node_id": leg_start,
                 "target_node_id": leg_target,
+                "site_id": route.get("site_id"),
                 "path": route["path"],
                 "total_weight": route["total_weight"],
+                "weight_unit": route.get("weight_unit"),
+                "total_distance_m": route.get("total_distance_m", 0.0),
+                "estimated_time_s": route.get("estimated_time_s"),
+                "total_distance": route.get("total_distance", route.get("total_distance_m", 0.0)),
+                "estimated_time": route.get("estimated_time", route.get("estimated_time_s")),
                 "segments": route.get("segments", []),
             }
             leg_results.append(leg_result)
@@ -363,10 +544,20 @@ class Router:
 
         return {
             "success": True,
+            "site_id": normalized_site_id or self._resolve_graph_site_id() or None,
             "path": full_path,
             "visit_order": visit_order,
             "target_node_ids": unique_targets,
             "total_weight": best_total,
+            "weight_unit": "meter" if strategy == "shortest_distance" else "second",
+            "total_distance_m": sum(leg["total_distance_m"] for leg in leg_results),
+            "estimated_time_s": sum(
+                leg["estimated_time_s"] for leg in leg_results if leg["estimated_time_s"] is not None
+            ) if all(leg["estimated_time_s"] is not None for leg in leg_results) else None,
+            "total_distance": sum(leg["total_distance_m"] for leg in leg_results),
+            "estimated_time": sum(
+                leg["estimated_time_s"] for leg in leg_results if leg["estimated_time_s"] is not None
+            ) if all(leg["estimated_time_s"] is not None for leg in leg_results) else None,
             "strategy": strategy,
             "transport_mode": transport_mode,
             "return_to_start": return_to_start,

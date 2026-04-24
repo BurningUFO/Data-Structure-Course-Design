@@ -29,5 +29,25 @@ def test_load():
     except Exception as e:
         print(f"Error during loading: {e}")
 
+def test_load_site_graph():
+    print("Loading standard site graph for PKU...")
+
+    try:
+        graph = GraphLoader.load_site_graph("PKU")
+        print("Success!")
+        print(graph)
+
+        assert getattr(graph, "site_id", "") == "PKU"
+        assert "library" in graph.nodes
+        assert "lib_entrance" in graph.nodes
+
+        linked_nodes = [edge["to"] for edge in graph.adj["library"]]
+        assert "lib_entrance" in linked_nodes
+        print("Verification complete: Standard site graph loaded correctly.")
+
+    except Exception as e:
+        print(f"Error during site graph loading: {e}")
+
 if __name__ == "__main__":
     test_load()
+    test_load_site_graph()

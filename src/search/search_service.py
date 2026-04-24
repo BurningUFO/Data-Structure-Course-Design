@@ -562,7 +562,7 @@ def resolve_distance_unit(distance_strategy: str) -> str:
     if distance_strategy == "shortest_distance":
         return "meter"
     if distance_strategy == "shortest_time":
-        return "time_weight"
+        return "second"
     return "unknown"
 
 
