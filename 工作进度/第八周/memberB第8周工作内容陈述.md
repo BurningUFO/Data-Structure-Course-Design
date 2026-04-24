@@ -57,9 +57,11 @@ build_distance_provider()
 
 在远端切换到标准分层数据后，成员B还补充了以下兼容处理：
 
-- 支持从 `data/sites/PKU/*.json` 直接构建距离图。
-- 支持读取 `nodes + edges` 同文件结构。
-- 在 B 侧补充室外门节点与室内入口节点之间的桥接边，保证跨层路径可计算。
+- 在早期阶段，成员B曾在适配层中自行兼容标准分层图数据。
+- 在 A 侧更新后，当前已切换为直接复用 `GraphLoader.load_site_graph(site_id=...)` 原生 loader。
+- `query_distance`、`query_routing`、`query_multi_target` 现均支持可选 `site_id` 参数，旧调用方式保持兼容。
+- `shortest_time` 的返回单位现已明确为秒。
+- `query_routing` 会同时返回 `total_distance_m`、`estimated_time_s`，并保留旧字段兼容。
 
 成员B服务层通过距离适配层接入成员A接口，不直接修改成员A代码。如果后续成员A升级为带 `site_id` 的分层距离接口，只需要调整 `distance_adapter.py`。
 
@@ -169,9 +171,9 @@ python tests\test_routing.py
 
 当前剩余关键问题：
 
-- 成员A文档中的分层接口包含 `site_id`，但当前代码中的 `query_distance` 暂未包含该参数。
-- 旧参考数据 `data/成员Cdata/scenic_spots.json` 缺少 `node_id` 或 `map_node_id`，若继续保留该数据口径则无法直接映射到图节点。
-- 成员A当前 `GraphLoader.load_from_json(...)` 仍不直接兼容标准分层目录下的 `nodes + edges` 同文件结构；成员B已在适配层中绕开该问题。
+- 成员A相关的核心接口和标准分层数据加载问题已在远端最新提交中解决。
+- 当前主要剩余问题集中在成员C旧参考数据 `data/成员Cdata/scenic_spots.json` 缺少 `node_id` 或 `map_node_id`，若继续保留该数据口径则无法直接映射到图节点。
+- 若后续继续推进日记/目的地推荐链路，旧景点数据中的 `destination` 字段仍需补充到图节点的映射关系。
 
 成员B当前处理方式：
 
@@ -183,13 +185,12 @@ python tests\test_routing.py
 
 ## 六、当前仍需协作方补充的内容
 
-- 成员A需要明确后续是否将 `query_distance` 升级为带 `site_id` 的分层接口。
-- 成员A需要明确 `shortest_time` 的返回单位，以及是否需要同时返回距离与时间。
-- 如果成员A希望路由层直接采用标准分层数据，需补充对 `data/sites/PKU/*.json` 的原生加载支持。
 - 如果组内仍保留旧参考数据 `data/成员Cdata/scenic_spots.json` 作为演示或回归数据，成员C需要补齐 `node_id` 或 `map_node_id`。
+- 如果后续继续推进日记/目的地推荐链路，成员C需要补充 `destination` 到图节点的映射关系。
+- 如果最终只保留标准分层数据，需要在文档和协作说明中明确旧 `scenic_spots.json` 仅作历史兼容。
 
 ## 七、后续建议
 
 - 当前成员B代码已可在主线标准数据结构下直接提交和联调。
-- 等成员A明确接口后，成员B只需局部调整 `distance_adapter.py`。
+- A 侧核心接口和 loader 已稳定，后续成员B无需再为此做额外兼容。
 - 如果后续扩展美食推荐和场所查询，可复用 `search_and_recommend(...)` 的数据注入、距离补充、Top-K 推荐和 Response 输出流程。
