@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>第八周工作周报</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; max-width: 980px; margin: 0 auto; padding: 20px; }
+        h1, h2, h3 { color: #2c3e50; }
+        h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        blockquote { border-left: 4px solid #4CAF50; margin: 0; padding: 10px 15px; background-color: #f9f9f9; }
+        ul, ol { margin-top: 5px; }
+        li { margin-bottom: 8px; }
+        code, .highlight { background-color: #f0f7ff; padding: 2px 4px; border-radius: 4px; font-family: Consolas, "Courier New", monospace; }
+        .success { color: #2e7d32; font-weight: bold; }
+        .risk { color: #b26a00; font-weight: bold; }
+        pre { background-color: #f6f8fa; border-radius: 6px; padding: 12px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <h1>第八周工作周报（4月20日 - 4月26日）</h1>
+
+    <blockquote>
+        <p><strong>项目名称</strong>：智能校园/景区导览系统<br>
+        <strong>汇报人</strong>：项目大总管 (Member A)</p>
+    </blockquote>
+
+    <p>本周团队核心目标为“系统联调与链路贯通”。在第七周各模块独立开发完成的基础上，本周已完成三方代码、真实数据、接口协议和主业务链路的首次集中联调。当前系统已跑通“输入关键字 -&gt; 景点查询过滤 -&gt; 距离字段补充 -&gt; Top-K 推荐排序 -&gt; 统一 Response -&gt; CLI 展示”的主链路，并完成对应测试验证。</p>
+
+    <p>以下是本周各成员的工作总结、联调结论及后续计划：</p>
+
+    <h2>1. 团队整体进展概览</h2>
+    <ul>
+        <li><strong>Member A (算法与图结构)</strong>：<span class="success">✅</span> 完成交通工具过滤、多目标路径基础版、<span class="highlight">site_id</span> 可选参数方案、<span class="highlight">shortest_time</span> 秒级单位确认，并新增标准分层数据原生 loader。</li>
+        <li><strong>Member B (业务与推荐)</strong>：<span class="success">✅</span> 完成查询推荐服务层拆分，正式接入 A 侧距离接口，支持基于 <span class="highlight">distance_m</span> 的 Top-K 推荐排序，并输出统一 Response 与 CLI 演示。</li>
+        <li><strong>Member C (数据与集成)</strong>：<span class="success">✅</span> 完成标准分层数据目录、<span class="highlight">docs/数据字典.md</span> v2.0、缺失字段补充及《三模块联调问题跟踪表》，并锁定旧数据历史兼容口径。</li>
+    </ul>
+
+    <h2>2. 本周核心联调成果</h2>
+    <ol>
+        <li><strong>主业务链路贯通</strong>：当前已可从标准分层数据中查询校园节点，并结合真实距离完成推荐排序与统一响应输出。</li>
+        <li><strong>标准数据源确定</strong>：新开发默认使用 <span class="highlight">data/global_sites.json</span> 与 <span class="highlight">data/sites/PKU/*.json</span>，旧 <span class="highlight">data/成员Cdata/scenic_spots.json</span> 仅保留历史兼容用途。</li>
+        <li><strong>接口协议收口</strong>：
+            <ul>
+                <li><span class="highlight">site_id</span> 确定为路径接口末尾的可选参数。</li>
+                <li><span class="highlight">query_distance(..., strategy="shortest_time")</span> 返回单位确定为秒。</li>
+                <li><span class="highlight">query_routing(...)</span> 显式返回 <span class="highlight">total_distance_m</span> 与 <span class="highlight">estimated_time_s</span>，同时保留旧字段兼容。</li>
+            </ul>
+        </li>
+        <li><strong>联调问题关闭</strong>：本周记录的 C-001 至 C-008 均已处理；高/中优先级阻塞项全部关闭。</li>
+        <li><strong>测试验证通过</strong>：已验证路由、图加载、搜索、推荐四类测试脚本，均可在当前主线版本下运行通过。</li>
+    </ol>
+
+    <h2>3. 成员详细工作汇报</h2>
+
+    <h3>【Member A：图结构与路径规划】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>交通工具过滤逻辑落地</strong>：在 <span class="highlight">src/routing/router.py</span> 中支持 <span class="highlight">allowed_transports</span>、<span class="highlight">transport_modes</span>、<span class="highlight">transport_mode</span>、<span class="highlight">blocked_transports</span> 与 <span class="highlight">vehicle_access</span> 字段，能够根据步行、车辆等偏好过滤不可通行边。</li>
+        <li><strong>多目标路径基础版实现</strong>：新增 <span class="highlight">query_multi_target(...)</span>，采用点对点最短路径预计算与状态压缩 DP，支持多个目标点访问顺序规划和分段路径拼接。</li>
+        <li><strong>标准分层数据 loader 完成</strong>：在 <span class="highlight">src/graph/loader.py</span> 中新增 <span class="highlight">GraphLoader.load_site_graph(site_id="PKU", ...)</span>，可直接读取 <span class="highlight">data/sites/{site_id}/outdoor.json</span> 与 <span class="highlight">indoor_*.json</span>，并自动补充室外门节点与室内入口节点之间的 <span class="highlight">gate_link</span>。</li>
+        <li><strong>接口语义统一</strong>：将 <span class="highlight">site_id</span> 作为可选参数接入 <span class="highlight">query_routing(...)</span>、<span class="highlight">query_distance(...)</span>、<span class="highlight">query_multi_target(...)</span>，并明确 <span class="highlight">shortest_time</span> 返回秒数。</li>
+        <li><strong>真实数据验证完成</strong>：已使用 <span class="highlight">PKU</span> 标准分层数据验证单目标路径、跨层路径和多目标路径逻辑。</li>
+    </ol>
+
+    <h3>【Member B：查询、排序与推荐业务】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>业务服务层拆分</strong>：新增 <span class="highlight">src/search/search_service.py</span>，将查询、过滤、距离补充、推荐排序和统一响应组织为 <span class="highlight">search_and_recommend(...)</span> 主入口。</li>
+        <li><strong>距离接口正式接入</strong>：新增 <span class="highlight">src/search/distance_adapter.py</span>，封装 Member A 的 <span class="highlight">GraphLoader</span> 与 <span class="highlight">Router.query_distance(...)</span>，使业务层无需直接依赖 A 模块内部细节。</li>
+        <li><strong>距离排序能力补齐</strong>：新增 <span class="highlight">src/recommend/ranking.py</span>，支持 <span class="highlight">distance_m</span> 升序推荐，并将缺失、不可达或异常距离统一排在可计算距离之后。</li>
+        <li><strong>统一 Response 增强</strong>：更新 <span class="highlight">src/search/response.py</span>，成功与失败响应均支持 <span class="highlight">metadata</span>，可展示排序策略、距离单位、距离状态统计和结果字段说明。</li>
+        <li><strong>CLI 演示入口更新</strong>：更新 <span class="highlight">src/search/cli_demo.py</span>，支持输入关键字、类别、起点节点、排序字段和返回数量，默认基于标准分层真实数据展示完整链路。</li>
+    </ol>
+
+    <h3>【Member C：数据测试与系统集成】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>数据目录规范化</strong>：新增并维护 <span class="highlight">data/global_sites.json</span>、<span class="highlight">data/sites/PKU/outdoor.json</span>、<span class="highlight">data/sites/PKU/indoor_LIB.json</span>，形成当前标准分层数据结构。</li>
+        <li><strong>数据字典升级</strong>：将 <span class="highlight">docs/数据字典.md</span> 升级为 v2.0，补充全局景区、节点字段、边字段、跨模块依赖关系、门节点规则和历史兼容说明。</li>
+        <li><strong>字段补充适配联调</strong>：为边补充 <span class="highlight">vehicle_access</span> 字段，支持 A 侧交通工具过滤；为节点补充 <span class="highlight">tags</span>、<span class="highlight">category</span>、<span class="highlight">description</span> 等字段，支持 B 侧查询推荐。</li>
+        <li><strong>旧数据兼容口径锁定</strong>：为 <span class="highlight">data/成员Cdata/scenic_spots.json</span> 补充 <span class="highlight">map_node_id</span> 字段，校园条目映射到标准图节点，全国景区统一置为 <span class="highlight">null</span> 并由 B 侧返回 <span class="highlight">missing_node_id</span>。</li>
+        <li><strong>联调问题跟踪完成</strong>：维护《三模块联调问题跟踪表》，记录并关闭 C-001 至 C-008，明确 <span class="highlight">destination</span> 字段不参与当前路径/距离计算。</li>
+    </ol>
+
+    <h2>4. 验证结果</h2>
+    <p>本周收口时已完成以下只读核验与测试：</p>
+    <pre><code>python -B tests/test_routing.py
+python -B tests/test_graph_load.py
+python -B tests/test_search.py
+python -B tests/test_recommend.py</code></pre>
+
+    <p><strong>验证结论：</strong></p>
+    <ul>
+        <li>路由模块测试通过，覆盖交通工具过滤、<span class="highlight">site_id</span> 兼容、时间单位、多目标路径与跨层路径。</li>
+        <li>图加载测试通过，标准 <span class="highlight">PKU</span> 分层图可加载，节点总数符合预期。</li>
+        <li>搜索模块测试通过，覆盖标准数据查询、距离补充、统一 Response、异常距离状态和旧数据兼容。</li>
+        <li>推荐模块测试通过，覆盖热度、评分、距离排序及距离同分处理。</li>
+    </ul>
+
+    <h2>5. 当前遗留风险与处理口径</h2>
+    <ol>
+        <li><span class="risk">非阻塞数据一致性项</span>：<span class="highlight">data/global_sites.json</span> 当前声明了 <span class="highlight">indoor_DORM1</span> 子图，但 <span class="highlight">data/sites/PKU/</span> 目录下实际只有 <span class="highlight">outdoor.json</span> 和 <span class="highlight">indoor_LIB.json</span>。当前主链路未依赖 <span class="highlight">indoor_DORM1</span>，不影响第八周联调闭环；第九周需由 Member C 统一注册表与实际文件。</li>
+        <li><strong>旧景点数据仅保留历史兼容</strong>：<span class="highlight">data/成员Cdata/scenic_spots.json</span> 不再作为标准数据源。全国景区的 <span class="highlight">map_node_id=null</span> 属于已确认口径，业务层应返回 <span class="highlight">missing_node_id</span>，不得抛出异常。</li>
+        <li><strong>目的地推荐链路暂不纳入本周闭环</strong>：旧数据中的 <span class="highlight">destination</span> 字段当前不参与路径或距离计算。如后续扩展日记/目的地推荐，需要先补充明确的图节点映射。</li>
+    </ol>
+
+    <h2>6. 下周工作计划（第九周）</h2>
+    <ol>
+        <li><strong>数据一致性收口</strong>：由 Member C 修正 <span class="highlight">global_sites.json</span> 与 <span class="highlight">data/sites/PKU/</span> 实际文件之间的子图声明一致性。</li>
+        <li><strong>扩展真实场景数据</strong>：在标准分层结构下补充更多建筑、室内图或场所节点，减少对旧兼容数据的依赖。</li>
+        <li><strong>业务链路复用扩展</strong>：Member B 继续将 <span class="highlight">search_and_recommend(...)</span> 复用于美食、场所、洗手间等查询场景。</li>
+        <li><strong>路径算法增强</strong>：Member A 继续优化多目标路径规划策略，并结合交通工具偏好完善不同出行方式的路径结果展示。</li>
+        <li><strong>集成验收准备</strong>：三方继续补充测试覆盖和演示脚本，为课程设计验收材料与最终展示做准备。</li>
+    </ol>
+
+</body>
+</html>
