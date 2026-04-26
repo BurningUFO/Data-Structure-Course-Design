@@ -287,6 +287,26 @@ def test_member_c_real_data_missing_node_id_metadata():
     print("test_member_c_real_data_missing_node_id_metadata passed.")
 
 
+def test_member_c_real_data_pku_distance_available():
+    response = search_and_recommend(
+        keyword="图书馆",
+        category="校园建筑",
+        start_node_id="gate_north",
+        sort_field="distance_m",
+        limit=5,
+        prefer_member_c_data=True,
+    )
+
+    assert response["success"] is True
+    assert response["total"] == 1
+    assert response["data"][0]["id"] == "pku_001"
+    assert response["data"][0]["map_node_id"] == "library"
+    assert response["data"][0]["distance_status"] == "available"
+    assert response["data"][0]["distance_m"] == 110
+    assert response["metadata"]["distance"]["status_counts"]["available"] == 1
+    print("test_member_c_real_data_pku_distance_available passed.")
+
+
 def test_distance_provider_disabled_status():
     records = [
         {
@@ -412,6 +432,7 @@ def run_all_tests():
     test_search_service_distance_integration()
     test_missing_node_id_distance_status()
     test_member_c_real_data_missing_node_id_metadata()
+    test_member_c_real_data_pku_distance_available()
     test_distance_provider_disabled_status()
     test_unreachable_distance_status()
     test_distance_provider_error_status()

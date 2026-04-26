@@ -143,7 +143,6 @@ build_distance_provider()
 | Response 结构 | `src/search/response.py` | 增加 metadata 输出。 |
 | 查询测试 | `tests/test_search.py` | 补充服务层、标准数据、距离、CLI、异常场景测试。 |
 | 推荐测试 | `tests/test_recommend.py` | 补充距离 Top-K 推荐排序测试。 |
-| 联调问题记录 | `工作进度/第八周/memberB第8周联调遗漏与待完善项.md` | 记录 A/C 接口和数据待完善问题。 |
 
 ## 四、测试情况
 
@@ -163,17 +162,14 @@ python tests\test_routing.py
 
 ## 五、联调问题与当前处理
 
-本周发现的主要联调问题已整理到：
+第八周主链路联调问题已经完成阶段性收口，不再单独保留“遗漏与待完善项”文档。
 
-```text
-工作进度/第八周/memberB第8周联调遗漏与待完善项.md
-```
+当前最终结论：
 
-当前剩余关键问题：
-
-- 成员A相关的核心接口和标准分层数据加载问题已在远端最新提交中解决。
-- 当前主要剩余问题集中在成员C旧参考数据 `data/成员Cdata/scenic_spots.json` 缺少 `node_id` 或 `map_node_id`，若继续保留该数据口径则无法直接映射到图节点。
-- 若后续继续推进日记/目的地推荐链路，旧景点数据中的 `destination` 字段仍需补充到图节点的映射关系。
+- 第八周主链路阻塞项已全部关闭。
+- 成员A相关的核心接口、标准分层 loader、跨层路径问题均已在远端最新提交中解决。
+- 成员C旧参考数据 `data/成员Cdata/scenic_spots.json` 已补充 `map_node_id` 字段；校园条目可计算真实距离，全国景区保留 `null` 作为历史兼容口径。
+- 若后续继续推进日记/目的地推荐链路，旧景点数据中的 `destination` 字段仍属于后续扩展项，不影响当前第八周联调闭环。
 
 成员B当前处理方式：
 
@@ -183,9 +179,8 @@ python tests\test_routing.py
 - 对不可达、接口缺失、异常距离值进行统一状态转换。
 - 在 Response metadata 中统计距离状态，方便 A/C 后续联调排查。
 
-## 六、当前仍需协作方补充的内容
+## 六、后续扩展说明
 
-- 如果组内仍保留旧参考数据 `data/成员Cdata/scenic_spots.json` 作为演示或回归数据，成员C需要补齐 `node_id` 或 `map_node_id`。
 - 如果后续继续推进日记/目的地推荐链路，成员C需要补充 `destination` 到图节点的映射关系。
 - 如果最终只保留标准分层数据，需要在文档和协作说明中明确旧 `scenic_spots.json` 仅作历史兼容。
 
@@ -193,4 +188,5 @@ python tests\test_routing.py
 
 - 当前成员B代码已可在主线标准数据结构下直接提交和联调。
 - A 侧核心接口和 loader 已稳定，后续成员B无需再为此做额外兼容。
+- C 侧旧参考数据已达到“可加载、可区分 null、校园条目可算距离”的联调要求。
 - 如果后续扩展美食推荐和场所查询，可复用 `search_and_recommend(...)` 的数据注入、距离补充、Top-K 推荐和 Response 输出流程。

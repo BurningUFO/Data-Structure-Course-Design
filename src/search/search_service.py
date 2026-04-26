@@ -480,7 +480,10 @@ def resolve_distance_provider(
 def resolve_target_node_id(record: Record) -> str:
     """从推荐记录中解析图节点 ID。"""
     for field in ("node_id", "map_node_id", "target_node_id"):
-        value = str(record.get(field, "")).strip()
+        raw_value = record.get(field)
+        if raw_value is None:
+            continue
+        value = str(raw_value).strip()
         if value:
             return value
     return ""
