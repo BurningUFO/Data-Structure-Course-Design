@@ -402,6 +402,7 @@ class Router:
                 "site_id": normalized_site_id or self._resolve_graph_site_id() or None,
                 "path": [start_node_id],
                 "visit_order": [start_node_id],
+                "target_node_ids": [],
                 "total_weight": 0,
                 "weight_unit": "meter" if strategy == "shortest_distance" else "second",
                 "total_distance_m": 0,

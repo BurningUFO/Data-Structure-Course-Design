@@ -138,6 +138,28 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(bike_route["path"], ["node_1", "node_5"])
         self.assertEqual(bike_route["transport_mode"], "bike")
 
+    def test_vehicle_access_filter_for_walk_and_car(self):
+        graph = Graph(layer_id="transport_demo")
+        for node_id in ["start", "ped_zone", "parking", "finish"]:
+            graph.add_node(node_id, name=node_id)
+
+        graph.add_edge("start", "ped_zone", distance=1, vehicle_access="pedestrian_only")
+        graph.add_edge("ped_zone", "finish", distance=1, vehicle_access="pedestrian_only")
+        graph.add_edge("start", "parking", distance=5, vehicle_access="vehicle_only")
+        graph.add_edge("parking", "finish", distance=5, vehicle_access="vehicle_only")
+
+        router = Router(graph)
+        walk_route = router.query_routing("start", "finish", transport_mode="walk")
+        car_route = router.query_routing("start", "finish", transport_mode="car")
+
+        self.assertTrue(walk_route["success"])
+        self.assertEqual(walk_route["path"], ["start", "ped_zone", "finish"])
+        self.assertEqual(walk_route["total_distance_m"], 2)
+
+        self.assertTrue(car_route["success"])
+        self.assertEqual(car_route["path"], ["start", "parking", "finish"])
+        self.assertEqual(car_route["total_distance_m"], 10)
+
     def test_multi_target_routing(self):
         graph = Graph(layer_id="multi_target")
         for node_id in ["start", "a", "b", "c"]:
@@ -180,6 +202,72 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(len(result["leg_results"]), 3)
         self.assertEqual(result["leg_results"][0]["weight_unit"], "meter")
         self.assertEqual(result["leg_results"][0]["total_distance_m"], 2)
+
+    def test_multi_target_empty_targets_returns_start_only(self):
+        graph = Graph(layer_id="multi_target_empty")
+        graph.add_node("start", name="start")
+
+        router = Router(graph)
+        result = router.query_multi_target("start", [], return_to_start=True)
+
+        self.assertTrue(result["success"])
+        self.assertEqual(result["path"], ["start"])
+        self.assertEqual(result["visit_order"], ["start"])
+        self.assertEqual(result["target_node_ids"], [])
+        self.assertEqual(result["total_weight"], 0)
+        self.assertEqual(result["leg_results"], [])
+
+    def test_multi_target_ignores_duplicate_targets_and_start_node(self):
+        graph = Graph(layer_id="multi_target_duplicate")
+        for node_id in ["start", "a", "b"]:
+            graph.add_node(node_id, name=node_id)
+
+        graph.add_edge("start", "a", distance=2, congestion=1.0, ideal_speed=1.0)
+        graph.add_edge("a", "start", distance=2, congestion=1.0, ideal_speed=1.0)
+        graph.add_edge("a", "b", distance=3, congestion=1.0, ideal_speed=1.0)
+        graph.add_edge("b", "a", distance=3, congestion=1.0, ideal_speed=1.0)
+
+        router = Router(graph)
+        result = router.query_multi_target(
+            "start",
+            ["a", "a", "start", "b"],
+            return_to_start=False,
+        )
+
+        self.assertTrue(result["success"])
+        self.assertEqual(result["target_node_ids"], ["a", "b"])
+        self.assertEqual(result["visit_order"], ["start", "a", "b"])
+        self.assertEqual(result["path"], ["start", "a", "b"])
+        self.assertEqual(result["total_distance_m"], 5)
+
+    def test_multi_target_unreachable_target_returns_failure(self):
+        graph = Graph(layer_id="multi_target_unreachable")
+        for node_id in ["start", "a", "isolated"]:
+            graph.add_node(node_id, name=node_id)
+
+        graph.add_edge("start", "a", distance=2, congestion=1.0, ideal_speed=1.0)
+        graph.add_edge("a", "start", distance=2, congestion=1.0, ideal_speed=1.0)
+
+        router = Router(graph)
+        result = router.query_multi_target("start", ["a", "isolated"])
+
+        self.assertFalse(result["success"])
+        self.assertEqual(result["message"], "无法找到覆盖所有目标点的可行路径。")
+
+    def test_multi_target_rejects_more_than_twelve_targets(self):
+        graph = Graph(layer_id="multi_target_limit")
+        graph.add_node("start", name="start")
+        targets = [f"target_{index}" for index in range(13)]
+        for target in targets:
+            graph.add_node(target, name=target)
+            graph.add_edge("start", target, distance=1, congestion=1.0, ideal_speed=1.0)
+            graph.add_edge(target, "start", distance=1, congestion=1.0, ideal_speed=1.0)
+
+        router = Router(graph)
+        result = router.query_multi_target("start", targets)
+
+        self.assertFalse(result["success"])
+        self.assertIn("12 个及以下目标点", result["message"])
 
     def test_standard_site_distance_with_optional_site_id(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
