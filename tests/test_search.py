@@ -20,6 +20,7 @@ from src.search.search_service import (
     attach_distance_fields,
     count_distance_status,
     load_scenic_spots,
+    search_places,
     search_and_recommend,
 )
 
@@ -95,6 +96,46 @@ def test_fuzzy_search():
     assert result[0]["name"] == "黄山风景区"
     assert "_match_score" in result[0]
     print("test_fuzzy_search passed.")
+
+
+def test_fuzzy_search_matches_name_tags_and_description():
+    records = [
+        {
+            "id": "svc_001",
+            "name": "热水房",
+            "category": "service",
+            "heat": 70,
+            "rating": 4.2,
+            "tags": ["生活服务"],
+            "keywords": ["宿舍热水"],
+            "description": "提供热水和开水。",
+        },
+        {
+            "id": "svc_002",
+            "name": "宿舍服务台",
+            "category": "service",
+            "heat": 88,
+            "rating": 4.7,
+            "tags": ["热水报修"],
+            "keywords": ["生活服务"],
+            "description": "可办理热水卡和宿舍报修。",
+        },
+        {
+            "id": "svc_003",
+            "name": "公共活动室",
+            "category": "service",
+            "heat": 95,
+            "rating": 4.9,
+            "tags": ["休闲"],
+            "keywords": ["活动"],
+            "description": "靠近热水房，适合休息。",
+        },
+    ]
+
+    result = fuzzy_search(records, "热水")
+
+    assert [item["id"] for item in result] == ["svc_001", "svc_002", "svc_003"]
+    print("test_fuzzy_search_matches_name_tags_and_description passed.")
 
 
 def test_response_builder():
@@ -196,6 +237,40 @@ def test_default_site_data_query_flow():
     assert response["data"][0]["name"] == "图书馆"
     assert response["data"][0]["node_id"] == "library"
     print("test_default_site_data_query_flow passed.")
+
+
+def test_search_places_distance_sort():
+    response = search_places(
+        keyword="洗手间",
+        category="restroom",
+        start_node_id="gate_north",
+        sort_field="distance_m",
+        limit=3,
+    )
+
+    assert response["success"] is True
+    assert response["query_type"] == "place_search"
+    assert response["metadata"]["business"]["scope"] == "facility_place"
+    assert all(item["category"] == "restroom" for item in response["data"])
+    available_distances = [item["distance_m"] for item in response["data"] if item.get("distance_status") == "available"]
+    assert available_distances == sorted(available_distances)
+    assert response["data"][0]["target_node_id"] == "toilet_sports_area"
+    print("test_search_places_distance_sort passed.")
+
+
+def test_search_places_keyword_only_scope():
+    response = search_places(
+        keyword="便利店",
+        start_node_id="gate_north",
+        sort_field="distance_m",
+        limit=3,
+    )
+
+    assert response["success"] is True
+    assert response["query_type"] == "place_search"
+    assert response["data"][0]["name"] == "校内便利店"
+    assert response["data"][0]["category"] == "shopping"
+    print("test_search_places_keyword_only_scope passed.")
 
 
 def test_distance_adapter_uses_member_a_router():
@@ -423,11 +498,14 @@ def run_all_tests():
     test_keyword_filter()
     test_combined_search()
     test_fuzzy_search()
+    test_fuzzy_search_matches_name_tags_and_description()
     test_response_builder()
     test_query_and_recommend_flow()
     test_cli_wrapper_distance_response_and_print()
     test_default_site_data_load()
     test_default_site_data_query_flow()
+    test_search_places_distance_sort()
+    test_search_places_keyword_only_scope()
     test_distance_adapter_uses_member_a_router()
     test_search_service_distance_integration()
     test_missing_node_id_distance_status()

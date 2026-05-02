@@ -8,8 +8,8 @@
 - 关键字匹配
 - 简单相似度排序
 
-当前实现先采用“包含匹配 + 匹配得分”的轻量方案，
-便于尽快接入第七周的查询主链路。
+当前实现继续保持轻量，但补强了名称、标签、关键词、描述的权重，
+便于第九周场所查询和美食推荐直接复用。
 
 后续如有需要，可继续扩展：
 - 编辑距离
@@ -32,43 +32,126 @@ def normalize_text(value: Any) -> str:
     return str(value).strip().casefold()
 
 
+def split_search_terms(keyword: str) -> list[str]:
+    """提取模糊查询中需要参与匹配的词项。"""
+    normalized_keyword = normalize_text(keyword)
+    if not normalized_keyword:
+        return []
+
+    terms = [normalized_keyword]
+    terms.extend(
+        part
+        for part in normalized_keyword.split()
+        if part and part != normalized_keyword
+    )
+
+    seen: set[str] = set()
+    ordered_terms: list[str] = []
+    for term in terms:
+        if term in seen:
+            continue
+        seen.add(term)
+        ordered_terms.append(term)
+
+    return ordered_terms
+
+
+def score_collection(
+    values: list[Any],
+    terms: list[str],
+    *,
+    exact_score: int,
+    prefix_score: int,
+    contains_score: int,
+) -> int:
+    """对一组字段值计算匹配得分。"""
+    if not values or not terms:
+        return 0
+
+    best_score = 0
+    matched_terms: set[str] = set()
+
+    for value in values:
+        text = normalize_text(value)
+        if not text:
+            continue
+
+        for term in terms:
+            if text == term:
+                best_score = max(best_score, exact_score)
+                matched_terms.add(term)
+            elif text.startswith(term):
+                best_score = max(best_score, prefix_score)
+                matched_terms.add(term)
+            elif term in text:
+                best_score = max(best_score, contains_score)
+                matched_terms.add(term)
+
+    if best_score and len(terms) > 1:
+        best_score += min(len(matched_terms), len(terms)) * 5
+
+    return best_score
+
+
 def calculate_match_score(record: Record, keyword: str) -> int:
     """
     计算单条记录对关键字的匹配分数。
 
     当前评分规则：
-    - 名称完全匹配：100
-    - 名称包含关键字：60
-    - keywords 中包含：30
-    - tags 中包含：20
-    - description 中包含：10
+    - 名称：精确/前缀/包含匹配权重最高
+    - keywords：强调业务关键词和设施词
+    - tags：次高权重，适合“洗手间/便利店/轻食”类查询
+    - description：补充召回，不抢占名称优先级
+
+    当前仍不支持：
+    - 拼音首字母
+    - 同义词扩展
+    - 编辑距离阈值
     """
-    normalized_keyword = normalize_text(keyword)
-    if not normalized_keyword:
+    terms = split_search_terms(keyword)
+    if not terms:
         return 0
 
-    name = normalize_text(record.get("name"))
-    description = normalize_text(record.get("description"))
-    keywords = [normalize_text(item) for item in record.get("keywords", [])]
-    tags = [normalize_text(item) for item in record.get("tags", [])]
+    name_score = score_collection(
+        [record.get("name")],
+        terms,
+        exact_score=160,
+        prefix_score=120,
+        contains_score=90,
+    )
+    keyword_score = score_collection(
+        list(record.get("keywords", [])),
+        terms,
+        exact_score=85,
+        prefix_score=68,
+        contains_score=52,
+    )
+    tag_score = score_collection(
+        list(record.get("tags", [])),
+        terms,
+        exact_score=70,
+        prefix_score=56,
+        contains_score=42,
+    )
+    description_score = score_collection(
+        [record.get("description")],
+        terms,
+        exact_score=36,
+        prefix_score=30,
+        contains_score=24,
+    )
 
-    score = 0
+    total_score = name_score + keyword_score + tag_score + description_score
 
-    if name == normalized_keyword:
-        score += 100
-    elif normalized_keyword in name:
-        score += 60
+    matched_field_count = sum(
+        1
+        for score in (name_score, keyword_score, tag_score, description_score)
+        if score > 0
+    )
+    if matched_field_count > 1:
+        total_score += matched_field_count * 4
 
-    if any(normalized_keyword in item for item in keywords):
-        score += 30
-
-    if any(normalized_keyword in item for item in tags):
-        score += 20
-
-    if normalized_keyword in description:
-        score += 10
-
-    return score
+    return total_score
 
 
 def fuzzy_search(records: list[Record], keyword: str) -> list[Record]:
@@ -81,13 +164,12 @@ def fuzzy_search(records: list[Record], keyword: str) -> list[Record]:
     输出按匹配分数从高到低排序；
     如果分数相同，则按热度从高到低排序。
     """
-    normalized_keyword = normalize_text(keyword)
-    if not normalized_keyword:
+    if not split_search_terms(keyword):
         return records[:]
 
     matched: list[Record] = []
     for record in records:
-        score = calculate_match_score(record, normalized_keyword)
+        score = calculate_match_score(record, keyword)
         if score <= 0:
             continue
 
@@ -104,6 +186,8 @@ def sort_fuzzy_results(records: list[Record]) -> list[Record]:
     对模糊查询结果做排序：
     1. 先按 _match_score 降序
     2. 再按 heat 降序
+    3. 再按 rating 降序
+    4. 最后按名称字典序升序，确保结果稳定
     """
     result = records[:]
 
@@ -111,16 +195,29 @@ def sort_fuzzy_results(records: list[Record]) -> list[Record]:
         current = result[i]
         current_score = int(current.get("_match_score", 0))
         current_heat = float(current.get("heat", 0))
+        current_rating = float(current.get("rating", 0))
+        current_name = normalize_text(current.get("name"))
         j = i - 1
 
         while j >= 0:
             left_score = int(result[j].get("_match_score", 0))
             left_heat = float(result[j].get("heat", 0))
+            left_rating = float(result[j].get("rating", 0))
+            left_name = normalize_text(result[j].get("name"))
 
             should_move = False
             if left_score < current_score:
                 should_move = True
             elif left_score == current_score and left_heat < current_heat:
+                should_move = True
+            elif left_score == current_score and left_heat == current_heat and left_rating < current_rating:
+                should_move = True
+            elif (
+                left_score == current_score
+                and left_heat == current_heat
+                and left_rating == current_rating
+                and left_name > current_name
+            ):
                 should_move = True
 
             if not should_move:

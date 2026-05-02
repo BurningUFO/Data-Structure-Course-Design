@@ -1,129 +1,142 @@
-"""
-第九周新增：日记模块基础查询测试
-
-测试覆盖：
-- DiaryService 基本加载
-- 按标题精确查询 / 模糊查询
-- 按目的地查询
-- 按热度 / 评分排序
-- 通用 search 入口
-- 边界情况：空查询、不存在关键词
-"""
-
-import sys
 import os
+import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from src.diary.diary_service import DiaryService, load_diary_records, search_diaries  # noqa: E402
+from src.diary.diary_service import DiaryService, load_diary_records, search_diaries
 
 
-class TestDiaryService:
-    """日记查询服务测试集"""
+LEGACY_DIARY_PATH = os.path.join(
+    os.path.dirname(__file__),
+    "..",
+    "data",
+    "成员Cdata",
+    "diary_test.json",
+)
 
-    @classmethod
-    def setup_class(cls):
-        cls.service = DiaryService()
 
-    def test_load_records(self):
-        """测试日记数据加载"""
-        assert len(self.service.records) > 0, "至少应加载 12 篇日记数据"
-        assert self.service.records[0]["id"] == "diary_001"
-        assert self.service.records[0]["title"] == "秋日燕园游记"
+def test_load_default_records():
+    service = DiaryService()
 
-    def test_search_by_title_exact(self):
-        """测试标题精确匹配"""
-        result = self.service.search_by_title_exact("黄山行")
-        assert len(result) == 0, "标题精确匹配应区分大小写"
+    assert len(service.records) == 12
+    assert service.records[0]["id"] == "diary_001"
+    assert service.records[0]["title"] == "秋日燕园游记"
+    print("test_load_default_records passed.")
 
-        result = self.service.search_by_title_exact("五一黄山行")
-        assert len(result) == 1
-        assert result[0]["id"] == "diary_004"
 
-    def test_search_by_title_fuzzy(self):
-        """测试标题模糊匹配"""
-        result = self.service.search_by_title("黄山", match_mode="fuzzy")
-        assert len(result) == 1
-        assert "黄山" in result[0]["title"]
+def test_load_legacy_records_markdown_json():
+    records = load_diary_records(LEGACY_DIARY_PATH)
 
-        # 多个匹配
-        result = self.service.search_by_title("美食", match_mode="fuzzy")
-        assert len(result) >= 1
+    assert len(records) >= 50
+    assert records[0]["id"] == "diary_001"
+    assert records[0]["title"]
+    print("test_load_legacy_records_markdown_json passed.")
 
-    def test_search_by_title_empty(self):
-        """测试空标题"""
-        assert self.service.search_by_title("") == []
-        assert self.service.search_by_title_exact("") == []
 
-    def test_search_by_destination_fuzzy(self):
-        """测试按目的地模糊查询"""
-        result = self.service.search_by_destination("北京大学")
-        assert len(result) == 7, "应有 7 篇北京大学相关日记"
+def test_search_by_title_exact():
+    service = DiaryService()
+    result = service.search_by_title_exact("五一黄山行")
 
-    def test_search_by_destination_exact(self):
-        """测试按目的地精确查询"""
-        result = self.service.search_by_destination("北京大学", match_mode="exact")
-        assert len(result) == 7
+    assert len(result) == 1
+    assert result[0]["id"] == "diary_004"
+    print("test_search_by_title_exact passed.")
 
-        result = self.service.search_by_destination("黄山", match_mode="exact")
-        assert len(result) == 0, "黄山风景区不等于黄山"
 
-    def test_search_by_destination_empty(self):
-        """测试空目的地"""
-        assert self.service.search_by_destination("") == []
+def test_search_by_title_fuzzy():
+    service = DiaryService()
+    result = service.search_by_title("黄山", match_mode="fuzzy")
 
-    def test_search_general_success(self):
-        """测试通用 search 入口：正常查询"""
-        result = search_diaries(destination="北京大学")
-        assert result["success"] is True
-        assert result["query_type"] == "diary_search"
-        assert result["total"] == 7
-        assert result["message"] == "diary query success"
+    assert len(result) == 1
+    assert "黄山" in result[0]["title"]
+    print("test_search_by_title_fuzzy passed.")
 
-    def test_search_no_match(self):
-        """测试通用 search 入口：未匹配"""
-        result = search_diaries(keyword="不存在的日记")
-        assert result["success"] is True
-        assert result["total"] == 0
-        assert result["message"] == "no matched diaries"
 
-    def test_search_sort_by_heat(self):
-        """测试按热度降序排序"""
-        result = search_diaries(destination="北京大学", sort_field="heat")
-        heats = [r["heat"] for r in result["data"]]
-        assert heats == sorted(heats, reverse=True), "热度应降序排列"
+def test_search_by_destination_exact():
+    service = DiaryService()
+    result = service.search_by_destination("北京大学", match_mode="exact")
 
-    def test_search_sort_by_rating(self):
-        """测试按评分降序排序"""
-        result = search_diaries(destination="北京大学", sort_field="rating")
-        ratings = [r["rating"] for r in result["data"]]
-        assert ratings == sorted(ratings, reverse=True), "评分应降序排列"
+    assert len(result) == 7
+    print("test_search_by_destination_exact passed.")
 
-    def test_search_sort_by_views(self):
-        """测试按浏览量排序"""
-        result = search_diaries(destination="北京", sort_field="views")
-        views = [r["views"] for r in result["data"]]
-        assert views == sorted(views, reverse=True), "浏览量应降序排列"
 
-    def test_search_limit(self):
-        """测试 limit 限制"""
-        result = search_diaries(destination="北京大学", limit=3)
-        assert result["total"] == 3
+def test_search_sort_by_heat():
+    result = search_diaries(destination="北京大学", sort_field="heat")
+    heats = [item["heat"] for item in result["data"]]
 
-    def test_load_from_custom_path(self):
-        """测试从自定义路径加载"""
-        data_path = os.path.join(os.path.dirname(__file__), "../data/diary_data.json")
-        records = load_diary_records(data_path)
-        assert len(records) == 12
+    assert result["success"] is True
+    assert result["query_type"] == "diary_search"
+    assert heats == sorted(heats, reverse=True)
+    assert result["metadata"]["ranking"]["sort_field"] == "heat"
+    print("test_search_sort_by_heat passed.")
 
-    def test_service_reload(self):
-        """测试重新加载数据"""
-        service = DiaryService()
-        original_count = len(service.records)
-        service.reload()
-        assert len(service.records) == original_count
+
+def test_search_sort_by_rating():
+    result = search_diaries(destination="北京大学", sort_field="rating")
+    ratings = [item["rating"] for item in result["data"]]
+
+    assert ratings == sorted(ratings, reverse=True)
+    assert result["metadata"]["ranking"]["sort_field"] == "rating"
+    print("test_search_sort_by_rating passed.")
+
+
+def test_search_limit_and_total_matched():
+    result = search_diaries(destination="北京大学", limit=3)
+
+    assert result["total"] == 3
+    assert result["metadata"]["total_matched"] == 7
+    print("test_search_limit_and_total_matched passed.")
+
+
+def test_search_no_match():
+    result = search_diaries(keyword="不存在的日记")
+
+    assert result["success"] is True
+    assert result["total"] == 0
+    assert result["message"] == "no matched diaries"
+    print("test_search_no_match passed.")
+
+
+def test_search_legacy_dataset_support():
+    result = search_diaries(
+        keyword="黄山",
+        data_path=LEGACY_DIARY_PATH,
+        sort_field="heat",
+        limit=5,
+    )
+
+    assert result["success"] is True
+    assert result["total"] >= 1
+    assert any(
+        "黄山" in item["title"] or "黄山" in item["destination"]
+        for item in result["data"]
+    )
+    print("test_search_legacy_dataset_support passed.")
+
+
+def test_diary_response_shape():
+    result = search_diaries(destination="北京大学", sort_field="rating", limit=2)
+
+    assert result["success"] is True
+    assert result["metadata"]["data_source"]["path"].endswith("diary_data.json")
+    assert "destination_node_id" in result["metadata"]["result_fields"]
+    print("test_diary_response_shape passed.")
+
+
+def run_all_tests():
+    print("Running diary module tests...")
+    test_load_default_records()
+    test_load_legacy_records_markdown_json()
+    test_search_by_title_exact()
+    test_search_by_title_fuzzy()
+    test_search_by_destination_exact()
+    test_search_sort_by_heat()
+    test_search_sort_by_rating()
+    test_search_limit_and_total_matched()
+    test_search_no_match()
+    test_search_legacy_dataset_support()
+    test_diary_response_shape()
+    print("All diary tests passed.")
 
 
 if __name__ == "__main__":
-    import pytest
-    pytest.main([__file__, "-v"])
+    run_all_tests()

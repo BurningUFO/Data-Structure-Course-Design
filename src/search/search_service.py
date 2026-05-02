@@ -21,13 +21,22 @@ from pathlib import Path
 from typing import Any
 
 from src.recommend.ranking import recommend_top_k
-from src.search.exact_search import filter_by_category, search_records
+from src.search.exact_search import canonicalize_category, filter_by_category, search_records
 from src.search.distance_adapter import DistanceProvider, build_distance_provider
 from src.search.fuzzy_search import fuzzy_search
 from src.search.response import build_error_response, build_success_response
 
 
 Record = dict[str, Any]
+
+PLACE_CATEGORY_SET = {
+    "restroom",
+    "catering",
+    "shopping",
+    "parking",
+    "education",
+}
+SUPPORTED_BUSINESS_SORT_FIELDS = {"heat", "rating", "distance_m"}
 
 
 def get_default_scenic_data_path() -> Path:
@@ -136,6 +145,54 @@ def load_site_records(site_id: str | None = None) -> list[Record]:
         records.extend(normalize_site_graph_records(target_site_id, graph_path))
 
     return records
+
+
+def filter_records_by_categories(
+    records: list[Record],
+    categories: set[str],
+) -> list[Record]:
+    """按一组标准业务类别过滤记录。"""
+    return [
+        record
+        for record in records
+        if canonicalize_category(record.get("category")) in categories
+    ]
+
+
+def resolve_business_sort_field(
+    sort_field: str,
+    *,
+    default: str = "heat",
+) -> str:
+    """将业务排序字段约束在可支持范围内。"""
+    normalized = str(sort_field).strip()
+    if normalized in SUPPORTED_BUSINESS_SORT_FIELDS:
+        return normalized
+    return default
+
+
+def decorate_business_response(
+    response: dict[str, Any],
+    *,
+    query_type: str,
+    extra_filters: dict[str, Any] | None = None,
+    extra_metadata: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """在统一 Response 基础上补充业务入口元信息。"""
+    decorated = response.copy()
+    decorated["query_type"] = query_type
+
+    filters = dict(response.get("filters", {}))
+    if extra_filters:
+        filters.update(extra_filters)
+    decorated["filters"] = filters
+
+    metadata = dict(response.get("metadata", {}))
+    if extra_metadata:
+        metadata.update(extra_metadata)
+    decorated["metadata"] = metadata
+
+    return decorated
 
 
 def normalize_site_graph_records(site_id: str, graph_path: Path) -> list[Record]:
@@ -405,6 +462,94 @@ def search_and_recommend(
         query_type="scenic_search",
         filters=filters,
         metadata=metadata,
+    )
+
+
+def search_places(
+    *,
+    keyword: str = "",
+    category: str = "",
+    site_id: str | None = None,
+    start_node_id: str = "",
+    match_mode: str = "fuzzy",
+    sort_field: str = "distance_m",
+    sort_order: str = "",
+    limit: int = 10,
+    records: list[Record] | None = None,
+    distance_provider: DistanceProvider | None = None,
+    use_default_distance_provider: bool = True,
+    distance_strategy: str = "shortest_distance",
+) -> dict[str, Any]:
+    """第九周新增：明确的设施/场所查询入口。"""
+    normalized_category = canonicalize_category(category)
+    effective_sort_field = resolve_business_sort_field(
+        sort_field,
+        default="distance_m" if start_node_id else "heat",
+    )
+    filters = {
+        "keyword": keyword,
+        "category": normalized_category,
+        "raw_category": category,
+        "site_id": site_id or get_default_site_id(),
+        "start_node_id": start_node_id,
+        "match_mode": match_mode,
+        "sort_field": effective_sort_field,
+        "sort_order": _resolve_sort_order(effective_sort_field, sort_order),
+        "limit": limit,
+        "distance_strategy": distance_strategy,
+    }
+
+    if normalized_category and normalized_category not in PLACE_CATEGORY_SET:
+        return build_error_response(
+            "unsupported place category",
+            query_type="place_search",
+            filters=filters,
+            metadata={
+                "business": {
+                    "supported_categories": sorted(PLACE_CATEGORY_SET),
+                }
+            },
+        )
+
+    if not keyword and not normalized_category:
+        return build_error_response(
+            "keyword and category cannot both be empty",
+            query_type="place_search",
+            filters=filters,
+            metadata={
+                "business": {
+                    "supported_categories": sorted(PLACE_CATEGORY_SET),
+                }
+            },
+        )
+
+    source_records = records[:] if records is not None else load_site_records(site_id)
+    scoped_records = filter_records_by_categories(source_records, PLACE_CATEGORY_SET)
+
+    response = search_and_recommend(
+        keyword=keyword,
+        category=normalized_category,
+        start_node_id=start_node_id,
+        match_mode=match_mode,
+        sort_field=effective_sort_field,
+        sort_order=sort_order,
+        limit=limit,
+        records=scoped_records,
+        distance_provider=distance_provider,
+        use_default_distance_provider=use_default_distance_provider,
+        distance_strategy=distance_strategy,
+    )
+
+    return decorate_business_response(
+        response,
+        query_type="place_search",
+        extra_filters=filters,
+        extra_metadata={
+            "business": {
+                "supported_categories": sorted(PLACE_CATEGORY_SET),
+                "scope": "facility_place",
+            }
+        },
     )
 
 

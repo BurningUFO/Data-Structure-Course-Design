@@ -5,6 +5,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.recommend.ranking import recommend_top_k
+from src.recommend.catering_service import recommend_catering
 from src.recommend.sorter import sort_records
 from src.recommend.topk import top_k
 
@@ -102,6 +103,69 @@ def test_recommend_top_k_heat_uses_distance_tiebreaker():
     print("test_recommend_top_k_heat_uses_distance_tiebreaker passed.")
 
 
+def test_recommend_catering_top_k():
+    response = recommend_catering(limit=2, sort_field="heat")
+
+    assert response["success"] is True
+    assert response["query_type"] == "catering_recommend"
+    assert response["total"] == 2
+    assert all(item["category"] == "catering" for item in response["data"])
+    print("test_recommend_catering_top_k passed.")
+
+
+def test_recommend_catering_distance_sort():
+    response = recommend_catering(
+        start_node_id="gate_north",
+        sort_field="distance_m",
+        limit=2,
+    )
+
+    assert response["success"] is True
+    distances = [item["distance_m"] for item in response["data"]]
+    assert distances == sorted(distances)
+    assert response["data"][0]["target_node_id"] == "lib_cafe"
+    print("test_recommend_catering_distance_sort passed.")
+
+
+def test_recommend_catering_optional_cuisine_filter():
+    records = [
+        {
+            "id": "food_001",
+            "name": "图书馆咖啡角",
+            "category": "catering",
+            "heat": 90,
+            "rating": 4.8,
+            "tags": ["咖啡", "轻食"],
+            "keywords": ["咖啡"],
+            "description": "提供拿铁和三明治。",
+            "cuisine": "咖啡",
+            "node_id": "lib_cafe",
+        },
+        {
+            "id": "food_002",
+            "name": "农园食堂",
+            "category": "catering",
+            "heat": 88,
+            "rating": 4.7,
+            "tags": ["食堂", "套餐"],
+            "keywords": ["主食"],
+            "description": "提供多种家常菜。",
+            "node_id": "canteen",
+        },
+    ]
+
+    response = recommend_catering(
+        cuisine="咖啡",
+        records=records,
+        sort_field="heat",
+        limit=5,
+    )
+
+    assert response["success"] is True
+    assert [item["name"] for item in response["data"]] == ["图书馆咖啡角"]
+    print("test_recommend_catering_optional_cuisine_filter passed.")
+
+
 def run_all_tests():
     print("Running recommend module tests...")
     test_sort_by_heat()
@@ -110,6 +174,9 @@ def run_all_tests():
     test_top_k_rating()
     test_recommend_top_k_by_distance()
     test_recommend_top_k_heat_uses_distance_tiebreaker()
+    test_recommend_catering_top_k()
+    test_recommend_catering_distance_sort()
+    test_recommend_catering_optional_cuisine_filter()
     print("All recommend tests passed.")
 
 

@@ -21,12 +21,49 @@ from typing import Any
 
 Record = dict[str, Any]
 
+CATEGORY_ALIASES = {
+    "restroom": "restroom",
+    "washroom": "restroom",
+    "toilet": "restroom",
+    "wc": "restroom",
+    "洗手间": "restroom",
+    "卫生间": "restroom",
+    "厕所": "restroom",
+    "公厕": "restroom",
+    "catering": "catering",
+    "food": "catering",
+    "餐饮": "catering",
+    "食堂": "catering",
+    "美食": "catering",
+    "咖啡": "catering",
+    "咖啡厅": "catering",
+    "shopping": "shopping",
+    "store": "shopping",
+    "retail": "shopping",
+    "购物": "shopping",
+    "商店": "shopping",
+    "便利店": "shopping",
+    "parking": "parking",
+    "停车": "parking",
+    "停车场": "parking",
+    "education": "education",
+    "教育": "education",
+    "教学": "education",
+    "教学楼": "education",
+}
+
 
 def normalize_text(value: Any) -> str:
     """将输入统一转为便于比较的字符串格式。"""
     if value is None:
         return ""
     return str(value).strip().casefold()
+
+
+def canonicalize_category(value: Any) -> str:
+    """将常见中英文类别别名归一化为统一业务类别。"""
+    normalized = normalize_text(value)
+    return CATEGORY_ALIASES.get(normalized, normalized)
 
 
 def filter_by_name(records: list[Record], name: str) -> list[Record]:
@@ -48,13 +85,13 @@ def filter_by_name(records: list[Record], name: str) -> list[Record]:
 
 def filter_by_category(records: list[Record], category: str) -> list[Record]:
     """按类别过滤。"""
-    normalized_category = normalize_text(category)
+    normalized_category = canonicalize_category(category)
     if not normalized_category:
         return records[:]
 
     result: list[Record] = []
     for record in records:
-        if normalize_text(record.get("category")) == normalized_category:
+        if canonicalize_category(record.get("category")) == normalized_category:
             result.append(record)
     return result
 

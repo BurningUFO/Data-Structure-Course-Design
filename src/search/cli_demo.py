@@ -21,7 +21,10 @@ from typing import Any
 if __package__ is None or __package__ == "":
     sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
+from src.diary.diary_service import search_diaries
+from src.recommend.catering_service import recommend_catering
 from src.search.search_service import search_and_recommend
+from src.search.search_service import search_places
 
 
 SUPPORTED_SORT_FIELDS = {"heat", "rating", "distance_m"}
@@ -74,14 +77,7 @@ def print_response(response: dict[str, Any]) -> None:
     print("Top Results")
 
     for index, item in enumerate(response["data"], start=1):
-        print(
-            f"{index:02d}. {item.get('name')} | "
-            f"category={item.get('category')} | "
-            f"heat={item.get('heat')} | "
-            f"rating={item.get('rating')} | "
-            f"target_node={item.get('target_node_id', '')} | "
-            f"distance={_format_distance(item)}"
-        )
+        print(f"{index:02d}. {_format_result_item(item)}")
 
     if not response["data"]:
         print("(empty)")
@@ -92,7 +88,7 @@ def print_response(response: dict[str, Any]) -> None:
 def print_metadata(metadata: dict[str, Any]) -> None:
     """打印统一 Response 中的 metadata 摘要。"""
     ranking = metadata.get("ranking", {})
-    distance = metadata.get("distance", {})
+    distance = metadata.get("distance")
     print("metadata:")
     print(
         "  ranking  : "
@@ -101,15 +97,22 @@ def print_metadata(metadata: dict[str, Any]) -> None:
         f"limit={ranking.get('limit')}, "
         f"distance_rank={ranking.get('distance_used_for_ranking')}"
     )
-    print(
-        "  distance : "
-        f"requested={distance.get('requested')}, "
-        f"provider_active={distance.get('provider_active')}, "
-        f"start_node={distance.get('start_node_id')}, "
-        f"strategy={distance.get('strategy')}, "
-        f"unit={distance.get('unit')}"
-    )
-    print(f"  status   : {distance.get('status_counts')}")
+    if isinstance(distance, dict) and distance:
+        print(
+            "  distance : "
+            f"requested={distance.get('requested')}, "
+            f"provider_active={distance.get('provider_active')}, "
+            f"start_node={distance.get('start_node_id')}, "
+            f"strategy={distance.get('strategy')}, "
+            f"unit={distance.get('unit')}"
+        )
+        print(f"  status   : {distance.get('status_counts')}")
+    else:
+        print("  distance : not_applicable")
+
+    business = metadata.get("business")
+    if business:
+        print(f"  business : {business}")
 
 
 def _format_distance(item: dict[str, Any]) -> str:
@@ -121,6 +124,26 @@ def _format_distance(item: dict[str, Any]) -> str:
     if distance is None:
         return str(item.get("distance_value"))
     return f"{distance}m"
+
+
+def _format_result_item(item: dict[str, Any]) -> str:
+    if "title" in item:
+        return (
+            f"{item.get('title')} | "
+            f"destination={item.get('destination')} | "
+            f"heat={item.get('heat')} | "
+            f"rating={item.get('rating')} | "
+            f"destination_node={item.get('destination_node_id')}"
+        )
+
+    return (
+        f"{item.get('name')} | "
+        f"category={item.get('category')} | "
+        f"heat={item.get('heat')} | "
+        f"rating={item.get('rating')} | "
+        f"target_node={item.get('target_node_id', '')} | "
+        f"distance={_format_distance(item)}"
+    )
 
 
 def _parse_limit(value: str, default: int = 10) -> int:
@@ -147,10 +170,90 @@ def _parse_yes_no(value: str, default: bool = True) -> bool:
     return normalized in {"y", "yes", "1", "true", "是", "使用"}
 
 
+def print_route_hint(item: dict[str, Any], *, start_node_id: str = "gate_north") -> None:
+    target_node_id = str(
+        item.get("target_node_id")
+        or item.get("node_id")
+        or item.get("destination_node_id")
+        or ""
+    ).strip()
+    if not target_node_id:
+        return
+
+    print("Routing Hint")
+    print(
+        "python -B -c "
+        f"\"from src.graph.loader import GraphLoader; "
+        f"from src.routing.router import Router; "
+        f"g = GraphLoader.load_site_graph('PKU'); "
+        f"r = Router(g); "
+        f"print(r.query_routing('{start_node_id}', '{target_node_id}'))\""
+    )
+    print("-" * 72)
+
+
+def run_week9_demo() -> None:
+    """第九周统一演示入口。"""
+    print("成员 B 第九周业务演示")
+    print("=" * 72)
+
+    print("[1] 场所查询：洗手间按真实距离排序")
+    place_response = search_places(
+        keyword="洗手间",
+        category="restroom",
+        start_node_id="gate_north",
+        sort_field="distance_m",
+        limit=3,
+    )
+    print_response(place_response)
+    if place_response["data"]:
+        print_route_hint(place_response["data"][0], start_node_id="gate_north")
+
+    print("[2] 场所查询：便利店 / 教学楼按真实距离排序")
+    for keyword, category in (("便利店", "shopping"), ("教学楼", "education")):
+        response = search_places(
+            keyword=keyword,
+            category=category,
+            start_node_id="gate_north",
+            sort_field="distance_m",
+            limit=3,
+        )
+        print_response(response)
+        if response["data"]:
+            print_route_hint(response["data"][0], start_node_id="gate_north")
+
+    print("[3] 美食推荐：餐饮 Top-K")
+    catering_response = recommend_catering(
+        keyword="",
+        start_node_id="gate_north",
+        sort_field="distance_m",
+        limit=2,
+    )
+    print_response(catering_response)
+    if catering_response["data"]:
+        print_route_hint(catering_response["data"][0], start_node_id="gate_north")
+
+    print("[4] 日记查询：标题 / 目的地排序展示")
+    diary_by_title = search_diaries(keyword="黄山", sort_field="heat", limit=3)
+    print_response(diary_by_title)
+    if diary_by_title["data"]:
+        print_route_hint(diary_by_title["data"][0], start_node_id="gate_north")
+
+    diary_by_destination = search_diaries(destination="北京大学", sort_field="rating", limit=3)
+    print_response(diary_by_destination)
+    if diary_by_destination["data"]:
+        print_route_hint(diary_by_destination["data"][0], start_node_id="gate_north")
+
+
 def main() -> None:
-    print("成员 B 第八周：查询 -> 推荐 -> 距离 -> 统一 Response CLI 演示")
+    if "--week9" in sys.argv:
+        run_week9_demo()
+        return
+
+    print("成员 B 第八/九周：查询 -> 推荐 -> 距离 -> 统一 Response CLI 演示")
     print("提示：当前默认使用标准分层数据 data/sites/PKU/*.json。")
     print("起点节点示例：gate_north、library、lib_entrance。")
+    print("如需直接查看第九周预设演示，请执行：python -B src/search/cli_demo.py --week9")
     keyword = input("请输入关键字：").strip()
     category = input("请输入类别（可留空）：").strip()
     start_node_id = input("请输入起点节点 ID（可留空，例如 gate_north）：").strip()
