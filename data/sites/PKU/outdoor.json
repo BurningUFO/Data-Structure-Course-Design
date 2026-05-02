@@ -80,7 +80,7 @@
       "name": "学生宿舍1号楼",
       "type": "dormitory",
       "is_gate": true,
-      "sub_graph_id": null,
+      "sub_graph_id": "indoor_DORM1",
       "tags": ["宿舍", "住宿", "生活"],
       "description": "学生宿舍1号楼，本科生宿舍楼。",
       "category": "dormitory",
