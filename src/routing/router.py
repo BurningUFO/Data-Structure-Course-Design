@@ -143,7 +143,51 @@ class Router:
         graph_layer = str(getattr(self.graph, "layer_id", "")).strip()
         return graph_layer or "default"
 
-    def _build_segments(self, path, path_edges):
+    def _get_node_name(self, node_id):
+        """返回节点展示名称；缺失时退回到节点 ID。"""
+        node_data = self.graph.nodes.get(node_id, {})
+        name = str(node_data.get("name", "")).strip()
+        return name or str(node_id)
+
+    def _build_path_steps(self, path, path_edges):
+        """
+        为业务层构造逐边的路径明细，便于展示“经过了哪条路、进了哪一层”。
+        """
+        steps = []
+
+        for index, edge in enumerate(path_edges):
+            start_node_id = path[index]
+            end_node_id = path[index + 1]
+            start_layer = self._resolve_node_layer(start_node_id)
+            end_layer = self._resolve_node_layer(end_node_id)
+            edge_type = str(edge.get("type", "")).strip()
+            edge_name = str(edge.get("name", "")).strip()
+            edge_time = self._get_travel_time_seconds(edge)
+
+            steps.append(
+                {
+                    "step_index": index + 1,
+                    "from_node_id": start_node_id,
+                    "from_node_name": self._get_node_name(start_node_id),
+                    "to_node_id": end_node_id,
+                    "to_node_name": self._get_node_name(end_node_id),
+                    "from_layer": start_layer,
+                    "to_layer": end_layer,
+                    "display_layer": end_layer if start_layer != end_layer else start_layer,
+                    "transition_kind": "cross_layer" if start_layer != end_layer else "same_layer",
+                    "edge_type": edge_type,
+                    "edge_name": edge_name,
+                    "description": str(edge.get("description", "")).strip(),
+                    "distance_m": float(edge.get("distance", 0)),
+                    "estimated_time_s": None if edge_time == float('inf') else edge_time,
+                    "vehicle_access": str(edge.get("vehicle_access", "all")).strip() or "all",
+                    "is_gate_transition": edge_type == "gate_link",
+                }
+            )
+
+        return steps
+
+    def _build_segments(self, path, path_steps):
         """
         根据路径构造分段信息。
 
@@ -154,11 +198,20 @@ class Router:
         if not path:
             return []
 
-        if not path_edges:
+        if not path_steps:
             return [
                 {
+                    "segment_index": 1,
                     "layer": self._resolve_node_layer(path[0]),
                     "path": path[:],
+                    "start_node_id": path[0],
+                    "target_node_id": path[0],
+                    "start_node_name": self._get_node_name(path[0]),
+                    "target_node_name": self._get_node_name(path[0]),
+                    "node_count": len(path),
+                    "edge_count": 0,
+                    "edge_names": [],
+                    "edge_types": [],
                     "distance": 0.0,
                     "distance_m": 0.0,
                     "estimated_time_s": 0.0,
@@ -167,21 +220,24 @@ class Router:
 
         segments = []
 
-        for index, edge in enumerate(path_edges):
-            start_node_id = path[index]
-            end_node_id = path[index + 1]
-            start_layer = self._resolve_node_layer(start_node_id)
-            end_layer = self._resolve_node_layer(end_node_id)
-            segment_layer = end_layer if start_layer != end_layer else start_layer
-            edge_distance = float(edge.get("distance", 0))
-            edge_time = self._get_travel_time_seconds(edge)
-            edge_time_s = None if edge_time == float('inf') else edge_time
+        for step in path_steps:
+            segment_layer = step["display_layer"]
+            edge_distance = step["distance_m"]
+            edge_time_s = step["estimated_time_s"]
 
             if segments and segments[-1]["layer"] == segment_layer:
                 segment = segments[-1]
-                if segment["path"][-1] != start_node_id:
-                    segment["path"].append(start_node_id)
-                segment["path"].append(end_node_id)
+                if segment["path"][-1] != step["from_node_id"]:
+                    segment["path"].append(step["from_node_id"])
+                segment["path"].append(step["to_node_id"])
+                segment["target_node_id"] = step["to_node_id"]
+                segment["target_node_name"] = step["to_node_name"]
+                segment["node_count"] = len(segment["path"])
+                segment["edge_count"] += 1
+                if step["edge_name"]:
+                    segment["edge_names"].append(step["edge_name"])
+                if step["edge_type"]:
+                    segment["edge_types"].append(step["edge_type"])
                 segment["distance"] += edge_distance
                 segment["distance_m"] += edge_distance
                 if segment["estimated_time_s"] is None or edge_time_s is None:
@@ -192,8 +248,17 @@ class Router:
 
             segments.append(
                 {
+                    "segment_index": len(segments) + 1,
                     "layer": segment_layer,
-                    "path": [start_node_id, end_node_id],
+                    "path": [step["from_node_id"], step["to_node_id"]],
+                    "start_node_id": step["from_node_id"],
+                    "target_node_id": step["to_node_id"],
+                    "start_node_name": step["from_node_name"],
+                    "target_node_name": step["to_node_name"],
+                    "node_count": 2,
+                    "edge_count": 1,
+                    "edge_names": [step["edge_name"]] if step["edge_name"] else [],
+                    "edge_types": [step["edge_type"]] if step["edge_type"] else [],
                     "distance": edge_distance,
                     "distance_m": edge_distance,
                     "estimated_time_s": edge_time_s,
@@ -201,6 +266,48 @@ class Router:
             )
 
         return segments
+
+    def _build_route_overview(self, path, path_steps, segments, strategy, transport_mode):
+        """
+        构造路径摘要，供业务层快速展示。
+        """
+        if not path:
+            return {
+                "start_node_id": None,
+                "start_node_name": None,
+                "target_node_id": None,
+                "target_node_name": None,
+                "node_count": 0,
+                "edge_count": 0,
+                "segment_count": 0,
+                "layer_sequence": [],
+                "cross_layer": False,
+                "cross_layer_step_count": 0,
+                "strategy": strategy,
+                "weight_unit": "meter" if strategy == "shortest_distance" else "second",
+                "transport_mode": transport_mode,
+            }
+
+        cross_layer_step_count = sum(
+            1 for step in path_steps if step.get("transition_kind") == "cross_layer"
+        )
+        layer_sequence = [segment["layer"] for segment in segments] or [self._resolve_node_layer(path[0])]
+
+        return {
+            "start_node_id": path[0],
+            "start_node_name": self._get_node_name(path[0]),
+            "target_node_id": path[-1],
+            "target_node_name": self._get_node_name(path[-1]),
+            "node_count": len(path),
+            "edge_count": len(path_steps),
+            "segment_count": len(segments),
+            "layer_sequence": layer_sequence,
+            "cross_layer": cross_layer_step_count > 0,
+            "cross_layer_step_count": cross_layer_step_count,
+            "strategy": strategy,
+            "weight_unit": "meter" if strategy == "shortest_distance" else "second",
+            "transport_mode": transport_mode,
+        }
 
     def _get_weight(self, edge, strategy):
         """
@@ -299,13 +406,21 @@ class Router:
         total_distance_m, estimated_time_s = self._summarize_path_metrics(path_edges)
         total_weight = distances[target_node_id]
         weight_unit = "meter" if strategy == "shortest_distance" else "second"
-        segments = self._build_segments(path, path_edges)
+        path_steps = self._build_path_steps(path, path_edges)
+        segments = self._build_segments(path, path_steps)
+        route_overview = self._build_route_overview(path, path_steps, segments, strategy, transport_mode)
 
         # 返回符合文档约定的数据结构
         return {
             "success": True,
             "site_id": normalized_site_id or self._resolve_graph_site_id() or None,
+            "start_node_id": start_node_id,
+            "target_node_id": target_node_id,
+            "start_node_name": self._get_node_name(start_node_id),
+            "target_node_name": self._get_node_name(target_node_id),
             "path": path,
+            "path_node_names": [self._get_node_name(node_id) for node_id in path],
+            "path_steps": path_steps,
             "total_weight": total_weight,
             "weight_unit": weight_unit,
             "total_distance_m": total_distance_m,
@@ -314,6 +429,8 @@ class Router:
             "estimated_time": estimated_time_s,
             "strategy": strategy,
             "transport_mode": transport_mode,
+            "layer_sequence": route_overview["layer_sequence"],
+            "route_overview": route_overview,
             "segments": segments,
         }
 
@@ -402,6 +519,8 @@ class Router:
                 "site_id": normalized_site_id or self._resolve_graph_site_id() or None,
                 "path": [start_node_id],
                 "visit_order": [start_node_id],
+                "path_node_names": [self._get_node_name(start_node_id)],
+                "visit_order_names": [self._get_node_name(start_node_id)],
                 "target_node_ids": [],
                 "total_weight": 0,
                 "weight_unit": "meter" if strategy == "shortest_distance" else "second",
@@ -523,14 +642,19 @@ class Router:
             leg_result = {
                 "start_node_id": leg_start,
                 "target_node_id": leg_target,
+                "start_node_name": route.get("start_node_name", self._get_node_name(leg_start)),
+                "target_node_name": route.get("target_node_name", self._get_node_name(leg_target)),
                 "site_id": route.get("site_id"),
                 "path": route["path"],
+                "path_node_names": route.get("path_node_names", []),
+                "path_steps": route.get("path_steps", []),
                 "total_weight": route["total_weight"],
                 "weight_unit": route.get("weight_unit"),
                 "total_distance_m": route.get("total_distance_m", 0.0),
                 "estimated_time_s": route.get("estimated_time_s"),
                 "total_distance": route.get("total_distance", route.get("total_distance_m", 0.0)),
                 "estimated_time": route.get("estimated_time", route.get("estimated_time_s")),
+                "route_overview": route.get("route_overview", {}),
                 "segments": route.get("segments", []),
             }
             leg_results.append(leg_result)
@@ -547,7 +671,9 @@ class Router:
             "success": True,
             "site_id": normalized_site_id or self._resolve_graph_site_id() or None,
             "path": full_path,
+            "path_node_names": [self._get_node_name(node_id) for node_id in full_path],
             "visit_order": visit_order,
+            "visit_order_names": [self._get_node_name(node_id) for node_id in visit_order],
             "target_node_ids": unique_targets,
             "total_weight": best_total,
             "weight_unit": "meter" if strategy == "shortest_distance" else "second",

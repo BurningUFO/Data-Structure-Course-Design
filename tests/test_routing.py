@@ -1,6 +1,8 @@
 import sys
 import os
 import unittest
+import json
+from pathlib import Path
 
 # 将 src 目录添加到 Python 路径，方便导入
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -202,6 +204,10 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(len(result["leg_results"]), 3)
         self.assertEqual(result["leg_results"][0]["weight_unit"], "meter")
         self.assertEqual(result["leg_results"][0]["total_distance_m"], 2)
+        self.assertEqual(result["visit_order_names"], ["start", "a", "c", "start"])
+        self.assertEqual(result["path_node_names"], ["start", "a", "b", "c", "start"])
+        self.assertEqual(result["leg_results"][0]["route_overview"]["target_node_id"], "a")
+        self.assertEqual(result["leg_results"][0]["path_steps"][0]["to_node_id"], "a")
 
     def test_multi_target_empty_targets_returns_start_only(self):
         graph = Graph(layer_id="multi_target_empty")
@@ -213,6 +219,8 @@ class TestRouting(unittest.TestCase):
         self.assertTrue(result["success"])
         self.assertEqual(result["path"], ["start"])
         self.assertEqual(result["visit_order"], ["start"])
+        self.assertEqual(result["path_node_names"], ["start"])
+        self.assertEqual(result["visit_order_names"], ["start"])
         self.assertEqual(result["target_node_ids"], [])
         self.assertEqual(result["total_weight"], 0)
         self.assertEqual(result["leg_results"], [])
@@ -285,6 +293,17 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(route["total_distance_m"], 110)
         self.assertAlmostEqual(route["estimated_time_s"], (80 / (1.5 * 0.6)) + (30 / (1.5 * 0.4)))
         self.assertEqual(route["segments"][0]["layer"], "outdoor")
+        self.assertEqual(route["start_node_name"], "北大西门")
+        self.assertEqual(route["target_node_name"], "图书馆")
+        self.assertEqual(route["path_node_names"], ["北大西门", "百周年纪念广场", "图书馆"])
+        self.assertEqual(route["layer_sequence"], ["outdoor"])
+        self.assertEqual(route["route_overview"]["segment_count"], 1)
+        self.assertFalse(route["route_overview"]["cross_layer"])
+        self.assertEqual(route["route_overview"]["node_count"], 3)
+        self.assertEqual(route["path_steps"][0]["edge_name"], "西门大道")
+        self.assertEqual(route["path_steps"][1]["edge_name"], "图书馆前广场")
+        self.assertEqual(route["segments"][0]["edge_names"], ["西门大道", "图书馆前广场"])
+        self.assertEqual(route["segments"][0]["target_node_name"], "图书馆")
 
     def test_site_id_mismatch_is_rejected(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
@@ -315,6 +334,62 @@ class TestRouting(unittest.TestCase):
         self.assertAlmostEqual(route["total_weight"], expected_time)
         self.assertAlmostEqual(route["estimated_time_s"], expected_time)
         self.assertEqual([segment["layer"] for segment in route["segments"]], ["outdoor", "indoor_LIB"])
+        self.assertEqual(route["path_node_names"], ["北大西门", "百周年纪念广场", "图书馆", "图书馆入口大厅", "中文社科阅览室"])
+        self.assertTrue(route["route_overview"]["cross_layer"])
+        self.assertEqual(route["route_overview"]["cross_layer_step_count"], 1)
+        self.assertEqual(route["route_overview"]["layer_sequence"], ["outdoor", "indoor_LIB"])
+        self.assertEqual(route["path_steps"][2]["edge_type"], "gate_link")
+        self.assertTrue(route["path_steps"][2]["is_gate_transition"])
+        self.assertEqual(route["path_steps"][2]["transition_kind"], "cross_layer")
+        self.assertEqual(route["segments"][1]["start_node_name"], "图书馆")
+        self.assertEqual(route["segments"][1]["target_node_name"], "中文社科阅览室")
+        self.assertIn("gate_link", route["segments"][1]["edge_types"])
+
+    def test_standard_site_strategy_comparison_uses_real_graph(self):
+        router = Router(GraphLoader.load_site_graph("PKU"))
+        distance_route = router.query_routing("gate_north", "lib_reception", strategy="shortest_distance")
+        time_route = router.query_routing("gate_north", "lib_reception", strategy="shortest_time")
+
+        self.assertTrue(distance_route["success"])
+        self.assertTrue(time_route["success"])
+        self.assertEqual(distance_route["path"], ["gate_north", "square_center", "library", "lib_entrance", "lib_reception"])
+        self.assertEqual(time_route["path"], ["gate_north", "square_center", "library", "lib_entrance", "lib_self_serve", "lib_reception"])
+        self.assertEqual(distance_route["weight_unit"], "meter")
+        self.assertEqual(time_route["weight_unit"], "second")
+        self.assertEqual(distance_route["route_overview"]["target_node_name"], "总服务台")
+        self.assertEqual(time_route["path_steps"][-1]["edge_name"], "")
+        self.assertEqual(time_route["path_steps"][-1]["description"], "服务台旁的自助区")
+        self.assertGreater(time_route["route_overview"]["edge_count"], distance_route["route_overview"]["edge_count"])
+
+    def test_standard_site_transport_filter_blocks_incompatible_modes(self):
+        router = Router(GraphLoader.load_site_graph("PKU"))
+
+        walk_to_parking = router.query_routing("gate_north", "parking_lot", transport_mode="walk")
+        car_to_library = router.query_routing("gate_north", "library", transport_mode="car")
+        car_to_parking = router.query_routing("gate_east", "parking_lot", transport_mode="car")
+
+        self.assertFalse(walk_to_parking["success"])
+        self.assertFalse(car_to_library["success"])
+        self.assertTrue(car_to_parking["success"])
+        self.assertEqual(car_to_parking["path"], ["gate_east", "parking_lot"])
+        self.assertEqual(car_to_parking["path_steps"][0]["vehicle_access"], "vehicle_only")
+        self.assertEqual(car_to_parking["route_overview"]["transport_mode"], "car")
+
+    def test_diary_destination_node_can_route_with_summary_fields(self):
+        diary_path = Path(__file__).resolve().parents[1] / "data" / "diary_data.json"
+        with diary_path.open("r", encoding="utf-8") as f:
+            diaries = json.load(f)
+
+        diary = next(item for item in diaries if item.get("destination_node_id") == "canteen")
+        router = Router(GraphLoader.load_site_graph("PKU"))
+        route = router.query_routing("gate_north", diary["destination_node_id"])
+
+        self.assertTrue(route["success"])
+        self.assertEqual(route["target_node_id"], "canteen")
+        self.assertEqual(route["target_node_name"], "农园食堂")
+        self.assertEqual(route["route_overview"]["target_node_name"], "农园食堂")
+        self.assertEqual(route["path"][-1], diary["destination_node_id"])
+        self.assertEqual(route["path_node_names"][-1], "农园食堂")
 
 if __name__ == '__main__':
     unittest.main()
