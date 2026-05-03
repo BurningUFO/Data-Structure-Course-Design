@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>第九周工作周报</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; max-width: 980px; margin: 0 auto; padding: 20px; }
+        h1, h2, h3 { color: #2c3e50; }
+        h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        blockquote { border-left: 4px solid #4CAF50; margin: 0; padding: 10px 15px; background-color: #f9f9f9; }
+        ul, ol { margin-top: 5px; }
+        li { margin-bottom: 8px; }
+        code, .highlight { background-color: #f0f7ff; padding: 2px 4px; border-radius: 4px; font-family: Consolas, "Courier New", monospace; }
+        .success { color: #2e7d32; font-weight: bold; }
+        .risk { color: #b26a00; font-weight: bold; }
+        pre { background-color: #f6f8fa; border-radius: 6px; padding: 12px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <h1>第九周工作周报（4月27日 - 5月3日）</h1>
+
+    <blockquote>
+        <p><strong>项目名称</strong>：智能校园/景区导览系统<br>
+        <strong>汇报人</strong>：项目大总管 (Member A)</p>
+    </blockquote>
+
+    <p>本周团队核心目标为“M2 业务功能覆盖补齐与期中检查准备”。在第八周主链路首次联调完成的基础上，本周已补齐场所查询、美食推荐、日记基础查询、模糊查询增强和统一演示入口，并完成标准分层数据一致性修复与集成测试收口。当前系统已可稳定演示“查询场所/美食/日记 -&gt; 真实距离补充 -&gt; 推荐排序 -&gt; 路径规划/距离展示”的业务闭环。</p>
+
+    <p>以下是本周各成员的工作总结、验收结论及后续计划：</p>
+
+    <h2>1. 团队整体进展概览</h2>
+    <ul>
+        <li><strong>Member A (算法与图结构)</strong>：<span class="success">✅</span> 完成多目标路径边界补强、交通工具过滤演示测试、算法说明整理，并保持第八周路径接口稳定。</li>
+        <li><strong>Member B (业务与推荐)</strong>：<span class="success">✅</span> 完成 <span class="highlight">search_places(...)</span> 场所查询入口、<span class="highlight">recommend_catering(...)</span> 美食推荐入口、日记业务收口、模糊查询增强及第九周 CLI 演示。</li>
+        <li><strong>Member C (数据与集成)</strong>：<span class="success">✅</span> 完成 <span class="highlight">indoor_DORM1</span> 子图补齐、标准日记数据整理、日记模块基础实现、集成测试与数据字典更新。</li>
+    </ul>
+
+    <h2>2. 本周核心收口成果</h2>
+    <ol>
+        <li><strong>业务覆盖补齐</strong>：场所查询、美食推荐、日记基础查询、模糊查询均已具备可运行入口和测试样例。</li>
+        <li><strong>主链路保持可运行</strong>：第八周“查询 -&gt; 推荐 -&gt; 距离 -&gt; 路径规划”主链路未回退，并在第九周集成测试中继续验证通过。</li>
+        <li><strong>标准数据口径统一</strong>：当前默认数据源已统一到 <span class="highlight">data/global_sites.json</span> 与 <span class="highlight">data/sites/PKU/*.json</span>，<span class="highlight">indoor_DORM1</span> 与注册表声明保持一致；日记默认数据统一为 <span class="highlight">data/diary_data.json</span>。</li>
+        <li><strong>期中检查材料可用</strong>：A 侧已提交算法说明，B 侧已提供 <span class="highlight">python -B src/search/cli_demo.py --week9</span> 统一演示入口，C 侧已补充日记与集成测试记录。</li>
+        <li><strong>验收清单通过</strong>：本周要求的图加载、路由、搜索、推荐、日记、集成测试均已通过，说明第九周收口目标达成。</li>
+    </ol>
+
+    <h2>3. 成员详细工作汇报</h2>
+
+    <h3>【Member A：图结构与路径规划】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>多目标路径边界补强</strong>：在 <span class="highlight">src/routing/router.py</span> 与 <span class="highlight">tests/test_routing.py</span> 中补充空目标列表、重复目标、不可达目标、超过 12 个目标点等边界处理，保证多目标路径接口稳定返回。</li>
+        <li><strong>交通工具过滤验证完善</strong>：继续保持 <span class="highlight">vehicle_access</span>、<span class="highlight">allowed_transports</span>、<span class="highlight">blocked_transports</span> 等过滤逻辑可用，并新增步行、车辆、自行车场景测试。</li>
+        <li><strong>返回结构一致性修复</strong>：空目标列表成功返回时补齐 <span class="highlight">target_node_ids=[]</span>，与普通多目标成功结果保持一致。</li>
+        <li><strong>算法说明整理完成</strong>：新增 <span class="highlight">工作进度/第九周/memberA第9周算法说明.md</span>，覆盖 Dijkstra、最短时间权重、多目标状态压缩 DP、交通工具过滤、复杂度与当前限制。</li>
+        <li><strong>联调接口保持稳定</strong>：<span class="highlight">query_routing(...)</span>、<span class="highlight">query_distance(...)</span>、<span class="highlight">query_multi_target(...)</span> 的参数顺序与第八周结论保持一致，未破坏 B/C 侧调用。</li>
+    </ol>
+
+    <h3>【Member B：查询、排序与推荐业务】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>场所查询入口落地</strong>：在 <span class="highlight">src/search/search_service.py</span> 中新增 <span class="highlight">search_places(...)</span>，支持 <span class="highlight">restroom</span>、<span class="highlight">catering</span>、<span class="highlight">shopping</span>、<span class="highlight">parking</span>、<span class="highlight">education</span> 等类别过滤，以及基于 <span class="highlight">distance_m</span>、<span class="highlight">heat</span>、<span class="highlight">rating</span> 的排序。</li>
+        <li><strong>美食推荐链路落地</strong>：新增 <span class="highlight">src/recommend/catering_service.py</span>，提供 <span class="highlight">recommend_catering(...)</span> 业务入口，支持 Top-K、距离排序、关键词过滤和可选 <span class="highlight">cuisine</span> 过滤。</li>
+        <li><strong>日记业务统一收口</strong>：配合 C 侧标准日记数据，在 <span class="highlight">src/diary/diary_service.py</span> 中支持标题查询、目的地查询、按热度/评分排序，并兼容历史 <span class="highlight">diary_test.json</span> 的非标准 JSON 形态。</li>
+        <li><strong>模糊查询增强</strong>：更新 <span class="highlight">src/search/fuzzy_search.py</span>，补充名称、标签、描述等多字段匹配权重与稳定排序逻辑。</li>
+        <li><strong>统一演示入口补齐</strong>：扩展 <span class="highlight">src/search/cli_demo.py</span>，新增 <span class="highlight">--week9</span> 演示模式，可依次展示场所查询、美食推荐、日记查询和路径规划提示命令。</li>
+    </ol>
+
+    <h3>【Member C：数据测试与系统集成】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>数据一致性修复完成</strong>：补齐 <span class="highlight">data/sites/PKU/indoor_DORM1.json</span>，并在 <span class="highlight">data/sites/PKU/outdoor.json</span> 中将 <span class="highlight">dormitory_1</span> 绑定到 <span class="highlight">indoor_DORM1</span>，消除了第八周遗留的注册表与文件不一致问题。</li>
+        <li><strong>标准日记数据建立</strong>：新增 <span class="highlight">data/diary_data.json</span>，为日记基础查询、排序和“日记 -&gt; 路径规划”演示提供标准数据源。</li>
+        <li><strong>日记模块基础实现</strong>：新建 <span class="highlight">src/diary/__init__.py</span> 与 <span class="highlight">src/diary/diary_service.py</span>，实现标题/目的地查询、排序和统一响应输出。</li>
+        <li><strong>测试覆盖扩充</strong>：新增 <span class="highlight">tests/test_diary.py</span> 与 <span class="highlight">tests/test_integration.py</span>，覆盖日记查询、标准分层图加载、宿舍跨层路径、完整端到端链路以及日记到路径规划链路。</li>
+        <li><strong>数据字典同步更新</strong>：更新 <span class="highlight">docs/数据字典.md</span>，补充 <span class="highlight">diary_data.json</span> 与 <span class="highlight">indoor_DORM1</span> 目录口径，确保文档与仓库结构一致。</li>
+    </ol>
+
+    <h2>4. 验证结果</h2>
+    <p>本周收口时已完成以下核验与测试：</p>
+    <pre><code>python -B tests/test_graph_load.py
+python -B tests/test_routing.py
+python -B tests/test_search.py
+python -B tests/test_recommend.py
+python -B tests/test_diary.py
+python -B tests/test_integration.py
+python -B src/search/cli_demo.py --week9</code></pre>
+
+    <p><strong>验证结论：</strong></p>
+    <ul>
+        <li>图加载测试通过，标准 <span class="highlight">PKU</span> 分层图已包含 <span class="highlight">outdoor</span>、<span class="highlight">indoor_LIB</span>、<span class="highlight">indoor_DORM1</span>，当前节点总数为 34。</li>
+        <li>路由模块测试通过，覆盖交通工具过滤、多目标路径边界、跨层路径和 <span class="highlight">site_id</span> 兼容。</li>
+        <li>搜索模块测试通过，覆盖场所查询、距离补充、模糊查询增强、异常距离状态及旧数据兼容。</li>
+        <li>推荐模块测试通过，覆盖热度、评分、距离排序，以及餐饮推荐的 Top-K 与 <span class="highlight">cuisine</span> 过滤。</li>
+        <li>日记模块测试通过，覆盖标题/目的地查询、热度/评分排序、历史数据兼容和统一响应结构。</li>
+        <li>集成测试通过，覆盖“查询 -&gt; 推荐 -&gt; 距离 -&gt; 路径规划”完整主链路，以及“日记 -&gt; 路径规划”组合链路。</li>
+        <li>第九周 CLI 演示命令可直接运行，满足期中检查“能跑起来”的要求。</li>
+    </ul>
+
+    <h2>5. 当前遗留限制与处理口径</h2>
+    <ol>
+        <li><strong>多目标路径仍为基础版</strong>：当前 <span class="highlight">query_multi_target(...)</span> 使用状态压缩 DP，限制为 12 个及以下目标点；该限制已明确写入接口和算法说明，属于已知非阻塞限制。</li>
+        <li><strong>模糊查询仍为轻量方案</strong>：本周未实现拼音首字母、同义词扩展或编辑距离阈值，当前仅支持名称、标签、描述等字段的包含匹配增强。</li>
+        <li><strong>日记模块目前仅完成基础查询</strong>：全文检索、倒排索引和压缩能力尚未接入，第十周后续继续推进。</li>
+        <li><strong>日记数据目前为静态测试数据</strong>：<span class="highlight">data/diary_data.json</span> 已能支撑第九周演示与测试，但数据规模和字段丰富度仍有扩展空间。</li>
+    </ol>
+
+    <h2>6. 下周工作计划（第十周）</h2>
+    <ol>
+        <li><strong>日记全文检索推进</strong>：在 <span class="highlight">src/diary/</span> 下继续实现倒排索引或全文检索能力，补齐课程设计中的文本检索要求。</li>
+        <li><strong>压缩模块启动</strong>：由 Member C 牵头推进 <span class="highlight">src/compress/</span> 的哈夫曼压缩/解压基础能力，并补充对应测试。</li>
+        <li><strong>模糊查询进一步增强</strong>：由 Member B 优先考虑同义词、拼音缩写等更真实输入场景的支持。</li>
+        <li><strong>数据规模继续扩展</strong>：继续完善标准分层数据、餐饮字段和日记目的地节点映射，减少历史兼容逻辑的必要性。</li>
+        <li><strong>演示与验收材料沉淀</strong>：在当前 CLI 与测试通过的基础上，继续整理中期检查与课程设计验收所需的说明、截图和操作指引。</li>
+    </ol>
+
+</body>
+</html>
