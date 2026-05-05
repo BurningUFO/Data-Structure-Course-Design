@@ -9,13 +9,14 @@
 - 简单相似度排序
 
 当前实现继续保持轻量，但补强了名称、标签、关键词、描述的权重，
-便于第九周场所查询和美食推荐直接复用。
+并补充了最小同义词归一化、拼音首字母支持，
+便于第九至第十周场所查询和美食推荐直接复用。
 
 后续如有需要，可继续扩展：
 - 编辑距离
 - Trie 前缀匹配
-- 拼音首字母
-- 同义词词典
+- 更完整的拼音字典
+- 更完整的同义词词典
 """
 
 from __future__ import annotations
@@ -25,11 +26,43 @@ from typing import Any
 
 Record = dict[str, Any]
 
+TERM_EQUIVALENT_GROUPS = (
+    ("洗手间", "卫生间", "厕所", "wc", "restroom", "xsj"),
+    ("食堂", "餐厅", "餐饮", "catering", "st"),
+    ("便利店", "超市", "商店", "shopping", "bld"),
+    ("图书馆", "tsg", "library"),
+    ("未名湖", "wml"),
+)
+
 
 def normalize_text(value: Any) -> str:
     if value is None:
         return ""
     return str(value).strip().casefold()
+
+
+def build_term_aliases() -> dict[str, list[str]]:
+    aliases: dict[str, list[str]] = {}
+    for group in TERM_EQUIVALENT_GROUPS:
+        normalized_group = [normalize_text(term) for term in group if normalize_text(term)]
+        for term in normalized_group:
+            aliases[term] = [candidate for candidate in normalized_group if candidate != term]
+    return aliases
+
+
+TERM_ALIASES = build_term_aliases()
+
+
+def expand_query_term(term: str) -> list[str]:
+    normalized_term = normalize_text(term)
+    if not normalized_term:
+        return []
+
+    ordered_terms: list[str] = [normalized_term]
+    for candidate in TERM_ALIASES.get(normalized_term, []):
+        if candidate not in ordered_terms:
+            ordered_terms.append(candidate)
+    return ordered_terms
 
 
 def split_search_terms(keyword: str) -> list[str]:
@@ -48,10 +81,11 @@ def split_search_terms(keyword: str) -> list[str]:
     seen: set[str] = set()
     ordered_terms: list[str] = []
     for term in terms:
-        if term in seen:
-            continue
-        seen.add(term)
-        ordered_terms.append(term)
+        for candidate in expand_query_term(term):
+            if candidate in seen:
+                continue
+            seen.add(candidate)
+            ordered_terms.append(candidate)
 
     return ordered_terms
 
@@ -104,8 +138,6 @@ def calculate_match_score(record: Record, keyword: str) -> int:
     - description：补充召回，不抢占名称优先级
 
     当前仍不支持：
-    - 拼音首字母
-    - 同义词扩展
     - 编辑距离阈值
     """
     terms = split_search_terms(keyword)

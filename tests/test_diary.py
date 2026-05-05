@@ -3,7 +3,7 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from src.diary.diary_service import DiaryService, load_diary_records, search_diaries
+from src.diary.diary_service import DiaryService, load_diary_records, search_diaries, search_diaries_fulltext
 
 
 LEGACY_DIARY_PATH = os.path.join(
@@ -117,9 +117,46 @@ def test_diary_response_shape():
     result = search_diaries(destination="北京大学", sort_field="rating", limit=2)
 
     assert result["success"] is True
+    assert result["results"] == result["data"]
     assert result["metadata"]["data_source"]["path"].endswith("diary_data.json")
     assert "destination_node_id" in result["metadata"]["result_fields"]
     print("test_diary_response_shape passed.")
+
+
+def test_search_fulltext_single_keyword():
+    result = search_diaries_fulltext(query="图书馆", limit=5)
+
+    assert result["success"] is True
+    assert result["query_type"] == "diary_fulltext_search"
+    assert result["total"] >= 1
+    assert result["metadata"]["fulltext"]["backend"].startswith("src.compress.fulltext.")
+    assert result["metadata"]["fulltext"]["backend_mode"] == "primary"
+    assert result["metadata"]["fulltext"]["index_manifest"]["document_count"] == 12
+    assert result["results"][0]["title"] == "图书馆自习攻略"
+    assert "图书馆" in result["results"][0]["matched_terms"]
+    assert result["results"][0]["destination_node_id"] == "library"
+    print("test_search_fulltext_single_keyword passed.")
+
+
+def test_search_fulltext_multi_keyword():
+    result = search_diaries_fulltext(query="图书馆 自习", limit=5)
+
+    assert result["success"] is True
+    assert result["total"] >= 1
+    assert result["results"][0]["title"] == "图书馆自习攻略"
+    assert "图书馆" in result["results"][0]["matched_terms"]
+    assert "自习" in result["results"][0]["matched_terms"]
+    assert result["metadata"]["fulltext"]["route_hint_available_count"] >= 1
+    print("test_search_fulltext_multi_keyword passed.")
+
+
+def test_search_fulltext_empty_query():
+    result = search_diaries_fulltext(query="   ", limit=3)
+
+    assert result["success"] is False
+    assert result["message"] == "fulltext query cannot be empty"
+    assert result["results"] == []
+    print("test_search_fulltext_empty_query passed.")
 
 
 def run_all_tests():
@@ -135,6 +172,9 @@ def run_all_tests():
     test_search_no_match()
     test_search_legacy_dataset_support()
     test_diary_response_shape()
+    test_search_fulltext_single_keyword()
+    test_search_fulltext_multi_keyword()
+    test_search_fulltext_empty_query()
     print("All diary tests passed.")
 
 

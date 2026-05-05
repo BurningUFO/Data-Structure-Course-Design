@@ -22,6 +22,9 @@ if __package__ is None or __package__ == "":
     sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from src.diary.diary_service import search_diaries
+from src.diary.diary_service import search_diaries_fulltext
+from src.diary.diary_service import load_diary_records
+from src.compress.huffman import compress_text, decompress_text
 from src.recommend.catering_service import recommend_catering
 from src.search.search_service import search_and_recommend
 from src.search.search_service import search_places
@@ -64,6 +67,7 @@ def query_and_recommend(
 
 def print_response(response: dict[str, Any]) -> None:
     """打印统一响应结构和 Top-N 推荐结果。"""
+    results = response.get("results", response.get("data", []))
     print("=" * 72)
     print("Unified Response")
     print("-" * 72)
@@ -76,10 +80,10 @@ def print_response(response: dict[str, Any]) -> None:
     print("-" * 72)
     print("Top Results")
 
-    for index, item in enumerate(response["data"], start=1):
+    for index, item in enumerate(results, start=1):
         print(f"{index:02d}. {_format_result_item(item)}")
 
-    if not response["data"]:
+    if not results:
         print("(empty)")
 
     print("=" * 72)
@@ -114,6 +118,24 @@ def print_metadata(metadata: dict[str, Any]) -> None:
     if business:
         print(f"  business : {business}")
 
+    fulltext = metadata.get("fulltext")
+    if fulltext:
+        print(
+            "  fulltext : "
+            f"backend={fulltext.get('backend')}, "
+            f"mode={fulltext.get('backend_mode')}, "
+            f"tokens={fulltext.get('query_tokens')}, "
+            f"route_hints={fulltext.get('route_hint_available_count')}"
+        )
+        index_manifest = fulltext.get("index_manifest")
+        if isinstance(index_manifest, dict) and index_manifest:
+            print(
+                "  index    : "
+                f"docs={index_manifest.get('document_count')}, "
+                f"tokens={index_manifest.get('token_count')}, "
+                f"tokenizer={index_manifest.get('tokenizer')}"
+            )
+
 
 def _format_distance(item: dict[str, Any]) -> str:
     if "distance_status" not in item:
@@ -127,6 +149,15 @@ def _format_distance(item: dict[str, Any]) -> str:
 
 
 def _format_result_item(item: dict[str, Any]) -> str:
+    if "score" in item and "matched_terms" in item:
+        return (
+            f"{item.get('title')} | "
+            f"matched_terms={item.get('matched_terms')} | "
+            f"score={item.get('score')} | "
+            f"destination={item.get('destination')} | "
+            f"destination_node={item.get('destination_node_id')}"
+        )
+
     if "title" in item:
         return (
             f"{item.get('title')} | "
@@ -192,6 +223,27 @@ def print_route_hint(item: dict[str, Any], *, start_node_id: str = "gate_north")
     print("-" * 72)
 
 
+def print_compression_demo(text: str, *, label: str) -> None:
+    payload = compress_text(text)
+    restored = decompress_text(payload)
+
+    print(label)
+    print(
+        "  compression : "
+        f"original={payload['original_size_bytes']}B, "
+        f"bitstream={payload['bitstream_size_bytes']}B, "
+        f"package_estimate={payload['estimated_package_size_bytes']}B, "
+        f"ratio={payload['estimated_compression_ratio']}"
+    )
+    print(
+        "  verify      : "
+        f"restored_ok={restored == text}, "
+        f"unique_chars={payload['unique_character_count']}, "
+        f"bit_length={payload['bit_length']}"
+    )
+    print("-" * 72)
+
+
 def run_week9_demo() -> None:
     """第九周统一演示入口。"""
     print("成员 B 第九周业务演示")
@@ -241,19 +293,78 @@ def run_week9_demo() -> None:
 
     diary_by_destination = search_diaries(destination="北京大学", sort_field="rating", limit=3)
     print_response(diary_by_destination)
-    if diary_by_destination["data"]:
-        print_route_hint(diary_by_destination["data"][0], start_node_id="gate_north")
+    diary_results = diary_by_destination.get("results", diary_by_destination.get("data", []))
+    if diary_results:
+        print_route_hint(diary_results[0], start_node_id="gate_north")
+
+
+def run_week10_demo() -> None:
+    """第十周统一演示入口。"""
+    print("成员 B 第十周业务演示")
+    print("=" * 72)
+
+    print("[1] 日记全文检索：图书馆 自习")
+    fulltext_response = search_diaries_fulltext(query="图书馆 自习", limit=3)
+    print_response(fulltext_response)
+    fulltext_results = fulltext_response.get("results", fulltext_response.get("data", []))
+    if fulltext_results:
+        print_route_hint(fulltext_results[0], start_node_id="gate_north")
+
+    print("[2] 日记全文检索：食堂 美食")
+    catering_diary_response = search_diaries_fulltext(query="食堂 美食", limit=3)
+    print_response(catering_diary_response)
+    catering_diary_results = catering_diary_response.get("results", catering_diary_response.get("data", []))
+    if catering_diary_results:
+        print_route_hint(catering_diary_results[0], start_node_id="gate_north")
+
+    print("[3] 场所查询主链路回归：洗手间按真实距离排序")
+    place_response = search_places(
+        keyword="厕所",
+        category="restroom",
+        start_node_id="gate_north",
+        sort_field="distance_m",
+        limit=3,
+    )
+    print_response(place_response)
+
+    print("[4] 美食推荐主链路回归：食堂 / 餐饮")
+    catering_response = recommend_catering(
+        keyword="餐厅",
+        start_node_id="gate_north",
+        sort_field="distance_m",
+        limit=3,
+    )
+    print_response(catering_response)
+
+    print("[5] 压缩演示：图书馆日记正文")
+    diary_records = load_diary_records()
+    target_diary = next(
+        (
+            record
+            for record in diary_records
+            if str(record.get("id", "")).strip() == "diary_003"
+        ),
+        diary_records[0] if diary_records else {"content": ""},
+    )
+    print_compression_demo(
+        str(target_diary.get("content", "")),
+        label="《图书馆自习攻略》正文压缩摘要",
+    )
 
 
 def main() -> None:
     if "--week9" in sys.argv:
         run_week9_demo()
         return
+    if "--week10" in sys.argv:
+        run_week10_demo()
+        return
 
     print("成员 B 第八/九周：查询 -> 推荐 -> 距离 -> 统一 Response CLI 演示")
     print("提示：当前默认使用标准分层数据 data/sites/PKU/*.json。")
     print("起点节点示例：gate_north、library、lib_entrance。")
     print("如需直接查看第九周预设演示，请执行：python -B src/search/cli_demo.py --week9")
+    print("如需直接查看第十周预设演示，请执行：python -B src/search/cli_demo.py --week10")
     keyword = input("请输入关键字：").strip()
     category = input("请输入类别（可留空）：").strip()
     start_node_id = input("请输入起点节点 ID（可留空，例如 gate_north）：").strip()

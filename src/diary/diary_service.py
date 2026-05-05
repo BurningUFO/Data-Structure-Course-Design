@@ -15,7 +15,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.search.response import build_success_response
+from src.diary.fulltext_service import search_diary_fulltext_records
+from src.search.response import build_error_response, build_success_response
 
 
 Record = dict[str, Any]
@@ -317,6 +318,84 @@ class DiaryService:
             metadata=metadata,
         )
 
+    def search_fulltext(
+        self,
+        query: str,
+        *,
+        limit: int = 10,
+    ) -> dict[str, Any]:
+        """第十周新增：按日记正文做全文检索业务封装。"""
+        safe_limit = limit if limit > 0 else 10
+        filters = {
+            "query": query,
+            "limit": safe_limit,
+        }
+        metadata = {
+            "ranking": {
+                "sort_field": "score",
+                "sort_order": "desc",
+                "limit": safe_limit,
+                "distance_used_for_ranking": False,
+            },
+            "data_source": {
+                "path": str(self.data_path),
+                "legacy_compatible": self.data_path == get_legacy_diary_data_path(),
+            },
+            "result_fields": [
+                "id",
+                "diary_id",
+                "title",
+                "destination",
+                "destination_node_id",
+                "matched_terms",
+                "score",
+                "snippet",
+                "heat",
+                "rating",
+            ],
+        }
+
+        if not normalize_text(query):
+            metadata["fulltext"] = {
+                "backend": "fallback_contains",
+                "query_tokens": [],
+                "multi_keyword_mode": "or_ranked",
+                "supports_phrase_query": False,
+                "route_hint_available_count": 0,
+            }
+            return build_error_response(
+                "fulltext query cannot be empty",
+                query_type="diary_fulltext_search",
+                filters=filters,
+                metadata=metadata,
+            )
+
+        fulltext_result = search_diary_fulltext_records(
+            self.records,
+            query=query,
+            limit=safe_limit,
+        )
+        metadata["total_matched"] = fulltext_result["total_matched"]
+        metadata["fulltext"] = {
+            "backend": fulltext_result["backend"],
+            "backend_mode": fulltext_result["backend_mode"],
+            "backend_error": fulltext_result["backend_error"],
+            "query_tokens": fulltext_result["query_tokens"],
+            "multi_keyword_mode": "or_ranked",
+            "supports_phrase_query": False,
+            "route_hint_available_count": fulltext_result["route_hint_available_count"],
+            "index_manifest": fulltext_result["payload_metadata"].get("index_manifest"),
+        }
+
+        results = fulltext_result["results"]
+        return build_success_response(
+            data=results,
+            message="diary fulltext search success" if results else "no matched diary contents",
+            query_type="diary_fulltext_search",
+            filters=filters,
+            metadata=metadata,
+        )
+
     def _sort_records(
         self,
         records: list[Record],
@@ -369,5 +448,25 @@ def search_diaries(
         match_mode=match_mode,
         sort_field=sort_field,
         sort_order=sort_order,
+        limit=limit,
+    )
+
+
+def search_diaries_fulltext(
+    *,
+    query: str,
+    limit: int = 10,
+    records: list[Record] | None = None,
+    data_path: str | Path | None = None,
+    prefer_legacy_data: bool = False,
+) -> dict[str, Any]:
+    """日记全文检索快速调用入口。"""
+    service = DiaryService(
+        records,
+        data_path=data_path,
+        prefer_legacy_data=prefer_legacy_data,
+    )
+    return service.search_fulltext(
+        query,
         limit=limit,
     )

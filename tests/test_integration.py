@@ -1,7 +1,7 @@
 """
-第九周新增：集成测试
+第九至第十周联调集成测试
 
-覆盖第九周关键链路，验证三模块协作：
+覆盖当前关键链路，验证三模块协作：
   查询 -> 推荐 -> 距离计算 -> 路径规划
 
 测试场景：
@@ -28,11 +28,12 @@ from src.routing.router import Router
 from src.search.search_service import search_and_recommend, load_site_records
 from src.search.response import build_success_response, build_error_response
 from src.search.distance_adapter import RouterDistanceAdapter
-from src.diary.diary_service import search_diaries
+from src.compress.huffman import compress_text, decompress_text
+from src.diary.diary_service import load_diary_records, search_diaries, search_diaries_fulltext
 
 
 class IntegrationTests:
-    """第九周期中检查集成测试"""
+    """第九至第十周联调集成测试"""
 
     def __init__(self):
         self.graph = None
@@ -275,6 +276,43 @@ class IntegrationTests:
         print("  ⚠  未找到带有 destination_node_id 的日记")
         return False
 
+    def test_18_diary_fulltext_to_routing_flow(self):
+        """日记全文检索 -> 路径规划链路"""
+        fulltext_result = search_diaries_fulltext(query="图书馆 自习", limit=3)
+        assert fulltext_result["success"] is True
+        assert fulltext_result["total"] >= 1
+
+        for diary in fulltext_result["results"]:
+            dest_node = diary.get("destination_node_id")
+            if dest_node:
+                route = self.router.query_routing("gate_north", dest_node)
+                assert route["success"] is True
+                print(f"  全文检索命中《{diary['title']}》-> 目的地节点={dest_node}")
+                print(f"    匹配词={diary['matched_terms']}, 分数={diary['score']}")
+                print(f"    路径距离={route['total_distance_m']:.1f}m")
+                return True
+
+        print("  ⚠  全文检索结果未找到可路由的 destination_node_id")
+        return False
+
+    def test_19_huffman_roundtrip(self):
+        """哈夫曼压缩/解压一致性"""
+        records = load_diary_records()
+        diary = next(item for item in records if item["id"] == "diary_003")
+        payload = compress_text(diary["content"])
+        restored = decompress_text(payload)
+
+        assert restored == diary["content"]
+        assert payload["bitstream_size_bytes"] > 0
+        print("  ✓  哈夫曼压缩/解压一致性通过")
+        print(
+            "      原文="
+            f"{payload['original_size_bytes']}B, "
+            f"位流={payload['bitstream_size_bytes']}B, "
+            f"估算包={payload['estimated_package_size_bytes']}B"
+        )
+        return True
+
     # ──────────────────── 运行入口 ────────────────────
 
     def run_all(self):
@@ -297,10 +335,12 @@ class IntegrationTests:
             self.test_15_diary_sort_by_rating,
             self.test_16_end_to_end_flow,
             self.test_17_diary_to_routing_flow,
+            self.test_18_diary_fulltext_to_routing_flow,
+            self.test_19_huffman_roundtrip,
         ]
 
         print("=" * 60)
-        print("第九周期中检查 — 集成测试报告")
+        print("第九至第十周联调 — 集成测试报告")
         print("=" * 60)
         print()
 

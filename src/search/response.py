@@ -22,6 +22,7 @@ def build_success_response(
     filters: dict[str, Any] | None = None,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    # `results` 是第十周起统一对外字段；`data` 继续保留给第七至第九周调用方。
     return {
         "success": True,
         "message": message,
@@ -30,6 +31,7 @@ def build_success_response(
         "metadata": metadata or {},
         "total": len(data),
         "data": data,
+        "results": data,
     }
 
 
@@ -40,6 +42,7 @@ def build_error_response(
     filters: dict[str, Any] | None = None,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    empty_results: list[dict[str, Any]] = []
     return {
         "success": False,
         "message": message,
@@ -47,5 +50,6 @@ def build_error_response(
         "filters": filters or {},
         "metadata": metadata or {},
         "total": 0,
-        "data": [],
+        "data": empty_results,
+        "results": empty_results,
     }

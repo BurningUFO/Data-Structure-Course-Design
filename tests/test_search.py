@@ -138,6 +138,38 @@ def test_fuzzy_search_matches_name_tags_and_description():
     print("test_fuzzy_search_matches_name_tags_and_description passed.")
 
 
+def test_fuzzy_search_supports_synonyms_and_initials():
+    records = [
+        {
+            "id": "svc_010",
+            "name": "校园洗手间",
+            "category": "restroom",
+            "heat": 60,
+            "rating": 4.1,
+            "tags": ["公共服务"],
+            "keywords": ["卫生间"],
+            "description": "位于体育场旁边。",
+        },
+        {
+            "id": "svc_011",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 98,
+            "rating": 4.9,
+            "tags": ["学习"],
+            "keywords": ["阅览室"],
+            "description": "适合自习。",
+        },
+    ]
+
+    synonym_result = fuzzy_search(records, "厕所")
+    initial_result = fuzzy_search(records, "tsg")
+
+    assert synonym_result[0]["id"] == "svc_010"
+    assert initial_result[0]["id"] == "svc_011"
+    print("test_fuzzy_search_supports_synonyms_and_initials passed.")
+
+
 def test_response_builder():
     success = build_success_response(
         data=[{"id": "poi_001"}],
@@ -154,9 +186,11 @@ def test_response_builder():
     assert success["success"] is True
     assert success["total"] == 1
     assert "metadata" in success
+    assert success["results"] == success["data"]
     assert error["success"] is False
     assert error["total"] == 0
     assert "metadata" in error
+    assert error["results"] == error["data"]
     print("test_response_builder passed.")
 
 
@@ -499,6 +533,7 @@ def run_all_tests():
     test_combined_search()
     test_fuzzy_search()
     test_fuzzy_search_matches_name_tags_and_description()
+    test_fuzzy_search_supports_synonyms_and_initials()
     test_response_builder()
     test_query_and_recommend_flow()
     test_cli_wrapper_distance_response_and_print()
