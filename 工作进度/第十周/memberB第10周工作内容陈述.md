@@ -2,18 +2,18 @@
 
 > 本周角色：查找、排序、推荐与业务负责人（成员 B）  
 > 提交时间：2026年5月5日  
-> 核心目标：第十周 M3 预热收口 —— 全文检索业务接入、统一输出深化、模糊查询增强与演示入口扩展
+> 核心目标：第十周 M3 预热收口 —— 全文检索业务接入、统一输出深化、模糊查询增强与最小可演示 UI 入口建设
 
 ---
 
 ## 1. 本周任务目标
 
-第十周成员 B 的重点是把成员 C 新增的全文检索与压缩能力接入当前业务层，同时继续保持第九周已经打通的场所查询、美食推荐和日记基础查询主链路不回退。
+第十周成员 B 的重点是把成员 C 新增的全文检索与压缩能力接入当前业务层，同时按照 M3 演示计划启动最小可演示 UI，把第九周已经打通的场所查询、美食推荐、日记查询和路径规划主链路集中到统一展示入口中。
 
 本周执行主线如下：
 
 ```text
-保持第九周业务入口稳定 -> 对接全文检索 -> 统一 Response 深化 -> 扩展 week10 演示入口 -> 补测试与联调断言
+保持第九周业务入口稳定 -> 对接全文检索 -> 统一 Response 深化 -> 建设 CLI/Web 双演示入口 -> 补测试与联调断言
 ```
 
 ---
@@ -71,7 +71,34 @@ python -B src/search/cli_demo.py --week10
 4. 场所查询与美食推荐主链路回归
 5. 哈夫曼压缩 / 解压摘要展示
 
-### 2.5 与 C 侧压缩能力完成最小预对接
+### 2.5 最小可演示 Web UI 入口建设
+
+按照第十周 M3 预热计划，本周同步补齐本地 Web UI 初版，作为后续第 11-15 周 UI 产品化的基础。
+
+当前 Web UI 采用零额外依赖的本地服务形式：
+
+```text
+py -m src.ui.demo_server
+```
+
+浏览器访问：
+
+```text
+http://127.0.0.1:8765
+```
+
+当前 UI 已覆盖的演示链路包括：
+
+1. 首页概览、当前站点信息、地图节点与连线统计
+2. 景点查询与可路由结果展示
+3. 场所查询与按真实距离排序展示
+4. 美食推荐与评分 / 人均 / 距离信息展示
+5. 日记全文检索与目的地路径跳转
+6. 单目标路径规划、室外地图高亮和室内路径步骤说明
+
+服务侧通过 `src/ui/demo_service.py` 统一封装查询、推荐、日记检索和路径规划结果，前端通过 `src/ui/demo_server.py` 提供静态页面与 API。这样可以保证第十周演示入口先可用，第十一周后再继续升级为正式产品主入口。
+
+### 2.6 与 C 侧压缩能力完成最小预对接
 
 本周没有把压缩能力直接接进日记管理写入链路，而是在 `cli_demo.py` 中先完成第十周要求的最小演示：
 
@@ -93,9 +120,15 @@ python -B src/search/cli_demo.py --week10
 | `src/diary/diary_service.py` | 修改 | 新增全文检索业务入口与统一 metadata |
 | `src/diary/fulltext_service.py` | 新增 | 适配成员 C 的全文检索后端并保留回退实现 |
 | `src/diary/__init__.py` | 修改 | 导出 `search_diaries_fulltext` |
+| `src/ui/demo_service.py` | 新增 | 封装 Web UI 所需的查询、推荐、日记检索和路径规划服务 |
+| `src/ui/demo_server.py` | 新增 | 提供本地 Web UI 静态资源服务与 JSON API |
+| `src/ui/static/index.html` | 新增 | 最小可演示 UI 页面结构 |
+| `src/ui/static/styles.css` | 新增 | 最小可演示 UI 视觉样式 |
+| `src/ui/static/app.js` | 新增 | 前端交互、接口调用和结果渲染 |
 | `tests/test_search.py` | 修改 | 新增同义词 / 首字母查询与 week10 响应断言 |
 | `tests/test_diary.py` | 修改 | 新增全文检索单关键词、多关键词、空查询测试 |
 | `tests/test_integration.py` | 修改 | 新增“全文检索 -> 路径规划”与压缩一致性验证 |
+| `tests/test_ui_demo.py` | 新增 | 覆盖 UI 服务层 bootstrap、查询、日记检索和路径高亮数据 |
 | `工作进度/第十周/memberB第10周Todo清单.md` | 修改 | 更新第十周执行清单与协作确认结论 |
 | `工作进度/第十周/memberB第10周工作内容陈述.md` | 新增 | 本文件 |
 
@@ -120,6 +153,7 @@ py -3 -B tests/test_diary.py
 py -3 -B tests/test_integration.py
 py -3 -B tests/test_fulltext.py
 py -3 -B tests/test_compress.py
+py -3 -B tests/test_ui_demo.py
 ```
 
 结果摘要：
@@ -129,12 +163,25 @@ py -3 -B tests/test_compress.py
 - `tests/test_integration.py`：通过，覆盖“全文检索 -> 路径规划”和压缩 / 解压一致性
 - `tests/test_recommend.py`：通过，确认第九周美食推荐主链路未回退
 - `tests/test_fulltext.py` / `tests/test_compress.py`：通过，说明成员 C 新增能力可被 B 侧业务层稳定消费
+- `tests/test_ui_demo.py`：通过，说明 Web UI 服务层可稳定拿到地图、查询、推荐、全文检索和路径高亮数据
 
 ---
 
 ## 5. 可演示功能
 
-推荐演示命令：
+推荐 Web UI 演示入口：
+
+```text
+py -m src.ui.demo_server
+```
+
+访问地址：
+
+```text
+http://127.0.0.1:8765
+```
+
+CLI 兜底演示命令：
 
 ```text
 py -3 -B src/search/cli_demo.py --week10
@@ -152,6 +199,7 @@ py -3 -c "from src.diary.diary_service import search_diaries_fulltext; print(sea
 py -3 -B tests/test_search.py
 py -3 -B tests/test_diary.py
 py -3 -B tests/test_integration.py
+py -3 -B tests/test_ui_demo.py
 ```
 
 ---
@@ -161,4 +209,5 @@ py -3 -B tests/test_integration.py
 1. 当前全文检索评分主要由成员 C 的轻量倒排索引负责，业务层不重复实现更复杂的排序逻辑。
 2. 缺失 `destination_node_id` 的日记全文检索结果，当前统一降级为“仅展示，不给路径提示”，避免业务层误调路径规划。
 3. 压缩 / 解压当前仍处于命令级演示阶段，不直接暴露写入型业务接口。
-4. 若第十一周继续增强用户输入体验，建议优先评估编辑距离或更细的中文分词支持，但前提是不破坏当前 `results` 字段契约。
+4. Web UI 当前定位为第十周最小可演示入口，优先保证主链路可展示；第十一周起继续补产品骨架、站点切换、日记中心和演示模式。
+5. 若第十一周继续增强用户输入体验，建议优先评估编辑距离或更细的中文分词支持，但前提是不破坏当前 `results` 字段契约。
