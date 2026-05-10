@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>第十周工作周报</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: 0 auto; }
+        h1, h2, h3 { color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
+        blockquote { border-left: 4px solid #ccc; margin: 10px 0; padding-left: 15px; color: #666; background: #fafafa; padding: 10px 15px; }
+        ul { margin-top: 5px; margin-bottom: 15px; }
+        li { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>第十周工作周报（5月4日 - 5月10日）</h1>
+
+<blockquote>
+<p><strong>项目名称</strong>：智能校园/景区导览系统<br>
+<strong>汇报人</strong>：项目大总管 (Member A)</p>
+</blockquote>
+
+<p>本周团队核心目标为“M3 联调能力预热与离线检索落地”。在第九周完成 M2 业务覆盖和期中展示收口后，本周已补齐课程设计中的全文检索、无损压缩/解压、统一输出深化、最小可演示 Web UI 与算法对比初稿，并继续保证“查询/推荐 -> 真实距离 -> 路径规划”主链路未回退。当前系统已经具备“日记全文检索 -> 命中结果 -> 目的地节点 -> 路径规划”“日记正文压缩 -> 解压校验”以及“本地 Web 页面统一演示查询、推荐、日记和路径”的最小可演示闭环。</p>
+
+<p>以下是本周各成员的工作总结、验收结论及后续计划：</p>
+
+<hr>
+
+<h2>1. 团队整体进展概览</h2>
+
+<ul>
+    <li><strong>Member A (算法与图结构)</strong>：✅ 已完成路径展示字段增强、标准图策略对比样例整理、交通方式差异验证和“日记结果 -> 路径规划”链路可路由性检查。</li>
+    <li><strong>Member B (业务与推荐/UI)</strong>：✅ 已完成全文检索业务接入、统一响应结构深化、模糊查询同义词/首字母增强、<code>--week10</code> CLI 演示入口扩展和最小可演示 Web UI 初版。</li>
+    <li><strong>Member C (数据与检索/压缩)</strong>：✅ 已完成倒排索引全文检索基础版、哈夫曼压缩/解压基础版、离线索引预留入口、对应测试与数据字典同步。</li>
+</ul>
+
+<hr>
+
+<h2>2. 本周核心收口成果</h2>
+
+<ol>
+    <li><strong>全文检索能力落地</strong>：标准 <code>data/diary_data.json</code> 已可支持单关键词、多关键词和别名词的日记正文检索，返回 <code>diary_id</code>、<code>title</code>、<code>matched_terms</code>、<code>score</code>、<code>destination_node_id</code> 等字段。</li>
+    <li><strong>压缩模块最小闭环完成</strong>：当前已能对样例日记正文执行哈夫曼压缩、解压和一致性校验，并输出原文大小、位流大小与估算压缩包大小。</li>
+    <li><strong>业务层统一输出继续收口</strong>：场所查询、美食推荐、日记基础查询、日记全文检索已统一到 <code>success</code>、<code>message</code>、<code>query_type</code>、<code>filters</code>、<code>metadata</code>、<code>results</code> 这一套响应口径。</li>
+    <li><strong>M2 主链路未回退</strong>：场所查询、美食推荐、真实距离排序和路径规划接口继续保持可运行，且第十周新增能力没有破坏第九周演示入口与集成测试。</li>
+    <li><strong>最小可演示 Web UI 初版完成</strong>：本地 Web 入口已覆盖站点概览、景点查询、场所查询、美食推荐、日记全文检索、路线规划、地图高亮和室内路径步骤说明。</li>
+    <li><strong>M3 预热材料开始沉淀</strong>：A 侧已形成第十周算法对比说明，C 侧已形成检索与压缩验证记录，B 侧已形成第十周业务接入与 UI 展示说明。</li>
+</ol>
+
+<hr>
+
+<h2>3. 成员详细工作汇报</h2>
+
+<h3>【Member A：图结构与路径规划】</h3>
+
+<p><strong>本周主要成果：</strong></p>
+<ol>
+    <li><strong>路径展示字段增强</strong>：在 <code>src/routing/router.py</code> 中以追加字段方式补充 <code>start_node_name</code>、<code>target_node_name</code>、<code>path_node_names</code>、<code>path_steps</code>、<code>layer_sequence</code>、<code>route_overview</code> 等结果信息，方便 B/C 侧直接展示。</li>
+    <li><strong>分段结果可解释性增强</strong>：为 <code>segments[*]</code> 增加 <code>segment_index</code>、<code>edge_names</code>、<code>edge_types</code>、<code>node_count</code>、<code>edge_count</code> 等字段，降低业务层二次拼装成本。</li>
+    <li><strong>策略对比样例整理完成</strong>：在标准 <code>PKU</code> 图上确认 <code>gate_north -&gt; lib_reception</code> 的距离/时间策略差异样例，并补充交通方式过滤测试。</li>
+    <li><strong>日记到路径规划链路验证</strong>：已验证标准日记中的 <code>destination_node_id</code> 可直接被路径规划接口消费，例如 <code>canteen</code>、<code>library</code> 等节点均能稳定返回路径。</li>
+    <li><strong>算法材料沉淀</strong>：提交 <code>工作进度/第十周/memberA第10周算法对比说明.md</code>，覆盖最短距离 vs 最短时间、交通方式差异和多目标状态压缩 DP 的适用范围。</li>
+</ol>
+
+<h3>【Member B：查询、排序、推荐业务与 UI 展示】</h3>
+
+<p><strong>本周主要成果：</strong></p>
+<ol>
+    <li><strong>全文检索业务入口接入</strong>：在 <code>src/diary/diary_service.py</code> 中新增 <code>search_diaries_fulltext(...)</code>，并通过 <code>src/diary/fulltext_service.py</code> 适配成员 C 的全文检索实现与异常回退逻辑。</li>
+    <li><strong>统一响应字段深化</strong>：更新 <code>src/search/response.py</code>，在保留 <code>data</code> 兼容的同时正式补充 <code>results</code> 字段，统一第十周对外口径。</li>
+    <li><strong>模糊查询增强</strong>：更新 <code>src/search/fuzzy_search.py</code>，补充类别/业务关键词同义词归一化和拼音缩写最小支持，例如“厕所 -&gt; 洗手间”“tsg -&gt; 图书馆”。</li>
+    <li><strong>第十周 CLI 演示入口扩展</strong>：扩展 <code>src/search/cli_demo.py</code>，新增 <code>--week10</code> 演示模式，覆盖全文检索、路径提示、场所/美食回归和压缩摘要展示。</li>
+    <li><strong>最小可演示 Web UI 建设</strong>：新增 <code>src/ui/demo_service.py</code>、<code>src/ui/demo_server.py</code> 和 <code>src/ui/static/</code> 页面文件，通过 <code>py -m src.ui.demo_server</code> 启动本地 Web 页面，统一展示查询、推荐、日记检索和路径规划结果。</li>
+    <li><strong>联调断言补齐</strong>：更新 <code>tests/test_search.py</code>、<code>tests/test_diary.py</code>、<code>tests/test_integration.py</code>，新增 <code>tests/test_ui_demo.py</code>，补充第十周业务入口、跨模块联调和 UI 服务层验证。</li>
+</ol>
+
+<h3>【Member C：数据、检索、压缩与测试】</h3>
+
+<p><strong>本周主要成果：</strong></p>
+<ol>
+    <li><strong>倒排索引全文检索实现</strong>：新增 <code>src/compress/fulltext.py</code>，采用轻量 <code>CJK n-gram</code> + 多字段倒排索引，支持标题、正文、目的地和标签检索。</li>
+    <li><strong>哈夫曼压缩基础版实现</strong>：新增 <code>src/compress/huffman.py</code>，完成字符频率统计、哈夫曼树构建、编码表生成、压缩与解压恢复。</li>
+    <li><strong>离线链路预留入口</strong>：新增 <code>src/compress/offline_index.py</code>，为“压缩数据上的检索”提供内存级草稿包与统一调用边界。</li>
+    <li><strong>测试覆盖扩充</strong>：新增 <code>tests/test_fulltext.py</code>、<code>tests/test_compress.py</code>，并更新 <code>tests/test_integration.py</code>，补齐全文检索、离线索引和压缩一致性验证。</li>
+    <li><strong>文档同步完成</strong>：更新 <code>docs/数据字典.md</code>，补充日记数据字段、全文检索/压缩模块口径和新增文件说明。</li>
+</ol>
+
+<hr>
+
+<h2>4. 验证结果</h2>
+
+<p>本周收口时已完成以下核验与测试：</p>
+
+<pre><code>py -3 -B tests/test_graph_load.py
+py -3 -B tests/test_routing.py
+py -3 -B tests/test_search.py
+py -3 -B tests/test_recommend.py
+py -3 -B tests/test_diary.py
+py -3 -B tests/test_integration.py
+py -3 -B tests/test_fulltext.py
+py -3 -B tests/test_compress.py
+py -3 -B tests/test_ui_demo.py</code></pre>
+
+<p><strong>验证结论：</strong></p>
+<ul>
+    <li>图加载测试通过，标准 <code>PKU</code> 分层图加载正常。</li>
+    <li>路由模块测试通过，覆盖展示字段、距离/时间策略差异、交通方式过滤和日记目的地节点可路由性。</li>
+    <li>搜索与推荐测试通过，说明场所查询、美食推荐及模糊查询增强未回退。</li>
+    <li>日记业务测试通过，说明标题查询、目的地查询、全文检索和空查询降级逻辑可用。</li>
+    <li>全文检索与压缩测试通过，说明第十周新增的倒排索引、离线索引草稿和哈夫曼 round-trip 已闭环。</li>
+    <li>集成测试通过，说明“全文检索 -&gt; 路径规划”和“压缩 -&gt; 解压校验”已经可以作为第十周统一演示链路。</li>
+    <li>UI 服务层测试通过，说明本地 Web 页面所需的地图初始数据、查询结果、日记检索结果和路径高亮数据可以稳定生成。</li>
+</ul>
+
+<hr>
+
+<h2>5. 当前限制与处理口径</h2>
+
+<ol>
+    <li><strong>全文检索仍为基础版</strong>：当前未实现复杂中文分词、TF-IDF/BM25、短语查询或布尔查询，排序以轻量覆盖度加权为主。</li>
+    <li><strong>压缩模块仍为内存级结构</strong>：当前已能完成压缩/解压和体积估算，但还不是最终的落盘压缩容器格式。</li>
+    <li><strong>离线索引暂未持久化到磁盘</strong>：<code>offline_index.py</code> 当前只提供运行时草稿包，用于验证调用边界与恢复正文逻辑。</li>
+    <li><strong>缺失 <code>destination_node_id</code> 的日记结果按展示降级处理</strong>：业务层当前不会对这类结果强制提供路径提示，避免误导联调。</li>
+    <li><strong>Web UI 当前为最小可演示版本</strong>：第十周优先覆盖主链路展示，第十一周起继续补产品骨架、站点切换、日记中心、演示模式和验收脚本。</li>
+</ol>
+
+<hr>
+
+<h2>6. 下周工作计划（第十一周）</h2>
+
+<ol>
+    <li><strong>继续优化全文检索可解释信息</strong>：评估是否补字段级命中信息、摘要生成和更稳定的评分策略。</li>
+    <li><strong>确定压缩模块后续接入边界</strong>：决定第十一周是否将压缩 / 解压从命令级演示升级为业务层正式入口。</li>
+    <li><strong>评估离线索引持久化格式</strong>：由 Member C 继续推进草稿包是否需要落盘及其序列化格式。</li>
+    <li><strong>推进 Web UI 产品化骨架</strong>：由 Member B 继续把第十周最小可演示 UI 升级为正式本地 Web 主入口，补首页结构、导航、站点选择和统一页面状态。</li>
+    <li><strong>围绕第十二周 M3 节点做统一演示收口</strong>：继续整理算法对比、测试样例、Web UI 操作路径和 CLI 兜底命令，确保后续联调和答辩可直接复用。</li>
+</ol>
+
+</body>
+</html>
