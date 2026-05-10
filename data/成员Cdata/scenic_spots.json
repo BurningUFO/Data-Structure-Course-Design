@@ -5,8 +5,18 @@
     "category": "自然景区",
     "heat": 97,
     "rating": 4.9,
-    "tags": ["世界遗产", "奇石", "云海", "温泉"],
-    "keywords": ["黄山", "迎客松", "光明顶", "莲花峰"],
+    "tags": [
+      "世界遗产",
+      "奇石",
+      "云海",
+      "温泉"
+    ],
+    "keywords": [
+      "黄山",
+      "迎客松",
+      "光明顶",
+      "莲花峰"
+    ],
     "description": "以奇松、怪石、云海、温泉、冬雪“五绝”闻名于世，素有“五岳归来不看山，黄山归来不看岳”之美誉。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -17,8 +27,18 @@
     "category": "自然景区",
     "heat": 96,
     "rating": 4.9,
-    "tags": ["世界遗产", "彩林", "瀑布", "湖泊"],
-    "keywords": ["九寨沟", "五花海", "诺日朗瀑布", "长海"],
+    "tags": [
+      "世界遗产",
+      "彩林",
+      "瀑布",
+      "湖泊"
+    ],
+    "keywords": [
+      "九寨沟",
+      "五花海",
+      "诺日朗瀑布",
+      "长海"
+    ],
     "description": "以翠海、叠瀑、彩林、雪峰、藏情“五绝”著称，水色斑斓，被誉为“童话世界”。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -29,8 +49,18 @@
     "category": "自然景区",
     "heat": 95,
     "rating": 4.8,
-    "tags": ["世界遗产", "石英砂岩", "峰林", "玻璃桥"],
-    "keywords": ["张家界", "天子山", "袁家界", "金鞭溪"],
+    "tags": [
+      "世界遗产",
+      "石英砂岩",
+      "峰林",
+      "玻璃桥"
+    ],
+    "keywords": [
+      "张家界",
+      "天子山",
+      "袁家界",
+      "金鞭溪"
+    ],
     "description": "中国第一个国家森林公园，以独特的石英砂岩峰林地貌著称，电影《阿凡达》取景地。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -41,8 +71,18 @@
     "category": "自然景区",
     "heat": 94,
     "rating": 4.8,
-    "tags": ["喀斯特", "山水", "竹筏", "摄影"],
-    "keywords": ["漓江", "桂林山水", "阳朔", "象鼻山"],
+    "tags": [
+      "喀斯特",
+      "山水",
+      "竹筏",
+      "摄影"
+    ],
+    "keywords": [
+      "漓江",
+      "桂林山水",
+      "阳朔",
+      "象鼻山"
+    ],
     "description": "典型的喀斯特地貌，山水相依，风景如画，素有“桂林山水甲天下”之称。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -53,8 +93,18 @@
     "category": "古镇景区",
     "heat": 93,
     "rating": 4.7,
-    "tags": ["江南水乡", "古镇", "世界遗产", "木心"],
-    "keywords": ["乌镇", "西栅", "东栅", "茅盾故居"],
+    "tags": [
+      "江南水乡",
+      "古镇",
+      "世界遗产",
+      "木心"
+    ],
+    "keywords": [
+      "乌镇",
+      "西栅",
+      "东栅",
+      "茅盾故居"
+    ],
     "description": "典型的江南水乡古镇，以河成街，桥街相连，是世界互联网大会永久会址。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -65,8 +115,18 @@
     "category": "历史文化景区",
     "heat": 89,
     "rating": 4.7,
-    "tags": ["世界遗产", "古城", "晋商", "票号"],
-    "keywords": ["平遥", "日升昌", "古城墙", "明清街"],
+    "tags": [
+      "世界遗产",
+      "古城",
+      "晋商",
+      "票号"
+    ],
+    "keywords": [
+      "平遥",
+      "日升昌",
+      "古城墙",
+      "明清街"
+    ],
     "description": "中国保存最为完整的古代县城之一，是明清时期晋商文化的重要发源地。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -77,8 +137,18 @@
     "category": "古镇景区",
     "heat": 92,
     "rating": 4.6,
-    "tags": ["世界遗产", "纳西族", "木府", "酒吧街"],
-    "keywords": ["丽江", "四方街", "玉龙雪山", "束河古镇"],
+    "tags": [
+      "世界遗产",
+      "纳西族",
+      "木府",
+      "酒吧街"
+    ],
+    "keywords": [
+      "丽江",
+      "四方街",
+      "玉龙雪山",
+      "束河古镇"
+    ],
     "description": "融合纳西族传统文化与山水风光的古城，以小桥流水、木质建筑和慵懒氛围著称。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -89,8 +159,18 @@
     "category": "宗教文化景区",
     "heat": 91,
     "rating": 4.8,
-    "tags": ["世界遗产", "佛教名山", "金顶", "猴子"],
-    "keywords": ["峨眉山", "金顶", "报国寺", "普贤菩萨"],
+    "tags": [
+      "世界遗产",
+      "佛教名山",
+      "金顶",
+      "猴子"
+    ],
+    "keywords": [
+      "峨眉山",
+      "金顶",
+      "报国寺",
+      "普贤菩萨"
+    ],
     "description": "中国四大佛教名山之一，地势陡峭，风景秀丽，山顶可看云海和日出。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -101,8 +181,18 @@
     "category": "自然文化景区",
     "heat": 88,
     "rating": 4.7,
-    "tags": ["世界遗产", "避暑胜地", "瀑布", "名人别墅"],
-    "keywords": ["庐山", "三叠泉", "含鄱口", "美庐"],
+    "tags": [
+      "世界遗产",
+      "避暑胜地",
+      "瀑布",
+      "名人别墅"
+    ],
+    "keywords": [
+      "庐山",
+      "三叠泉",
+      "含鄱口",
+      "美庐"
+    ],
     "description": "集山、江、湖于一体的名山，以雄、奇、险、秀闻名，历史上众多文人墨客曾游历于此。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -113,8 +203,18 @@
     "category": "自然景区",
     "heat": 87,
     "rating": 4.6,
-    "tags": ["湖泊", "岛屿", "水上运动", "巨网捕鱼"],
-    "keywords": ["千岛湖", "农夫山泉", "梅峰岛", "鱼头"],
+    "tags": [
+      "湖泊",
+      "岛屿",
+      "水上运动",
+      "巨网捕鱼"
+    ],
+    "keywords": [
+      "千岛湖",
+      "农夫山泉",
+      "梅峰岛",
+      "鱼头"
+    ],
     "description": "因湖中拥有上千座岛屿而得名，水质清澈，是知名的休闲度假和水上运动胜地。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -125,8 +225,18 @@
     "category": "海岛景区",
     "heat": 92,
     "rating": 4.7,
-    "tags": ["世界遗产", "万国建筑", "音乐之岛", "文艺"],
-    "keywords": ["鼓浪屿", "日光岩", "菽庄花园", "钢琴博物馆"],
+    "tags": [
+      "世界遗产",
+      "万国建筑",
+      "音乐之岛",
+      "文艺"
+    ],
+    "keywords": [
+      "鼓浪屿",
+      "日光岩",
+      "菽庄花园",
+      "钢琴博物馆"
+    ],
     "description": "因海浪击打礁石发出鼓声而得名，汇集多国建筑风格，岛上音乐氛围浓厚，被誉为“海上花园”。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -137,8 +247,18 @@
     "category": "宗教文化景区",
     "heat": 98,
     "rating": 4.9,
-    "tags": ["世界遗产", "藏传佛教", "宫殿", "圣地"],
-    "keywords": ["布达拉宫", "红宫", "白宫", "松赞干布"],
+    "tags": [
+      "世界遗产",
+      "藏传佛教",
+      "宫殿",
+      "圣地"
+    ],
+    "keywords": [
+      "布达拉宫",
+      "红宫",
+      "白宫",
+      "松赞干布"
+    ],
     "description": "世界上海拔最高的宫殿式建筑群，是藏传佛教圣地，也是拉萨标志性建筑，气势恢宏令人震撼。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -149,8 +269,18 @@
     "category": "自然景区",
     "heat": 95,
     "rating": 4.9,
-    "tags": ["世界遗产", "森林", "湖泊", "图瓦族"],
-    "keywords": ["喀纳斯", "月亮湾", "神仙湾", "图瓦村"],
+    "tags": [
+      "世界遗产",
+      "森林",
+      "湖泊",
+      "图瓦族"
+    ],
+    "keywords": [
+      "喀纳斯",
+      "月亮湾",
+      "神仙湾",
+      "图瓦村"
+    ],
     "description": "以喀纳斯湖为中心，集雪山、冰川、草原、森林于一体，图瓦人的世居之地，被誉为“人间净土”。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -161,8 +291,19 @@
     "category": "湖泊景区",
     "heat": 96,
     "rating": 4.8,
-    "tags": ["世界遗产", "湖泊", "园林", "文化"],
-    "keywords": ["西湖", "断桥", "雷峰塔", "苏堤", "白娘子"],
+    "tags": [
+      "世界遗产",
+      "湖泊",
+      "园林",
+      "文化"
+    ],
+    "keywords": [
+      "西湖",
+      "断桥",
+      "雷峰塔",
+      "苏堤",
+      "白娘子"
+    ],
     "description": "杭州的标志性景点，十景闻名天下，是中国最美的湖泊之一。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -173,8 +314,18 @@
     "category": "历史文化景区",
     "heat": 99,
     "rating": 4.9,
-    "tags": ["世界遗产", "明清皇宫", "古代建筑", "博物馆"],
-    "keywords": ["故宫", "紫禁城", "天安门", "太和殿"],
+    "tags": [
+      "世界遗产",
+      "明清皇宫",
+      "古代建筑",
+      "博物馆"
+    ],
+    "keywords": [
+      "故宫",
+      "紫禁城",
+      "天安门",
+      "太和殿"
+    ],
     "description": "中国明清两代的皇家宫殿，世界上规模最大、保存最完整的木质结构古建筑群，是中华文明的瑰宝。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -185,8 +336,18 @@
     "category": "历史文化景区",
     "heat": 98,
     "rating": 4.8,
-    "tags": ["世界遗产", "古代防御", "奇迹", "登高"],
-    "keywords": ["长城", "八达岭", "慕田峪", "司马台"],
+    "tags": [
+      "世界遗产",
+      "古代防御",
+      "奇迹",
+      "登高"
+    ],
+    "keywords": [
+      "长城",
+      "八达岭",
+      "慕田峪",
+      "司马台"
+    ],
     "description": "世界七大奇迹之一，是中华民族的象征，全长两万余公里，是古代劳动人民的伟大创举。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -197,8 +358,18 @@
     "category": "自然文化景区",
     "heat": 94,
     "rating": 4.8,
-    "tags": ["五岳之首", "帝王封禅", "日出", "石刻"],
-    "keywords": ["泰山", "岱庙", "玉皇顶", "十八盘"],
+    "tags": [
+      "五岳之首",
+      "帝王封禅",
+      "日出",
+      "石刻"
+    ],
+    "keywords": [
+      "泰山",
+      "岱庙",
+      "玉皇顶",
+      "十八盘"
+    ],
     "description": "五岳之首，有“天下第一山”之称，历代帝王封禅之地，以雄伟壮观的日出和摩崖石刻著称。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -209,8 +380,18 @@
     "category": "自然景区",
     "heat": 91,
     "rating": 4.8,
-    "tags": ["湖泊", "草原", "油菜花", "鸟类"],
-    "keywords": ["青海湖", "鸟岛", "沙岛", "二郎剑"],
+    "tags": [
+      "湖泊",
+      "草原",
+      "油菜花",
+      "鸟类"
+    ],
+    "keywords": [
+      "青海湖",
+      "鸟岛",
+      "沙岛",
+      "二郎剑"
+    ],
     "description": "中国最大的内陆湖、咸水湖，湖水湛蓝，周边草原辽阔，油菜花海壮观，是高原上的一颗蓝宝石。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -221,8 +402,18 @@
     "category": "文化遗产景区",
     "heat": 93,
     "rating": 4.9,
-    "tags": ["世界遗产", "壁画", "佛教艺术", "丝路"],
-    "keywords": ["莫高窟", "飞天", "壁画", "藏经洞"],
+    "tags": [
+      "世界遗产",
+      "壁画",
+      "佛教艺术",
+      "丝路"
+    ],
+    "keywords": [
+      "莫高窟",
+      "飞天",
+      "壁画",
+      "藏经洞"
+    ],
     "description": "世界文化遗产，以精美的壁画和塑像闻名，是佛教艺术宝库，记录了古代丝绸之路的辉煌文明。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -233,8 +424,18 @@
     "category": "自然景区",
     "heat": 90,
     "rating": 4.8,
-    "tags": ["高原", "雪山", "冰川", "徒步"],
-    "keywords": ["稻城亚丁", "牛奶海", "五色海", "冲古寺"],
+    "tags": [
+      "高原",
+      "雪山",
+      "冰川",
+      "徒步"
+    ],
+    "keywords": [
+      "稻城亚丁",
+      "牛奶海",
+      "五色海",
+      "冲古寺"
+    ],
     "description": "被称为“蓝色星球上最后一片净土”，三座神山环绕，高原湖泊星罗棋布，是徒步爱好者的天堂。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -245,8 +446,18 @@
     "category": "古镇景区",
     "heat": 87,
     "rating": 4.8,
-    "tags": ["世界遗产", "徽派建筑", "古镇", "水墨"],
-    "keywords": ["宏村", "月沼", "南湖", "画里乡村"],
+    "tags": [
+      "世界遗产",
+      "徽派建筑",
+      "古镇",
+      "水墨"
+    ],
+    "keywords": [
+      "宏村",
+      "月沼",
+      "南湖",
+      "画里乡村"
+    ],
     "description": "徽派建筑的典范，有“画里乡村”之称，白墙黛瓦倒映水中，是摄影和写生的绝佳去处。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -257,8 +468,18 @@
     "category": "古镇景区",
     "heat": 86,
     "rating": 4.7,
-    "tags": ["世界遗产", "徽派建筑", "古镇", "牌坊"],
-    "keywords": ["西递", "牌坊", "胡文光刺史牌坊", "绣楼"],
+    "tags": [
+      "世界遗产",
+      "徽派建筑",
+      "古镇",
+      "牌坊"
+    ],
+    "keywords": [
+      "西递",
+      "牌坊",
+      "胡文光刺史牌坊",
+      "绣楼"
+    ],
     "description": "被誉为“古民居建筑的宝库”，村落以胡文光牌坊和精美的徽派建筑著称，文化底蕴深厚。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -269,8 +490,18 @@
     "category": "自然景区",
     "heat": 89,
     "rating": 4.8,
-    "tags": ["火山", "天池", "温泉", "滑雪"],
-    "keywords": ["长白山", "天池", "北坡", "西坡"],
+    "tags": [
+      "火山",
+      "天池",
+      "温泉",
+      "滑雪"
+    ],
+    "keywords": [
+      "长白山",
+      "天池",
+      "北坡",
+      "西坡"
+    ],
     "description": "中国最深的湖泊、火山口湖，湖水湛蓝，四周十六峰环绕，冬季可滑雪，是东北第一名山。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -281,8 +512,18 @@
     "category": "园林景区",
     "heat": 88,
     "rating": 4.8,
-    "tags": ["世界遗产", "苏州园林", "假山", "水景"],
-    "keywords": ["拙政园", "远香堂", "香洲", "小飞虹"],
+    "tags": [
+      "世界遗产",
+      "苏州园林",
+      "假山",
+      "水景"
+    ],
+    "keywords": [
+      "拙政园",
+      "远香堂",
+      "香洲",
+      "小飞虹"
+    ],
     "description": "苏州古典园林的代表，以水为中心，山水萦绕，厅榭精美，是江南园林的精华之作。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -293,8 +534,18 @@
     "category": "海滨景区",
     "heat": 85,
     "rating": 4.6,
-    "tags": ["海滨", "地标", "日落", "礁石"],
-    "keywords": ["栈桥", "回澜阁", "青岛", "海滨"],
+    "tags": [
+      "海滨",
+      "地标",
+      "日落",
+      "礁石"
+    ],
+    "keywords": [
+      "栈桥",
+      "回澜阁",
+      "青岛",
+      "海滨"
+    ],
     "description": "青岛的标志性景点，建于光绪年间，全长440米，栈桥尽头的回澜阁是青岛十景之一。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -305,8 +556,18 @@
     "category": "自然景区",
     "heat": 78,
     "rating": 4.5,
-    "tags": ["极寒", "冰雪", "找北", "极光"],
-    "keywords": ["北极村", "最北点", "漠河", "泼水成冰"],
+    "tags": [
+      "极寒",
+      "冰雪",
+      "找北",
+      "极光"
+    ],
+    "keywords": [
+      "北极村",
+      "最北点",
+      "漠河",
+      "泼水成冰"
+    ],
     "description": "中国最北的村庄，有“神州北极”之称，可以体验泼水成冰、极昼极夜等独特自然现象。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -317,8 +578,18 @@
     "category": "海岛景区",
     "heat": 92,
     "rating": 4.8,
-    "tags": ["海岛", "潜水", "沙滩", "热带"],
-    "keywords": ["蜈支洲岛", "三亚", "情人桥", "观日岩"],
+    "tags": [
+      "海岛",
+      "潜水",
+      "沙滩",
+      "热带"
+    ],
+    "keywords": [
+      "蜈支洲岛",
+      "三亚",
+      "情人桥",
+      "观日岩"
+    ],
     "description": "被称为“中国的马尔代夫”，海水清澈见底，沙滩洁白细腻，是潜水和海岛度假的绝佳目的地。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -329,8 +600,18 @@
     "category": "自然景区",
     "heat": 82,
     "rating": 4.7,
-    "tags": ["喀斯特", "天坑", "溶洞", "影视取景"],
-    "keywords": ["武隆", "天生三桥", "天福官驿", "变形金刚"],
+    "tags": [
+      "喀斯特",
+      "天坑",
+      "溶洞",
+      "影视取景"
+    ],
+    "keywords": [
+      "武隆",
+      "天生三桥",
+      "天福官驿",
+      "变形金刚"
+    ],
     "description": "亚洲最大的天生桥群，由天龙桥、青龙桥、黑龙桥组成，《满城尽带黄金甲》取景地。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -341,8 +622,18 @@
     "category": "主题乐园",
     "heat": 88,
     "rating": 4.7,
-    "tags": ["冰雪", "冰雕", "灯光", "游乐"],
-    "keywords": ["冰雪大世界", "冰雕", "哈尔滨", "冰灯"],
+    "tags": [
+      "冰雪",
+      "冰雕",
+      "灯光",
+      "游乐"
+    ],
+    "keywords": [
+      "冰雪大世界",
+      "冰雕",
+      "哈尔滨",
+      "冰灯"
+    ],
     "description": "世界最大的冰雪主题乐园，用真冰真雪建造各种建筑和雕塑，夜景灯光秀美轮美奂。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -353,8 +644,18 @@
     "category": "自然景区",
     "heat": 84,
     "rating": 4.6,
-    "tags": ["喀斯特", "骑行", "山水", "溶洞"],
-    "keywords": ["阳朔", "十里画廊", "月亮山", "大榕树"],
+    "tags": [
+      "喀斯特",
+      "骑行",
+      "山水",
+      "溶洞"
+    ],
+    "keywords": [
+      "阳朔",
+      "十里画廊",
+      "月亮山",
+      "大榕树"
+    ],
     "description": "沿月亮山至金宝河畔的公路风景如画，骑行其中如穿行于中国水墨画卷之中。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -365,8 +666,18 @@
     "category": "动物园",
     "heat": 90,
     "rating": 4.8,
-    "tags": ["大熊猫", "熊猫", "基地", "萌宠"],
-    "keywords": ["大熊猫", "成都", "熊猫基地", "竹子"],
+    "tags": [
+      "大熊猫",
+      "熊猫",
+      "基地",
+      "萌宠"
+    ],
+    "keywords": [
+      "大熊猫",
+      "成都",
+      "熊猫基地",
+      "竹子"
+    ],
     "description": "世界著名的大熊猫迁地保护基地，集科研、繁育、教育为一体，可近距离观赏大熊猫。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -377,8 +688,18 @@
     "category": "文化遗产景区",
     "heat": 87,
     "rating": 4.8,
-    "tags": ["世界遗产", "石窟", "佛像", "佛教艺术"],
-    "keywords": ["龙门石窟", "卢舍那大佛", "洛阳", "奉先寺"],
+    "tags": [
+      "世界遗产",
+      "石窟",
+      "佛像",
+      "佛教艺术"
+    ],
+    "keywords": [
+      "龙门石窟",
+      "卢舍那大佛",
+      "洛阳",
+      "奉先寺"
+    ],
     "description": "中国四大石窟之一，以卢舍那大佛为代表的众多石刻造像，展现了盛唐时期的艺术巅峰。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -389,8 +710,18 @@
     "category": "自然景区",
     "heat": 83,
     "rating": 4.7,
-    "tags": ["高原", "湖泊", "森林", "草甸"],
-    "keywords": ["普达措", "香格里拉", "碧塔海", "属都湖"],
+    "tags": [
+      "高原",
+      "湖泊",
+      "森林",
+      "草甸"
+    ],
+    "keywords": [
+      "普达措",
+      "香格里拉",
+      "碧塔海",
+      "属都湖"
+    ],
     "description": "中国第一个国家公园，拥有原始森林、草甸、湖泊等多种生态系统，被誉为“高原明珠”。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -401,8 +732,18 @@
     "category": "自然景区",
     "heat": 82,
     "rating": 4.6,
-    "tags": ["世界遗产", "丹霞地貌", "地质公园", "阳元石"],
-    "keywords": ["丹霞山", "阳元石", "长老峰", "锦江"],
+    "tags": [
+      "世界遗产",
+      "丹霞地貌",
+      "地质公园",
+      "阳元石"
+    ],
+    "keywords": [
+      "丹霞山",
+      "阳元石",
+      "长老峰",
+      "锦江"
+    ],
     "description": "以丹霞地貌闻名于世，红色砂岩经长期风化剥离形成独特的“丹霞地貌”，被誉为“中国红石公园”。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -413,8 +754,18 @@
     "category": "古镇景区",
     "heat": 79,
     "rating": 4.5,
-    "tags": ["江南水乡", "古镇", "烟雨长廊", "夜景"],
-    "keywords": ["西塘", "烟雨长廊", "送子来凤桥", "永宁桥"],
+    "tags": [
+      "江南水乡",
+      "古镇",
+      "烟雨长廊",
+      "夜景"
+    ],
+    "keywords": [
+      "西塘",
+      "烟雨长廊",
+      "送子来凤桥",
+      "永宁桥"
+    ],
     "description": "被称为“活着的千年古镇”，烟雨长廊是最大特色，下雨不湿脚的独特设计令人称奇。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -425,8 +776,18 @@
     "category": "自然景区",
     "heat": 80,
     "rating": 4.8,
-    "tags": ["胡杨林", "金色", "沙漠", "摄影"],
-    "keywords": ["额济纳", "胡杨林", "一道桥", "八道桥"],
+    "tags": [
+      "胡杨林",
+      "金色",
+      "沙漠",
+      "摄影"
+    ],
+    "keywords": [
+      "额济纳",
+      "胡杨林",
+      "一道桥",
+      "八道桥"
+    ],
     "description": "世界三大胡杨林之一，三千年的胡杨林在秋天变成金色，是摄影爱好者的天堂。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -437,8 +798,18 @@
     "category": "历史文化景区",
     "heat": 81,
     "rating": 4.6,
-    "tags": ["名人故里", "鲁迅", "故居", "文化"],
-    "keywords": ["鲁迅故里", "百草园", "三味书屋", "绍兴"],
+    "tags": [
+      "名人故里",
+      "鲁迅",
+      "故居",
+      "文化"
+    ],
+    "keywords": [
+      "鲁迅故里",
+      "百草园",
+      "三味书屋",
+      "绍兴"
+    ],
     "description": "鲁迅少年时期生活的地方，包括鲁迅祖居、鲁迅故居、百草园、三味书屋等景点。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -449,8 +820,18 @@
     "category": "自然景区",
     "heat": 83,
     "rating": 4.7,
-    "tags": ["瀑布", "黄河", "壮观", "地质奇观"],
-    "keywords": ["壶口瀑布", "黄河", "陕西", "山西"],
+    "tags": [
+      "瀑布",
+      "黄河",
+      "壮观",
+      "地质奇观"
+    ],
+    "keywords": [
+      "壶口瀑布",
+      "黄河",
+      "陕西",
+      "山西"
+    ],
     "description": "中国第二大瀑布，黄河奔流至此因河床收窄形成巨大落差，形成“千里黄河一壶收”的壮观景象。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -461,8 +842,18 @@
     "category": "园林景区",
     "heat": 82,
     "rating": 4.7,
-    "tags": ["湖泊", "园林", "二十四桥", "五亭桥"],
-    "keywords": ["瘦西湖", "二十四桥", "五亭桥", "扬州"],
+    "tags": [
+      "湖泊",
+      "园林",
+      "二十四桥",
+      "五亭桥"
+    ],
+    "keywords": [
+      "瘦西湖",
+      "二十四桥",
+      "五亭桥",
+      "扬州"
+    ],
     "description": "扬州最著名的景点，湖水如带，以二十四桥、五亭桥、白塔等景点著称。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -473,8 +864,18 @@
     "category": "海岛景区",
     "heat": 84,
     "rating": 4.7,
-    "tags": ["火山岛", "海岛", "海鲜", "教堂"],
-    "keywords": ["涠洲岛", "鳄鱼山", "五彩滩", "天主教堂"],
+    "tags": [
+      "火山岛",
+      "海岛",
+      "海鲜",
+      "教堂"
+    ],
+    "keywords": [
+      "涠洲岛",
+      "鳄鱼山",
+      "五彩滩",
+      "天主教堂"
+    ],
     "description": "中国最大、最年轻的火山岛，海蚀地貌丰富，海水清澈，是北部湾的海上明珠。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -485,8 +886,18 @@
     "category": "自然景区",
     "heat": 78,
     "rating": 4.7,
-    "tags": ["火山", "天池", "森林", "温泉"],
-    "keywords": ["阿尔山", "驼峰天池", "不冻河", "石塘林"],
+    "tags": [
+      "火山",
+      "天池",
+      "森林",
+      "温泉"
+    ],
+    "keywords": [
+      "阿尔山",
+      "驼峰天池",
+      "不冻河",
+      "石塘林"
+    ],
     "description": "大兴安岭深处的秘境，拥有天池、熔岩地貌、森林草原等多种景观，是避暑和赏秋的绝佳之地。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -497,8 +908,18 @@
     "category": "古镇景区",
     "heat": 77,
     "rating": 4.6,
-    "tags": ["古镇", "江南水乡", "中西合璧", "富贾之乡"],
-    "keywords": ["南浔", "小莲庄", "百间楼", "刘氏梯号"],
+    "tags": [
+      "古镇",
+      "江南水乡",
+      "中西合璧",
+      "富贾之乡"
+    ],
+    "keywords": [
+      "南浔",
+      "小莲庄",
+      "百间楼",
+      "刘氏梯号"
+    ],
     "description": "江南六大古镇之一，以富商巨贾的私家园林和中西合璧的建筑风格著称。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -509,8 +930,18 @@
     "category": "宗教文化景区",
     "heat": 88,
     "rating": 4.9,
-    "tags": ["藏传佛教", "转经", "拉萨", "古城"],
-    "keywords": ["八廓街", "大昭寺", "转经", "玛吉阿米"],
+    "tags": [
+      "藏传佛教",
+      "转经",
+      "拉萨",
+      "古城"
+    ],
+    "keywords": [
+      "八廓街",
+      "大昭寺",
+      "转经",
+      "玛吉阿米"
+    ],
     "description": "拉萨最古老的街道，是藏民转经的必经之路，两旁商铺林立，充满浓郁的藏族风情。",
     "map_node_id": null,
     "_note": "全国景区，暂未纳入校园图，距离链路不可用"
@@ -521,8 +952,18 @@
     "category": "校园建筑",
     "heat": 85,
     "rating": 4.8,
-    "tags": ["学习", "阅览", "校园", "地标"],
-    "keywords": ["图书馆", "阅览室", "自习", "藏书"],
+    "tags": [
+      "学习",
+      "阅览",
+      "校园",
+      "地标"
+    ],
+    "keywords": [
+      "图书馆",
+      "阅览室",
+      "自习",
+      "藏书"
+    ],
     "description": "校园核心建筑，提供图书借阅、自习阅览等服务，是师生学习的主要场所。",
     "map_node_id": "library",
     "_note": "已映射到校园图节点，支持真实距离计算"
@@ -533,8 +974,17 @@
     "category": "校园建筑",
     "heat": 80,
     "rating": 4.5,
-    "tags": ["教学", "课室", "校园"],
-    "keywords": ["教学楼", "课室", "上课", "教室"],
+    "tags": [
+      "教学",
+      "课室",
+      "校园"
+    ],
+    "keywords": [
+      "教学楼",
+      "课室",
+      "上课",
+      "教室"
+    ],
     "description": "校园主要教学场所，承担大量日常课程教学工作。",
     "map_node_id": "teaching_building_1",
     "_note": "已映射到校园图节点，支持真实距离计算"
@@ -545,8 +995,16 @@
     "category": "校园设施",
     "heat": 75,
     "rating": 4.3,
-    "tags": ["住宿", "宿舍", "校园生活"],
-    "keywords": ["宿舍", "住宿", "学生公寓"],
+    "tags": [
+      "住宿",
+      "宿舍",
+      "校园生活"
+    ],
+    "keywords": [
+      "宿舍",
+      "住宿",
+      "学生公寓"
+    ],
     "description": "学生居住生活区域，提供住宿和基本生活设施。",
     "map_node_id": "dormitory_1",
     "_note": "已映射到校园图节点，支持真实距离计算"
@@ -557,8 +1015,17 @@
     "category": "校园设施",
     "heat": 72,
     "rating": 4.2,
-    "tags": ["购物", "便利", "日用品"],
-    "keywords": ["便利店", "超市", "购物", "日用"],
+    "tags": [
+      "购物",
+      "便利",
+      "日用品"
+    ],
+    "keywords": [
+      "便利店",
+      "超市",
+      "购物",
+      "日用"
+    ],
     "description": "校园内提供日常生活用品购买服务的便利店，方便师生日常采购。",
     "map_node_id": "convenience_store",
     "_note": "已映射到校园图节点，支持真实距离计算"
@@ -569,10 +1036,3698 @@
     "category": "校园出入口",
     "heat": 70,
     "rating": 4.0,
-    "tags": ["出入口", "校门", "地标"],
-    "keywords": ["北门", "校门", "入口"],
+    "tags": [
+      "出入口",
+      "校门",
+      "地标"
+    ],
+    "keywords": [
+      "北门",
+      "校门",
+      "入口"
+    ],
     "description": "校园北侧主要出入口，是师生进出校园的重要通道。",
     "map_node_id": "gate_north",
     "_note": "已映射到校园图节点，支持真实距离计算"
+  },
+  {
+    "id": "ext_poi_001",
+    "name": "Beijing Course Sample 001",
+    "category": "course_nature",
+    "heat": 73,
+    "rating": 4.2,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Beijing"
+    ],
+    "keywords": [
+      "Beijing Course Sample 001",
+      "Beijing",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_002",
+    "name": "Shanghai Course Sample 002",
+    "category": "course_history",
+    "heat": 74,
+    "rating": 4.3,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Shanghai"
+    ],
+    "keywords": [
+      "Shanghai Course Sample 002",
+      "Shanghai",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_003",
+    "name": "Tianjin Course Sample 003",
+    "category": "course_old_town",
+    "heat": 75,
+    "rating": 4.4,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Tianjin"
+    ],
+    "keywords": [
+      "Tianjin Course Sample 003",
+      "Tianjin",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_004",
+    "name": "Chongqing Course Sample 004",
+    "category": "course_lake",
+    "heat": 76,
+    "rating": 4.5,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Chongqing"
+    ],
+    "keywords": [
+      "Chongqing Course Sample 004",
+      "Chongqing",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_005",
+    "name": "Hebei Course Sample 005",
+    "category": "course_garden",
+    "heat": 77,
+    "rating": 4.6,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Hebei"
+    ],
+    "keywords": [
+      "Hebei Course Sample 005",
+      "Hebei",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_006",
+    "name": "Shanxi Course Sample 006",
+    "category": "course_coast",
+    "heat": 78,
+    "rating": 4.7,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Shanxi"
+    ],
+    "keywords": [
+      "Shanxi Course Sample 006",
+      "Shanxi",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_007",
+    "name": "Liaoning Course Sample 007",
+    "category": "course_heritage",
+    "heat": 79,
+    "rating": 4.8,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Liaoning"
+    ],
+    "keywords": [
+      "Liaoning Course Sample 007",
+      "Liaoning",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_008",
+    "name": "Jilin Course Sample 008",
+    "category": "course_theme_park",
+    "heat": 80,
+    "rating": 4.9,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Jilin"
+    ],
+    "keywords": [
+      "Jilin Course Sample 008",
+      "Jilin",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_009",
+    "name": "Heilongjiang Course Sample 009",
+    "category": "course_campus_building",
+    "heat": 81,
+    "rating": 4.1,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Heilongjiang"
+    ],
+    "keywords": [
+      "Heilongjiang Course Sample 009",
+      "Heilongjiang",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_010",
+    "name": "Jiangsu Course Sample 010",
+    "category": "course_campus_facility",
+    "heat": 82,
+    "rating": 4.2,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Jiangsu"
+    ],
+    "keywords": [
+      "Jiangsu Course Sample 010",
+      "Jiangsu",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_011",
+    "name": "Zhejiang Course Sample 011",
+    "category": "course_nature",
+    "heat": 83,
+    "rating": 4.3,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Zhejiang"
+    ],
+    "keywords": [
+      "Zhejiang Course Sample 011",
+      "Zhejiang",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_012",
+    "name": "Anhui Course Sample 012",
+    "category": "course_history",
+    "heat": 84,
+    "rating": 4.4,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Anhui"
+    ],
+    "keywords": [
+      "Anhui Course Sample 012",
+      "Anhui",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_013",
+    "name": "Fujian Course Sample 013",
+    "category": "course_old_town",
+    "heat": 85,
+    "rating": 4.5,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Fujian"
+    ],
+    "keywords": [
+      "Fujian Course Sample 013",
+      "Fujian",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_014",
+    "name": "Jiangxi Course Sample 014",
+    "category": "course_lake",
+    "heat": 86,
+    "rating": 4.6,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Jiangxi"
+    ],
+    "keywords": [
+      "Jiangxi Course Sample 014",
+      "Jiangxi",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_015",
+    "name": "Shandong Course Sample 015",
+    "category": "course_garden",
+    "heat": 87,
+    "rating": 4.7,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Shandong"
+    ],
+    "keywords": [
+      "Shandong Course Sample 015",
+      "Shandong",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_016",
+    "name": "Henan Course Sample 016",
+    "category": "course_coast",
+    "heat": 88,
+    "rating": 4.8,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Henan"
+    ],
+    "keywords": [
+      "Henan Course Sample 016",
+      "Henan",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_017",
+    "name": "Hubei Course Sample 017",
+    "category": "course_heritage",
+    "heat": 89,
+    "rating": 4.9,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Hubei"
+    ],
+    "keywords": [
+      "Hubei Course Sample 017",
+      "Hubei",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_018",
+    "name": "Hunan Course Sample 018",
+    "category": "course_theme_park",
+    "heat": 90,
+    "rating": 4.1,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Hunan"
+    ],
+    "keywords": [
+      "Hunan Course Sample 018",
+      "Hunan",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_019",
+    "name": "Guangdong Course Sample 019",
+    "category": "course_campus_building",
+    "heat": 91,
+    "rating": 4.2,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Guangdong"
+    ],
+    "keywords": [
+      "Guangdong Course Sample 019",
+      "Guangdong",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_020",
+    "name": "Hainan Course Sample 020",
+    "category": "course_campus_facility",
+    "heat": 92,
+    "rating": 4.3,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Hainan"
+    ],
+    "keywords": [
+      "Hainan Course Sample 020",
+      "Hainan",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_021",
+    "name": "Sichuan Course Sample 021",
+    "category": "course_nature",
+    "heat": 93,
+    "rating": 4.4,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Sichuan"
+    ],
+    "keywords": [
+      "Sichuan Course Sample 021",
+      "Sichuan",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_022",
+    "name": "Guizhou Course Sample 022",
+    "category": "course_history",
+    "heat": 94,
+    "rating": 4.5,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Guizhou"
+    ],
+    "keywords": [
+      "Guizhou Course Sample 022",
+      "Guizhou",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_023",
+    "name": "Yunnan Course Sample 023",
+    "category": "course_old_town",
+    "heat": 95,
+    "rating": 4.6,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Yunnan"
+    ],
+    "keywords": [
+      "Yunnan Course Sample 023",
+      "Yunnan",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_024",
+    "name": "Shaanxi Course Sample 024",
+    "category": "course_lake",
+    "heat": 96,
+    "rating": 4.7,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Shaanxi"
+    ],
+    "keywords": [
+      "Shaanxi Course Sample 024",
+      "Shaanxi",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_025",
+    "name": "Gansu Course Sample 025",
+    "category": "course_garden",
+    "heat": 97,
+    "rating": 4.8,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Gansu"
+    ],
+    "keywords": [
+      "Gansu Course Sample 025",
+      "Gansu",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_026",
+    "name": "Qinghai Course Sample 026",
+    "category": "course_coast",
+    "heat": 98,
+    "rating": 4.9,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Qinghai"
+    ],
+    "keywords": [
+      "Qinghai Course Sample 026",
+      "Qinghai",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_027",
+    "name": "InnerMongolia Course Sample 027",
+    "category": "course_heritage",
+    "heat": 72,
+    "rating": 4.1,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "InnerMongolia"
+    ],
+    "keywords": [
+      "InnerMongolia Course Sample 027",
+      "InnerMongolia",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_028",
+    "name": "Guangxi Course Sample 028",
+    "category": "course_theme_park",
+    "heat": 73,
+    "rating": 4.2,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Guangxi"
+    ],
+    "keywords": [
+      "Guangxi Course Sample 028",
+      "Guangxi",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_029",
+    "name": "Ningxia Course Sample 029",
+    "category": "course_campus_building",
+    "heat": 74,
+    "rating": 4.3,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Ningxia"
+    ],
+    "keywords": [
+      "Ningxia Course Sample 029",
+      "Ningxia",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_030",
+    "name": "Xinjiang Course Sample 030",
+    "category": "course_campus_facility",
+    "heat": 75,
+    "rating": 4.4,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Xinjiang"
+    ],
+    "keywords": [
+      "Xinjiang Course Sample 030",
+      "Xinjiang",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_031",
+    "name": "Xizang Course Sample 031",
+    "category": "course_nature",
+    "heat": 76,
+    "rating": 4.5,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Xizang"
+    ],
+    "keywords": [
+      "Xizang Course Sample 031",
+      "Xizang",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_032",
+    "name": "HongKong Course Sample 032",
+    "category": "course_history",
+    "heat": 77,
+    "rating": 4.6,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "HongKong"
+    ],
+    "keywords": [
+      "HongKong Course Sample 032",
+      "HongKong",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_033",
+    "name": "Macao Course Sample 033",
+    "category": "course_old_town",
+    "heat": 78,
+    "rating": 4.7,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Macao"
+    ],
+    "keywords": [
+      "Macao Course Sample 033",
+      "Macao",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_034",
+    "name": "Taiwan Course Sample 034",
+    "category": "course_lake",
+    "heat": 79,
+    "rating": 4.8,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Taiwan"
+    ],
+    "keywords": [
+      "Taiwan Course Sample 034",
+      "Taiwan",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_035",
+    "name": "Suzhou Course Sample 035",
+    "category": "course_garden",
+    "heat": 80,
+    "rating": 4.9,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Suzhou"
+    ],
+    "keywords": [
+      "Suzhou Course Sample 035",
+      "Suzhou",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_036",
+    "name": "Hangzhou Course Sample 036",
+    "category": "course_coast",
+    "heat": 81,
+    "rating": 4.1,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Hangzhou"
+    ],
+    "keywords": [
+      "Hangzhou Course Sample 036",
+      "Hangzhou",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_037",
+    "name": "Nanjing Course Sample 037",
+    "category": "course_heritage",
+    "heat": 82,
+    "rating": 4.2,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Nanjing"
+    ],
+    "keywords": [
+      "Nanjing Course Sample 037",
+      "Nanjing",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_038",
+    "name": "Chengdu Course Sample 038",
+    "category": "course_theme_park",
+    "heat": 83,
+    "rating": 4.3,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Chengdu"
+    ],
+    "keywords": [
+      "Chengdu Course Sample 038",
+      "Chengdu",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_039",
+    "name": "Xian Course Sample 039",
+    "category": "course_campus_building",
+    "heat": 84,
+    "rating": 4.4,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Xian"
+    ],
+    "keywords": [
+      "Xian Course Sample 039",
+      "Xian",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_040",
+    "name": "Changsha Course Sample 040",
+    "category": "course_campus_facility",
+    "heat": 85,
+    "rating": 4.5,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Changsha"
+    ],
+    "keywords": [
+      "Changsha Course Sample 040",
+      "Changsha",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_041",
+    "name": "Beijing Course Sample 041",
+    "category": "course_nature",
+    "heat": 86,
+    "rating": 4.6,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Beijing"
+    ],
+    "keywords": [
+      "Beijing Course Sample 041",
+      "Beijing",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_042",
+    "name": "Shanghai Course Sample 042",
+    "category": "course_history",
+    "heat": 87,
+    "rating": 4.7,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Shanghai"
+    ],
+    "keywords": [
+      "Shanghai Course Sample 042",
+      "Shanghai",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_043",
+    "name": "Tianjin Course Sample 043",
+    "category": "course_old_town",
+    "heat": 88,
+    "rating": 4.8,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Tianjin"
+    ],
+    "keywords": [
+      "Tianjin Course Sample 043",
+      "Tianjin",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_044",
+    "name": "Chongqing Course Sample 044",
+    "category": "course_lake",
+    "heat": 89,
+    "rating": 4.9,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Chongqing"
+    ],
+    "keywords": [
+      "Chongqing Course Sample 044",
+      "Chongqing",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_045",
+    "name": "Hebei Course Sample 045",
+    "category": "course_garden",
+    "heat": 90,
+    "rating": 4.1,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Hebei"
+    ],
+    "keywords": [
+      "Hebei Course Sample 045",
+      "Hebei",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_046",
+    "name": "Shanxi Course Sample 046",
+    "category": "course_coast",
+    "heat": 91,
+    "rating": 4.2,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Shanxi"
+    ],
+    "keywords": [
+      "Shanxi Course Sample 046",
+      "Shanxi",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_047",
+    "name": "Liaoning Course Sample 047",
+    "category": "course_heritage",
+    "heat": 92,
+    "rating": 4.3,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Liaoning"
+    ],
+    "keywords": [
+      "Liaoning Course Sample 047",
+      "Liaoning",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_048",
+    "name": "Jilin Course Sample 048",
+    "category": "course_theme_park",
+    "heat": 93,
+    "rating": 4.4,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Jilin"
+    ],
+    "keywords": [
+      "Jilin Course Sample 048",
+      "Jilin",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_049",
+    "name": "Heilongjiang Course Sample 049",
+    "category": "course_campus_building",
+    "heat": 94,
+    "rating": 4.5,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Heilongjiang"
+    ],
+    "keywords": [
+      "Heilongjiang Course Sample 049",
+      "Heilongjiang",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_050",
+    "name": "Jiangsu Course Sample 050",
+    "category": "course_campus_facility",
+    "heat": 95,
+    "rating": 4.6,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Jiangsu"
+    ],
+    "keywords": [
+      "Jiangsu Course Sample 050",
+      "Jiangsu",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_051",
+    "name": "Zhejiang Course Sample 051",
+    "category": "course_nature",
+    "heat": 96,
+    "rating": 4.7,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Zhejiang"
+    ],
+    "keywords": [
+      "Zhejiang Course Sample 051",
+      "Zhejiang",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_052",
+    "name": "Anhui Course Sample 052",
+    "category": "course_history",
+    "heat": 97,
+    "rating": 4.8,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Anhui"
+    ],
+    "keywords": [
+      "Anhui Course Sample 052",
+      "Anhui",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_053",
+    "name": "Fujian Course Sample 053",
+    "category": "course_old_town",
+    "heat": 98,
+    "rating": 4.9,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Fujian"
+    ],
+    "keywords": [
+      "Fujian Course Sample 053",
+      "Fujian",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_054",
+    "name": "Jiangxi Course Sample 054",
+    "category": "course_lake",
+    "heat": 72,
+    "rating": 4.1,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Jiangxi"
+    ],
+    "keywords": [
+      "Jiangxi Course Sample 054",
+      "Jiangxi",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_055",
+    "name": "Shandong Course Sample 055",
+    "category": "course_garden",
+    "heat": 73,
+    "rating": 4.2,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Shandong"
+    ],
+    "keywords": [
+      "Shandong Course Sample 055",
+      "Shandong",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_056",
+    "name": "Henan Course Sample 056",
+    "category": "course_coast",
+    "heat": 74,
+    "rating": 4.3,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Henan"
+    ],
+    "keywords": [
+      "Henan Course Sample 056",
+      "Henan",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_057",
+    "name": "Hubei Course Sample 057",
+    "category": "course_heritage",
+    "heat": 75,
+    "rating": 4.4,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Hubei"
+    ],
+    "keywords": [
+      "Hubei Course Sample 057",
+      "Hubei",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_058",
+    "name": "Hunan Course Sample 058",
+    "category": "course_theme_park",
+    "heat": 76,
+    "rating": 4.5,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Hunan"
+    ],
+    "keywords": [
+      "Hunan Course Sample 058",
+      "Hunan",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_059",
+    "name": "Guangdong Course Sample 059",
+    "category": "course_campus_building",
+    "heat": 77,
+    "rating": 4.6,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Guangdong"
+    ],
+    "keywords": [
+      "Guangdong Course Sample 059",
+      "Guangdong",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_060",
+    "name": "Hainan Course Sample 060",
+    "category": "course_campus_facility",
+    "heat": 78,
+    "rating": 4.7,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Hainan"
+    ],
+    "keywords": [
+      "Hainan Course Sample 060",
+      "Hainan",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_061",
+    "name": "Sichuan Course Sample 061",
+    "category": "course_nature",
+    "heat": 79,
+    "rating": 4.8,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Sichuan"
+    ],
+    "keywords": [
+      "Sichuan Course Sample 061",
+      "Sichuan",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_062",
+    "name": "Guizhou Course Sample 062",
+    "category": "course_history",
+    "heat": 80,
+    "rating": 4.9,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Guizhou"
+    ],
+    "keywords": [
+      "Guizhou Course Sample 062",
+      "Guizhou",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_063",
+    "name": "Yunnan Course Sample 063",
+    "category": "course_old_town",
+    "heat": 81,
+    "rating": 4.1,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Yunnan"
+    ],
+    "keywords": [
+      "Yunnan Course Sample 063",
+      "Yunnan",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_064",
+    "name": "Shaanxi Course Sample 064",
+    "category": "course_lake",
+    "heat": 82,
+    "rating": 4.2,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Shaanxi"
+    ],
+    "keywords": [
+      "Shaanxi Course Sample 064",
+      "Shaanxi",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_065",
+    "name": "Gansu Course Sample 065",
+    "category": "course_garden",
+    "heat": 83,
+    "rating": 4.3,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Gansu"
+    ],
+    "keywords": [
+      "Gansu Course Sample 065",
+      "Gansu",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_066",
+    "name": "Qinghai Course Sample 066",
+    "category": "course_coast",
+    "heat": 84,
+    "rating": 4.4,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Qinghai"
+    ],
+    "keywords": [
+      "Qinghai Course Sample 066",
+      "Qinghai",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_067",
+    "name": "InnerMongolia Course Sample 067",
+    "category": "course_heritage",
+    "heat": 85,
+    "rating": 4.5,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "InnerMongolia"
+    ],
+    "keywords": [
+      "InnerMongolia Course Sample 067",
+      "InnerMongolia",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_068",
+    "name": "Guangxi Course Sample 068",
+    "category": "course_theme_park",
+    "heat": 86,
+    "rating": 4.6,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Guangxi"
+    ],
+    "keywords": [
+      "Guangxi Course Sample 068",
+      "Guangxi",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_069",
+    "name": "Ningxia Course Sample 069",
+    "category": "course_campus_building",
+    "heat": 87,
+    "rating": 4.7,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Ningxia"
+    ],
+    "keywords": [
+      "Ningxia Course Sample 069",
+      "Ningxia",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_070",
+    "name": "Xinjiang Course Sample 070",
+    "category": "course_campus_facility",
+    "heat": 88,
+    "rating": 4.8,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Xinjiang"
+    ],
+    "keywords": [
+      "Xinjiang Course Sample 070",
+      "Xinjiang",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_071",
+    "name": "Xizang Course Sample 071",
+    "category": "course_nature",
+    "heat": 89,
+    "rating": 4.9,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Xizang"
+    ],
+    "keywords": [
+      "Xizang Course Sample 071",
+      "Xizang",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_072",
+    "name": "HongKong Course Sample 072",
+    "category": "course_history",
+    "heat": 90,
+    "rating": 4.1,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "HongKong"
+    ],
+    "keywords": [
+      "HongKong Course Sample 072",
+      "HongKong",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_073",
+    "name": "Macao Course Sample 073",
+    "category": "course_old_town",
+    "heat": 91,
+    "rating": 4.2,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Macao"
+    ],
+    "keywords": [
+      "Macao Course Sample 073",
+      "Macao",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_074",
+    "name": "Taiwan Course Sample 074",
+    "category": "course_lake",
+    "heat": 92,
+    "rating": 4.3,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Taiwan"
+    ],
+    "keywords": [
+      "Taiwan Course Sample 074",
+      "Taiwan",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_075",
+    "name": "Suzhou Course Sample 075",
+    "category": "course_garden",
+    "heat": 93,
+    "rating": 4.4,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Suzhou"
+    ],
+    "keywords": [
+      "Suzhou Course Sample 075",
+      "Suzhou",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_076",
+    "name": "Hangzhou Course Sample 076",
+    "category": "course_coast",
+    "heat": 94,
+    "rating": 4.5,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Hangzhou"
+    ],
+    "keywords": [
+      "Hangzhou Course Sample 076",
+      "Hangzhou",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_077",
+    "name": "Nanjing Course Sample 077",
+    "category": "course_heritage",
+    "heat": 95,
+    "rating": 4.6,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Nanjing"
+    ],
+    "keywords": [
+      "Nanjing Course Sample 077",
+      "Nanjing",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_078",
+    "name": "Chengdu Course Sample 078",
+    "category": "course_theme_park",
+    "heat": 96,
+    "rating": 4.7,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Chengdu"
+    ],
+    "keywords": [
+      "Chengdu Course Sample 078",
+      "Chengdu",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_079",
+    "name": "Xian Course Sample 079",
+    "category": "course_campus_building",
+    "heat": 97,
+    "rating": 4.8,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Xian"
+    ],
+    "keywords": [
+      "Xian Course Sample 079",
+      "Xian",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_080",
+    "name": "Changsha Course Sample 080",
+    "category": "course_campus_facility",
+    "heat": 98,
+    "rating": 4.9,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Changsha"
+    ],
+    "keywords": [
+      "Changsha Course Sample 080",
+      "Changsha",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_081",
+    "name": "Beijing Course Sample 081",
+    "category": "course_nature",
+    "heat": 72,
+    "rating": 4.1,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Beijing"
+    ],
+    "keywords": [
+      "Beijing Course Sample 081",
+      "Beijing",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_082",
+    "name": "Shanghai Course Sample 082",
+    "category": "course_history",
+    "heat": 73,
+    "rating": 4.2,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Shanghai"
+    ],
+    "keywords": [
+      "Shanghai Course Sample 082",
+      "Shanghai",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_083",
+    "name": "Tianjin Course Sample 083",
+    "category": "course_old_town",
+    "heat": 74,
+    "rating": 4.3,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Tianjin"
+    ],
+    "keywords": [
+      "Tianjin Course Sample 083",
+      "Tianjin",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_084",
+    "name": "Chongqing Course Sample 084",
+    "category": "course_lake",
+    "heat": 75,
+    "rating": 4.4,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Chongqing"
+    ],
+    "keywords": [
+      "Chongqing Course Sample 084",
+      "Chongqing",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_085",
+    "name": "Hebei Course Sample 085",
+    "category": "course_garden",
+    "heat": 76,
+    "rating": 4.5,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Hebei"
+    ],
+    "keywords": [
+      "Hebei Course Sample 085",
+      "Hebei",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_086",
+    "name": "Shanxi Course Sample 086",
+    "category": "course_coast",
+    "heat": 77,
+    "rating": 4.6,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Shanxi"
+    ],
+    "keywords": [
+      "Shanxi Course Sample 086",
+      "Shanxi",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_087",
+    "name": "Liaoning Course Sample 087",
+    "category": "course_heritage",
+    "heat": 78,
+    "rating": 4.7,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Liaoning"
+    ],
+    "keywords": [
+      "Liaoning Course Sample 087",
+      "Liaoning",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_088",
+    "name": "Jilin Course Sample 088",
+    "category": "course_theme_park",
+    "heat": 79,
+    "rating": 4.8,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Jilin"
+    ],
+    "keywords": [
+      "Jilin Course Sample 088",
+      "Jilin",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_089",
+    "name": "Heilongjiang Course Sample 089",
+    "category": "course_campus_building",
+    "heat": 80,
+    "rating": 4.9,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Heilongjiang"
+    ],
+    "keywords": [
+      "Heilongjiang Course Sample 089",
+      "Heilongjiang",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_090",
+    "name": "Jiangsu Course Sample 090",
+    "category": "course_campus_facility",
+    "heat": 81,
+    "rating": 4.1,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Jiangsu"
+    ],
+    "keywords": [
+      "Jiangsu Course Sample 090",
+      "Jiangsu",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_091",
+    "name": "Zhejiang Course Sample 091",
+    "category": "course_nature",
+    "heat": 82,
+    "rating": 4.2,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Zhejiang"
+    ],
+    "keywords": [
+      "Zhejiang Course Sample 091",
+      "Zhejiang",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_092",
+    "name": "Anhui Course Sample 092",
+    "category": "course_history",
+    "heat": 83,
+    "rating": 4.3,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Anhui"
+    ],
+    "keywords": [
+      "Anhui Course Sample 092",
+      "Anhui",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_093",
+    "name": "Fujian Course Sample 093",
+    "category": "course_old_town",
+    "heat": 84,
+    "rating": 4.4,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Fujian"
+    ],
+    "keywords": [
+      "Fujian Course Sample 093",
+      "Fujian",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_094",
+    "name": "Jiangxi Course Sample 094",
+    "category": "course_lake",
+    "heat": 85,
+    "rating": 4.5,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Jiangxi"
+    ],
+    "keywords": [
+      "Jiangxi Course Sample 094",
+      "Jiangxi",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_095",
+    "name": "Shandong Course Sample 095",
+    "category": "course_garden",
+    "heat": 86,
+    "rating": 4.6,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Shandong"
+    ],
+    "keywords": [
+      "Shandong Course Sample 095",
+      "Shandong",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_096",
+    "name": "Henan Course Sample 096",
+    "category": "course_coast",
+    "heat": 87,
+    "rating": 4.7,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Henan"
+    ],
+    "keywords": [
+      "Henan Course Sample 096",
+      "Henan",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_097",
+    "name": "Hubei Course Sample 097",
+    "category": "course_heritage",
+    "heat": 88,
+    "rating": 4.8,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Hubei"
+    ],
+    "keywords": [
+      "Hubei Course Sample 097",
+      "Hubei",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_098",
+    "name": "Hunan Course Sample 098",
+    "category": "course_theme_park",
+    "heat": 89,
+    "rating": 4.9,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Hunan"
+    ],
+    "keywords": [
+      "Hunan Course Sample 098",
+      "Hunan",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_099",
+    "name": "Guangdong Course Sample 099",
+    "category": "course_campus_building",
+    "heat": 90,
+    "rating": 4.1,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Guangdong"
+    ],
+    "keywords": [
+      "Guangdong Course Sample 099",
+      "Guangdong",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_100",
+    "name": "Hainan Course Sample 100",
+    "category": "course_campus_facility",
+    "heat": 91,
+    "rating": 4.2,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Hainan"
+    ],
+    "keywords": [
+      "Hainan Course Sample 100",
+      "Hainan",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_101",
+    "name": "Sichuan Course Sample 101",
+    "category": "course_nature",
+    "heat": 92,
+    "rating": 4.3,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Sichuan"
+    ],
+    "keywords": [
+      "Sichuan Course Sample 101",
+      "Sichuan",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_102",
+    "name": "Guizhou Course Sample 102",
+    "category": "course_history",
+    "heat": 93,
+    "rating": 4.4,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Guizhou"
+    ],
+    "keywords": [
+      "Guizhou Course Sample 102",
+      "Guizhou",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_103",
+    "name": "Yunnan Course Sample 103",
+    "category": "course_old_town",
+    "heat": 94,
+    "rating": 4.5,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Yunnan"
+    ],
+    "keywords": [
+      "Yunnan Course Sample 103",
+      "Yunnan",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_104",
+    "name": "Shaanxi Course Sample 104",
+    "category": "course_lake",
+    "heat": 95,
+    "rating": 4.6,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Shaanxi"
+    ],
+    "keywords": [
+      "Shaanxi Course Sample 104",
+      "Shaanxi",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_105",
+    "name": "Gansu Course Sample 105",
+    "category": "course_garden",
+    "heat": 96,
+    "rating": 4.7,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Gansu"
+    ],
+    "keywords": [
+      "Gansu Course Sample 105",
+      "Gansu",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_106",
+    "name": "Qinghai Course Sample 106",
+    "category": "course_coast",
+    "heat": 97,
+    "rating": 4.8,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Qinghai"
+    ],
+    "keywords": [
+      "Qinghai Course Sample 106",
+      "Qinghai",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_107",
+    "name": "InnerMongolia Course Sample 107",
+    "category": "course_heritage",
+    "heat": 98,
+    "rating": 4.9,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "InnerMongolia"
+    ],
+    "keywords": [
+      "InnerMongolia Course Sample 107",
+      "InnerMongolia",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_108",
+    "name": "Guangxi Course Sample 108",
+    "category": "course_theme_park",
+    "heat": 72,
+    "rating": 4.1,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Guangxi"
+    ],
+    "keywords": [
+      "Guangxi Course Sample 108",
+      "Guangxi",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_109",
+    "name": "Ningxia Course Sample 109",
+    "category": "course_campus_building",
+    "heat": 73,
+    "rating": 4.2,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Ningxia"
+    ],
+    "keywords": [
+      "Ningxia Course Sample 109",
+      "Ningxia",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_110",
+    "name": "Xinjiang Course Sample 110",
+    "category": "course_campus_facility",
+    "heat": 74,
+    "rating": 4.3,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Xinjiang"
+    ],
+    "keywords": [
+      "Xinjiang Course Sample 110",
+      "Xinjiang",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_111",
+    "name": "Xizang Course Sample 111",
+    "category": "course_nature",
+    "heat": 75,
+    "rating": 4.4,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Xizang"
+    ],
+    "keywords": [
+      "Xizang Course Sample 111",
+      "Xizang",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_112",
+    "name": "HongKong Course Sample 112",
+    "category": "course_history",
+    "heat": 76,
+    "rating": 4.5,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "HongKong"
+    ],
+    "keywords": [
+      "HongKong Course Sample 112",
+      "HongKong",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_113",
+    "name": "Macao Course Sample 113",
+    "category": "course_old_town",
+    "heat": 77,
+    "rating": 4.6,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Macao"
+    ],
+    "keywords": [
+      "Macao Course Sample 113",
+      "Macao",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_114",
+    "name": "Taiwan Course Sample 114",
+    "category": "course_lake",
+    "heat": 78,
+    "rating": 4.7,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Taiwan"
+    ],
+    "keywords": [
+      "Taiwan Course Sample 114",
+      "Taiwan",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_115",
+    "name": "Suzhou Course Sample 115",
+    "category": "course_garden",
+    "heat": 79,
+    "rating": 4.8,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Suzhou"
+    ],
+    "keywords": [
+      "Suzhou Course Sample 115",
+      "Suzhou",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_116",
+    "name": "Hangzhou Course Sample 116",
+    "category": "course_coast",
+    "heat": 80,
+    "rating": 4.9,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Hangzhou"
+    ],
+    "keywords": [
+      "Hangzhou Course Sample 116",
+      "Hangzhou",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_117",
+    "name": "Nanjing Course Sample 117",
+    "category": "course_heritage",
+    "heat": 81,
+    "rating": 4.1,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Nanjing"
+    ],
+    "keywords": [
+      "Nanjing Course Sample 117",
+      "Nanjing",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_118",
+    "name": "Chengdu Course Sample 118",
+    "category": "course_theme_park",
+    "heat": 82,
+    "rating": 4.2,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Chengdu"
+    ],
+    "keywords": [
+      "Chengdu Course Sample 118",
+      "Chengdu",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_119",
+    "name": "Xian Course Sample 119",
+    "category": "course_campus_building",
+    "heat": 83,
+    "rating": 4.3,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Xian"
+    ],
+    "keywords": [
+      "Xian Course Sample 119",
+      "Xian",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_120",
+    "name": "Changsha Course Sample 120",
+    "category": "course_campus_facility",
+    "heat": 84,
+    "rating": 4.4,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Changsha"
+    ],
+    "keywords": [
+      "Changsha Course Sample 120",
+      "Changsha",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_121",
+    "name": "Beijing Course Sample 121",
+    "category": "course_nature",
+    "heat": 85,
+    "rating": 4.5,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Beijing"
+    ],
+    "keywords": [
+      "Beijing Course Sample 121",
+      "Beijing",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_122",
+    "name": "Shanghai Course Sample 122",
+    "category": "course_history",
+    "heat": 86,
+    "rating": 4.6,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Shanghai"
+    ],
+    "keywords": [
+      "Shanghai Course Sample 122",
+      "Shanghai",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_123",
+    "name": "Tianjin Course Sample 123",
+    "category": "course_old_town",
+    "heat": 87,
+    "rating": 4.7,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Tianjin"
+    ],
+    "keywords": [
+      "Tianjin Course Sample 123",
+      "Tianjin",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_124",
+    "name": "Chongqing Course Sample 124",
+    "category": "course_lake",
+    "heat": 88,
+    "rating": 4.8,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Chongqing"
+    ],
+    "keywords": [
+      "Chongqing Course Sample 124",
+      "Chongqing",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_125",
+    "name": "Hebei Course Sample 125",
+    "category": "course_garden",
+    "heat": 89,
+    "rating": 4.9,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Hebei"
+    ],
+    "keywords": [
+      "Hebei Course Sample 125",
+      "Hebei",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_126",
+    "name": "Shanxi Course Sample 126",
+    "category": "course_coast",
+    "heat": 90,
+    "rating": 4.1,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Shanxi"
+    ],
+    "keywords": [
+      "Shanxi Course Sample 126",
+      "Shanxi",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_127",
+    "name": "Liaoning Course Sample 127",
+    "category": "course_heritage",
+    "heat": 91,
+    "rating": 4.2,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Liaoning"
+    ],
+    "keywords": [
+      "Liaoning Course Sample 127",
+      "Liaoning",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_128",
+    "name": "Jilin Course Sample 128",
+    "category": "course_theme_park",
+    "heat": 92,
+    "rating": 4.3,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Jilin"
+    ],
+    "keywords": [
+      "Jilin Course Sample 128",
+      "Jilin",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_129",
+    "name": "Heilongjiang Course Sample 129",
+    "category": "course_campus_building",
+    "heat": 93,
+    "rating": 4.4,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Heilongjiang"
+    ],
+    "keywords": [
+      "Heilongjiang Course Sample 129",
+      "Heilongjiang",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_130",
+    "name": "Jiangsu Course Sample 130",
+    "category": "course_campus_facility",
+    "heat": 94,
+    "rating": 4.5,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Jiangsu"
+    ],
+    "keywords": [
+      "Jiangsu Course Sample 130",
+      "Jiangsu",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_131",
+    "name": "Zhejiang Course Sample 131",
+    "category": "course_nature",
+    "heat": 95,
+    "rating": 4.6,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Zhejiang"
+    ],
+    "keywords": [
+      "Zhejiang Course Sample 131",
+      "Zhejiang",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_132",
+    "name": "Anhui Course Sample 132",
+    "category": "course_history",
+    "heat": 96,
+    "rating": 4.7,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Anhui"
+    ],
+    "keywords": [
+      "Anhui Course Sample 132",
+      "Anhui",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_133",
+    "name": "Fujian Course Sample 133",
+    "category": "course_old_town",
+    "heat": 97,
+    "rating": 4.8,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Fujian"
+    ],
+    "keywords": [
+      "Fujian Course Sample 133",
+      "Fujian",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_134",
+    "name": "Jiangxi Course Sample 134",
+    "category": "course_lake",
+    "heat": 98,
+    "rating": 4.9,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Jiangxi"
+    ],
+    "keywords": [
+      "Jiangxi Course Sample 134",
+      "Jiangxi",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_135",
+    "name": "Shandong Course Sample 135",
+    "category": "course_garden",
+    "heat": 72,
+    "rating": 4.1,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Shandong"
+    ],
+    "keywords": [
+      "Shandong Course Sample 135",
+      "Shandong",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_136",
+    "name": "Henan Course Sample 136",
+    "category": "course_coast",
+    "heat": 73,
+    "rating": 4.2,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Henan"
+    ],
+    "keywords": [
+      "Henan Course Sample 136",
+      "Henan",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_137",
+    "name": "Hubei Course Sample 137",
+    "category": "course_heritage",
+    "heat": 74,
+    "rating": 4.3,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Hubei"
+    ],
+    "keywords": [
+      "Hubei Course Sample 137",
+      "Hubei",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_138",
+    "name": "Hunan Course Sample 138",
+    "category": "course_theme_park",
+    "heat": 75,
+    "rating": 4.4,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Hunan"
+    ],
+    "keywords": [
+      "Hunan Course Sample 138",
+      "Hunan",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_139",
+    "name": "Guangdong Course Sample 139",
+    "category": "course_campus_building",
+    "heat": 76,
+    "rating": 4.5,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Guangdong"
+    ],
+    "keywords": [
+      "Guangdong Course Sample 139",
+      "Guangdong",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_140",
+    "name": "Hainan Course Sample 140",
+    "category": "course_campus_facility",
+    "heat": 77,
+    "rating": 4.6,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Hainan"
+    ],
+    "keywords": [
+      "Hainan Course Sample 140",
+      "Hainan",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_141",
+    "name": "Sichuan Course Sample 141",
+    "category": "course_nature",
+    "heat": 78,
+    "rating": 4.7,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Sichuan"
+    ],
+    "keywords": [
+      "Sichuan Course Sample 141",
+      "Sichuan",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_142",
+    "name": "Guizhou Course Sample 142",
+    "category": "course_history",
+    "heat": 79,
+    "rating": 4.8,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "Guizhou"
+    ],
+    "keywords": [
+      "Guizhou Course Sample 142",
+      "Guizhou",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_143",
+    "name": "Yunnan Course Sample 143",
+    "category": "course_old_town",
+    "heat": 80,
+    "rating": 4.9,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Yunnan"
+    ],
+    "keywords": [
+      "Yunnan Course Sample 143",
+      "Yunnan",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_144",
+    "name": "Shaanxi Course Sample 144",
+    "category": "course_lake",
+    "heat": 81,
+    "rating": 4.1,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Shaanxi"
+    ],
+    "keywords": [
+      "Shaanxi Course Sample 144",
+      "Shaanxi",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_145",
+    "name": "Gansu Course Sample 145",
+    "category": "course_garden",
+    "heat": 82,
+    "rating": 4.2,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Gansu"
+    ],
+    "keywords": [
+      "Gansu Course Sample 145",
+      "Gansu",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_146",
+    "name": "Qinghai Course Sample 146",
+    "category": "course_coast",
+    "heat": 83,
+    "rating": 4.3,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Qinghai"
+    ],
+    "keywords": [
+      "Qinghai Course Sample 146",
+      "Qinghai",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_147",
+    "name": "InnerMongolia Course Sample 147",
+    "category": "course_heritage",
+    "heat": 84,
+    "rating": 4.4,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "InnerMongolia"
+    ],
+    "keywords": [
+      "InnerMongolia Course Sample 147",
+      "InnerMongolia",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_148",
+    "name": "Guangxi Course Sample 148",
+    "category": "course_theme_park",
+    "heat": 85,
+    "rating": 4.5,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Guangxi"
+    ],
+    "keywords": [
+      "Guangxi Course Sample 148",
+      "Guangxi",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_149",
+    "name": "Ningxia Course Sample 149",
+    "category": "course_campus_building",
+    "heat": 86,
+    "rating": 4.6,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Ningxia"
+    ],
+    "keywords": [
+      "Ningxia Course Sample 149",
+      "Ningxia",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_150",
+    "name": "Xinjiang Course Sample 150",
+    "category": "course_campus_facility",
+    "heat": 87,
+    "rating": 4.7,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Xinjiang"
+    ],
+    "keywords": [
+      "Xinjiang Course Sample 150",
+      "Xinjiang",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_151",
+    "name": "Xizang Course Sample 151",
+    "category": "course_nature",
+    "heat": 88,
+    "rating": 4.8,
+    "tags": [
+      "nature",
+      "trail",
+      "photo",
+      "Xizang"
+    ],
+    "keywords": [
+      "Xizang Course Sample 151",
+      "Xizang",
+      "mountain",
+      "forest",
+      "valley"
+    ],
+    "description": "Course scale extension object for course_nature; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_152",
+    "name": "HongKong Course Sample 152",
+    "category": "course_history",
+    "heat": 89,
+    "rating": 4.9,
+    "tags": [
+      "history",
+      "culture",
+      "heritage",
+      "HongKong"
+    ],
+    "keywords": [
+      "HongKong Course Sample 152",
+      "HongKong",
+      "museum",
+      "old_town",
+      "ruins"
+    ],
+    "description": "Course scale extension object for course_history; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_153",
+    "name": "Macao Course Sample 153",
+    "category": "course_old_town",
+    "heat": 90,
+    "rating": 4.1,
+    "tags": [
+      "old_town",
+      "folk",
+      "street",
+      "Macao"
+    ],
+    "keywords": [
+      "Macao Course Sample 153",
+      "Macao",
+      "lane",
+      "bridge",
+      "market"
+    ],
+    "description": "Course scale extension object for course_old_town; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_154",
+    "name": "Taiwan Course Sample 154",
+    "category": "course_lake",
+    "heat": 91,
+    "rating": 4.2,
+    "tags": [
+      "lake",
+      "cycling",
+      "leisure",
+      "Taiwan"
+    ],
+    "keywords": [
+      "Taiwan Course Sample 154",
+      "Taiwan",
+      "wetland",
+      "island",
+      "boardwalk"
+    ],
+    "description": "Course scale extension object for course_lake; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_155",
+    "name": "Suzhou Course Sample 155",
+    "category": "course_garden",
+    "heat": 92,
+    "rating": 4.3,
+    "tags": [
+      "garden",
+      "architecture",
+      "flower",
+      "Suzhou"
+    ],
+    "keywords": [
+      "Suzhou Course Sample 155",
+      "Suzhou",
+      "pavilion",
+      "pond",
+      "courtyard"
+    ],
+    "description": "Course scale extension object for course_garden; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_156",
+    "name": "Hangzhou Course Sample 156",
+    "category": "course_coast",
+    "heat": 93,
+    "rating": 4.4,
+    "tags": [
+      "coast",
+      "beach",
+      "sunset",
+      "Hangzhou"
+    ],
+    "keywords": [
+      "Hangzhou Course Sample 156",
+      "Hangzhou",
+      "bay",
+      "lighthouse",
+      "pier"
+    ],
+    "description": "Course scale extension object for course_coast; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_157",
+    "name": "Nanjing Course Sample 157",
+    "category": "course_heritage",
+    "heat": 94,
+    "rating": 4.5,
+    "tags": [
+      "heritage",
+      "art",
+      "study",
+      "Nanjing"
+    ],
+    "keywords": [
+      "Nanjing Course Sample 157",
+      "Nanjing",
+      "stone",
+      "mural",
+      "gallery"
+    ],
+    "description": "Course scale extension object for course_heritage; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_158",
+    "name": "Chengdu Course Sample 158",
+    "category": "course_theme_park",
+    "heat": 95,
+    "rating": 4.6,
+    "tags": [
+      "family",
+      "ride",
+      "night",
+      "Chengdu"
+    ],
+    "keywords": [
+      "Chengdu Course Sample 158",
+      "Chengdu",
+      "theater",
+      "parade",
+      "roller_coaster"
+    ],
+    "description": "Course scale extension object for course_theme_park; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_159",
+    "name": "Xian Course Sample 159",
+    "category": "course_campus_building",
+    "heat": 96,
+    "rating": 4.7,
+    "tags": [
+      "campus",
+      "building",
+      "study",
+      "Xian"
+    ],
+    "keywords": [
+      "Xian Course Sample 159",
+      "Xian",
+      "classroom",
+      "library",
+      "lab"
+    ],
+    "description": "Course scale extension object for course_campus_building; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
+  },
+  {
+    "id": "ext_poi_160",
+    "name": "Changsha Course Sample 160",
+    "category": "course_campus_facility",
+    "heat": 97,
+    "rating": 4.8,
+    "tags": [
+      "campus",
+      "service",
+      "daily",
+      "Changsha"
+    ],
+    "keywords": [
+      "Changsha Course Sample 160",
+      "Changsha",
+      "store",
+      "desk",
+      "activity_room"
+    ],
+    "description": "Course scale extension object for course_campus_facility; covers recommendation, query, tag and ranking fields without joining the PKU route graph.",
+    "map_node_id": null,
+    "_note": "course scale extension object; no campus route mapping"
   }
 ]

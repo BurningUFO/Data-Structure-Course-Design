@@ -1,9 +1,9 @@
 """
 第十一周课程硬指标核验入口。
 
-本脚本采用“已承诺项强断言 + 第十二周规模项统计输出”的方式：
-- 强断言：10+ 用户、10+ 日记作者、必要文档、AIGC / 媒体占位样例。
-- 统计输出：200+ 扩展对象、50+ 服务设施、200+ 道路边数的当前差距。
+本脚本采用课程硬指标强断言：
+- 10+ 用户、10+ 日记作者、必要文档、AIGC / 媒体占位样例。
+- 200+ 扩展推荐 / 查询对象、50+ 服务设施、200+ 道路边。
 
 使用说明：
   python -B tests/test_course_requirements.py
@@ -33,6 +33,7 @@ REQUIRED_DOC_PATHS = [
     DOCS_DIR / "评价和改进意见.md",
     DOCS_DIR / "AI辅助开发能力分析.md",
     WEEK11_DIR / "memberC第11周课程硬指标核验记录.md",
+    WEEK11_DIR / "memberC第11周工作内容陈述.md",
 ]
 
 SERVICE_CATEGORY_SET = {
@@ -134,6 +135,12 @@ def test_required_course_documents_exist():
 
 def test_current_scale_snapshot_for_week12_gap_tracking():
     nodes, edges = collect_pku_nodes_and_edges()
+    node_ids = [str(node.get("id", "")).strip() for node in nodes]
+    edge_endpoint_ids = {
+        str(edge.get(endpoint, "")).strip()
+        for edge in edges
+        for endpoint in ("from", "to")
+    }
     categories = {
         str(node.get("category", node.get("type", ""))).strip()
         for node in nodes
@@ -145,21 +152,32 @@ def test_current_scale_snapshot_for_week12_gap_tracking():
         if str(node.get("category", node.get("type", ""))).strip() in SERVICE_CATEGORY_SET
     ]
     extension_records = load_json(MEMBER_C_SCENIC_PATH)
+    extension_ids = [str(record.get("id", "")).strip() for record in extension_records]
     mapped_extension_records = [
         record for record in extension_records if record.get("map_node_id")
     ]
 
-    assert len(nodes) >= 20
+    assert len(nodes) >= 50
     assert len(categories) >= 10
-    assert len(edges) > 0
-    assert len(extension_records) > 0
+    assert len(facility_like_nodes) >= 50
+    assert len(edges) >= 200
+    assert len(node_ids) == len(set(node_ids))
+    assert edge_endpoint_ids.issubset(set(node_ids))
+    assert len(extension_records) >= 200
+    assert len(extension_ids) == len(set(extension_ids))
+    assert len(mapped_extension_records) >= 5
+    for record in extension_records:
+        assert record.get("name")
+        assert record.get("category")
+        assert isinstance(record.get("tags", []), list)
+        assert isinstance(record.get("keywords", []), list)
 
     print("test_current_scale_snapshot_for_week12_gap_tracking passed:")
     print(f"  pku_nodes={len(nodes)}")
-    print(f"  pku_edges={len(edges)} / target>=200")
+    print(f"  pku_edges={len(edges)}")
     print(f"  pku_categories={len(categories)}")
-    print(f"  facility_like_nodes={len(facility_like_nodes)} / target>=50")
-    print(f"  extension_objects={len(extension_records)} / target>=200")
+    print(f"  facility_like_nodes={len(facility_like_nodes)}")
+    print(f"  extension_objects={len(extension_records)}")
     print(f"  mapped_extension_objects={len(mapped_extension_records)}")
 
 

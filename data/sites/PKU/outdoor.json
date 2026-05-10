@@ -8,11 +8,19 @@
       "type": "entrance",
       "is_gate": true,
       "sub_graph_id": null,
-      "tags": ["校门", "标志性建筑"],
+      "tags": [
+        "校门",
+        "标志性建筑"
+      ],
       "description": "北京大学正门，古典式校门建筑，是北大标志性景点之一。",
       "category": "entrance",
-      "facilities": ["安保亭"],
-      "location": {"lat": 39.9929, "lng": 116.3055}
+      "facilities": [
+        "安保亭"
+      ],
+      "location": {
+        "lat": 39.9929,
+        "lng": 116.3055
+      }
     },
     {
       "id": "gate_east",
@@ -20,11 +28,18 @@
       "type": "entrance",
       "is_gate": true,
       "sub_graph_id": null,
-      "tags": ["校门"],
+      "tags": [
+        "校门"
+      ],
       "description": "北京大学东门，临近中关村大街，主要车辆出入口。",
       "category": "entrance",
-      "facilities": ["安保亭"],
-      "location": {"lat": 39.9935, "lng": 116.3105}
+      "facilities": [
+        "安保亭"
+      ],
+      "location": {
+        "lat": 39.9935,
+        "lng": 116.3105
+      }
     },
     {
       "id": "gate_south",
@@ -32,11 +47,18 @@
       "type": "entrance",
       "is_gate": true,
       "sub_graph_id": null,
-      "tags": ["校门"],
+      "tags": [
+        "校门"
+      ],
       "description": "北京大学南门，临近海淀路。",
       "category": "entrance",
-      "facilities": ["安保亭"],
-      "location": {"lat": 39.9895, "lng": 116.3075}
+      "facilities": [
+        "安保亭"
+      ],
+      "location": {
+        "lat": 39.9895,
+        "lng": 116.3075
+      }
     },
     {
       "id": "library",
@@ -44,12 +66,25 @@
       "type": "building",
       "is_gate": true,
       "sub_graph_id": "indoor_LIB",
-      "tags": ["学习", "自习", "阅览", "藏书"],
+      "tags": [
+        "学习",
+        "自习",
+        "阅览",
+        "藏书"
+      ],
       "description": "北京大学图书馆，亚洲高校最大图书馆之一，藏书丰富。",
       "category": "education",
-      "facilities": ["自习室", "阅览室", "咖啡厅", "自助借还"],
+      "facilities": [
+        "自习室",
+        "阅览室",
+        "咖啡厅",
+        "自助借还"
+      ],
       "open_hours": "06:00-22:00",
-      "location": {"lat": 39.9915, "lng": 116.3070}
+      "location": {
+        "lat": 39.9915,
+        "lng": 116.307
+      }
     },
     {
       "id": "teaching_building_1",
@@ -57,11 +92,22 @@
       "type": "building",
       "is_gate": true,
       "sub_graph_id": null,
-      "tags": ["上课", "教室", "教学楼"],
+      "tags": [
+        "上课",
+        "教室",
+        "教学楼"
+      ],
       "description": "第一教学楼，主要承担本科生公共课程教学任务。",
       "category": "education",
-      "facilities": ["教室", "多媒体设备", "饮水机"],
-      "location": {"lat": 39.9908, "lng": 116.3062}
+      "facilities": [
+        "教室",
+        "多媒体设备",
+        "饮水机"
+      ],
+      "location": {
+        "lat": 39.9908,
+        "lng": 116.3062
+      }
     },
     {
       "id": "teaching_building_2",
@@ -69,11 +115,22 @@
       "type": "building",
       "is_gate": true,
       "sub_graph_id": null,
-      "tags": ["上课", "教室", "教学楼"],
+      "tags": [
+        "上课",
+        "教室",
+        "教学楼"
+      ],
       "description": "第二教学楼，配备现代化多媒体教室。",
       "category": "education",
-      "facilities": ["教室", "多媒体设备", "电梯"],
-      "location": {"lat": 39.9910, "lng": 116.3068}
+      "facilities": [
+        "教室",
+        "多媒体设备",
+        "电梯"
+      ],
+      "location": {
+        "lat": 39.991,
+        "lng": 116.3068
+      }
     },
     {
       "id": "dormitory_1",
@@ -81,11 +138,21 @@
       "type": "dormitory",
       "is_gate": true,
       "sub_graph_id": "indoor_DORM1",
-      "tags": ["宿舍", "住宿", "生活"],
+      "tags": [
+        "宿舍",
+        "住宿",
+        "生活"
+      ],
       "description": "学生宿舍1号楼，本科生宿舍楼。",
       "category": "dormitory",
-      "facilities": ["洗衣房", "开水房"],
-      "location": {"lat": 39.9900, "lng": 116.3085}
+      "facilities": [
+        "洗衣房",
+        "开水房"
+      ],
+      "location": {
+        "lat": 39.99,
+        "lng": 116.3085
+      }
     },
     {
       "id": "canteen",
@@ -93,12 +160,22 @@
       "type": "facility",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["食堂", "餐饮", "美食"],
+      "tags": [
+        "食堂",
+        "餐饮",
+        "美食"
+      ],
       "description": "农园食堂，提供多种餐饮选择，是学生主要就餐地之一。",
       "category": "catering",
-      "facilities": ["餐饮", "清真窗口"],
+      "facilities": [
+        "餐饮",
+        "清真窗口"
+      ],
       "open_hours": "06:30-21:00",
-      "location": {"lat": 39.9918, "lng": 116.3088}
+      "location": {
+        "lat": 39.9918,
+        "lng": 116.3088
+      }
     },
     {
       "id": "convenience_store",
@@ -106,12 +183,22 @@
       "type": "facility",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["购物", "便利店", "生活用品"],
+      "tags": [
+        "购物",
+        "便利店",
+        "生活用品"
+      ],
       "description": "校内便利店，出售日用百货和零食饮料。",
       "category": "shopping",
-      "facilities": ["零售", "打印"],
+      "facilities": [
+        "零售",
+        "打印"
+      ],
       "open_hours": "07:00-23:00",
-      "location": {"lat": 39.9905, "lng": 116.3095}
+      "location": {
+        "lat": 39.9905,
+        "lng": 116.3095
+      }
     },
     {
       "id": "sports_ground",
@@ -119,11 +206,22 @@
       "type": "facility",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["体育", "运动", "操场"],
+      "tags": [
+        "体育",
+        "运动",
+        "操场"
+      ],
       "description": "五四体育场，配备田径跑道和足球场。",
       "category": "sports",
-      "facilities": ["田径场", "足球场", "看台"],
-      "location": {"lat": 39.9912, "lng": 116.3050}
+      "facilities": [
+        "田径场",
+        "足球场",
+        "看台"
+      ],
+      "location": {
+        "lat": 39.9912,
+        "lng": 116.305
+      }
     },
     {
       "id": "square_center",
@@ -131,11 +229,18 @@
       "type": "landmark",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["广场", "纪念", "活动"],
+      "tags": [
+        "广场",
+        "纪念",
+        "活动"
+      ],
       "description": "百周年纪念广场，位于图书馆前，是校园活动重要场所。",
       "category": "landmark",
       "facilities": [],
-      "location": {"lat": 39.9917, "lng": 116.3065}
+      "location": {
+        "lat": 39.9917,
+        "lng": 116.3065
+      }
     },
     {
       "id": "road_cross",
@@ -143,11 +248,16 @@
       "type": "intersection",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["路口"],
+      "tags": [
+        "路口"
+      ],
       "description": "校园中心十字路口，连接各主要建筑。",
       "category": "road",
       "facilities": [],
-      "location": {"lat": 39.9913, "lng": 116.3070}
+      "location": {
+        "lat": 39.9913,
+        "lng": 116.307
+      }
     },
     {
       "id": "parking_lot",
@@ -155,11 +265,19 @@
       "type": "facility",
       "is_gate": true,
       "sub_graph_id": null,
-      "tags": ["停车", "车辆"],
+      "tags": [
+        "停车",
+        "车辆"
+      ],
       "description": "校园地下停车场入口。",
       "category": "parking",
-      "facilities": ["充电桩"],
-      "location": {"lat": 39.9920, "lng": 116.3090}
+      "facilities": [
+        "充电桩"
+      ],
+      "location": {
+        "lat": 39.992,
+        "lng": 116.309
+      }
     },
     {
       "id": "toilet_lib_area",
@@ -167,12 +285,21 @@
       "type": "facility",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["洗手间", "卫生间"],
+      "tags": [
+        "洗手间",
+        "卫生间"
+      ],
       "description": "图书馆附近公共洗手间。",
       "category": "restroom",
-      "facilities": ["洗手间", "无障碍设施"],
+      "facilities": [
+        "洗手间",
+        "无障碍设施"
+      ],
       "is_indoor": false,
-      "location": {"lat": 39.9914, "lng": 116.3068}
+      "location": {
+        "lat": 39.9914,
+        "lng": 116.3068
+      }
     },
     {
       "id": "toilet_sports_area",
@@ -180,43 +307,2243 @@
       "type": "facility",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["洗手间", "卫生间"],
+      "tags": [
+        "洗手间",
+        "卫生间"
+      ],
       "description": "五四体育场附近公共洗手间。",
       "category": "restroom",
-      "facilities": ["洗手间"],
+      "facilities": [
+        "洗手间"
+      ],
       "is_indoor": true,
       "indoor_building": "体育场配套建筑",
-      "location": {"lat": 39.9915, "lng": 116.3050}
+      "location": {
+        "lat": 39.9915,
+        "lng": 116.305
+      }
+    },
+    {
+      "id": "campus_service_01",
+      "name": "???????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "???????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9898,
+        "lng": 116.305
+      }
+    },
+    {
+      "id": "campus_service_02",
+      "name": "??????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "??????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99025,
+        "lng": 116.305
+      }
+    },
+    {
+      "id": "campus_service_03",
+      "name": "??????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "??????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9907,
+        "lng": 116.305
+      }
+    },
+    {
+      "id": "campus_service_04",
+      "name": "????????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "????????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99115,
+        "lng": 116.305
+      }
+    },
+    {
+      "id": "campus_service_05",
+      "name": "??????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "??????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "????"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9916,
+        "lng": 116.305
+      }
+    },
+    {
+      "id": "campus_service_06",
+      "name": "???????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "???????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99205,
+        "lng": 116.305
+      }
+    },
+    {
+      "id": "campus_service_07",
+      "name": "???????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "???????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "????",
+        "??",
+        "????"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9898,
+        "lng": 116.30575
+      }
+    },
+    {
+      "id": "campus_service_08",
+      "name": "?????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "?????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "????"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99025,
+        "lng": 116.30575
+      }
+    },
+    {
+      "id": "campus_service_09",
+      "name": "??????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "??????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9907,
+        "lng": 116.30575
+      }
+    },
+    {
+      "id": "campus_service_10",
+      "name": "????????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "????????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99115,
+        "lng": 116.30575
+      }
+    },
+    {
+      "id": "campus_service_11",
+      "name": "????????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "????????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9916,
+        "lng": 116.30575
+      }
+    },
+    {
+      "id": "campus_service_12",
+      "name": "????????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "????????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99205,
+        "lng": 116.30575
+      }
+    },
+    {
+      "id": "campus_service_13",
+      "name": "???????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "???????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9898,
+        "lng": 116.3065
+      }
+    },
+    {
+      "id": "campus_service_14",
+      "name": "???????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "???????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99025,
+        "lng": 116.3065
+      }
+    },
+    {
+      "id": "campus_service_15",
+      "name": "????????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "????????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9907,
+        "lng": 116.3065
+      }
+    },
+    {
+      "id": "campus_service_16",
+      "name": "???????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "???????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99115,
+        "lng": 116.3065
+      }
+    },
+    {
+      "id": "campus_service_17",
+      "name": "?????????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "?????????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9916,
+        "lng": 116.3065
+      }
+    },
+    {
+      "id": "campus_service_18",
+      "name": "?????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "?????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99205,
+        "lng": 116.3065
+      }
+    },
+    {
+      "id": "campus_service_19",
+      "name": "?????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "?????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9898,
+        "lng": 116.30725
+      }
+    },
+    {
+      "id": "campus_service_20",
+      "name": "??????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "??????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99025,
+        "lng": 116.30725
+      }
+    },
+    {
+      "id": "campus_service_21",
+      "name": "????????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "???",
+        "??????",
+        "????"
+      ],
+      "description": "????????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "???",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9907,
+        "lng": 116.30725
+      }
+    },
+    {
+      "id": "campus_service_22",
+      "name": "???????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "???????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "????",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99115,
+        "lng": 116.30725
+      }
+    },
+    {
+      "id": "campus_service_23",
+      "name": "??????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "??????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "???",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.9916,
+        "lng": 116.30725
+      }
+    },
+    {
+      "id": "campus_service_24",
+      "name": "???????",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "??",
+        "??????",
+        "????"
+      ],
+      "description": "???????????????????????????????",
+      "category": "service",
+      "facilities": [
+        "??",
+        "??",
+        "??"
+      ],
+      "open_hours": "07:00-22:00",
+      "is_indoor": false,
+      "location": {
+        "lat": 39.99205,
+        "lng": 116.30725
+      }
     }
   ],
   "edges": [
-    {"from": "gate_north", "to": "square_center", "distance": 80, "type": "outdoor_road", "congestion": 0.6, "ideal_speed": 1.5, "vehicle_access": "all", "name": "西门大道"},
-    {"from": "square_center", "to": "gate_north", "distance": 80, "type": "outdoor_road", "congestion": 0.6, "ideal_speed": 1.5, "vehicle_access": "all", "name": "西门大道"},
-    {"from": "gate_east", "to": "road_cross", "distance": 120, "type": "outdoor_road", "congestion": 0.8, "ideal_speed": 1.2, "vehicle_access": "all", "name": "东门大道"},
-    {"from": "road_cross", "to": "gate_east", "distance": 120, "type": "outdoor_road", "congestion": 0.8, "ideal_speed": 1.2, "vehicle_access": "all", "name": "东门大道"},
-    {"from": "gate_south", "to": "teaching_building_1", "distance": 50, "type": "outdoor_road", "congestion": 0.5, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only", "name": "南门步道"},
-    {"from": "teaching_building_1", "to": "gate_south", "distance": 50, "type": "outdoor_road", "congestion": 0.5, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only", "name": "南门步道"},
-    {"from": "library", "to": "square_center", "distance": 30, "type": "outdoor_road", "congestion": 0.4, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only", "name": "图书馆前广场"},
-    {"from": "square_center", "to": "library", "distance": 30, "type": "outdoor_road", "congestion": 0.4, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only", "name": "图书馆前广场"},
-    {"from": "square_center", "to": "road_cross", "distance": 25, "type": "outdoor_road", "congestion": 0.3, "ideal_speed": 2.0, "vehicle_access": "all", "name": "广场连接路"},
-    {"from": "road_cross", "to": "square_center", "distance": 25, "type": "outdoor_road", "congestion": 0.3, "ideal_speed": 2.0, "vehicle_access": "all", "name": "广场连接路"},
-    {"from": "road_cross", "to": "teaching_building_1", "distance": 40, "type": "outdoor_road", "congestion": 0.5, "ideal_speed": 1.5, "vehicle_access": "all", "name": "教学楼路"},
-    {"from": "teaching_building_1", "to": "road_cross", "distance": 40, "type": "outdoor_road", "congestion": 0.5, "ideal_speed": 1.5, "vehicle_access": "all", "name": "教学楼路"},
-    {"from": "road_cross", "to": "teaching_building_2", "distance": 35, "type": "outdoor_road", "congestion": 0.5, "ideal_speed": 1.5, "vehicle_access": "all", "name": "教学楼连接路"},
-    {"from": "teaching_building_2", "to": "road_cross", "distance": 35, "type": "outdoor_road", "congestion": 0.5, "ideal_speed": 1.5, "vehicle_access": "all", "name": "教学楼连接路"},
-    {"from": "road_cross", "to": "canteen", "distance": 30, "type": "outdoor_road", "congestion": 0.7, "ideal_speed": 1.0, "vehicle_access": "pedestrian_only", "name": "食堂通道"},
-    {"from": "canteen", "to": "road_cross", "distance": 30, "type": "outdoor_road", "congestion": 0.7, "ideal_speed": 1.0, "vehicle_access": "pedestrian_only", "name": "食堂通道"},
-    {"from": "road_cross", "to": "convenience_store", "distance": 45, "type": "outdoor_road", "congestion": 0.4, "ideal_speed": 1.5, "vehicle_access": "all", "name": "商业街"},
-    {"from": "convenience_store", "to": "road_cross", "distance": 45, "type": "outdoor_road", "congestion": 0.4, "ideal_speed": 1.5, "vehicle_access": "all", "name": "商业街"},
-    {"from": "road_cross", "to": "dormitory_1", "distance": 60, "type": "outdoor_road", "congestion": 0.5, "ideal_speed": 1.3, "vehicle_access": "all", "name": "宿舍区路"},
-    {"from": "dormitory_1", "to": "road_cross", "distance": 60, "type": "outdoor_road", "congestion": 0.5, "ideal_speed": 1.3, "vehicle_access": "all", "name": "宿舍区路"},
-    {"from": "sports_ground", "to": "gate_north", "distance": 40, "type": "outdoor_road", "congestion": 0.3, "ideal_speed": 2.0, "vehicle_access": "pedestrian_only", "name": "体育场连接路"},
-    {"from": "gate_north", "to": "sports_ground", "distance": 40, "type": "outdoor_road", "congestion": 0.3, "ideal_speed": 2.0, "vehicle_access": "pedestrian_only", "name": "体育场连接路"},
-    {"from": "parking_lot", "to": "gate_east", "distance": 30, "type": "outdoor_road", "congestion": 0.6, "ideal_speed": 1.0, "vehicle_access": "vehicle_only", "name": "停车场通道"},
-    {"from": "gate_east", "to": "parking_lot", "distance": 30, "type": "outdoor_road", "congestion": 0.6, "ideal_speed": 1.0, "vehicle_access": "vehicle_only", "name": "停车场通道"},
-    {"from": "toilet_lib_area", "to": "library", "distance": 15, "type": "outdoor_road", "congestion": 0.2, "ideal_speed": 2.0, "vehicle_access": "pedestrian_only", "name": "洗手间便道"},
-    {"from": "library", "to": "toilet_lib_area", "distance": 15, "type": "outdoor_road", "congestion": 0.2, "ideal_speed": 2.0, "vehicle_access": "pedestrian_only", "name": "洗手间便道"},
-    {"from": "toilet_sports_area", "to": "sports_ground", "distance": 20, "type": "outdoor_road", "congestion": 0.2, "ideal_speed": 2.0, "vehicle_access": "pedestrian_only", "name": "洗手间便道"},
-    {"from": "sports_ground", "to": "toilet_sports_area", "distance": 20, "type": "outdoor_road", "congestion": 0.2, "ideal_speed": 2.0, "vehicle_access": "pedestrian_only", "name": "洗手间便道"}
+    {
+      "from": "gate_north",
+      "to": "square_center",
+      "distance": 80,
+      "type": "outdoor_road",
+      "congestion": 0.6,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "西门大道"
+    },
+    {
+      "from": "square_center",
+      "to": "gate_north",
+      "distance": 80,
+      "type": "outdoor_road",
+      "congestion": 0.6,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "西门大道"
+    },
+    {
+      "from": "gate_east",
+      "to": "road_cross",
+      "distance": 120,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.2,
+      "vehicle_access": "all",
+      "name": "东门大道"
+    },
+    {
+      "from": "road_cross",
+      "to": "gate_east",
+      "distance": 120,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.2,
+      "vehicle_access": "all",
+      "name": "东门大道"
+    },
+    {
+      "from": "gate_south",
+      "to": "teaching_building_1",
+      "distance": 50,
+      "type": "outdoor_road",
+      "congestion": 0.5,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "南门步道"
+    },
+    {
+      "from": "teaching_building_1",
+      "to": "gate_south",
+      "distance": 50,
+      "type": "outdoor_road",
+      "congestion": 0.5,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "南门步道"
+    },
+    {
+      "from": "library",
+      "to": "square_center",
+      "distance": 30,
+      "type": "outdoor_road",
+      "congestion": 0.4,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "图书馆前广场"
+    },
+    {
+      "from": "square_center",
+      "to": "library",
+      "distance": 30,
+      "type": "outdoor_road",
+      "congestion": 0.4,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "图书馆前广场"
+    },
+    {
+      "from": "square_center",
+      "to": "road_cross",
+      "distance": 25,
+      "type": "outdoor_road",
+      "congestion": 0.3,
+      "ideal_speed": 2.0,
+      "vehicle_access": "all",
+      "name": "广场连接路"
+    },
+    {
+      "from": "road_cross",
+      "to": "square_center",
+      "distance": 25,
+      "type": "outdoor_road",
+      "congestion": 0.3,
+      "ideal_speed": 2.0,
+      "vehicle_access": "all",
+      "name": "广场连接路"
+    },
+    {
+      "from": "road_cross",
+      "to": "teaching_building_1",
+      "distance": 40,
+      "type": "outdoor_road",
+      "congestion": 0.5,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "教学楼路"
+    },
+    {
+      "from": "teaching_building_1",
+      "to": "road_cross",
+      "distance": 40,
+      "type": "outdoor_road",
+      "congestion": 0.5,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "教学楼路"
+    },
+    {
+      "from": "road_cross",
+      "to": "teaching_building_2",
+      "distance": 35,
+      "type": "outdoor_road",
+      "congestion": 0.5,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "教学楼连接路"
+    },
+    {
+      "from": "teaching_building_2",
+      "to": "road_cross",
+      "distance": 35,
+      "type": "outdoor_road",
+      "congestion": 0.5,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "教学楼连接路"
+    },
+    {
+      "from": "road_cross",
+      "to": "canteen",
+      "distance": 30,
+      "type": "outdoor_road",
+      "congestion": 0.7,
+      "ideal_speed": 1.0,
+      "vehicle_access": "pedestrian_only",
+      "name": "食堂通道"
+    },
+    {
+      "from": "canteen",
+      "to": "road_cross",
+      "distance": 30,
+      "type": "outdoor_road",
+      "congestion": 0.7,
+      "ideal_speed": 1.0,
+      "vehicle_access": "pedestrian_only",
+      "name": "食堂通道"
+    },
+    {
+      "from": "road_cross",
+      "to": "convenience_store",
+      "distance": 45,
+      "type": "outdoor_road",
+      "congestion": 0.4,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "商业街"
+    },
+    {
+      "from": "convenience_store",
+      "to": "road_cross",
+      "distance": 45,
+      "type": "outdoor_road",
+      "congestion": 0.4,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "商业街"
+    },
+    {
+      "from": "road_cross",
+      "to": "dormitory_1",
+      "distance": 60,
+      "type": "outdoor_road",
+      "congestion": 0.5,
+      "ideal_speed": 1.3,
+      "vehicle_access": "all",
+      "name": "宿舍区路"
+    },
+    {
+      "from": "dormitory_1",
+      "to": "road_cross",
+      "distance": 60,
+      "type": "outdoor_road",
+      "congestion": 0.5,
+      "ideal_speed": 1.3,
+      "vehicle_access": "all",
+      "name": "宿舍区路"
+    },
+    {
+      "from": "sports_ground",
+      "to": "gate_north",
+      "distance": 40,
+      "type": "outdoor_road",
+      "congestion": 0.3,
+      "ideal_speed": 2.0,
+      "vehicle_access": "pedestrian_only",
+      "name": "体育场连接路"
+    },
+    {
+      "from": "gate_north",
+      "to": "sports_ground",
+      "distance": 40,
+      "type": "outdoor_road",
+      "congestion": 0.3,
+      "ideal_speed": 2.0,
+      "vehicle_access": "pedestrian_only",
+      "name": "体育场连接路"
+    },
+    {
+      "from": "parking_lot",
+      "to": "gate_east",
+      "distance": 30,
+      "type": "outdoor_road",
+      "congestion": 0.6,
+      "ideal_speed": 1.0,
+      "vehicle_access": "vehicle_only",
+      "name": "停车场通道"
+    },
+    {
+      "from": "gate_east",
+      "to": "parking_lot",
+      "distance": 30,
+      "type": "outdoor_road",
+      "congestion": 0.6,
+      "ideal_speed": 1.0,
+      "vehicle_access": "vehicle_only",
+      "name": "停车场通道"
+    },
+    {
+      "from": "toilet_lib_area",
+      "to": "library",
+      "distance": 15,
+      "type": "outdoor_road",
+      "congestion": 0.2,
+      "ideal_speed": 2.0,
+      "vehicle_access": "pedestrian_only",
+      "name": "洗手间便道"
+    },
+    {
+      "from": "library",
+      "to": "toilet_lib_area",
+      "distance": 15,
+      "type": "outdoor_road",
+      "congestion": 0.2,
+      "ideal_speed": 2.0,
+      "vehicle_access": "pedestrian_only",
+      "name": "洗手间便道"
+    },
+    {
+      "from": "toilet_sports_area",
+      "to": "sports_ground",
+      "distance": 20,
+      "type": "outdoor_road",
+      "congestion": 0.2,
+      "ideal_speed": 2.0,
+      "vehicle_access": "pedestrian_only",
+      "name": "洗手间便道"
+    },
+    {
+      "from": "sports_ground",
+      "to": "toilet_sports_area",
+      "distance": 20,
+      "type": "outdoor_road",
+      "congestion": 0.2,
+      "ideal_speed": 2.0,
+      "vehicle_access": "pedestrian_only",
+      "name": "洗手间便道"
+    },
+    {
+      "from": "gate_north",
+      "to": "campus_service_01",
+      "distance": 180,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????1"
+    },
+    {
+      "from": "campus_service_01",
+      "to": "gate_north",
+      "distance": 180,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????1"
+    },
+    {
+      "from": "square_center",
+      "to": "campus_service_02",
+      "distance": 190,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????2"
+    },
+    {
+      "from": "campus_service_02",
+      "to": "square_center",
+      "distance": 190,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????2"
+    },
+    {
+      "from": "library",
+      "to": "campus_service_03",
+      "distance": 200,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????3"
+    },
+    {
+      "from": "campus_service_03",
+      "to": "library",
+      "distance": 200,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????3"
+    },
+    {
+      "from": "teaching_building_1",
+      "to": "campus_service_04",
+      "distance": 210,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????4"
+    },
+    {
+      "from": "campus_service_04",
+      "to": "teaching_building_1",
+      "distance": 210,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????4"
+    },
+    {
+      "from": "teaching_building_2",
+      "to": "campus_service_05",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????5"
+    },
+    {
+      "from": "campus_service_05",
+      "to": "teaching_building_2",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????5"
+    },
+    {
+      "from": "road_cross",
+      "to": "campus_service_06",
+      "distance": 230,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????6"
+    },
+    {
+      "from": "campus_service_06",
+      "to": "road_cross",
+      "distance": 230,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????6"
+    },
+    {
+      "from": "canteen",
+      "to": "campus_service_07",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????7"
+    },
+    {
+      "from": "campus_service_07",
+      "to": "canteen",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????7"
+    },
+    {
+      "from": "convenience_store",
+      "to": "campus_service_08",
+      "distance": 250,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????8"
+    },
+    {
+      "from": "campus_service_08",
+      "to": "convenience_store",
+      "distance": 250,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????8"
+    },
+    {
+      "from": "dormitory_1",
+      "to": "campus_service_09",
+      "distance": 180,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????9"
+    },
+    {
+      "from": "campus_service_09",
+      "to": "dormitory_1",
+      "distance": 180,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????9"
+    },
+    {
+      "from": "sports_ground",
+      "to": "campus_service_10",
+      "distance": 190,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????10"
+    },
+    {
+      "from": "campus_service_10",
+      "to": "sports_ground",
+      "distance": 190,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????10"
+    },
+    {
+      "from": "gate_east",
+      "to": "campus_service_11",
+      "distance": 200,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????11"
+    },
+    {
+      "from": "campus_service_11",
+      "to": "gate_east",
+      "distance": 200,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????11"
+    },
+    {
+      "from": "gate_south",
+      "to": "campus_service_12",
+      "distance": 210,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????12"
+    },
+    {
+      "from": "campus_service_12",
+      "to": "gate_south",
+      "distance": 210,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????12"
+    },
+    {
+      "from": "toilet_lib_area",
+      "to": "campus_service_14",
+      "distance": 230,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????14"
+    },
+    {
+      "from": "campus_service_14",
+      "to": "toilet_lib_area",
+      "distance": 230,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????14"
+    },
+    {
+      "from": "toilet_sports_area",
+      "to": "campus_service_15",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????15"
+    },
+    {
+      "from": "campus_service_15",
+      "to": "toilet_sports_area",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????15"
+    },
+    {
+      "from": "square_center",
+      "to": "campus_service_16",
+      "distance": 250,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????16"
+    },
+    {
+      "from": "campus_service_16",
+      "to": "square_center",
+      "distance": 250,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????16"
+    },
+    {
+      "from": "road_cross",
+      "to": "campus_service_17",
+      "distance": 180,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????17"
+    },
+    {
+      "from": "campus_service_17",
+      "to": "road_cross",
+      "distance": 180,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????17"
+    },
+    {
+      "from": "library",
+      "to": "campus_service_18",
+      "distance": 190,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????18"
+    },
+    {
+      "from": "campus_service_18",
+      "to": "library",
+      "distance": 190,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????18"
+    },
+    {
+      "from": "canteen",
+      "to": "campus_service_19",
+      "distance": 200,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????19"
+    },
+    {
+      "from": "campus_service_19",
+      "to": "canteen",
+      "distance": 200,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????19"
+    },
+    {
+      "from": "dormitory_1",
+      "to": "campus_service_20",
+      "distance": 210,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????20"
+    },
+    {
+      "from": "campus_service_20",
+      "to": "dormitory_1",
+      "distance": 210,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????20"
+    },
+    {
+      "from": "sports_ground",
+      "to": "campus_service_21",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????21"
+    },
+    {
+      "from": "campus_service_21",
+      "to": "sports_ground",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????21"
+    },
+    {
+      "from": "gate_north",
+      "to": "campus_service_22",
+      "distance": 230,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????22"
+    },
+    {
+      "from": "campus_service_22",
+      "to": "gate_north",
+      "distance": 230,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????22"
+    },
+    {
+      "from": "gate_east",
+      "to": "campus_service_23",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????23"
+    },
+    {
+      "from": "campus_service_23",
+      "to": "gate_east",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????23"
+    },
+    {
+      "from": "gate_south",
+      "to": "campus_service_24",
+      "distance": 250,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????24"
+    },
+    {
+      "from": "campus_service_24",
+      "to": "gate_south",
+      "distance": 250,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????24"
+    },
+    {
+      "from": "campus_service_01",
+      "to": "campus_service_02",
+      "distance": 160,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????1"
+    },
+    {
+      "from": "campus_service_02",
+      "to": "campus_service_01",
+      "distance": 160,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????1"
+    },
+    {
+      "from": "campus_service_02",
+      "to": "campus_service_03",
+      "distance": 172,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????2"
+    },
+    {
+      "from": "campus_service_03",
+      "to": "campus_service_02",
+      "distance": 172,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????2"
+    },
+    {
+      "from": "campus_service_03",
+      "to": "campus_service_04",
+      "distance": 184,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????3"
+    },
+    {
+      "from": "campus_service_04",
+      "to": "campus_service_03",
+      "distance": 184,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????3"
+    },
+    {
+      "from": "campus_service_04",
+      "to": "campus_service_05",
+      "distance": 196,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????4"
+    },
+    {
+      "from": "campus_service_05",
+      "to": "campus_service_04",
+      "distance": 196,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????4"
+    },
+    {
+      "from": "campus_service_05",
+      "to": "campus_service_06",
+      "distance": 208,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????5"
+    },
+    {
+      "from": "campus_service_06",
+      "to": "campus_service_05",
+      "distance": 208,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????5"
+    },
+    {
+      "from": "campus_service_06",
+      "to": "campus_service_07",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????6"
+    },
+    {
+      "from": "campus_service_07",
+      "to": "campus_service_06",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????6"
+    },
+    {
+      "from": "campus_service_07",
+      "to": "campus_service_08",
+      "distance": 232,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????7"
+    },
+    {
+      "from": "campus_service_08",
+      "to": "campus_service_07",
+      "distance": 232,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????7"
+    },
+    {
+      "from": "campus_service_08",
+      "to": "campus_service_09",
+      "distance": 160,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????8"
+    },
+    {
+      "from": "campus_service_09",
+      "to": "campus_service_08",
+      "distance": 160,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????8"
+    },
+    {
+      "from": "campus_service_09",
+      "to": "campus_service_10",
+      "distance": 172,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????9"
+    },
+    {
+      "from": "campus_service_10",
+      "to": "campus_service_09",
+      "distance": 172,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????9"
+    },
+    {
+      "from": "campus_service_10",
+      "to": "campus_service_11",
+      "distance": 184,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????10"
+    },
+    {
+      "from": "campus_service_11",
+      "to": "campus_service_10",
+      "distance": 184,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????10"
+    },
+    {
+      "from": "campus_service_11",
+      "to": "campus_service_12",
+      "distance": 196,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????11"
+    },
+    {
+      "from": "campus_service_12",
+      "to": "campus_service_11",
+      "distance": 196,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????11"
+    },
+    {
+      "from": "campus_service_12",
+      "to": "campus_service_13",
+      "distance": 208,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????12"
+    },
+    {
+      "from": "campus_service_13",
+      "to": "campus_service_12",
+      "distance": 208,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????12"
+    },
+    {
+      "from": "campus_service_13",
+      "to": "campus_service_14",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????13"
+    },
+    {
+      "from": "campus_service_14",
+      "to": "campus_service_13",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????13"
+    },
+    {
+      "from": "campus_service_14",
+      "to": "campus_service_15",
+      "distance": 232,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????14"
+    },
+    {
+      "from": "campus_service_15",
+      "to": "campus_service_14",
+      "distance": 232,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????14"
+    },
+    {
+      "from": "campus_service_15",
+      "to": "campus_service_16",
+      "distance": 160,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????15"
+    },
+    {
+      "from": "campus_service_16",
+      "to": "campus_service_15",
+      "distance": 160,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????15"
+    },
+    {
+      "from": "campus_service_16",
+      "to": "campus_service_17",
+      "distance": 172,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????16"
+    },
+    {
+      "from": "campus_service_17",
+      "to": "campus_service_16",
+      "distance": 172,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????16"
+    },
+    {
+      "from": "campus_service_17",
+      "to": "campus_service_18",
+      "distance": 184,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????17"
+    },
+    {
+      "from": "campus_service_18",
+      "to": "campus_service_17",
+      "distance": 184,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????17"
+    },
+    {
+      "from": "campus_service_18",
+      "to": "campus_service_19",
+      "distance": 196,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????18"
+    },
+    {
+      "from": "campus_service_19",
+      "to": "campus_service_18",
+      "distance": 196,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????18"
+    },
+    {
+      "from": "campus_service_19",
+      "to": "campus_service_20",
+      "distance": 208,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????19"
+    },
+    {
+      "from": "campus_service_20",
+      "to": "campus_service_19",
+      "distance": 208,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????19"
+    },
+    {
+      "from": "campus_service_20",
+      "to": "campus_service_21",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????20"
+    },
+    {
+      "from": "campus_service_21",
+      "to": "campus_service_20",
+      "distance": 220,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????20"
+    },
+    {
+      "from": "campus_service_21",
+      "to": "campus_service_22",
+      "distance": 232,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????21"
+    },
+    {
+      "from": "campus_service_22",
+      "to": "campus_service_21",
+      "distance": 232,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????21"
+    },
+    {
+      "from": "campus_service_22",
+      "to": "campus_service_23",
+      "distance": 160,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????22"
+    },
+    {
+      "from": "campus_service_23",
+      "to": "campus_service_22",
+      "distance": 160,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????22"
+    },
+    {
+      "from": "campus_service_23",
+      "to": "campus_service_24",
+      "distance": 172,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????23"
+    },
+    {
+      "from": "campus_service_24",
+      "to": "campus_service_23",
+      "distance": 172,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "???????23"
+    },
+    {
+      "from": "campus_service_01",
+      "to": "campus_service_05",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????1"
+    },
+    {
+      "from": "campus_service_05",
+      "to": "campus_service_01",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????1"
+    },
+    {
+      "from": "campus_service_02",
+      "to": "campus_service_06",
+      "distance": 255,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????2"
+    },
+    {
+      "from": "campus_service_06",
+      "to": "campus_service_02",
+      "distance": 255,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????2"
+    },
+    {
+      "from": "campus_service_03",
+      "to": "campus_service_07",
+      "distance": 270,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????3"
+    },
+    {
+      "from": "campus_service_07",
+      "to": "campus_service_03",
+      "distance": 270,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????3"
+    },
+    {
+      "from": "campus_service_04",
+      "to": "campus_service_08",
+      "distance": 285,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????4"
+    },
+    {
+      "from": "campus_service_08",
+      "to": "campus_service_04",
+      "distance": 285,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????4"
+    },
+    {
+      "from": "campus_service_05",
+      "to": "campus_service_09",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????5"
+    },
+    {
+      "from": "campus_service_09",
+      "to": "campus_service_05",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????5"
+    },
+    {
+      "from": "campus_service_06",
+      "to": "campus_service_10",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????6"
+    },
+    {
+      "from": "campus_service_10",
+      "to": "campus_service_06",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????6"
+    },
+    {
+      "from": "campus_service_07",
+      "to": "campus_service_11",
+      "distance": 255,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????7"
+    },
+    {
+      "from": "campus_service_11",
+      "to": "campus_service_07",
+      "distance": 255,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????7"
+    },
+    {
+      "from": "campus_service_08",
+      "to": "campus_service_12",
+      "distance": 270,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????8"
+    },
+    {
+      "from": "campus_service_12",
+      "to": "campus_service_08",
+      "distance": 270,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????8"
+    },
+    {
+      "from": "campus_service_09",
+      "to": "campus_service_13",
+      "distance": 285,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????9"
+    },
+    {
+      "from": "campus_service_13",
+      "to": "campus_service_09",
+      "distance": 285,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????9"
+    },
+    {
+      "from": "campus_service_10",
+      "to": "campus_service_14",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????10"
+    },
+    {
+      "from": "campus_service_14",
+      "to": "campus_service_10",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????10"
+    },
+    {
+      "from": "campus_service_11",
+      "to": "campus_service_15",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????11"
+    },
+    {
+      "from": "campus_service_15",
+      "to": "campus_service_11",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????11"
+    },
+    {
+      "from": "campus_service_12",
+      "to": "campus_service_16",
+      "distance": 255,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????12"
+    },
+    {
+      "from": "campus_service_16",
+      "to": "campus_service_12",
+      "distance": 255,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????12"
+    },
+    {
+      "from": "campus_service_13",
+      "to": "campus_service_17",
+      "distance": 270,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????13"
+    },
+    {
+      "from": "campus_service_17",
+      "to": "campus_service_13",
+      "distance": 270,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????13"
+    },
+    {
+      "from": "campus_service_14",
+      "to": "campus_service_18",
+      "distance": 285,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????14"
+    },
+    {
+      "from": "campus_service_18",
+      "to": "campus_service_14",
+      "distance": 285,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????14"
+    },
+    {
+      "from": "campus_service_15",
+      "to": "campus_service_19",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????15"
+    },
+    {
+      "from": "campus_service_19",
+      "to": "campus_service_15",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????15"
+    },
+    {
+      "from": "campus_service_16",
+      "to": "campus_service_20",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????16"
+    },
+    {
+      "from": "campus_service_20",
+      "to": "campus_service_16",
+      "distance": 240,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????16"
+    },
+    {
+      "from": "campus_service_17",
+      "to": "campus_service_21",
+      "distance": 255,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????17"
+    },
+    {
+      "from": "campus_service_21",
+      "to": "campus_service_17",
+      "distance": 255,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????17"
+    },
+    {
+      "from": "campus_service_18",
+      "to": "campus_service_22",
+      "distance": 270,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????18"
+    },
+    {
+      "from": "campus_service_22",
+      "to": "campus_service_18",
+      "distance": 270,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????18"
+    },
+    {
+      "from": "campus_service_19",
+      "to": "campus_service_23",
+      "distance": 285,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????19"
+    },
+    {
+      "from": "campus_service_23",
+      "to": "campus_service_19",
+      "distance": 285,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????19"
+    },
+    {
+      "from": "campus_service_20",
+      "to": "campus_service_24",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????20"
+    },
+    {
+      "from": "campus_service_24",
+      "to": "campus_service_20",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "?????????20"
+    },
+    {
+      "from": "gate_east",
+      "to": "campus_service_13",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????13"
+    },
+    {
+      "from": "campus_service_13",
+      "to": "gate_east",
+      "distance": 300,
+      "type": "outdoor_road",
+      "congestion": 0.9,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "??????13"
+    }
   ]
 }
