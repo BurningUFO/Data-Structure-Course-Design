@@ -1,0 +1,82 @@
+[
+  {
+    "id": "user_001",
+    "name": "张三",
+    "role": "student",
+    "interests": ["校园", "秋景", "图书馆"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_002",
+    "name": "李四",
+    "role": "student",
+    "interests": ["美食", "食堂", "校园生活"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_003",
+    "name": "王五",
+    "role": "tourist",
+    "interests": ["自然景区", "日出", "登山"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_004",
+    "name": "赵六",
+    "role": "tourist",
+    "interests": ["历史文化", "摄影", "博物馆"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_005",
+    "name": "孙七",
+    "role": "student",
+    "interests": ["家常美食", "食堂", "日常"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_006",
+    "name": "周八",
+    "role": "student",
+    "interests": ["宿舍", "未名湖", "校园心情"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_007",
+    "name": "吴九",
+    "role": "tourist",
+    "interests": ["湖泊", "骑行", "茶文化"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_008",
+    "name": "郑十",
+    "role": "student",
+    "interests": ["运动", "跑步", "体育场"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_009",
+    "name": "冯十一",
+    "role": "tourist",
+    "interests": ["夜爬", "挑战", "自然风光"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_010",
+    "name": "陈十二",
+    "role": "tourist",
+    "interests": ["城市美食", "动物园", "亲子游"],
+    "home_site_id": "PKU",
+    "created_at": "2026-05-10"
+  }
+]

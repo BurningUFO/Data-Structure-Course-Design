@@ -12,7 +12,7 @@
     "tags": ["校园", "秋景", "游记"],
     "views": 1200,
     "created_at": "2026-09-15",
-    "images": []
+    "images": ["media/placeholders/pku_autumn_yanyuan.jpg"]
   },
   {
     "id": "diary_002",
@@ -27,7 +27,7 @@
     "tags": ["美食", "食堂", "北大"],
     "views": 2500,
     "created_at": "2026-10-08",
-    "images": []
+    "images": ["media/placeholders/pku_canteen_food.jpg"]
   },
   {
     "id": "diary_003",
@@ -42,7 +42,7 @@
     "tags": ["学习", "图书馆", "攻略"],
     "views": 980,
     "created_at": "2026-11-20",
-    "images": []
+    "images": ["media/placeholders/pku_library_study.jpg"]
   },
   {
     "id": "diary_004",
@@ -63,8 +63,8 @@
     "id": "diary_005",
     "title": "初探五四体育场",
     "content": "今天去五四体育场跑了五公里，操场环境很好，塑胶跑道很新。旁边有篮球场和网球场，运动氛围浓厚。晚上还亮灯，适合饭后散步锻炼。",
-    "author_id": "user_002",
-    "author_name": "李四",
+    "author_id": "user_008",
+    "author_name": "郑十",
     "destination": "北京大学",
     "destination_node_id": "sports_ground",
     "heat": 65,
@@ -108,8 +108,8 @@
     "id": "diary_008",
     "title": "夜爬泰山看日出",
     "content": "半夜十一点开始爬泰山，一路上全是夜爬的人，打着手电筒的山路像一条火龙。凌晨四点半到达玉皇顶，占了个好位置等日出。当太阳从云海中跃出的那一刻，所有的疲惫都值了！",
-    "author_id": "user_003",
-    "author_name": "王五",
+    "author_id": "user_009",
+    "author_name": "冯十一",
     "destination": "泰山风景区",
     "destination_node_id": null,
     "heat": 94,
@@ -162,14 +162,14 @@
     "tags": ["未名湖", "冬景", "期末", "心情"],
     "views": 550,
     "created_at": "2027-01-15",
-    "images": []
+    "images": ["media/placeholders/pku_winter_lake.jpg"]
   },
   {
     "id": "diary_012",
     "title": "成都美食之旅",
     "content": "三天吃了八顿火锅！成都的美食真是名不虚传，从锦里的小吃到玉林的苍蝇馆子，每一口都是惊喜。大熊猫基地的熊猫也萌翻了，坐在那里吃竹子能看一整天。",
-    "author_id": "user_005",
-    "author_name": "孙七",
+    "author_id": "user_010",
+    "author_name": "陈十二",
     "destination": "成都大熊猫繁育基地",
     "destination_node_id": null,
     "heat": 91,
