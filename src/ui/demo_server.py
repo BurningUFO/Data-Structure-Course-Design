@@ -10,7 +10,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Callable
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 if __package__ is None or __package__ == "":
     sys.path.append(str(Path(__file__).resolve().parents[2]))
@@ -28,6 +28,13 @@ STATIC_FILES = {
 
 def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
     static_root = Path(__file__).resolve().parent / "static"
+    service_cache: dict[str, DemoUIService] = {service.site_id: service}
+
+    def resolve_service(site_id: object | None = None) -> DemoUIService:
+        normalized_site_id = str(site_id or service.site_id).strip() or service.site_id
+        if normalized_site_id not in service_cache:
+            service_cache[normalized_site_id] = DemoUIService(site_id=normalized_site_id)
+        return service_cache[normalized_site_id]
 
     class DemoRequestHandler(BaseHTTPRequestHandler):
         server_version = "MemberBDemoUI/1.0"
@@ -37,19 +44,53 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
             path = parsed.path
 
             if path == "/api/bootstrap":
-                self._write_json(service.get_bootstrap_payload())
+                query = parse_qs(parsed.query)
+                site_id = (query.get("site_id") or query.get("site") or [None])[0]
+                try:
+                    selected_service = resolve_service(site_id)
+                except Exception as error:
+                    self._write_json(
+                        {
+                            "success": False,
+                            "message": f"{type(error).__name__}: {error}",
+                        },
+                        status=HTTPStatus.BAD_REQUEST,
+                    )
+                    return
+                self._write_json(selected_service.get_bootstrap_payload())
                 return
 
             if path == "/api/health":
-                self._write_json({"success": True, "site_id": service.site_id})
+                query = parse_qs(parsed.query)
+                site_id = (query.get("site_id") or query.get("site") or [None])[0]
+                try:
+                    selected_service = resolve_service(site_id)
+                except Exception as error:
+                    self._write_json(
+                        {
+                            "success": False,
+                            "message": f"{type(error).__name__}: {error}",
+                        },
+                        status=HTTPStatus.BAD_REQUEST,
+                    )
+                    return
+                self._write_json({"success": True, "site_id": selected_service.site_id})
                 return
 
             file_name = STATIC_FILES.get(path)
-            if file_name is None:
+            if file_name is not None:
+                file_path = static_root / file_name
+            elif path.startswith("/assets/"):
+                asset_name = path.removeprefix("/assets/")
+                file_path = (static_root / "assets" / asset_name).resolve()
+                asset_root = (static_root / "assets").resolve()
+                if asset_root not in file_path.parents and file_path != asset_root:
+                    self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
+                    return
+            else:
                 self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
                 return
 
-            file_path = static_root / file_name
             if not file_path.exists():
                 self.send_error(HTTPStatus.NOT_FOUND, "Static file missing")
                 return
@@ -67,12 +108,31 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
             if body is None:
                 return
 
+            try:
+                selected_service = resolve_service(body.get("site_id"))
+            except Exception as error:
+                self._write_json(
+                    {
+                        "success": False,
+                        "message": f"{type(error).__name__}: {error}",
+                    },
+                    status=HTTPStatus.BAD_REQUEST,
+                )
+                return
+
             routes: dict[str, Callable[[dict[str, object]], dict[str, object]]] = {
-                "/api/search/scenic": service.scenic_search,
-                "/api/search/places": service.place_search,
-                "/api/recommend/catering": service.catering_search,
-                "/api/diaries/fulltext": service.diary_fulltext_search,
-                "/api/route": service.plan_route,
+                "/api/search/scenic": selected_service.scenic_search,
+                "/api/search/places": selected_service.place_search,
+                "/api/recommend/catering": selected_service.catering_search,
+                "/api/diaries/fulltext": selected_service.diary_fulltext_search,
+                "/api/diaries": selected_service.create_diary,
+                "/api/diaries/create": selected_service.create_diary,
+                "/api/diaries/update": selected_service.update_diary,
+                "/api/diaries/delete": selected_service.delete_diary,
+                "/api/diaries/rate": selected_service.rate_diary,
+                "/api/aigc/preview": selected_service.aigc_preview,
+                "/api/route": selected_service.plan_route,
+                "/api/route/multi": selected_service.plan_multi_route,
             }
 
             handler = routes.get(parsed.path)

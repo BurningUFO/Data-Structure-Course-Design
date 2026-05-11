@@ -1,14 +1,30 @@
 const MAP_WIDTH = 1000;
 const MAP_HEIGHT = 720;
 const MAP_PADDING = 88;
+const MAP_MIN_SCALE = 0.75;
+const MAP_MAX_SCALE = 4;
+const MAP_ZOOM_STEP = 0.0016;
 
 const state = {
   bootstrap: null,
+  activePage: "home",
   activeTab: "scenic",
+  expandedPanel: "",
+  expandedPanelElement: null,
+  expandedPanelPlaceholder: null,
   currentStartNodeId: "",
   focusedNodeId: "",
   currentResults: [],
   currentRoute: null,
+  selectedDiaryId: "",
+  mapView: {
+    scale: 1,
+    translateX: 0,
+    translateY: 0,
+    isPanning: false,
+    lastPointerX: 0,
+    lastPointerY: 0,
+  },
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,17 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function init() {
+  bindPageShell();
   bindTabSwitching();
   bindForms();
 
   try {
-    const bootstrap = await apiGet("/api/bootstrap");
-    state.bootstrap = bootstrap;
-    state.currentStartNodeId = bootstrap.default_start_node;
-    hydrateBootstrap(bootstrap);
-    renderMap();
+    await loadSiteBootstrap("");
     setStatus(
-      `演示就绪，默认起点为 ${getNodeName(state.currentStartNodeId)}。`,
+      `系统就绪，默认起点为 ${getNodeName(state.currentStartNodeId)}。`,
       "success",
     );
   } catch (error) {
@@ -34,23 +47,167 @@ async function init() {
   }
 }
 
+async function loadSiteBootstrap(siteId) {
+  const query = siteId ? `?site_id=${encodeURIComponent(siteId)}` : "";
+  const bootstrap = await apiGet(`/api/bootstrap${query}`);
+  state.bootstrap = bootstrap;
+  state.currentStartNodeId = bootstrap.default_start_node;
+  hydrateBootstrap(bootstrap);
+  resetInteractionState({ clearForms: true });
+  renderMap();
+  return bootstrap;
+}
+
+function bindPageShell() {
+  document.addEventListener("click", (event) => {
+    const pageButton = event.target.closest("[data-page]");
+    if (!pageButton) {
+      return;
+    }
+
+    switchPage(pageButton.dataset.page);
+  });
+
+  const sidebarToggle = document.querySelector("#sidebar-toggle");
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener("click", () => {
+      const layout = document.querySelector("#app-layout");
+      const isCollapsed = layout.classList.toggle("sidebar-collapsed");
+      sidebarToggle.setAttribute("aria-expanded", String(!isCollapsed));
+      sidebarToggle.querySelector(".collapse-icon").textContent = isCollapsed ? "›" : "‹";
+      const label = sidebarToggle.querySelector(".side-label");
+      if (label) {
+        label.textContent = isCollapsed ? "展开侧边栏" : "收起侧边栏";
+      }
+    });
+  }
+
+  document.addEventListener("click", (event) => {
+    const expandButton = event.target.closest("[data-expand-panel]");
+    if (expandButton) {
+      togglePanelExpansion(expandButton.dataset.expandPanel);
+      return;
+    }
+
+    if (event.target.matches("#panel-modal-backdrop")) {
+      closeExpandedPanel();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeExpandedPanel();
+    }
+  });
+}
+
+function switchPage(page) {
+  if (!page) {
+    return;
+  }
+
+  state.activePage = page;
+
+  document.querySelectorAll("[data-page]").forEach((item) => {
+    item.classList.toggle("active", item.dataset.page === page);
+  });
+
+  document.querySelectorAll("[data-page-panel]").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.pagePanel === page);
+  });
+
+  if (page === "app") {
+    renderMap();
+  }
+}
+
+function togglePanelExpansion(panelName) {
+  if (!panelName) {
+    return;
+  }
+
+  if (state.expandedPanel === panelName) {
+    closeExpandedPanel();
+    return;
+  }
+
+  closeExpandedPanel();
+  const panel = document.querySelector(`[data-expandable-panel="${panelName}"]`);
+  const backdrop = document.querySelector("#panel-modal-backdrop");
+  if (!panel || !backdrop) {
+    return;
+  }
+
+  state.expandedPanel = panelName;
+  state.expandedPanelElement = panel;
+  state.expandedPanelPlaceholder = document.createComment(`expanded-panel-${panelName}`);
+  panel.parentNode.insertBefore(state.expandedPanelPlaceholder, panel);
+  document.body.appendChild(panel);
+  panel.classList.add("panel-expanded");
+  backdrop.hidden = false;
+  document.body.classList.add("modal-open");
+  syncExpandButtons(panelName, true);
+
+  if (panelName === "map") {
+    renderMap();
+  }
+}
+
+function closeExpandedPanel() {
+  if (!state.expandedPanel) {
+    return;
+  }
+
+  const expandedPanelName = state.expandedPanel;
+  const expandedPanel = state.expandedPanelElement;
+  if (expandedPanel) {
+    expandedPanel.classList.remove("panel-expanded");
+  }
+
+  if (
+    expandedPanel &&
+    state.expandedPanelPlaceholder &&
+    state.expandedPanelPlaceholder.parentNode
+  ) {
+    state.expandedPanelPlaceholder.parentNode.insertBefore(
+      expandedPanel,
+      state.expandedPanelPlaceholder,
+    );
+    state.expandedPanelPlaceholder.remove();
+  }
+
+  const backdrop = document.querySelector("#panel-modal-backdrop");
+  if (backdrop) {
+    backdrop.hidden = true;
+  }
+
+  document.body.classList.remove("modal-open");
+  state.expandedPanel = "";
+  state.expandedPanelElement = null;
+  state.expandedPanelPlaceholder = null;
+  syncExpandButtons(expandedPanelName, false);
+
+  if (expandedPanelName === "map") {
+    renderMap();
+  }
+}
+
+function syncExpandButtons(panelName, isExpanded) {
+  document.querySelectorAll(`[data-expand-panel="${panelName}"]`).forEach((button) => {
+    button.textContent = isExpanded ? "还原" : "放大";
+    button.setAttribute("aria-label", isExpanded ? "还原面板" : "放大面板");
+    button.classList.toggle("active", isExpanded);
+  });
+}
+
 function bindTabSwitching() {
-  document.querySelector("#tab-list").addEventListener("click", (event) => {
-    const button = event.target.closest(".tab-button");
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-tab]");
     if (!button) {
       return;
     }
 
-    const tab = button.dataset.tab;
-    state.activeTab = tab;
-
-    document.querySelectorAll(".tab-button").forEach((item) => {
-      item.classList.toggle("active", item === button);
-    });
-
-    document.querySelectorAll(".tab-panel").forEach((panel) => {
-      panel.classList.toggle("active", panel.dataset.panel === tab);
-    });
+    switchTab(button.dataset.tab);
   });
 }
 
@@ -96,10 +253,43 @@ function bindForms() {
     });
   });
 
+  document.querySelector("#aigc-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await runAigcPreview();
+  });
+
+  document.querySelector("#aigc-sample").addEventListener("change", (event) => {
+    fillAigcFormFromSample(event.target.value);
+  });
+
+  document.querySelector("#diary-create-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await createDiaryFromForm();
+  });
+
+  document.querySelector("#diary-update-button").addEventListener("click", async () => {
+    await updateDiaryFromForm();
+  });
+
+  document.querySelector("#diary-rate-button").addEventListener("click", async () => {
+    await rateDiaryFromForm();
+  });
+
+  document.querySelector("#diary-clear-button").addEventListener("click", () => {
+    clearDiaryManagementForm();
+    setStatus("日记管理表单已清空，当前为新建模式。", "info");
+  });
+
   document.querySelector("#route-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const targetNodeId = document.querySelector("#route-target").value;
     await planRoute(targetNodeId);
+  });
+
+  document.querySelector("#multi-route-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const targetNodeIds = selectedValues("#multi-route-targets");
+    await planMultiRoute(targetNodeIds);
   });
 
   document.querySelector("#global-start-node").addEventListener("change", (event) => {
@@ -113,7 +303,50 @@ function bindForms() {
     );
   });
 
+  document.querySelector("#site-selector").addEventListener("change", async (event) => {
+    const selectedSiteId = event.target.value;
+    const currentSiteId = state.bootstrap ? state.bootstrap.site.id : selectedSiteId;
+    if (selectedSiteId === currentSiteId) {
+      resetInteractionState({ clearForms: true });
+      setStatus(`当前站点为 ${state.bootstrap.site.name}，页面状态已重置。`, "info");
+      return;
+    }
+
+    setStatus(feedback("site_switching", "正在切换站点并重置页面状态..."), "loading");
+    try {
+      const bootstrap = await loadSiteBootstrap(selectedSiteId);
+      switchTab("scenic");
+      setStatus(
+        `${feedback("site_switched", "站点已切换，页面状态已重置。")} 当前站点：${bootstrap.site.name}。`,
+        "success",
+      );
+    } catch (error) {
+      event.target.value = currentSiteId;
+      setStatus(`站点切换失败：${error.message}`, "error");
+    }
+  });
+
+  bindMapInteractions();
+
   document.querySelector("#results-list").addEventListener("click", async (event) => {
+    const diaryEditButton = event.target.closest("[data-diary-edit-id]");
+    if (diaryEditButton) {
+      loadDiaryIntoForm(diaryEditButton.dataset.diaryEditId);
+      return;
+    }
+
+    const diaryRateButton = event.target.closest("[data-diary-rate-id]");
+    if (diaryRateButton) {
+      await rateDiary(diaryRateButton.dataset.diaryRateId, 5);
+      return;
+    }
+
+    const diaryDeleteButton = event.target.closest("[data-diary-delete-id]");
+    if (diaryDeleteButton) {
+      await deleteDiary(diaryDeleteButton.dataset.diaryDeleteId);
+      return;
+    }
+
     const focusButton = event.target.closest("[data-focus-node]");
     if (focusButton) {
       state.focusedNodeId = focusButton.dataset.focusNode;
@@ -129,12 +362,216 @@ function bindForms() {
   });
 }
 
+function bindMapInteractions() {
+  const svg = document.querySelector("#campus-map");
+  const resetButton = document.querySelector("#map-reset-view");
+  if (!svg) {
+    return;
+  }
+
+  svg.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    zoomMapAt(event.offsetX, event.offsetY, event.deltaY);
+  }, { passive: false });
+
+  svg.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) {
+      return;
+    }
+    state.mapView.isPanning = true;
+    state.mapView.lastPointerX = event.clientX;
+    state.mapView.lastPointerY = event.clientY;
+    svg.classList.add("is-panning");
+    svg.setPointerCapture(event.pointerId);
+  });
+
+  svg.addEventListener("pointermove", (event) => {
+    if (!state.mapView.isPanning) {
+      return;
+    }
+    const dx = event.clientX - state.mapView.lastPointerX;
+    const dy = event.clientY - state.mapView.lastPointerY;
+    state.mapView.lastPointerX = event.clientX;
+    state.mapView.lastPointerY = event.clientY;
+    state.mapView.translateX += dx;
+    state.mapView.translateY += dy;
+    renderMap();
+  });
+
+  const stopPanning = (event) => {
+    if (!state.mapView.isPanning) {
+      return;
+    }
+    state.mapView.isPanning = false;
+    svg.classList.remove("is-panning");
+    if (event.pointerId !== undefined && svg.hasPointerCapture(event.pointerId)) {
+      svg.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  svg.addEventListener("pointerup", stopPanning);
+  svg.addEventListener("pointercancel", stopPanning);
+  svg.addEventListener("pointerleave", stopPanning);
+
+  if (resetButton) {
+    resetButton.addEventListener("click", () => {
+      resetMapView();
+      setStatus("校园简图已还原到原始比例。", "info");
+    });
+  }
+}
+
+function zoomMapAt(offsetX, offsetY, deltaY) {
+  const currentScale = state.mapView.scale;
+  const zoomFactor = Math.exp(-deltaY * MAP_ZOOM_STEP);
+  const nextScale = clamp(currentScale * zoomFactor, MAP_MIN_SCALE, MAP_MAX_SCALE);
+  if (nextScale === currentScale) {
+    return;
+  }
+
+  const svg = document.querySelector("#campus-map");
+  const rect = svg.getBoundingClientRect();
+  const pointerX = (offsetX / Math.max(rect.width, 1)) * MAP_WIDTH;
+  const pointerY = (offsetY / Math.max(rect.height, 1)) * MAP_HEIGHT;
+  const mapX = (pointerX - state.mapView.translateX) / currentScale;
+  const mapY = (pointerY - state.mapView.translateY) / currentScale;
+
+  state.mapView.scale = nextScale;
+  state.mapView.translateX = pointerX - mapX * nextScale;
+  state.mapView.translateY = pointerY - mapY * nextScale;
+  renderMap();
+}
+
+function resetMapView() {
+  resetMapViewState();
+  renderMap();
+}
+
+function resetMapViewState() {
+  state.mapView.scale = 1;
+  state.mapView.translateX = 0;
+  state.mapView.translateY = 0;
+  state.mapView.isPanning = false;
+}
+
+function switchTab(tab) {
+  if (!tab) {
+    return;
+  }
+
+  switchPage("app");
+  state.activeTab = tab;
+
+  document.querySelectorAll("[data-tab]").forEach((item) => {
+    item.classList.toggle("active", item.dataset.tab === tab);
+  });
+
+  document.querySelectorAll(".tab-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.panel === tab);
+  });
+
+  updateActiveFeatureCaption();
+
+  if (tab === "help") {
+    setStatus("已打开帮助说明，可按推荐链路完成系统演示。", "info");
+  }
+}
+
+function resetInteractionState(options = {}) {
+  state.currentResults = [];
+  state.currentRoute = null;
+  state.focusedNodeId = "";
+  state.currentStartNodeId = state.bootstrap ? state.bootstrap.default_start_node : "";
+  state.selectedDiaryId = "";
+  resetMapViewState();
+
+  if (options.clearForms) {
+    clearUserInputs();
+  }
+
+  renderResults({
+    success: true,
+    message: "暂无结果",
+    total: 0,
+    query_type: "idle",
+    results: [],
+  });
+  renderRoute(null);
+  renderMap();
+}
+
+function clearUserInputs() {
+  [
+    "#scenic-keyword",
+    "#place-keyword",
+    "#catering-keyword",
+    "#catering-cuisine",
+    "#diary-query",
+    "#aigc-image",
+    "#aigc-prompt",
+  ].forEach((selector) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      element.value = "";
+    }
+  });
+
+  setSelectValue("#scenic-category", "");
+  setSelectValue("#place-category", "");
+  setSelectValue("#scenic-sort", "heat");
+  setSelectValue("#place-sort", "distance_m");
+  setSelectValue("#catering-sort", "distance_m");
+  setSelectValue("#route-target", "library");
+  setMultipleSelectValues("#multi-route-targets", []);
+  setSelectValue("#route-strategy", "shortest_distance");
+  setSelectValue("#route-transport", "any");
+  setSelectValue("#global-start-node", state.currentStartNodeId);
+  fillAigcFormFromSample(defaultAigcSampleId());
+  clearDiaryManagementForm();
+  const returnToStart = document.querySelector("#multi-route-return");
+  if (returnToStart) {
+    returnToStart.checked = true;
+  }
+}
+
+function setSelectValue(selector, value) {
+  const element = document.querySelector(selector);
+  if (!element) {
+    return;
+  }
+  const hasValue = Array.from(element.options).some((option) => option.value === value);
+  if (hasValue) {
+    element.value = value;
+  }
+}
+
+function setMultipleSelectValues(selector, values) {
+  const selectedValuesSet = new Set(values);
+  const element = document.querySelector(selector);
+  if (!element) {
+    return;
+  }
+  Array.from(element.options).forEach((option) => {
+    option.selected = selectedValuesSet.has(option.value);
+  });
+}
+
+function selectedValues(selector) {
+  const element = document.querySelector(selector);
+  if (!element) {
+    return [];
+  }
+  return Array.from(element.selectedOptions).map((option) => option.value);
+}
+
 function hydrateBootstrap(bootstrap) {
+  document.querySelector("#product-title").textContent = bootstrap.product.name;
+  document.querySelector("#product-stage").textContent = bootstrap.product.stage;
   document.querySelector("#hero-title").textContent = `${bootstrap.site.name} 导览演示台`;
   document.querySelector("#hero-description").textContent = [
     bootstrap.site.description,
     bootstrap.site.location ? `地点：${bootstrap.site.location}` : "",
-    "当前页面覆盖综合查询、场所查询、美食推荐、全文检索与单目标路径规划。",
+    "当前页面覆盖首页、站点、导航、帮助和核心功能入口。",
   ]
     .filter(Boolean)
     .join(" ");
@@ -144,6 +581,15 @@ function hydrateBootstrap(bootstrap) {
     bootstrap.stats.route_target_count,
   );
   document.querySelector("#stat-diaries").textContent = String(bootstrap.stats.diary_count);
+
+  populateSelect(
+    document.querySelector("#site-selector"),
+    bootstrap.sites.map((item) => ({
+      value: item.id,
+      label: `${item.name} · ${item.location || item.id}`,
+    })),
+    bootstrap.site.id,
+  );
 
   populateSelect(
     document.querySelector("#global-start-node"),
@@ -161,6 +607,41 @@ function hydrateBootstrap(bootstrap) {
       label: `${item.name} · ${item.category_label} · ${item.graph_type}`,
     })),
     "library",
+  );
+
+  populateSelect(
+    document.querySelector("#multi-route-targets"),
+    bootstrap.route_targets.map((item) => ({
+      value: item.id,
+      label: `${item.name} · ${item.category_label} · ${item.graph_type}`,
+    })),
+    "",
+  );
+
+  const diaryDestinationOptions = [{ value: "", label: "不绑定路线目标" }].concat(
+    bootstrap.route_targets.map((item) => ({
+      value: item.id,
+      label: `${item.name} · ${item.category_label} · ${item.graph_type}`,
+    })),
+  );
+  populateSelect(document.querySelector("#diary-destination-node"), diaryDestinationOptions, "");
+
+  populateSelect(
+    document.querySelector("#aigc-sample"),
+    bootstrap.aigc_samples.map((item) => ({
+      value: item.sample_id,
+      label: `${item.label} · ${item.output_type}`,
+    })),
+    defaultAigcSampleId(),
+  );
+
+  populateSelect(
+    document.querySelector("#aigc-style"),
+    bootstrap.controls.aigc_styles.map((item) => ({
+      value: item.value,
+      label: item.label,
+    })),
+    bootstrap.aigc_samples[0]?.style || "",
   );
 
   populateSelect(
@@ -209,7 +690,52 @@ function hydrateBootstrap(bootstrap) {
   renderPresetButtons("#place-presets", bootstrap.presets.place, handlePlacePreset);
   renderPresetButtons("#catering-presets", bootstrap.presets.catering, handleCateringPreset);
   renderPresetButtons("#diary-presets", bootstrap.presets.diary, handleDiaryPreset);
+  renderPresetButtons("#aigc-presets", bootstrap.presets.aigc, handleAigcPreset);
   renderPresetButtons("#route-presets", bootstrap.presets.route, handleRoutePreset);
+  renderPresetButtons("#multi-route-presets", bootstrap.presets.multi_route, handleMultiRoutePreset);
+  fillAigcFormFromSample(defaultAigcSampleId());
+  renderFeatureGrid(bootstrap.navigation);
+  renderHelpPanel(bootstrap.help);
+  updateActiveFeatureCaption();
+}
+
+function renderFeatureGrid(navigation) {
+  const container = document.querySelector("#feature-grid");
+  container.innerHTML = navigation
+    .map((item) => {
+      const statusLabel = item.status === "ready" ? "可使用" : "功能扩展";
+      return `
+        <button class="feature-card${item.id === state.activeTab ? " active" : ""}" type="button" data-tab="${escapeHtml(item.id)}">
+          <span class="feature-status">${escapeHtml(statusLabel)}</span>
+          <strong>${escapeHtml(item.label)}</strong>
+          <span>${escapeHtml(item.description)}</span>
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function renderHelpPanel(help) {
+  document.querySelector("#help-stage").textContent = help.stage;
+  document.querySelector("#help-launch").textContent =
+    `启动：${help.launch_command}，浏览器访问：${help.browser_url}`;
+  document.querySelector("#help-flow").innerHTML = help.demo_flow
+    .map((item) => `<li>${escapeHtml(item)}</li>`)
+    .join("");
+  document.querySelector("#help-checks").innerHTML = help.checks
+    .map((item) => `<li>${escapeHtml(item)}</li>`)
+    .join("");
+}
+
+function updateActiveFeatureCaption() {
+  if (!state.bootstrap) {
+    return;
+  }
+  const feature = state.bootstrap.navigation.find((item) => item.id === state.activeTab);
+  const caption = document.querySelector("#active-feature-caption");
+  if (feature && caption) {
+    caption.textContent = feature.description;
+  }
 }
 
 function renderPresetButtons(containerSelector, presets, onClick) {
@@ -270,13 +796,306 @@ function handleDiaryPreset(preset) {
   });
 }
 
+function handleAigcPreset(preset) {
+  fillAigcFormFromSample(preset.sample_id || defaultAigcSampleId());
+  void runAigcPreview();
+}
+
+async function runAigcPreview() {
+  setStatus("正在生成 AIGC 轻量预览...", "loading");
+  renderRoute(null, "AIGC 预览生成中，路径状态已重置。");
+
+  try {
+    const response = await apiPost("/api/aigc/preview", {
+      sample_id: document.querySelector("#aigc-sample").value,
+      prompt: document.querySelector("#aigc-prompt").value.trim(),
+      style: document.querySelector("#aigc-style").value,
+      duration_s: document.querySelector("#aigc-duration").value,
+    });
+
+    state.currentResults = response.results || response.data || [];
+    state.currentRoute = null;
+    state.focusedNodeId = "";
+    renderResults(response);
+    renderRoute(null, "AIGC 预览不产生路径；如需导航，请从查询或日记结果进入路线规划。");
+    renderMap();
+
+    if (!response.success) {
+      setStatus(response.message || "AIGC 预览生成失败", "error");
+      return;
+    }
+
+    const preview = state.currentResults[0];
+    setStatus(
+      `AIGC 轻量预览已生成：${preview.title}。当前为模板化原型，不调用真实模型。`,
+      "success",
+    );
+  } catch (error) {
+    state.currentResults = [];
+    state.currentRoute = null;
+    state.focusedNodeId = "";
+    renderResults({
+      success: false,
+      message: `AIGC 预览失败：${error.message}`,
+      total: 0,
+      query_type: "aigc_preview_error",
+      results: [],
+    });
+    renderRoute(null, "AIGC 预览失败，路径状态已重置。");
+    renderMap();
+    setStatus(`AIGC 预览失败：${error.message}`, "error");
+  }
+}
+
+function fillAigcFormFromSample(sampleId) {
+  const sample = findAigcSample(sampleId) || findAigcSample(defaultAigcSampleId());
+  if (!sample) {
+    return;
+  }
+
+  setSelectValue("#aigc-sample", sample.sample_id);
+  document.querySelector("#aigc-image").value = sample.image_placeholder || "";
+  document.querySelector("#aigc-prompt").value = sample.text_prompt || "";
+  setSelectValue("#aigc-style", sample.style || "");
+  document.querySelector("#aigc-duration").value = sample.duration_s || 8;
+}
+
+function findAigcSample(sampleId) {
+  if (!state.bootstrap || !Array.isArray(state.bootstrap.aigc_samples)) {
+    return null;
+  }
+  return state.bootstrap.aigc_samples.find((item) => item.sample_id === sampleId) || null;
+}
+
+function defaultAigcSampleId() {
+  if (!state.bootstrap || !Array.isArray(state.bootstrap.aigc_samples)) {
+    return "";
+  }
+  return state.bootstrap.aigc_samples[0]?.sample_id || "";
+}
+
+async function createDiaryFromForm() {
+  const payload = collectDiaryFormPayload();
+  await runDiaryManagement(
+    "/api/diaries/create",
+    payload,
+    "日记创建成功，已在结果区展示并可直接规划路线。",
+    { keepSelected: true },
+  );
+}
+
+async function updateDiaryFromForm() {
+  const diaryId = selectedDiaryId();
+  if (!diaryId) {
+    setStatus("请先从日记结果卡片载入一条日记，或先创建一条日记。", "error");
+    return;
+  }
+
+  await runDiaryManagement(
+    "/api/diaries/update",
+    {
+      id: diaryId,
+      updates: collectDiaryFormPayload(),
+    },
+    "日记更新成功，最新内容已在结果区展示。",
+    { keepSelected: true },
+  );
+}
+
+async function rateDiaryFromForm() {
+  const diaryId = selectedDiaryId();
+  const rating = document.querySelector("#diary-rating").value;
+  if (!diaryId) {
+    setStatus("请先选择要评分的日记。", "error");
+    return;
+  }
+  if (rating === "") {
+    setStatus("请先填写 0 到 5 之间的评分。", "error");
+    return;
+  }
+
+  await rateDiary(diaryId, rating);
+}
+
+async function rateDiary(diaryId, rating) {
+  await runDiaryManagement(
+    "/api/diaries/rate",
+    {
+      id: diaryId,
+      rating,
+    },
+    "日记评分已更新。",
+    { keepSelected: true },
+  );
+}
+
+async function deleteDiary(diaryId) {
+  await runDiaryManagement(
+    "/api/diaries/delete",
+    { id: diaryId },
+    "日记已从当前内存态演示数据中删除。",
+    { clearSelected: true },
+  );
+}
+
+async function runDiaryManagement(url, payload, successMessage, options = {}) {
+  setStatus("正在提交日记管理操作...", "loading");
+  renderRoute(null, "日记管理操作中，路径状态已重置。");
+
+  try {
+    const response = await apiPost(url, payload);
+    state.currentResults = response.results || response.data || [];
+    state.currentRoute = null;
+    state.focusedNodeId = firstMappableNodeId(state.currentResults);
+    renderResults(response);
+    renderRoute(null);
+    renderMap();
+    syncDiaryStats(response);
+
+    if (!response.success) {
+      setStatus(response.message || "日记管理操作失败", "error");
+      return;
+    }
+
+    const firstResult = state.currentResults[0];
+    if (options.clearSelected) {
+      clearDiaryManagementForm();
+    } else if (options.keepSelected && firstResult) {
+      fillDiaryManagementForm(firstResult);
+    }
+
+    setStatus(successMessage, "success");
+  } catch (error) {
+    state.currentResults = [];
+    state.currentRoute = null;
+    state.focusedNodeId = "";
+    renderResults({
+      success: false,
+      message: `日记管理操作失败：${error.message}`,
+      total: 0,
+      query_type: "diary_management_error",
+      results: [],
+    });
+    renderRoute(null, "日记管理操作失败，路径状态已重置。");
+    renderMap();
+    setStatus(`日记管理操作失败：${error.message}`, "error");
+  }
+}
+
+function collectDiaryFormPayload() {
+  const ratingValue = document.querySelector("#diary-rating").value;
+  const payload = {
+    title: document.querySelector("#diary-title").value.trim(),
+    content: document.querySelector("#diary-content").value.trim(),
+    destination: document.querySelector("#diary-destination").value.trim(),
+    destination_node_id: document.querySelector("#diary-destination-node").value,
+    tags: splitListInput(document.querySelector("#diary-tags").value),
+    images: splitListInput(document.querySelector("#diary-images").value),
+    videos: splitListInput(document.querySelector("#diary-videos").value),
+  };
+
+  if (ratingValue !== "") {
+    payload.rating = Number(ratingValue);
+  }
+  return payload;
+}
+
+function splitListInput(value) {
+  return String(value || "")
+    .replaceAll("，", ",")
+    .replaceAll("、", ",")
+    .replaceAll(";", ",")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function selectedDiaryId() {
+  return state.selectedDiaryId || document.querySelector("#diary-edit-id").value.trim();
+}
+
+function loadDiaryIntoForm(diaryId) {
+  const diary = state.currentResults.find((item) => item.id === diaryId || item.diary_id === diaryId);
+  if (!diary) {
+    setStatus("当前结果中找不到这条日记，无法载入编辑。", "error");
+    return;
+  }
+
+  fillDiaryManagementForm(diary);
+  switchTab("diary");
+  setStatus(`已载入日记：${diary.title || diary.id}。`, "info");
+}
+
+function fillDiaryManagementForm(diary) {
+  const diaryId = diary.id || diary.diary_id || "";
+  state.selectedDiaryId = diaryId;
+  document.querySelector("#diary-edit-id").value = diaryId;
+  document.querySelector("#diary-selected-label").textContent = diaryId
+    ? `当前编辑：${diaryId}`
+    : "当前为新建模式";
+  document.querySelector("#diary-title").value = diary.title || "";
+  document.querySelector("#diary-content").value = diary.content || diary.snippet || "";
+  document.querySelector("#diary-destination").value = diary.destination || "";
+  setSelectValue("#diary-destination-node", diary.destination_node_id || diary.route_target_node_id || "");
+  document.querySelector("#diary-rating").value = diary.rating !== undefined ? diary.rating : "";
+  document.querySelector("#diary-tags").value = Array.isArray(diary.tags) ? diary.tags.join(", ") : "";
+  document.querySelector("#diary-images").value = Array.isArray(diary.images) ? diary.images.join(", ") : "";
+  document.querySelector("#diary-videos").value = Array.isArray(diary.videos) ? diary.videos.join(", ") : "";
+}
+
+function clearDiaryManagementForm() {
+  state.selectedDiaryId = "";
+  const fields = [
+    "#diary-edit-id",
+    "#diary-title",
+    "#diary-content",
+    "#diary-destination",
+    "#diary-rating",
+    "#diary-tags",
+    "#diary-images",
+    "#diary-videos",
+  ];
+  fields.forEach((selector) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      element.value = "";
+    }
+  });
+  setSelectValue("#diary-destination-node", "");
+  const selectedLabel = document.querySelector("#diary-selected-label");
+  if (selectedLabel) {
+    selectedLabel.textContent = "当前为新建模式";
+  }
+}
+
+function syncDiaryStats(response) {
+  const recordCount = response.ui ? response.ui.record_count : undefined;
+  if (recordCount !== undefined) {
+    document.querySelector("#stat-diaries").textContent = String(recordCount);
+  }
+}
+
 function handleRoutePreset(preset) {
   document.querySelector("#route-target").value = preset.target_node_id;
   void planRoute(preset.target_node_id);
 }
 
+function handleMultiRoutePreset(preset) {
+  const targetNodeIds = preset.target_node_ids || [];
+  setMultipleSelectValues("#multi-route-targets", targetNodeIds);
+  void planMultiRoute(targetNodeIds);
+}
+
 async function runQuery(url, payload) {
-  setStatus("正在查询，请稍候...", "info");
+  setStatus(feedback("query_loading", "正在查询，请稍候..."), "loading");
+  renderResults({
+    success: true,
+    message: "正在查询...",
+    total: 0,
+    query_type: "loading",
+    results: [],
+  });
+  renderRoute(null, "查询执行中，路径状态已重置。");
 
   try {
     const response = await apiPost(url, payload);
@@ -293,7 +1112,7 @@ async function runQuery(url, payload) {
     }
 
     if (state.currentResults.length === 0) {
-      setStatus("查询成功，但当前没有命中结果。", "info");
+      setStatus(feedback("query_empty", "查询成功，但当前没有命中结果。"), "empty");
       return;
     }
 
@@ -303,17 +1122,33 @@ async function runQuery(url, payload) {
       "success",
     );
   } catch (error) {
+    state.currentResults = [];
+    state.currentRoute = null;
+    state.focusedNodeId = "";
+    renderResults({
+      success: false,
+      message: `查询失败：${error.message}`,
+      total: 0,
+      query_type: "query_error",
+      results: [],
+    });
+    renderRoute(null, "查询失败，路径状态已重置。");
+    renderMap();
     setStatus(`查询失败：${error.message}`, "error");
   }
 }
 
 async function planRoute(targetNodeId) {
   if (!targetNodeId) {
+    state.currentRoute = null;
+    renderRoute(null, "当前结果缺少可规划的目标点。");
+    renderMap();
     setStatus("当前结果缺少可规划的目标点。", "error");
     return;
   }
 
-  setStatus("正在规划路径，请稍候...", "info");
+  setStatus(feedback("route_loading", "正在规划路径，请稍候..."), "loading");
+  renderRoute(null, "正在规划路径...");
 
   try {
     const response = await apiPost("/api/route", {
@@ -324,6 +1159,9 @@ async function planRoute(targetNodeId) {
     });
 
     if (!response.success) {
+      state.currentRoute = null;
+      renderRoute(null, response.message || feedback("route_unreachable", "当前路径不可达。"));
+      renderMap();
       setStatus(response.message || "路径规划失败", "error");
       return;
     }
@@ -337,13 +1175,61 @@ async function planRoute(targetNodeId) {
       "success",
     );
   } catch (error) {
+    state.currentRoute = null;
+    renderRoute(null, `路径规划失败：${error.message}`);
+    renderMap();
     setStatus(`路径规划失败：${error.message}`, "error");
   }
 }
 
-function clearRoute() {
+async function planMultiRoute(targetNodeIds) {
+  if (!targetNodeIds.length) {
+    state.currentRoute = null;
+    renderRoute(null, "请至少选择 1 个目标点。");
+    renderMap();
+    setStatus("多目标路径至少需要选择 1 个目标点。", "error");
+    return;
+  }
+
+  setStatus("正在规划多目标路径，请稍候...", "loading");
+  renderRoute(null, "正在规划多目标路径...");
+
+  try {
+    const response = await apiPost("/api/route/multi", {
+      start_node_id: state.currentStartNodeId,
+      target_node_ids: targetNodeIds,
+      strategy: document.querySelector("#route-strategy").value,
+      transport_mode: document.querySelector("#route-transport").value,
+      return_to_start: document.querySelector("#multi-route-return").checked,
+    });
+
+    if (!response.success) {
+      state.currentRoute = null;
+      renderRoute(null, response.message || "多目标路径规划失败。");
+      renderMap();
+      setStatus(response.message || "多目标路径规划失败", "error");
+      return;
+    }
+
+    state.currentRoute = response;
+    state.focusedNodeId = "";
+    renderRoute(response);
+    renderMap();
+    setStatus(
+      `多目标路径规划成功：${response.summary.visit_order_text}。`,
+      "success",
+    );
+  } catch (error) {
+    state.currentRoute = null;
+    renderRoute(null, `多目标路径规划失败：${error.message}`);
+    renderMap();
+    setStatus(`多目标路径规划失败：${error.message}`, "error");
+  }
+}
+
+function clearRoute(message = "暂无路径") {
   state.currentRoute = null;
-  renderRoute(null);
+  renderRoute(null, message);
   renderMap();
 }
 
@@ -362,24 +1248,34 @@ function renderResults(response) {
   container.className = "card-list";
   meta.textContent = `${response.total} 条结果 · ${response.query_type}`;
   container.innerHTML = items
-    .map((item, index) => renderResultCard(item, index))
+    .map((item, index) => renderResultCard(item, index, response.query_type || ""))
     .join("");
 }
 
-function renderResultCard(item, index) {
+function renderResultCard(item, index, queryType = "") {
   const title = escapeHtml(item.name || item.title || item.route_target_name || "未命名结果");
   const description = item.snippet
     ? escapeHtml(item.snippet)
-    : escapeHtml(item.description || "可从该结果继续规划路线。");
+    : escapeHtml(item.content || item.text_prompt || item.description || "可从该结果继续规划路线。");
   const distanceText = formatDistance(item.distance_m, item.distance_status);
   const scoreText = item.score !== undefined ? `相关度 ${item.score}` : "";
   const routeTarget = item.route_target_node_id || "";
   const focusNode = item.route_target_node_id || "";
+  const isDiary = isDiaryResult(item, queryType);
+  const isAigc = isAigcResult(item, queryType);
+  const diaryId = item.id || item.diary_id || "";
+  const mediaMarkup = renderMediaPlaceholders(item);
+  const aigcMarkup = isAigc ? renderAigcPreview(item) : "";
 
   const metrics = [
     item.category_label ? `<span class="metric-pill">${escapeHtml(item.category_label)}</span>` : "",
+    item.destination ? `<span class="metric-pill">目的地 ${escapeHtml(item.destination)}</span>` : "",
     item.heat !== undefined ? `<span class="metric-pill">热度 ${item.heat}</span>` : "",
     item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}</span>` : "",
+    item.created_at ? `<span class="metric-pill">${escapeHtml(item.created_at)}</span>` : "",
+    item.style_label ? `<span class="metric-pill">${escapeHtml(item.style_label)}</span>` : "",
+    item.duration_s !== undefined ? `<span class="metric-pill">${item.duration_s} 秒</span>` : "",
+    item.status ? `<span class="metric-pill">${escapeHtml(item.status)}</span>` : "",
     distanceText ? `<span class="metric-pill">${escapeHtml(distanceText)}</span>` : "",
     scoreText ? `<span class="metric-pill">${escapeHtml(scoreText)}</span>` : "",
   ]
@@ -393,6 +1289,18 @@ function renderResultCard(item, index) {
     routeTarget
       ? `<button class="route-button" type="button" data-route-target="${escapeHtml(routeTarget)}">从当前起点规划路线</button>`
       : "",
+    isDiary && queryType !== "diary_delete"
+      ? `<button class="ghost-button" type="button" data-diary-edit-id="${escapeHtml(diaryId)}">载入编辑</button>`
+      : "",
+    isDiary && queryType !== "diary_delete"
+      ? `<button class="ghost-button" type="button" data-diary-rate-id="${escapeHtml(diaryId)}">快速评 5 分</button>`
+      : "",
+    isDiary && queryType !== "diary_delete"
+      ? `<button class="danger-button" type="button" data-diary-delete-id="${escapeHtml(diaryId)}">删除日记</button>`
+      : "",
+    isDiary && queryType === "diary_delete"
+      ? `<span class="deleted-badge">已从内存态移除</span>`
+      : "",
   ]
     .filter(Boolean)
     .join("");
@@ -402,22 +1310,97 @@ function renderResultCard(item, index) {
       <h4>${title}</h4>
       <div class="card-metrics">${metrics}</div>
       <p>${description}</p>
+      ${mediaMarkup}
+      ${aigcMarkup}
       <div class="card-actions">${buttons}</div>
     </article>
   `;
 }
 
-function renderRoute(route) {
+function isDiaryResult(item, queryType) {
+  return (
+    queryType.startsWith("diary") ||
+    Boolean(item.diary_id) ||
+    item.category_label === "日记"
+  );
+}
+
+function renderMediaPlaceholders(item) {
+  const images = Array.isArray(item.images) ? item.images : [];
+  const videos = Array.isArray(item.videos) ? item.videos : [];
+  const directMedia = [];
+  if (item.image_placeholder) {
+    directMedia.push({ kind: "图片占位", value: item.image_placeholder });
+  }
+  if (item.preview_placeholder) {
+    directMedia.push({ kind: "预览占位", value: item.preview_placeholder });
+  }
+  const mediaItems = directMedia.concat(images
+    .map((value) => ({ kind: "图片", value }))
+    .concat(videos.map((value) => ({ kind: "视频", value }))));
+
+  if (!mediaItems.length) {
+    return "";
+  }
+
+  return `
+    <div class="media-strip">
+      ${mediaItems
+        .map((media) => `
+          <span class="media-chip">
+            <span>${escapeHtml(media.kind)}</span>
+            <strong>${escapeHtml(media.value)}</strong>
+          </span>
+        `)
+        .join("")}
+    </div>
+  `;
+}
+
+function isAigcResult(item, queryType) {
+  return queryType === "aigc_preview" || Boolean(item.storyboard_frames);
+}
+
+function renderAigcPreview(item) {
+  const frames = Array.isArray(item.storyboard_frames) ? item.storyboard_frames : [];
+  const pipeline = Array.isArray(item.generation_pipeline) ? item.generation_pipeline : [];
+  return `
+    <div class="aigc-preview-block">
+      <p class="prototype-notice">${escapeHtml(item.prototype_notice || "")}</p>
+      <div class="storyboard-grid">
+        ${frames
+          .map((frame) => `
+            <article class="storyboard-frame">
+              <span>${frame.time_s}s</span>
+              <strong>${escapeHtml(frame.title)}</strong>
+              <p>${escapeHtml(frame.visual || frame.caption || "")}</p>
+            </article>
+          `)
+          .join("")}
+      </div>
+      <div class="pipeline-list">
+        ${pipeline.map((step) => `<span>${escapeHtml(step)}</span>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderRoute(route, emptyMessage = "暂无路径") {
   const summaryContainer = document.querySelector("#route-summary");
   const stepsContainer = document.querySelector("#route-steps");
   const routeMeta = document.querySelector("#route-meta");
 
   if (!route) {
     summaryContainer.className = "route-summary empty-state";
-    summaryContainer.textContent = "暂无路径";
+    summaryContainer.textContent = emptyMessage;
     stepsContainer.className = "step-list empty-state";
     stepsContainer.textContent = "暂无步骤";
     routeMeta.textContent = "尚未规划路径";
+    return;
+  }
+
+  if (route.route_type === "multi_target") {
+    renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta);
     return;
   }
 
@@ -460,6 +1443,67 @@ function renderRoute(route) {
     .join("");
 }
 
+function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
+  const summary = route.summary || {};
+  summaryContainer.className = "route-summary";
+  summaryContainer.innerHTML = `
+    <article class="summary-card">
+      <h4>多目标路径 · ${escapeHtml(summary.return_to_start_text || "")}</h4>
+      <div class="summary-grid">
+        <span class="metric-pill">${escapeHtml(summary.strategy_text || "")}</span>
+        <span class="metric-pill">${escapeHtml(summary.transport_text || "")}</span>
+        <span class="metric-pill">${escapeHtml(summary.distance_text || "")}</span>
+        <span class="metric-pill">${escapeHtml(summary.time_text || "")}</span>
+      </div>
+      <p>访问顺序：${escapeHtml(summary.visit_order_text || "")}</p>
+      <p>目标数：${summary.target_count || 0}，路径段数：${summary.leg_count || 0}</p>
+    </article>
+  `;
+
+  const legSummaries = route.ui?.leg_summaries || [];
+  const displaySteps = route.ui?.display_steps || [];
+  routeMeta.textContent = `${legSummaries.length} 段 · ${displaySteps.length} 个关键步骤`;
+  stepsContainer.className = "step-list";
+
+  const legMarkup = legSummaries
+    .map((leg, index) => `
+      <article class="step-card" style="animation-delay: ${index * 0.03}s">
+        <h4>第 ${leg.leg_index} 段：${escapeHtml(leg.start_node_name)} -> ${escapeHtml(leg.target_node_name)}</h4>
+        <div class="card-metrics">
+          <span class="metric-pill">${escapeHtml(leg.distance_text || "")}</span>
+          <span class="metric-pill">${escapeHtml(leg.time_text || "")}</span>
+          <span class="metric-pill">${leg.step_count} 步</span>
+        </div>
+        <p>${escapeHtml((leg.path_node_names || []).join(" -> "))}</p>
+      </article>
+    `)
+    .join("");
+
+  const keySteps = displaySteps.slice(0, 12);
+  const stepMarkup = keySteps
+    .map((step, index) => {
+      const edgeName = step.edge_name ? ` · ${escapeHtml(step.edge_name)}` : "";
+      return `
+        <article class="step-card compact-step" style="animation-delay: ${(index + legSummaries.length) * 0.03}s">
+          <h4>第 ${step.leg_index} 段 / 步 ${step.step_index}${edgeName}</h4>
+          <p>${escapeHtml(step.from_node_name)} -> ${escapeHtml(step.to_node_name)}</p>
+          <div class="card-metrics">
+            <span class="metric-pill">${escapeHtml(step.display_layer || step.to_layer || "")}</span>
+            <span class="metric-pill">${formatDistance(step.distance_m, "available")}</span>
+            <span class="metric-pill">${formatSeconds(step.estimated_time_s)}</span>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  const overflowText = displaySteps.length > keySteps.length
+    ? `<p class="step-overflow">已展示前 ${keySteps.length} 个关键步骤，完整逐边数据保留在 API 返回中。</p>`
+    : "";
+
+  stepsContainer.innerHTML = `${legMarkup}${stepMarkup}${overflowText}`;
+}
+
 function renderMap() {
   const svg = document.querySelector("#campus-map");
   const caption = document.querySelector("#map-caption");
@@ -487,6 +1531,12 @@ function renderMap() {
   const projectedNodes = new Map(
     mapData.nodes.map((node) => [node.id, projectNode(node, mapData.bounds)]),
   );
+  const screenNodes = new Map(
+    Array.from(projectedNodes.entries()).map(([nodeId, point]) => [
+      nodeId,
+      transformMapPoint(point),
+    ]),
+  );
 
   const edgeMarkup = mapData.edges
     .map((edge) => {
@@ -511,18 +1561,25 @@ function renderMap() {
 
   const nodeMarkup = mapData.nodes
     .map((node) => {
-      const projected = projectedNodes.get(node.id);
+      const projected = screenNodes.get(node.id);
       const fill = colorForCategory(node.category);
       const isHighlighted = highlightNodeIds.has(node.id);
-      const radius = isHighlighted ? 13 : node.category === "entrance" ? 10 : 8;
-      const labelDy = node.category === "road" ? 26 : 22;
+      const radius = isHighlighted ? 12 : node.category === "entrance" ? 9 : 7;
+      const labelDy = node.category === "road" ? 0 : 20;
+      const labelText = node.category !== "road" ? escapeHtml(node.name) : "";
+      const labelWidth = estimateLabelWidth(node.name);
+      const labelX = projected.x - labelWidth / 2;
+      const labelY = projected.y + labelDy - 14;
       return `
         <g>
           ${isHighlighted ? `<circle class="route-dot" cx="${projected.x}" cy="${projected.y}" r="${radius + 6}" fill="rgba(181, 94, 59, 0.16)" />` : ""}
           <circle cx="${projected.x}" cy="${projected.y}" r="${radius}" fill="${fill}" stroke="white" stroke-width="3" />
           ${
             node.category !== "road"
-              ? `<text class="node-label" x="${projected.x}" y="${projected.y + labelDy}" text-anchor="middle">${escapeHtml(node.name)}</text>`
+              ? `
+                <rect class="node-label-bg" x="${labelX}" y="${labelY}" width="${labelWidth}" height="19" rx="8" />
+                <text class="node-label" x="${projected.x}" y="${projected.y + labelDy}" text-anchor="middle">${labelText}</text>
+              `
               : ""
           }
         </g>
@@ -534,16 +1591,19 @@ function renderMap() {
     <g transform="translate(44, 54)">
       <text class="legend-badge" x="0" y="0">室外校园简图</text>
       <text class="legend-badge" x="0" y="28" style="font-size: 14px; fill: rgba(29, 43, 56, 0.58);">
-        高亮橙线为当前路径；灰线为可通行道路
+        高亮橙线为当前路径；滚轮缩放，按住拖动平移
       </text>
     </g>
   `;
+  const mapTransform = `translate(${state.mapView.translateX} ${state.mapView.translateY}) scale(${state.mapView.scale})`;
 
   svg.innerHTML = `
     <rect x="0" y="0" width="${MAP_WIDTH}" height="${MAP_HEIGHT}" fill="transparent" />
     ${legendMarkup}
-    ${edgeMarkup}
-    ${routeMarkup}
+    <g transform="${mapTransform}">
+      ${edgeMarkup}
+      ${routeMarkup}
+    </g>
     ${nodeMarkup}
   `;
 
@@ -551,7 +1611,7 @@ function renderMap() {
     ? state.currentRoute.ui.caption
     : state.focusedNodeId
       ? `当前定位：${getNodeName(state.focusedNodeId)}。`
-      : "当前展示的是室外节点分布；室内段会在右侧步骤卡片中说明。";
+      : `当前展示的是室外节点分布；缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`;
 }
 
 function projectNode(node, bounds) {
@@ -565,6 +1625,18 @@ function projectNode(node, bounds) {
     MAP_PADDING -
     ((node.lat - bounds.lat_min) / latRange) * (MAP_HEIGHT - MAP_PADDING * 2);
   return { x, y };
+}
+
+function transformMapPoint(point) {
+  return {
+    x: point.x * state.mapView.scale + state.mapView.translateX,
+    y: point.y * state.mapView.scale + state.mapView.translateY,
+  };
+}
+
+function estimateLabelWidth(value) {
+  const textLength = String(value ?? "").length;
+  return clamp(textLength * 14 + 18, 42, 150);
 }
 
 function colorForCategory(category) {
@@ -618,6 +1690,17 @@ function setStatus(message, kind = "info") {
   banner.textContent = message;
 }
 
+function feedback(key, fallback) {
+  if (!state.bootstrap || !state.bootstrap.feedback_messages) {
+    return fallback;
+  }
+  return state.bootstrap.feedback_messages[key] || fallback;
+}
+
+function currentSiteId() {
+  return state.bootstrap && state.bootstrap.site ? state.bootstrap.site.id : "";
+}
+
 function formatDistance(distanceValue, distanceStatus) {
   if (distanceValue === undefined || distanceValue === null) {
     if (!distanceStatus || distanceStatus === "available" || distanceStatus === "not_requested") {
@@ -656,6 +1739,10 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+function clamp(value, minValue, maxValue) {
+  return Math.min(Math.max(value, minValue), maxValue);
+}
+
 async function apiGet(url) {
   const response = await fetch(url, {
     headers: {
@@ -666,13 +1753,18 @@ async function apiGet(url) {
 }
 
 async function apiPost(url, payload) {
+  const body = { ...payload };
+  if (currentSiteId() && !body.site_id) {
+    body.site_id = currentSiteId();
+  }
+
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
   return handleApiResponse(response);
 }

@@ -123,6 +123,85 @@ def test_diary_response_shape():
     print("test_diary_response_shape passed.")
 
 
+def test_diary_management_create_update_rate_delete_flow():
+    service = DiaryService(records=[])
+    created = service.create_diary(
+        {
+            "title": "第十一周日记管理接口联调",
+            "content": "用于验证创建、编辑、评分、删除的内存态闭环。",
+            "author_id": "user_test",
+            "author_name": "测试用户",
+            "destination": "北京大学图书馆",
+            "destination_node_id": "library",
+            "rating": 4.2,
+            "tags": ["第十一周", "接口"],
+            "images": ["media/placeholders/test_diary.jpg"],
+            "videos": ["media/placeholders/test_diary.mp4"],
+        }
+    )
+
+    assert created["success"] is True
+    assert created["query_type"] == "diary_create"
+    assert created["metadata"]["storage_mode"] == "memory_only"
+    assert created["metadata"]["data_source"]["write_back"] is False
+    diary = created["results"][0]
+    assert diary["id"] == "diary_001"
+    assert diary["destination_node_id"] == "library"
+    assert diary["images"] == ["media/placeholders/test_diary.jpg"]
+    assert diary["videos"] == ["media/placeholders/test_diary.mp4"]
+
+    updated = service.update_diary(
+        diary["id"],
+        {
+            "title": "第十一周日记管理接口复盘",
+            "content": "更新后的日记正文。",
+            "rating": 6,
+            "tags": "复盘",
+        },
+    )
+
+    assert updated["success"] is True
+    assert updated["query_type"] == "diary_update"
+    assert updated["results"][0]["title"] == "第十一周日记管理接口复盘"
+    assert updated["results"][0]["rating"] == 5.0
+    assert updated["results"][0]["tags"] == ["复盘"]
+
+    rated = service.rate_diary(diary["id"], 4.8)
+
+    assert rated["success"] is True
+    assert rated["query_type"] == "diary_rate"
+    assert rated["results"][0]["rating"] == 4.8
+
+    deleted = service.delete_diary(diary["id"])
+
+    assert deleted["success"] is True
+    assert deleted["query_type"] == "diary_delete"
+    assert deleted["results"][0]["id"] == diary["id"]
+    assert service.records == []
+    print("test_diary_management_create_update_rate_delete_flow passed.")
+
+
+def test_diary_management_validation_errors():
+    service = DiaryService(records=[])
+
+    empty_title = service.create_diary({"title": "   "})
+    assert empty_title["success"] is False
+    assert empty_title["query_type"] == "diary_create"
+
+    first = service.create_diary({"id": "manual_diary", "title": "测试日记"})
+    duplicate = service.create_diary({"id": "manual_diary", "title": "重复日记"})
+    invalid_update = service.update_diary("manual_diary", {"title": ""})
+    invalid_rating = service.rate_diary("manual_diary", "bad-rating")
+    missing_delete = service.delete_diary("missing_diary")
+
+    assert first["success"] is True
+    assert duplicate["success"] is False
+    assert invalid_update["success"] is False
+    assert invalid_rating["success"] is False
+    assert missing_delete["success"] is False
+    print("test_diary_management_validation_errors passed.")
+
+
 def test_search_fulltext_single_keyword():
     result = search_diaries_fulltext(query="图书馆", limit=5)
 
@@ -172,6 +251,8 @@ def run_all_tests():
     test_search_no_match()
     test_search_legacy_dataset_support()
     test_diary_response_shape()
+    test_diary_management_create_update_rate_delete_flow()
+    test_diary_management_validation_errors()
     test_search_fulltext_single_keyword()
     test_search_fulltext_multi_keyword()
     test_search_fulltext_empty_query()

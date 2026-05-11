@@ -3,208 +3,445 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>成员B最小可演示UI</title>
+    <title>智能校园导览系统</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="page-shell">
-      <div class="bg-orb bg-orb-a"></div>
-      <div class="bg-orb bg-orb-b"></div>
-
-      <header class="hero panel">
-        <div class="hero-copy">
-          <p class="eyebrow">Member B Minimal Demo UI</p>
-          <h1 id="hero-title">校园导览演示台</h1>
-          <p id="hero-description" class="hero-description">
-            正在加载站点信息...
-          </p>
-          <div class="hero-tags">
-            <span class="tag">查询</span>
-            <span class="tag">推荐</span>
-            <span class="tag">路径规划</span>
-            <span class="tag">全文检索</span>
+    <div class="app-layout" id="app-layout">
+      <aside class="side-rail" aria-label="左侧功能菜单">
+        <div class="brand-panel">
+          <span class="brand-logo">
+            <img src="/assets/logo.png" alt="智能校园导览系统 Logo" />
+          </span>
+          <div class="brand-copy">
+            <strong>TourGraph</strong>
+            <span>智能校园导览</span>
           </div>
         </div>
-        <div class="hero-stats">
-          <div class="stat-card">
-            <span id="stat-map-nodes" class="stat-value">0</span>
-            <span class="stat-label">地图节点</span>
-          </div>
-          <div class="stat-card">
-            <span id="stat-route-targets" class="stat-value">0</span>
-            <span class="stat-label">可规划目标</span>
-          </div>
-          <div class="stat-card">
-            <span id="stat-diaries" class="stat-value">0</span>
-            <span class="stat-label">日记样本</span>
-          </div>
-        </div>
-      </header>
 
-      <main class="workspace">
-        <aside class="panel control-panel">
-          <div class="panel-title-row">
-            <h2>演示入口</h2>
-            <span class="panel-subtitle">当前起点统一生效</span>
+        <nav class="side-menu" aria-label="功能导航">
+          <span class="menu-section">功能选项</span>
+          <button class="side-link active" type="button" data-tab="scenic">
+            <span class="side-icon">01</span>
+            <span class="side-label">综合查询</span>
+          </button>
+          <button class="side-link" type="button" data-tab="place">
+            <span class="side-icon">02</span>
+            <span class="side-label">场所查询</span>
+          </button>
+          <button class="side-link" type="button" data-tab="catering">
+            <span class="side-icon">03</span>
+            <span class="side-label">美食推荐</span>
+          </button>
+          <button class="side-link" type="button" data-tab="route">
+            <span class="side-icon">04</span>
+            <span class="side-label">导航规划</span>
+          </button>
+          <button class="side-link" type="button" data-tab="diary">
+            <span class="side-icon">05</span>
+            <span class="side-label">日记中心</span>
+          </button>
+          <button class="side-link" type="button" data-tab="aigc">
+            <span class="side-icon">06</span>
+            <span class="side-label">AIGC 演示</span>
+          </button>
+          <button class="side-link" type="button" data-tab="help">
+            <span class="side-icon">07</span>
+            <span class="side-label">帮助说明</span>
+          </button>
+        </nav>
+
+        <button class="collapse-button" id="sidebar-toggle" type="button" aria-expanded="true">
+          <span class="collapse-icon">‹</span>
+          <span class="side-label">收起侧边栏</span>
+        </button>
+      </aside>
+
+      <div class="main-shell">
+        <header class="top-bar">
+          <div class="top-status">
+            <span class="status-dot"></span>
+            <span id="product-stage" class="product-stage">正在加载产品阶段...</span>
           </div>
+          <nav class="page-switcher" aria-label="页面切换">
+            <button class="page-tab active" type="button" data-page="home">首页</button>
+            <button class="page-tab" type="button" data-page="app">主要网站</button>
+          </nav>
+        </header>
 
-          <label class="field">
-            <span class="field-label">当前起点</span>
-            <select id="global-start-node"></select>
-          </label>
+        <main class="content-shell">
+          <section class="page-view active" data-page-panel="home" aria-label="首页">
+            <section class="home-hero panel">
+              <div class="home-copy">
+                <p class="eyebrow">Campus Guide Platform</p>
+                <h1 id="product-title">智能校园导览系统</h1>
+                <p id="hero-description" class="home-description">正在加载站点信息...</p>
+                <div class="home-actions">
+                  <button class="primary-button" type="button" data-page="app">进入主要网站</button>
+                  <button class="secondary-button" type="button" data-tab="help">查看演示说明</button>
+                </div>
+              </div>
+              <div class="home-card-stack">
+                <div class="overview-card highlight-card">
+                  <span class="overview-label">当前站点</span>
+                  <strong id="hero-title">校园导览演示台</strong>
+                  <p>统一展示查询、推荐、路径规划、日记管理和 AIGC 轻量预览。</p>
+                </div>
+                <div class="stat-grid">
+                  <div class="stat-card">
+                    <span id="stat-map-nodes" class="stat-value">0</span>
+                    <span class="stat-label">地图节点</span>
+                  </div>
+                  <div class="stat-card">
+                    <span id="stat-route-targets" class="stat-value">0</span>
+                    <span class="stat-label">可规划目标</span>
+                  </div>
+                  <div class="stat-card">
+                    <span id="stat-diaries" class="stat-value">0</span>
+                    <span class="stat-label">日记样本</span>
+                  </div>
+                </div>
+              </div>
+            </section>
 
-          <div class="tab-list" id="tab-list">
-            <button class="tab-button active" data-tab="scenic">综合查询</button>
-            <button class="tab-button" data-tab="place">场所查询</button>
-            <button class="tab-button" data-tab="catering">美食推荐</button>
-            <button class="tab-button" data-tab="diary">日记检索</button>
-            <button class="tab-button" data-tab="route">手动规划</button>
-          </div>
-
-          <section class="tab-panel active" data-panel="scenic">
-            <form id="scenic-form" class="stack-form">
-              <label class="field">
-                <span class="field-label">关键字</span>
-                <input id="scenic-keyword" type="text" placeholder="例如：图书馆 / 宿舍 / 广场" />
-              </label>
-              <label class="field">
-                <span class="field-label">类别</span>
-                <select id="scenic-category"></select>
-              </label>
-              <label class="field">
-                <span class="field-label">排序</span>
-                <select id="scenic-sort"></select>
-              </label>
-              <div class="quick-row" id="scenic-presets"></div>
-              <button class="primary-button" type="submit">执行综合查询</button>
-            </form>
+            <section class="home-grid">
+              <article class="panel intro-panel">
+                <span class="section-kicker">项目定位</span>
+                <h2>面向校园和景区的综合导览系统</h2>
+                <p>
+                  系统以图结构和分层数据为基础，整合路径规划、业务查询推荐、
+                  数据检索与多媒体预览能力，形成可演示的完整业务闭环。
+                </p>
+              </article>
+              <article class="panel intro-panel">
+                <span class="section-kicker">核心能力</span>
+                <h2>业务层、交互层和 Web 演示入口</h2>
+                <p>
+                  当前页面统一组织查询、排序、推荐、日记管理、路径摘要和 AIGC 预览，
+                  让后端数据结构能力能被用户直接使用。
+                </p>
+              </article>
+              <article class="panel intro-panel wide-panel">
+                <span class="section-kicker">功能入口</span>
+                <h2>从首页进入主功能区</h2>
+                <section class="feature-grid" id="feature-grid" aria-label="功能入口概览"></section>
+              </article>
+            </section>
           </section>
 
-          <section class="tab-panel" data-panel="place">
-            <form id="place-form" class="stack-form">
-              <label class="field">
-                <span class="field-label">关键字</span>
-                <input id="place-keyword" type="text" placeholder="例如：洗手间 / 便利店 / 教学楼" />
-              </label>
-              <label class="field">
-                <span class="field-label">场所类别</span>
-                <select id="place-category"></select>
-              </label>
-              <label class="field">
-                <span class="field-label">排序</span>
-                <select id="place-sort"></select>
-              </label>
-              <div class="quick-row" id="place-presets"></div>
-              <button class="primary-button" type="submit">执行场所查询</button>
-            </form>
+          <section class="page-view" data-page-panel="app" aria-label="主要网站">
+            <section class="app-toolbar panel">
+              <div>
+                <p class="eyebrow">Main Workspace</p>
+                <h1>主要网站</h1>
+                <p>在这里完成查询、推荐、路线规划、日记管理和 AIGC 轻量演示。</p>
+              </div>
+              <div class="site-actions">
+                <label class="field site-switcher">
+                  <span class="field-label">当前站点</span>
+                  <select id="site-selector"></select>
+                </label>
+                <label class="field start-switcher">
+                  <span class="field-label">当前起点</span>
+                  <select id="global-start-node"></select>
+                </label>
+              </div>
+            </section>
+
+            <main class="workspace">
+              <aside class="panel control-panel" data-expandable-panel="control">
+                <div class="panel-title-row">
+                  <div>
+                    <h2>功能表单</h2>
+                    <span id="active-feature-caption" class="panel-subtitle">当前起点统一生效</span>
+                  </div>
+                  <button class="panel-expand-button" type="button" data-expand-panel="control" aria-label="放大功能表单">
+                    放大
+                  </button>
+                </div>
+
+                <section class="tab-panel active" data-panel="scenic">
+                  <form id="scenic-form" class="stack-form">
+                    <label class="field">
+                      <span class="field-label">关键字</span>
+                      <input id="scenic-keyword" type="text" placeholder="例如：图书馆 / 宿舍 / 广场" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">类别</span>
+                      <select id="scenic-category"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">排序</span>
+                      <select id="scenic-sort"></select>
+                    </label>
+                    <div class="quick-row" id="scenic-presets"></div>
+                    <button class="primary-button" type="submit">执行综合查询</button>
+                  </form>
+                </section>
+
+                <section class="tab-panel" data-panel="place">
+                  <form id="place-form" class="stack-form">
+                    <label class="field">
+                      <span class="field-label">关键字</span>
+                      <input id="place-keyword" type="text" placeholder="例如：洗手间 / 便利店 / 教学楼" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">场所类别</span>
+                      <select id="place-category"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">排序</span>
+                      <select id="place-sort"></select>
+                    </label>
+                    <div class="quick-row" id="place-presets"></div>
+                    <button class="primary-button" type="submit">执行场所查询</button>
+                  </form>
+                </section>
+
+                <section class="tab-panel" data-panel="catering">
+                  <form id="catering-form" class="stack-form">
+                    <label class="field">
+                      <span class="field-label">关键字</span>
+                      <input id="catering-keyword" type="text" placeholder="例如：食堂 / 咖啡 / 餐厅" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">菜系 / 筛选词</span>
+                      <input id="catering-cuisine" type="text" placeholder="例如：咖啡 / 轻食 / 清真" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">排序</span>
+                      <select id="catering-sort"></select>
+                    </label>
+                    <div class="quick-row" id="catering-presets"></div>
+                    <button class="primary-button" type="submit">执行美食推荐</button>
+                  </form>
+                </section>
+
+                <section class="tab-panel" data-panel="diary">
+                  <form id="diary-form" class="stack-form">
+                    <div class="form-section-heading">
+                      <h3>全文检索</h3>
+                      <span>从日记内容进入路线规划</span>
+                    </div>
+                    <label class="field">
+                      <span class="field-label">全文检索词</span>
+                      <input id="diary-query" type="text" placeholder="例如：图书馆 自习 / 食堂 美食" />
+                    </label>
+                    <div class="quick-row" id="diary-presets"></div>
+                    <button class="primary-button" type="submit">执行全文检索</button>
+                  </form>
+                  <form id="diary-create-form" class="stack-form separated-form">
+                    <div class="form-section-heading">
+                      <h3>日记管理</h3>
+                      <span id="diary-selected-label">当前为新建模式</span>
+                    </div>
+                    <input id="diary-edit-id" type="hidden" />
+                    <label class="field">
+                      <span class="field-label">标题</span>
+                      <input id="diary-title" type="text" placeholder="例如：图书馆自习复盘" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">正文</span>
+                      <textarea id="diary-content" rows="4" placeholder="填写本次游览、学习或用餐体验。"></textarea>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">目的地名称</span>
+                      <input id="diary-destination" type="text" placeholder="例如：北京大学图书馆" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">绑定路线目标</span>
+                      <select id="diary-destination-node"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">评分</span>
+                      <input id="diary-rating" type="number" min="0" max="5" step="0.1" placeholder="0 到 5" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">标签</span>
+                      <input id="diary-tags" type="text" placeholder="多个标签用逗号分隔，例如：学习, 图书馆" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">图片占位</span>
+                      <input id="diary-images" type="text" placeholder="多个图片路径用逗号分隔" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">视频占位</span>
+                      <input id="diary-videos" type="text" placeholder="多个视频路径用逗号分隔" />
+                    </label>
+                    <div class="form-actions">
+                      <button class="primary-button" type="submit">创建日记</button>
+                      <button id="diary-update-button" class="secondary-button compact-button" type="button">更新所选日记</button>
+                      <button id="diary-rate-button" class="ghost-button compact-button" type="button">仅更新评分</button>
+                      <button id="diary-clear-button" class="ghost-button compact-button" type="button">清空表单</button>
+                    </div>
+                    <p class="form-hint">
+                      当前为内存态演示，不会写回标准样例数据；刷新页面后新增或编辑结果会重置。
+                    </p>
+                  </form>
+                </section>
+
+                <section class="tab-panel" data-panel="route">
+                  <form id="route-form" class="stack-form">
+                    <div class="form-section-heading">
+                      <h3>单目标路径</h3>
+                      <span>从当前起点到一个目标点</span>
+                    </div>
+                    <label class="field">
+                      <span class="field-label">目标点</span>
+                      <select id="route-target"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">策略</span>
+                      <select id="route-strategy"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">交通方式</span>
+                      <select id="route-transport"></select>
+                    </label>
+                    <div class="quick-row" id="route-presets"></div>
+                    <button class="primary-button" type="submit">规划路线</button>
+                  </form>
+                  <form id="multi-route-form" class="stack-form separated-form">
+                    <div class="form-section-heading">
+                      <h3>多目标路径</h3>
+                      <span>自动计算访问顺序和总路线</span>
+                    </div>
+                    <label class="field">
+                      <span class="field-label">多个目标点</span>
+                      <select id="multi-route-targets" multiple size="6"></select>
+                    </label>
+                    <label class="check-field">
+                      <input id="multi-route-return" type="checkbox" checked />
+                      <span>访问完成后返回起点</span>
+                    </label>
+                    <div class="quick-row" id="multi-route-presets"></div>
+                    <button class="primary-button" type="submit">规划多目标路线</button>
+                  </form>
+                </section>
+
+                <section class="tab-panel" data-panel="aigc">
+                  <form id="aigc-form" class="stack-form">
+                    <div class="form-section-heading">
+                      <h3>AIGC 轻量预览</h3>
+                      <span>图片占位 + 文字描述 -> 分镜结果</span>
+                    </div>
+                    <label class="field">
+                      <span class="field-label">媒体样例</span>
+                      <select id="aigc-sample"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">图片占位</span>
+                      <input id="aigc-image" type="text" placeholder="选择样例后自动填充，可手动修改" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">文字描述</span>
+                      <textarea id="aigc-prompt" rows="4" placeholder="描述希望生成的校园导览动画内容。"></textarea>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">风格模板</span>
+                      <select id="aigc-style"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">预览时长（秒）</span>
+                      <input id="aigc-duration" type="number" min="3" max="15" step="1" value="8" />
+                    </label>
+                    <div class="quick-row" id="aigc-presets"></div>
+                    <button class="primary-button" type="submit">生成轻量预览</button>
+                    <p class="form-hint">
+                      当前只返回模板化预览结构，不调用真实生成模型；第十二周可在此基础上继续增强。
+                    </p>
+                  </form>
+                </section>
+
+                <section class="tab-panel" data-panel="help">
+                  <div class="help-panel">
+                    <h3 id="help-stage">帮助说明</h3>
+                    <p id="help-launch" class="help-copy">启动命令加载中...</p>
+                    <h4>推荐演示链路</h4>
+                    <ol id="help-flow" class="help-list"></ol>
+                    <h4>当前骨架检查点</h4>
+                    <ul id="help-checks" class="help-list"></ul>
+                  </div>
+                </section>
+              </aside>
+
+              <section class="center-column">
+                <section class="panel map-panel" data-expandable-panel="map">
+                  <div class="panel-title-row">
+                    <div>
+                      <h2>校园简图</h2>
+                      <span class="panel-subtitle">滚轮缩放 / 按住拖动平移</span>
+                    </div>
+                    <div class="panel-actions">
+                      <button class="panel-reset-button" id="map-reset-view" type="button">
+                        还原原始比例
+                      </button>
+                      <button class="panel-expand-button" type="button" data-expand-panel="map" aria-label="放大校园简图">
+                        放大
+                      </button>
+                    </div>
+                  </div>
+                  <div class="map-stage">
+                    <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
+                  </div>
+                  <p id="map-caption" class="map-caption">
+                    地图加载完成后会在这里显示高亮说明。
+                  </p>
+                </section>
+
+                <section class="panel route-panel">
+                  <div class="panel-title-row">
+                    <h2>路径摘要</h2>
+                    <span id="route-meta" class="panel-subtitle">尚未规划路径</span>
+                  </div>
+                  <div id="route-summary" class="route-summary empty-state">
+                    暂无路径
+                  </div>
+                </section>
+              </section>
+
+              <section class="panel result-panel" data-expandable-panel="result">
+                <div class="panel-title-row">
+                  <div>
+                    <h2>结果与步骤</h2>
+                    <span class="panel-subtitle">点击卡片即可定位或规划路线</span>
+                  </div>
+                  <button class="panel-expand-button" type="button" data-expand-panel="result" aria-label="放大结果与步骤">
+                    放大
+                  </button>
+                </div>
+                <div id="status-banner" class="status-banner status-info" role="status" aria-live="polite">
+                  选择左侧入口开始演示。
+                </div>
+
+                <section class="result-section">
+                  <div class="section-heading">
+                    <h3>查询结果</h3>
+                    <span id="result-meta" class="meta-text">尚未执行查询</span>
+                  </div>
+                  <div id="results-list" class="card-list empty-state">
+                    暂无结果
+                  </div>
+                </section>
+
+                <section class="result-section">
+                  <div class="section-heading">
+                    <h3>路径步骤</h3>
+                    <span class="meta-text">室内段主要在这里查看</span>
+                  </div>
+                  <div id="route-steps" class="step-list empty-state">
+                    暂无步骤
+                  </div>
+                </section>
+              </section>
+            </main>
           </section>
-
-          <section class="tab-panel" data-panel="catering">
-            <form id="catering-form" class="stack-form">
-              <label class="field">
-                <span class="field-label">关键字</span>
-                <input id="catering-keyword" type="text" placeholder="例如：食堂 / 咖啡 / 餐厅" />
-              </label>
-              <label class="field">
-                <span class="field-label">菜系 / 筛选词</span>
-                <input id="catering-cuisine" type="text" placeholder="例如：咖啡 / 轻食 / 清真" />
-              </label>
-              <label class="field">
-                <span class="field-label">排序</span>
-                <select id="catering-sort"></select>
-              </label>
-              <div class="quick-row" id="catering-presets"></div>
-              <button class="primary-button" type="submit">执行美食推荐</button>
-            </form>
-          </section>
-
-          <section class="tab-panel" data-panel="diary">
-            <form id="diary-form" class="stack-form">
-              <label class="field">
-                <span class="field-label">全文检索词</span>
-                <input id="diary-query" type="text" placeholder="例如：图书馆 自习 / 食堂 美食" />
-              </label>
-              <div class="quick-row" id="diary-presets"></div>
-              <button class="primary-button" type="submit">执行全文检索</button>
-            </form>
-          </section>
-
-          <section class="tab-panel" data-panel="route">
-            <form id="route-form" class="stack-form">
-              <label class="field">
-                <span class="field-label">目标点</span>
-                <select id="route-target"></select>
-              </label>
-              <label class="field">
-                <span class="field-label">策略</span>
-                <select id="route-strategy"></select>
-              </label>
-              <label class="field">
-                <span class="field-label">交通方式</span>
-                <select id="route-transport"></select>
-              </label>
-              <div class="quick-row" id="route-presets"></div>
-              <button class="primary-button" type="submit">规划路线</button>
-            </form>
-          </section>
-        </aside>
-
-        <section class="panel map-panel">
-          <div class="panel-title-row">
-            <h2>校园简图</h2>
-            <span class="panel-subtitle">室外节点按真实经纬度投影</span>
-          </div>
-          <div class="map-stage">
-            <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
-          </div>
-          <p id="map-caption" class="map-caption">
-            地图加载完成后会在这里显示高亮说明。
-          </p>
-        </section>
-
-        <section class="panel result-panel">
-          <div class="panel-title-row">
-            <h2>结果与路径</h2>
-            <span class="panel-subtitle">点击卡片即可定位或规划路线</span>
-          </div>
-          <div id="status-banner" class="status-banner status-info">
-            选择左侧入口开始演示。
-          </div>
-
-          <section class="result-section">
-            <div class="section-heading">
-              <h3>查询结果</h3>
-              <span id="result-meta" class="meta-text">尚未执行查询</span>
-            </div>
-            <div id="results-list" class="card-list empty-state">
-              暂无结果
-            </div>
-          </section>
-
-          <section class="result-section">
-            <div class="section-heading">
-              <h3>路径摘要</h3>
-              <span id="route-meta" class="meta-text">尚未规划路径</span>
-            </div>
-            <div id="route-summary" class="route-summary empty-state">
-              暂无路径
-            </div>
-          </section>
-
-          <section class="result-section">
-            <div class="section-heading">
-              <h3>路径步骤</h3>
-              <span class="meta-text">室内段主要在这里查看</span>
-            </div>
-            <div id="route-steps" class="step-list empty-state">
-              暂无步骤
-            </div>
-          </section>
-        </section>
-      </main>
+        </main>
+      </div>
     </div>
+
+    <div class="panel-modal-backdrop" id="panel-modal-backdrop" hidden></div>
 
     <script src="/app.js" defer></script>
   </body>
 </html>
-

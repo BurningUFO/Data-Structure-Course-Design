@@ -6,7 +6,8 @@
 2. 目的地精确 / 模糊查询
 3. 按热度 / 评分等字段排序
 4. 统一 Response 风格输出
-5. 对历史 `data/成员Cdata/diary_test.json` 的最小兼容
+5. 创建、编辑、删除、评分的内存态管理接口
+6. 对历史 `data/成员Cdata/diary_test.json` 的最小兼容
 """
 
 from __future__ import annotations
@@ -128,6 +129,7 @@ def normalize_diary_record(record: Record, index: int) -> Record:
         "views": coerce_int(record.get("views"), default=0),
         "created_at": str(record.get("created_at", "")).strip(),
         "images": normalize_string_list(record.get("images")),
+        "videos": normalize_string_list(record.get("videos")),
     }
 
 
@@ -185,6 +187,176 @@ class DiaryService:
             prefer_legacy_data=prefer_legacy_data,
         )
         self.records = load_diary_records(self.data_path)
+
+    def create_diary(self, payload: Record | None = None) -> dict[str, Any]:
+        """创建日记记录。当前为内存态演示，不直接写回标准数据文件。"""
+        request = payload or {}
+        title = str(request.get("title", "")).strip()
+
+        if not title:
+            return build_error_response(
+                "diary title cannot be empty",
+                query_type="diary_create",
+                metadata=self._management_metadata("create"),
+            )
+
+        record = normalize_diary_record(
+            {
+                "id": str(request.get("id", "")).strip() or self._next_diary_id(),
+                "title": title,
+                "content": str(request.get("content", "")).strip(),
+                "author_id": str(request.get("author_id", "")).strip() or "user_demo",
+                "author_name": str(request.get("author_name", "")).strip() or "演示用户",
+                "destination": str(request.get("destination", "")).strip(),
+                "destination_node_id": request.get("destination_node_id"),
+                "heat": coerce_int(request.get("heat"), default=0),
+                "rating": self._normalize_rating(request.get("rating"), default=0.0),
+                "tags": normalize_string_list(request.get("tags")),
+                "views": coerce_int(request.get("views"), default=0),
+                "created_at": str(request.get("created_at", "")).strip() or "2026-05-11",
+                "images": normalize_string_list(request.get("images")),
+                "videos": normalize_string_list(request.get("videos")),
+            },
+            len(self.records),
+        )
+
+        if self._find_record_index(record["id"]) >= 0:
+            return build_error_response(
+                f"diary id already exists: {record['id']}",
+                query_type="diary_create",
+                filters={"id": record["id"]},
+                metadata=self._management_metadata("create"),
+            )
+
+        self.records.append(record)
+        return build_success_response(
+            data=[record],
+            message="diary created",
+            query_type="diary_create",
+            filters={"id": record["id"]},
+            metadata=self._management_metadata("create"),
+        )
+
+    def update_diary(self, diary_id: str, updates: Record | None = None) -> dict[str, Any]:
+        """编辑日记记录。仅允许更新业务展示字段。"""
+        normalized_id = str(diary_id or "").strip()
+        index = self._find_record_index(normalized_id)
+        if index < 0:
+            return build_error_response(
+                f"diary not found: {normalized_id}",
+                query_type="diary_update",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata("update"),
+            )
+
+        request = updates or {}
+        if "title" in request and not str(request.get("title", "")).strip():
+            return build_error_response(
+                "diary title cannot be empty",
+                query_type="diary_update",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata("update"),
+            )
+
+        current = self.records[index].copy()
+        allowed_fields = {
+            "title",
+            "content",
+            "author_id",
+            "author_name",
+            "destination",
+            "destination_node_id",
+            "heat",
+            "rating",
+            "tags",
+            "views",
+            "created_at",
+            "images",
+            "videos",
+        }
+        for field_name in allowed_fields:
+            if field_name in request:
+                current[field_name] = request[field_name]
+
+        if "rating" in request:
+            normalized_rating = self._normalize_rating(request.get("rating"), default=None)
+            if normalized_rating is None:
+                return build_error_response(
+                    "diary rating must be a number between 0 and 5",
+                    query_type="diary_update",
+                    filters={"id": normalized_id},
+                    metadata=self._management_metadata("update"),
+                )
+            current["rating"] = normalized_rating
+
+        normalized = normalize_diary_record(current, index)
+        if not str(normalized["title"]).strip():
+            return build_error_response(
+                "diary title cannot be empty",
+                query_type="diary_update",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata("update"),
+            )
+
+        self.records[index] = normalized
+        return build_success_response(
+            data=[normalized],
+            message="diary updated",
+            query_type="diary_update",
+            filters={"id": normalized_id},
+            metadata=self._management_metadata("update"),
+        )
+
+    def delete_diary(self, diary_id: str) -> dict[str, Any]:
+        """删除日记记录。当前只删除内存态服务对象中的记录。"""
+        normalized_id = str(diary_id or "").strip()
+        index = self._find_record_index(normalized_id)
+        if index < 0:
+            return build_error_response(
+                f"diary not found: {normalized_id}",
+                query_type="diary_delete",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata("delete"),
+            )
+
+        deleted = self.records.pop(index)
+        return build_success_response(
+            data=[deleted],
+            message="diary deleted",
+            query_type="diary_delete",
+            filters={"id": normalized_id},
+            metadata=self._management_metadata("delete"),
+        )
+
+    def rate_diary(self, diary_id: str, rating: Any) -> dict[str, Any]:
+        """更新日记评分。评分范围统一限制在 0 到 5。"""
+        normalized_id = str(diary_id or "").strip()
+        index = self._find_record_index(normalized_id)
+        if index < 0:
+            return build_error_response(
+                f"diary not found: {normalized_id}",
+                query_type="diary_rate",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata("rate"),
+            )
+
+        normalized_rating = self._normalize_rating(rating, default=None)
+        if normalized_rating is None:
+            return build_error_response(
+                "diary rating must be a number between 0 and 5",
+                query_type="diary_rate",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata("rate"),
+            )
+
+        self.records[index]["rating"] = normalized_rating
+        return build_success_response(
+            data=[self.records[index]],
+            message="diary rated",
+            query_type="diary_rate",
+            filters={"id": normalized_id, "rating": normalized_rating},
+            metadata=self._management_metadata("rate"),
+        )
 
     def search_by_title(
         self,
@@ -423,6 +595,57 @@ class DiaryService:
             return "desc"
         return "desc"
 
+    def _find_record_index(self, diary_id: str) -> int:
+        for index, record in enumerate(self.records):
+            if str(record.get("id", "")).strip() == diary_id:
+                return index
+        return -1
+
+    def _next_diary_id(self) -> str:
+        max_number = 0
+        for record in self.records:
+            record_id = str(record.get("id", "")).strip()
+            if not record_id.startswith("diary_"):
+                continue
+            suffix = record_id.removeprefix("diary_")
+            if suffix.isdigit():
+                max_number = max(max_number, int(suffix))
+        return f"diary_{max_number + 1:03d}"
+
+    def _management_metadata(self, operation: str) -> dict[str, Any]:
+        return {
+            "operation": operation,
+            "storage_mode": "memory_only",
+            "record_count": len(self.records),
+            "data_source": {
+                "path": str(self.data_path),
+                "write_back": False,
+            },
+            "result_fields": [
+                "id",
+                "title",
+                "content",
+                "destination",
+                "destination_node_id",
+                "heat",
+                "rating",
+                "author_name",
+                "tags",
+                "views",
+                "created_at",
+                "images",
+                "videos",
+            ],
+        }
+
+    @staticmethod
+    def _normalize_rating(value: Any, default: float | None = 0.0) -> float | None:
+        try:
+            rating = float(value)
+        except (TypeError, ValueError):
+            return default
+        return max(0.0, min(5.0, rating))
+
 
 def search_diaries(
     *,
@@ -470,3 +693,69 @@ def search_diaries_fulltext(
         query,
         limit=limit,
     )
+
+
+def create_diary(
+    payload: Record | None = None,
+    *,
+    records: list[Record] | None = None,
+    data_path: str | Path | None = None,
+    prefer_legacy_data: bool = False,
+) -> dict[str, Any]:
+    """日记创建快速调用入口。"""
+    service = DiaryService(
+        records,
+        data_path=data_path,
+        prefer_legacy_data=prefer_legacy_data,
+    )
+    return service.create_diary(payload)
+
+
+def update_diary(
+    diary_id: str,
+    updates: Record | None = None,
+    *,
+    records: list[Record] | None = None,
+    data_path: str | Path | None = None,
+    prefer_legacy_data: bool = False,
+) -> dict[str, Any]:
+    """日记编辑快速调用入口。"""
+    service = DiaryService(
+        records,
+        data_path=data_path,
+        prefer_legacy_data=prefer_legacy_data,
+    )
+    return service.update_diary(diary_id, updates)
+
+
+def delete_diary(
+    diary_id: str,
+    *,
+    records: list[Record] | None = None,
+    data_path: str | Path | None = None,
+    prefer_legacy_data: bool = False,
+) -> dict[str, Any]:
+    """日记删除快速调用入口。"""
+    service = DiaryService(
+        records,
+        data_path=data_path,
+        prefer_legacy_data=prefer_legacy_data,
+    )
+    return service.delete_diary(diary_id)
+
+
+def rate_diary(
+    diary_id: str,
+    rating: Any,
+    *,
+    records: list[Record] | None = None,
+    data_path: str | Path | None = None,
+    prefer_legacy_data: bool = False,
+) -> dict[str, Any]:
+    """日记评分快速调用入口。"""
+    service = DiaryService(
+        records,
+        data_path=data_path,
+        prefer_legacy_data=prefer_legacy_data,
+    )
+    return service.rate_diary(diary_id, rating)
