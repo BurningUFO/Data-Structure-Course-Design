@@ -240,6 +240,7 @@ class DemoUIService:
 
     def get_bootstrap_payload(self) -> dict[str, Any]:
         """Return all static data needed by the one-page UI."""
+        map_geometry_stats = self._build_map_geometry_stats()
         return {
             "product": {
                 "name": "智能校园导览系统",
@@ -288,6 +289,9 @@ class DemoUIService:
                 "bounds": self._build_map_bounds(self.map_nodes),
                 "node_count": len(self.map_nodes),
                 "edge_count": len(self.map_edges),
+                "geometry_edge_count": map_geometry_stats["geometry_edge_count"],
+                "fallback_edge_count": map_geometry_stats["fallback_edge_count"],
+                "geometry_coverage_ratio": map_geometry_stats["geometry_coverage_ratio"],
             },
             "stats": {
                 "route_target_count": len(self.route_targets),
@@ -351,6 +355,12 @@ class DemoUIService:
             )
 
         node_feature_count = len(self.map_nodes)
+        geometry_edge_count = edge_feature_count - fallback_edge_count
+        geometry_coverage_ratio = (
+            round(geometry_edge_count / edge_feature_count, 4)
+            if edge_feature_count
+            else 0.0
+        )
         return {
             "success": True,
             "site_id": self.site_id,
@@ -361,7 +371,9 @@ class DemoUIService:
             "stats": {
                 "node_feature_count": node_feature_count,
                 "edge_feature_count": edge_feature_count,
+                "geometry_edge_count": geometry_edge_count,
                 "fallback_edge_count": fallback_edge_count,
+                "geometry_coverage_ratio": geometry_coverage_ratio,
                 "feature_count": len(features),
             },
         }
@@ -868,6 +880,21 @@ class DemoUIService:
             edges.append(map_edge)
 
         return edges
+
+    def _build_map_geometry_stats(self) -> dict[str, int | float]:
+        edge_count = len(self.map_edges)
+        geometry_edge_count = sum(1 for edge in self.map_edges if edge.get("geometry"))
+        fallback_edge_count = edge_count - geometry_edge_count
+        geometry_coverage_ratio = (
+            round(geometry_edge_count / edge_count, 4)
+            if edge_count
+            else 0.0
+        )
+        return {
+            "geometry_edge_count": geometry_edge_count,
+            "fallback_edge_count": fallback_edge_count,
+            "geometry_coverage_ratio": geometry_coverage_ratio,
+        }
 
     @staticmethod
     def _build_map_edge_lookup(

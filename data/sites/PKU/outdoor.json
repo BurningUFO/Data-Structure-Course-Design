@@ -975,7 +975,33 @@
       "congestion": 0.8,
       "ideal_speed": 1.2,
       "vehicle_access": "all",
-      "name": "东门大道"
+      "name": "东门大道",
+      "geometry": [
+        {
+          "lat": 39.9935,
+          "lng": 116.3105
+        },
+        {
+          "lat": 39.99334,
+          "lng": 116.31002
+        },
+        {
+          "lat": 39.99286,
+          "lng": 116.30915
+        },
+        {
+          "lat": 39.99225,
+          "lng": 116.30805
+        },
+        {
+          "lat": 39.99168,
+          "lng": 116.30735
+        },
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        }
+      ]
     },
     {
       "from": "road_cross",
@@ -995,7 +1021,29 @@
       "congestion": 0.5,
       "ideal_speed": 1.5,
       "vehicle_access": "pedestrian_only",
-      "name": "南门步道"
+      "name": "南门步道",
+      "geometry": [
+        {
+          "lat": 39.9895,
+          "lng": 116.3075
+        },
+        {
+          "lat": 39.98982,
+          "lng": 116.30718
+        },
+        {
+          "lat": 39.9902,
+          "lng": 116.30682
+        },
+        {
+          "lat": 39.99052,
+          "lng": 116.30648
+        },
+        {
+          "lat": 39.9908,
+          "lng": 116.3062
+        }
+      ]
     },
     {
       "from": "teaching_building_1",
@@ -1297,7 +1345,29 @@
       "congestion": 0.3,
       "ideal_speed": 2.0,
       "vehicle_access": "pedestrian_only",
-      "name": "体育场连接路"
+      "name": "体育场连接路",
+      "geometry": [
+        {
+          "lat": 39.9912,
+          "lng": 116.305
+        },
+        {
+          "lat": 39.99156,
+          "lng": 116.30502
+        },
+        {
+          "lat": 39.99205,
+          "lng": 116.30512
+        },
+        {
+          "lat": 39.99248,
+          "lng": 116.30532
+        },
+        {
+          "lat": 39.9929,
+          "lng": 116.3055
+        }
+      ]
     },
     {
       "from": "gate_north",
@@ -1317,7 +1387,29 @@
       "congestion": 0.6,
       "ideal_speed": 1.0,
       "vehicle_access": "vehicle_only",
-      "name": "停车场通道"
+      "name": "停车场通道",
+      "geometry": [
+        {
+          "lat": 39.992,
+          "lng": 116.309
+        },
+        {
+          "lat": 39.99228,
+          "lng": 116.30922
+        },
+        {
+          "lat": 39.99272,
+          "lng": 116.30968
+        },
+        {
+          "lat": 39.99312,
+          "lng": 116.31012
+        },
+        {
+          "lat": 39.9935,
+          "lng": 116.3105
+        }
+      ]
     },
     {
       "from": "gate_east",
@@ -1337,7 +1429,21 @@
       "congestion": 0.2,
       "ideal_speed": 2.0,
       "vehicle_access": "pedestrian_only",
-      "name": "洗手间便道"
+      "name": "洗手间便道",
+      "geometry": [
+        {
+          "lat": 39.9914,
+          "lng": 116.3068
+        },
+        {
+          "lat": 39.99145,
+          "lng": 116.3069
+        },
+        {
+          "lat": 39.9915,
+          "lng": 116.307
+        }
+      ]
     },
     {
       "from": "library",
@@ -1347,7 +1453,21 @@
       "congestion": 0.2,
       "ideal_speed": 2.0,
       "vehicle_access": "pedestrian_only",
-      "name": "洗手间便道"
+      "name": "洗手间便道",
+      "geometry": [
+        {
+          "lat": 39.9915,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.99145,
+          "lng": 116.3069
+        },
+        {
+          "lat": 39.9914,
+          "lng": 116.3068
+        }
+      ]
     },
     {
       "from": "toilet_sports_area",
@@ -1357,7 +1477,21 @@
       "congestion": 0.2,
       "ideal_speed": 2.0,
       "vehicle_access": "pedestrian_only",
-      "name": "洗手间便道"
+      "name": "洗手间便道",
+      "geometry": [
+        {
+          "lat": 39.9915,
+          "lng": 116.305
+        },
+        {
+          "lat": 39.99136,
+          "lng": 116.305
+        },
+        {
+          "lat": 39.9912,
+          "lng": 116.305
+        }
+      ]
     },
     {
       "from": "sports_ground",

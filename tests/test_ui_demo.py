@@ -1,9 +1,19 @@
+import json
 import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.ui.demo_service import DemoUIService
+
+
+def assert_close_coordinate(left, right, tolerance=0.00035):
+    assert abs(left["lat"] - right["lat"]) <= tolerance
+    assert abs(left["lng"] - right["lng"]) <= tolerance
+
+
+def is_number(value):
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
 def test_demo_bootstrap_contains_map_and_controls():
@@ -18,6 +28,9 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["default_start_node"] == "gate_north"
     assert payload["map"]["node_count"] >= 10
     assert payload["map"]["edge_count"] >= 10
+    assert payload["map"]["geometry_edge_count"] > 8
+    assert payload["map"]["fallback_edge_count"] > 0
+    assert payload["map"]["geometry_coverage_ratio"] >= 0.17
     assert payload["map_renderer"] == "leaflet_geo"
     assert payload["map_capabilities"]["renderers"] == ["simple_svg", "leaflet_geo"]
     assert payload["map_capabilities"]["default_renderer"] == "leaflet_geo"
@@ -52,7 +65,14 @@ def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
     assert payload["geojson"]["type"] == "FeatureCollection"
     assert payload["stats"]["node_feature_count"] > 0
     assert payload["stats"]["edge_feature_count"] > 0
+    assert payload["stats"]["geometry_edge_count"] > 8
     assert payload["stats"]["fallback_edge_count"] > 0
+    assert (
+        payload["stats"]["geometry_edge_count"]
+        + payload["stats"]["fallback_edge_count"]
+        == payload["stats"]["edge_feature_count"]
+    )
+    assert payload["stats"]["geometry_coverage_ratio"] >= 0.17
 
     features = payload["geojson"]["features"]
     node_features = [item for item in features if item["properties"]["kind"] == "node"]
@@ -79,6 +99,90 @@ def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
     assert first_edge["geometry"]["coordinates"][0] == [source["lng"], source["lat"]]
     assert first_edge["geometry"]["coordinates"][-1] == [target["lng"], target["lat"]]
     print("test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order passed.")
+
+
+def test_demo_map_geojson_reports_geometry_coverage_stats():
+    service = DemoUIService("PKU")
+    payload = service.get_map_geojson_payload()
+    stats = payload["stats"]
+
+    geometry_edge_count = sum(1 for edge in service.map_edges if edge.get("geometry"))
+    fallback_edge_count = len(service.map_edges) - geometry_edge_count
+
+    assert stats["edge_feature_count"] == len(service.map_edges)
+    assert stats["geometry_edge_count"] == geometry_edge_count
+    assert stats["fallback_edge_count"] == fallback_edge_count
+    assert stats["geometry_edge_count"] > 8
+    assert stats["geometry_coverage_ratio"] == round(
+        geometry_edge_count / len(service.map_edges),
+        4,
+    )
+
+    bootstrap_map = service.get_bootstrap_payload()["map"]
+    assert bootstrap_map["geometry_edge_count"] == stats["geometry_edge_count"]
+    assert bootstrap_map["fallback_edge_count"] == stats["fallback_edge_count"]
+    assert bootstrap_map["geometry_coverage_ratio"] == stats["geometry_coverage_ratio"]
+    print("test_demo_map_geojson_reports_geometry_coverage_stats passed.")
+
+
+def test_demo_outdoor_geometry_quality_and_geojson_coordinate_order():
+    service = DemoUIService("PKU")
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    outdoor_path = os.path.join(repo_root, "data", "sites", "PKU", "outdoor.json")
+    with open(outdoor_path, encoding="utf-8") as file:
+        outdoor_data = json.load(file)
+
+    node_index = {node["id"]: node for node in outdoor_data["nodes"]}
+    bounds = service.get_bootstrap_payload()["map"]["bounds"]
+    margin = 0.001
+    geometry_edges = [
+        edge
+        for edge in outdoor_data["edges"]
+        if isinstance(edge.get("geometry"), list)
+    ]
+    assert geometry_edges
+
+    for edge in geometry_edges:
+        geometry = edge["geometry"]
+        assert len(geometry) >= 2
+        source = node_index[edge["from"]]["location"]
+        target = node_index[edge["to"]]["location"]
+        assert_close_coordinate(geometry[0], source)
+        assert_close_coordinate(geometry[-1], target)
+        for point in geometry:
+            assert is_number(point["lat"])
+            assert is_number(point["lng"])
+            assert bounds["lat_min"] - margin <= point["lat"] <= bounds["lat_max"] + margin
+            assert bounds["lng_min"] - margin <= point["lng"] <= bounds["lng_max"] + margin
+
+    payload = service.get_map_geojson_payload()
+    map_edge_lookup = {
+        (edge["from"], edge["to"]): edge
+        for edge in service.map_edges
+    }
+    edge_features = [
+        item
+        for item in payload["geojson"]["features"]
+        if item["properties"]["kind"] == "edge"
+    ]
+    for feature in edge_features:
+        properties = feature["properties"]
+        coordinates = feature["geometry"]["coordinates"]
+        assert feature["geometry"]["type"] == "LineString"
+        assert len(coordinates) >= 2
+        for lng, lat in coordinates:
+            assert is_number(lng)
+            assert is_number(lat)
+            assert bounds["lng_min"] - margin <= lng <= bounds["lng_max"] + margin
+            assert bounds["lat_min"] - margin <= lat <= bounds["lat_max"] + margin
+
+        edge = map_edge_lookup[(properties["from"], properties["to"])]
+        if edge.get("geometry"):
+            assert coordinates == [
+                [point["lng"], point["lat"]]
+                for point in edge["geometry"]
+            ]
+    print("test_demo_outdoor_geometry_quality_and_geojson_coordinate_order passed.")
 
 
 def test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry():
@@ -121,29 +225,56 @@ def test_demo_route_overlay_falls_back_when_edge_has_no_geometry():
     service = DemoUIService("PKU")
     response = service.plan_route(
         {
-            "start_node_id": "road_cross",
-            "target_node_id": "gate_east",
+            "start_node_id": "gate_north",
+            "target_node_id": "campus_service_01",
             "strategy": "shortest_distance",
             "transport_mode": "any",
         }
     )
 
     assert response["success"] is True
-    assert response["path"] == ["road_cross", "gate_east"]
+    assert response["path"] == ["gate_north", "campus_service_01"]
     geojson = response["ui"]["route_geojson"]
     assert geojson["type"] == "Feature"
     assert geojson["geometry"]["type"] == "LineString"
     assert geojson["geometry"]["coordinates"] == [
-        [116.307, 39.9913],
-        [116.3105, 39.9935],
+        [116.3055, 39.9929],
+        [116.305, 39.9898],
     ]
 
     stats = response["ui"]["route_geometry_stats"]
     assert stats["route_segment_count"] == 1
     assert stats["fallback_segment_count"] == 1
-    assert stats["reverse_edge_reuse_count"] == 1
+    assert stats["geometry_segment_count"] == 0
+    assert stats["reverse_edge_reuse_count"] == 0
     assert stats["missing_edge_count"] == 0
     print("test_demo_route_overlay_falls_back_when_edge_has_no_geometry passed.")
+
+
+def test_demo_priority_gate_routes_use_expanded_geometry():
+    service = DemoUIService("PKU")
+
+    for start_node_id, target_node_id in (
+        ("gate_east", "road_cross"),
+        ("road_cross", "gate_east"),
+        ("gate_south", "teaching_building_1"),
+    ):
+        response = service.plan_route(
+            {
+                "start_node_id": start_node_id,
+                "target_node_id": target_node_id,
+                "strategy": "shortest_distance",
+                "transport_mode": "any",
+            }
+        )
+
+        assert response["success"] is True
+        stats = response["ui"]["route_geometry_stats"]
+        assert stats["route_segment_count"] == 1
+        assert stats["geometry_segment_count"] == 1
+        assert stats["fallback_segment_count"] == 0
+        assert stats["coordinate_count"] > 2
+    print("test_demo_priority_gate_routes_use_expanded_geometry passed.")
 
 
 def test_demo_scenic_search_is_routeable():
@@ -530,8 +661,11 @@ def run_all_tests():
     print("Running UI demo service tests...")
     test_demo_bootstrap_contains_map_and_controls()
     test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
+    test_demo_map_geojson_reports_geometry_coverage_stats()
+    test_demo_outdoor_geometry_quality_and_geojson_coordinate_order()
     test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry()
     test_demo_route_overlay_falls_back_when_edge_has_no_geometry()
+    test_demo_priority_gate_routes_use_expanded_geometry()
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()
     test_demo_main_query_recommend_route_chains_remain_available()
