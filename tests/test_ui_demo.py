@@ -81,6 +81,71 @@ def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
     print("test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order passed.")
 
 
+def test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry():
+    service = DemoUIService("PKU")
+    response = service.plan_route(
+        {
+            "start_node_id": "gate_north",
+            "target_node_id": "library",
+            "strategy": "shortest_distance",
+            "transport_mode": "any",
+        }
+    )
+
+    assert response["success"] is True
+    assert response["ui"]["mappable_path_node_ids"] == ["gate_north", "square_center", "library"]
+    geojson = response["ui"]["route_geojson"]
+    assert geojson["type"] == "Feature"
+    assert geojson["geometry"]["type"] == "LineString"
+
+    coordinates = geojson["geometry"]["coordinates"]
+    assert coordinates[0] == [116.3055, 39.9929]
+    assert coordinates[-1] == [116.307, 39.9915]
+    lng, lat = coordinates[0]
+    assert 116 < lng < 117
+    assert 39 < lat < 40
+
+    square_index = coordinates.index([116.3065, 39.9917])
+    assert coordinates[square_index + 1] == [116.30666, 39.99162]
+
+    stats = response["ui"]["route_geometry_stats"]
+    assert stats["route_segment_count"] == 2
+    assert stats["geometry_segment_count"] == 2
+    assert stats["fallback_segment_count"] < stats["route_segment_count"]
+    assert stats["reverse_edge_reuse_count"] == 1
+    assert response["ui"]["stats"]["route_geometry"] == stats
+    print("test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry passed.")
+
+
+def test_demo_route_overlay_falls_back_when_edge_has_no_geometry():
+    service = DemoUIService("PKU")
+    response = service.plan_route(
+        {
+            "start_node_id": "road_cross",
+            "target_node_id": "gate_east",
+            "strategy": "shortest_distance",
+            "transport_mode": "any",
+        }
+    )
+
+    assert response["success"] is True
+    assert response["path"] == ["road_cross", "gate_east"]
+    geojson = response["ui"]["route_geojson"]
+    assert geojson["type"] == "Feature"
+    assert geojson["geometry"]["type"] == "LineString"
+    assert geojson["geometry"]["coordinates"] == [
+        [116.307, 39.9913],
+        [116.3105, 39.9935],
+    ]
+
+    stats = response["ui"]["route_geometry_stats"]
+    assert stats["route_segment_count"] == 1
+    assert stats["fallback_segment_count"] == 1
+    assert stats["reverse_edge_reuse_count"] == 1
+    assert stats["missing_edge_count"] == 0
+    print("test_demo_route_overlay_falls_back_when_edge_has_no_geometry passed.")
+
+
 def test_demo_scenic_search_is_routeable():
     service = DemoUIService("PKU")
     response = service.scenic_search(
@@ -334,6 +399,8 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "renderLeafletMap" in script
     assert "ensureLeafletMap" in script
     assert "syncLeafletRouteLayer" in script
+    assert "isRenderableRouteGeoJson" in script
+    assert "route_geojson" in script
     assert "fallbackToSvgMap" in script
     assert '"/api/map/geojson"' in script
     print("test_demo_static_leaflet_renderer_contains_local_assets_and_fallback passed.")
@@ -439,6 +506,23 @@ def test_demo_multi_route_contains_visit_order_and_legs():
     assert response["ui"]["leg_summaries"]
     assert response["ui"]["display_steps"]
     assert "多目标访问顺序" in response["ui"]["caption"]
+
+    route_geojson = response["ui"]["route_geojson"]
+    assert route_geojson["type"] == "FeatureCollection"
+    assert len(route_geojson["features"]) == len(response["leg_results"])
+    for feature in route_geojson["features"]:
+        assert feature["geometry"]["type"] == "LineString"
+        assert len(feature["geometry"]["coordinates"]) >= 2
+        lng, lat = feature["geometry"]["coordinates"][0]
+        assert 116 < lng < 117
+        assert 39 < lat < 40
+        assert feature["properties"]["kind"] == "route"
+        assert feature["properties"]["route_type"] == "multi_target_leg"
+
+    stats = response["ui"]["route_geometry_stats"]
+    assert stats["feature_count"] == len(route_geojson["features"])
+    assert stats["route_segment_count"] >= len(response["leg_results"])
+    assert stats["fallback_segment_count"] < stats["route_segment_count"]
     print("test_demo_multi_route_contains_visit_order_and_legs passed.")
 
 
@@ -446,6 +530,8 @@ def run_all_tests():
     print("Running UI demo service tests...")
     test_demo_bootstrap_contains_map_and_controls()
     test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
+    test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry()
+    test_demo_route_overlay_falls_back_when_edge_has_no_geometry()
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()
     test_demo_main_query_recommend_route_chains_remain_available()

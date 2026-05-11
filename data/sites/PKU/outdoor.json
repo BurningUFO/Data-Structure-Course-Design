@@ -933,7 +933,29 @@
       "congestion": 0.6,
       "ideal_speed": 1.5,
       "vehicle_access": "all",
-      "name": "西门大道"
+      "name": "西门大道",
+      "geometry": [
+        {
+          "lat": 39.9929,
+          "lng": 116.3055
+        },
+        {
+          "lat": 39.99274,
+          "lng": 116.30557
+        },
+        {
+          "lat": 39.99242,
+          "lng": 116.30586
+        },
+        {
+          "lat": 39.99207,
+          "lng": 116.30622
+        },
+        {
+          "lat": 39.9917,
+          "lng": 116.3065
+        }
+      ]
     },
     {
       "from": "square_center",
@@ -993,7 +1015,25 @@
       "congestion": 0.4,
       "ideal_speed": 1.5,
       "vehicle_access": "pedestrian_only",
-      "name": "图书馆前广场"
+      "name": "图书馆前广场",
+      "geometry": [
+        {
+          "lat": 39.9915,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.99154,
+          "lng": 116.30684
+        },
+        {
+          "lat": 39.99162,
+          "lng": 116.30666
+        },
+        {
+          "lat": 39.9917,
+          "lng": 116.3065
+        }
+      ]
     },
     {
       "from": "square_center",
@@ -1013,7 +1053,25 @@
       "congestion": 0.3,
       "ideal_speed": 2.0,
       "vehicle_access": "all",
-      "name": "广场连接路"
+      "name": "广场连接路",
+      "geometry": [
+        {
+          "lat": 39.9917,
+          "lng": 116.3065
+        },
+        {
+          "lat": 39.99162,
+          "lng": 116.30665
+        },
+        {
+          "lat": 39.99148,
+          "lng": 116.30683
+        },
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        }
+      ]
     },
     {
       "from": "road_cross",
@@ -1033,7 +1091,29 @@
       "congestion": 0.5,
       "ideal_speed": 1.5,
       "vehicle_access": "all",
-      "name": "教学楼路"
+      "name": "教学楼路",
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.99118,
+          "lng": 116.30678
+        },
+        {
+          "lat": 39.99102,
+          "lng": 116.30654
+        },
+        {
+          "lat": 39.99088,
+          "lng": 116.30634
+        },
+        {
+          "lat": 39.9908,
+          "lng": 116.3062
+        }
+      ]
     },
     {
       "from": "teaching_building_1",
@@ -1053,7 +1133,25 @@
       "congestion": 0.5,
       "ideal_speed": 1.5,
       "vehicle_access": "all",
-      "name": "教学楼连接路"
+      "name": "教学楼连接路",
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.99122,
+          "lng": 116.30692
+        },
+        {
+          "lat": 39.9911,
+          "lng": 116.30682
+        },
+        {
+          "lat": 39.991,
+          "lng": 116.3068
+        }
+      ]
     },
     {
       "from": "teaching_building_2",
@@ -1073,7 +1171,29 @@
       "congestion": 0.7,
       "ideal_speed": 1.0,
       "vehicle_access": "pedestrian_only",
-      "name": "食堂通道"
+      "name": "食堂通道",
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.99145,
+          "lng": 116.30738
+        },
+        {
+          "lat": 39.99156,
+          "lng": 116.30786
+        },
+        {
+          "lat": 39.99168,
+          "lng": 116.30832
+        },
+        {
+          "lat": 39.9918,
+          "lng": 116.3088
+        }
+      ]
     },
     {
       "from": "canteen",
@@ -1093,7 +1213,29 @@
       "congestion": 0.4,
       "ideal_speed": 1.5,
       "vehicle_access": "all",
-      "name": "商业街"
+      "name": "商业街",
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.99112,
+          "lng": 116.30748
+        },
+        {
+          "lat": 39.99092,
+          "lng": 116.30808
+        },
+        {
+          "lat": 39.9907,
+          "lng": 116.30878
+        },
+        {
+          "lat": 39.9905,
+          "lng": 116.3095
+        }
+      ]
     },
     {
       "from": "convenience_store",
@@ -1113,7 +1255,29 @@
       "congestion": 0.5,
       "ideal_speed": 1.3,
       "vehicle_access": "all",
-      "name": "宿舍区路"
+      "name": "宿舍区路",
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.99102,
+          "lng": 116.30736
+        },
+        {
+          "lat": 39.99062,
+          "lng": 116.30785
+        },
+        {
+          "lat": 39.99028,
+          "lng": 116.30822
+        },
+        {
+          "lat": 39.99,
+          "lng": 116.3085
+        }
+      ]
     },
     {
       "from": "dormitory_1",

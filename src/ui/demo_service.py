@@ -231,6 +231,7 @@ class DemoUIService:
         self.map_nodes = self._build_map_nodes(self.outdoor_graph_source)
         self.map_node_index = {node["id"]: node for node in self.map_nodes}
         self.map_edges = self._build_map_edges(self.outdoor_graph_source)
+        self.map_edge_lookup = self._build_map_edge_lookup(self.map_edges)
         self.start_nodes = self._build_start_nodes()
         self.default_start_node = self._resolve_default_start_node()
         self.route_targets = self._build_route_targets()
@@ -868,6 +869,16 @@ class DemoUIService:
 
         return edges
 
+    @staticmethod
+    def _build_map_edge_lookup(
+        edges: list[dict[str, Any]],
+    ) -> dict[tuple[str, str], dict[str, Any]]:
+        return {
+            (edge["from"], edge["to"]): edge
+            for edge in edges
+            if edge.get("from") and edge.get("to")
+        }
+
     def _build_edge_geojson_coordinates(
         self,
         edge: dict[str, Any],
@@ -900,6 +911,211 @@ class DemoUIService:
             except (TypeError, ValueError):
                 continue
         return points if len(points) >= 2 else []
+
+    def _build_route_geojson_feature(
+        self,
+        route: dict[str, Any],
+        route_type: str,
+        extra_properties: dict[str, Any] | None = None,
+    ) -> tuple[dict[str, Any] | None, list[list[float]], dict[str, int]]:
+        coordinates, stats = self._build_route_line_coordinates(route.get("path", []))
+        if len(coordinates) < 2:
+            stats["feature_count"] = 0
+            stats["coordinate_count"] = len(coordinates)
+            return None, coordinates, stats
+
+        properties = {
+            "kind": "route",
+            "route_type": route_type,
+            "start_node_id": normalize_text(route.get("start_node_id")),
+            "target_node_id": normalize_text(route.get("target_node_id")),
+            "distance_m": route.get("total_distance_m"),
+            "estimated_time_s": route.get("estimated_time_s"),
+            "fallback_segment_count": stats["fallback_segment_count"],
+            "geometry_segment_count": stats["geometry_segment_count"],
+            "reverse_edge_reuse_count": stats["reverse_edge_reuse_count"],
+        }
+        if extra_properties:
+            properties.update(extra_properties)
+
+        stats["feature_count"] = 1
+        stats["coordinate_count"] = len(coordinates)
+        return (
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": coordinates,
+                },
+                "properties": properties,
+            },
+            coordinates,
+            stats,
+        )
+
+    def _build_multi_route_geojson(
+        self,
+        route: dict[str, Any],
+    ) -> tuple[dict[str, Any], list[list[float]], dict[str, int]]:
+        features: list[dict[str, Any]] = []
+        stitched_coordinates: list[list[float]] = []
+        aggregate_stats = self._empty_route_geometry_stats()
+
+        for index, leg in enumerate(route.get("leg_results", []), start=1):
+            feature, coordinates, stats = self._build_route_geojson_feature(
+                leg,
+                route_type="multi_target_leg",
+                extra_properties={
+                    "leg_index": index,
+                    "from_node_id": normalize_text(leg.get("start_node_id")),
+                    "to_node_id": normalize_text(leg.get("target_node_id")),
+                },
+            )
+            self._merge_route_geometry_stats(aggregate_stats, stats)
+            self._append_route_coordinates(stitched_coordinates, coordinates)
+            if feature:
+                features.append(feature)
+
+        if not features:
+            feature, coordinates, stats = self._build_route_geojson_feature(
+                route,
+                route_type="multi_target",
+            )
+            self._merge_route_geometry_stats(aggregate_stats, stats)
+            self._append_route_coordinates(stitched_coordinates, coordinates)
+            if feature:
+                features.append(feature)
+
+        aggregate_stats["feature_count"] = len(features)
+        aggregate_stats["coordinate_count"] = len(stitched_coordinates)
+        return (
+            {
+                "type": "FeatureCollection",
+                "features": features,
+            },
+            stitched_coordinates,
+            aggregate_stats,
+        )
+
+    def _build_route_line_coordinates(
+        self,
+        path: list[Any],
+    ) -> tuple[list[list[float]], dict[str, int]]:
+        node_ids = [normalize_text(node_id) for node_id in path if normalize_text(node_id)]
+        coordinates: list[list[float]] = []
+        stats = self._empty_route_geometry_stats()
+
+        for source, target in zip(node_ids, node_ids[1:]):
+            if source not in self.map_node_index or target not in self.map_node_index:
+                stats["skipped_unmapped_segment_count"] += 1
+                continue
+
+            segment_coordinates, used_fallback, used_reverse, missing_edge = (
+                self._resolve_route_segment_coordinates(source, target)
+            )
+            if len(segment_coordinates) < 2:
+                stats["missing_edge_count"] += 1
+                continue
+
+            stats["route_segment_count"] += 1
+            if used_fallback:
+                stats["fallback_segment_count"] += 1
+                stats["fallback_edge_count"] += 1
+            else:
+                stats["geometry_segment_count"] += 1
+            if used_reverse:
+                stats["reverse_edge_reuse_count"] += 1
+            if missing_edge:
+                stats["missing_edge_count"] += 1
+
+            self._append_route_coordinates(coordinates, segment_coordinates)
+
+        stats["coordinate_count"] = len(coordinates)
+        return coordinates, stats
+
+    def _resolve_route_segment_coordinates(
+        self,
+        source: str,
+        target: str,
+    ) -> tuple[list[list[float]], bool, bool, bool]:
+        edge = self.map_edge_lookup.get((source, target))
+        used_reverse = False
+
+        if edge is None:
+            edge = self.map_edge_lookup.get((target, source))
+            used_reverse = edge is not None
+
+        if edge is not None:
+            coordinates, used_fallback = self._build_edge_geojson_coordinates(edge)
+            if used_reverse:
+                coordinates = list(reversed(coordinates))
+            return coordinates, used_fallback, used_reverse, False
+
+        source_node = self.map_node_index.get(source)
+        target_node = self.map_node_index.get(target)
+        if not source_node or not target_node:
+            return [], True, False, True
+        return (
+            [
+                [source_node["lng"], source_node["lat"]],
+                [target_node["lng"], target_node["lat"]],
+            ],
+            True,
+            False,
+            True,
+        )
+
+    @staticmethod
+    def _empty_route_geometry_stats() -> dict[str, int]:
+        return {
+            "route_segment_count": 0,
+            "geometry_segment_count": 0,
+            "fallback_segment_count": 0,
+            "fallback_edge_count": 0,
+            "reverse_edge_reuse_count": 0,
+            "missing_edge_count": 0,
+            "skipped_unmapped_segment_count": 0,
+            "feature_count": 0,
+            "coordinate_count": 0,
+        }
+
+    @staticmethod
+    def _merge_route_geometry_stats(
+        target: dict[str, int],
+        source: dict[str, int],
+    ) -> None:
+        for key in (
+            "route_segment_count",
+            "geometry_segment_count",
+            "fallback_segment_count",
+            "fallback_edge_count",
+            "reverse_edge_reuse_count",
+            "missing_edge_count",
+            "skipped_unmapped_segment_count",
+        ):
+            target[key] += int(source.get(key, 0))
+
+    @classmethod
+    def _append_route_coordinates(
+        cls,
+        target: list[list[float]],
+        coordinates: list[list[float]],
+    ) -> None:
+        if not coordinates:
+            return
+        if target and cls._same_geojson_coordinate(target[-1], coordinates[0]):
+            target.extend(coordinates[1:])
+            return
+        target.extend(coordinates)
+
+    @staticmethod
+    def _same_geojson_coordinate(left: list[float], right: list[float]) -> bool:
+        return (
+            len(left) == 2
+            and len(right) == 2
+            and abs(left[0] - right[0]) < 1e-9
+            and abs(left[1] - right[1]) < 1e-9
+        )
 
     def _build_map_bounds(self, nodes: list[dict[str, Any]]) -> dict[str, float]:
         if not nodes:
@@ -1179,6 +1395,10 @@ class DemoUIService:
         path = route.get("path", [])
         mappable_path_node_ids = [node_id for node_id in path if node_id in self.map_node_index]
         unmapped_path_node_ids = [node_id for node_id in path if node_id not in self.map_node_index]
+        route_geojson, route_line_coordinates, route_geometry_stats = self._build_route_geojson_feature(
+            route,
+            route_type="single_target",
+        )
         return {
             "mappable_path_node_ids": mappable_path_node_ids,
             "mappable_path_nodes": [
@@ -1191,6 +1411,12 @@ class DemoUIService:
                 route.get("target_node_id"),
             ],
             "caption": self._build_route_caption(route, unmapped_path_node_ids),
+            "route_geojson": route_geojson,
+            "route_line_coordinates": route_line_coordinates,
+            "route_geometry_stats": route_geometry_stats,
+            "stats": {
+                "route_geometry": route_geometry_stats,
+            },
         }
 
     def _build_multi_route_overlay(self, route: dict[str, Any]) -> dict[str, Any]:
@@ -1221,6 +1447,7 @@ class DemoUIService:
                 copied_step["leg_index"] = index
                 display_steps.append(copied_step)
 
+        route_geojson, route_line_coordinates, route_geometry_stats = self._build_multi_route_geojson(route)
         return {
             "mappable_path_node_ids": mappable_path_node_ids,
             "mappable_path_nodes": [
@@ -1232,6 +1459,12 @@ class DemoUIService:
             "caption": self._build_multi_route_caption(route, unmapped_path_node_ids),
             "leg_summaries": leg_summaries,
             "display_steps": display_steps,
+            "route_geojson": route_geojson,
+            "route_line_coordinates": route_line_coordinates,
+            "route_geometry_stats": route_geometry_stats,
+            "stats": {
+                "route_geometry": route_geometry_stats,
+            },
         }
 
     def _build_multi_route_caption(

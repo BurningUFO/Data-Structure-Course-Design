@@ -1814,20 +1814,54 @@ function syncLeafletRouteLayer() {
   removeLeafletLayer("routeLayer");
   const layer = L.layerGroup().addTo(map);
   const nodeIndex = mapNodeIndex();
-  const routePath = state.currentRoute?.ui?.mappable_path_node_ids || [];
-  const routeLatLngs = routePath
-    .map((nodeId) => nodeIndex.get(nodeId))
-    .filter(Boolean)
-    .map((node) => [node.lat, node.lng]);
+  let renderedRouteGeoJson = false;
+  const routeGeoJson = state.currentRoute?.ui?.route_geojson || state.currentRoute?.ui?.geojson;
 
-  if (routeLatLngs.length >= 2) {
-    L.polyline(routeLatLngs, {
-      color: "#d98214",
-      weight: 8,
-      opacity: 0.94,
-      lineCap: "round",
-      lineJoin: "round",
-    }).addTo(layer);
+  if (isRenderableRouteGeoJson(routeGeoJson)) {
+    try {
+      addLeafletRouteGeoJson(layer, routeGeoJson, {
+        color: "#8f3c12",
+        weight: 12,
+        opacity: 0.36,
+        lineCap: "round",
+        lineJoin: "round",
+      });
+      addLeafletRouteGeoJson(layer, routeGeoJson, {
+        color: "#f59e0b",
+        weight: 6,
+        opacity: 0.96,
+        lineCap: "round",
+        lineJoin: "round",
+      });
+      renderedRouteGeoJson = true;
+    } catch (error) {
+      console.warn("Leaflet route GeoJSON render failed, falling back to node path.", error);
+    }
+  }
+
+  if (!renderedRouteGeoJson) {
+    const routePath = state.currentRoute?.ui?.mappable_path_node_ids || [];
+    const routeLatLngs = routePath
+      .map((nodeId) => nodeIndex.get(nodeId))
+      .filter(Boolean)
+      .map((node) => [node.lat, node.lng]);
+
+    if (routeLatLngs.length >= 2) {
+      L.polyline(routeLatLngs, {
+        color: "#8f3c12",
+        weight: 12,
+        opacity: 0.32,
+        lineCap: "round",
+        lineJoin: "round",
+      }).addTo(layer);
+      L.polyline(routeLatLngs, {
+        color: "#f59e0b",
+        weight: 6,
+        opacity: 0.94,
+        lineCap: "round",
+        lineJoin: "round",
+      }).addTo(layer);
+    }
   }
 
   getMapHighlightNodeIds().forEach((nodeId) => {
@@ -1847,6 +1881,34 @@ function syncLeafletRouteLayer() {
   });
 
   state.leaflet.routeLayer = layer;
+}
+
+function addLeafletRouteGeoJson(layer, routeGeoJson, style) {
+  L.geoJSON(routeGeoJson, {
+    filter: (feature) => isRouteLineGeometry(feature?.geometry || feature),
+    style: () => style,
+  }).addTo(layer);
+}
+
+function isRenderableRouteGeoJson(routeGeoJson) {
+  if (!routeGeoJson || typeof routeGeoJson !== "object") {
+    return false;
+  }
+
+  if (routeGeoJson.type === "FeatureCollection") {
+    return Array.isArray(routeGeoJson.features)
+      && routeGeoJson.features.some((feature) => isRouteLineGeometry(feature?.geometry));
+  }
+
+  if (routeGeoJson.type === "Feature") {
+    return isRouteLineGeometry(routeGeoJson.geometry);
+  }
+
+  return isRouteLineGeometry(routeGeoJson);
+}
+
+function isRouteLineGeometry(geometry) {
+  return geometry?.type === "LineString" || geometry?.type === "MultiLineString";
 }
 
 function fallbackToSvgMap(error) {
