@@ -1,0 +1,454 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="User Reference" href="user-reference.html"><link rel="prev" title="Installation" href="installation.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Getting Started - OSMnx 2.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><script async type="text/javascript" src="/_/static/javascript/readthedocs-addons.js"></script><meta name="readthedocs-project-slug" content="osmnx" /><meta name="readthedocs-version-slug" content="stable" /><meta name="readthedocs-resolver-filename" content="/getting-started.html" /><meta name="readthedocs-http-status" content="200" /></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">OSMnx 2.1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">OSMnx 2.1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user-reference.html">User Reference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="internals-reference.html">Internals Reference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="further-reading.html">Further Reading</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/getting-started.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h1>
+<section id="get-started-in-4-steps">
+<h2>Get Started in 4 Steps<a class="headerlink" href="#get-started-in-4-steps" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Install OSMnx by following the <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> guide.</p></li>
+<li><p>Read the <a class="reference internal" href="#introducing-osmnx"><span class="std std-ref">Introducing OSMnx</span></a> section on this page.</p></li>
+<li><p>Work through the OSMnx <a class="reference external" href="https://github.com/gboeing/osmnx-examples">Examples Gallery</a> for step-by-step tutorials and sample code.</p></li>
+<li><p>Consult the <a class="reference internal" href="user-reference.html"><span class="doc">User Reference</span></a> for complete details on using the package.</p></li>
+</ol>
+<p>Finally, if you’re not already familiar with <a class="reference external" href="https://networkx.org">NetworkX</a> and <a class="reference external" href="https://geopandas.org">GeoPandas</a>, make sure you read their user guides as OSMnx uses their data structures.</p>
+</section>
+<section id="introducing-osmnx">
+<span id="id1"></span><h2>Introducing OSMnx<a class="headerlink" href="#introducing-osmnx" title="Link to this heading">¶</a></h2>
+<p>This quick introduction explains key concepts and the basic functionality of OSMnx.</p>
+<section id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h3>
+<p>OSMnx is pronounced as the initialism: “oh-ess-em-en-ex”. It is built on top of NetworkX and GeoPandas, and interacts with <a class="reference external" href="https://www.openstreetmap.org">OpenStreetMap</a> APIs to:</p>
+<ul class="simple">
+<li><p>Download and model street networks or other infrastructure anywhere in the world with a single line of code</p></li>
+<li><p>Download geospatial features (e.g., political boundaries, building footprints, grocery stores, transit stops) as a GeoDataFrame</p></li>
+<li><p>Query by city name, polygon, bounding box, or point/address + distance</p></li>
+<li><p>Model driving, walking, biking, and other travel modes</p></li>
+<li><p>Attach node elevations from a local raster file or web service and calculate edge grades</p></li>
+<li><p>Impute missing speeds and calculate graph edge travel times</p></li>
+<li><p>Simplify and correct the network’s topology to clean-up nodes and consolidate complex intersections</p></li>
+<li><p>Fast map-matching of points, routes, or trajectories to nearest graph edges or nodes</p></li>
+<li><p>Save/load network to/from disk as GraphML, GeoPackage, or OSM XML file</p></li>
+<li><p>Conduct topological and spatial analyses to automatically calculate dozens of indicators</p></li>
+<li><p>Calculate and visualize street bearings and orientations</p></li>
+<li><p>Calculate and visualize shortest-path routes that minimize distance, travel time, elevation, etc</p></li>
+<li><p>Explore street networks and geospatial features as a static map or interactive web map</p></li>
+<li><p>Visualize travel distance and travel time with isoline and isochrone maps</p></li>
+<li><p>Plot figure-ground diagrams of street networks and building footprints</p></li>
+</ul>
+<p>The OSMnx <a class="reference external" href="https://github.com/gboeing/osmnx-examples">Examples Gallery</a> contains tutorials and demonstrations of all these features, and package usage is detailed in the <a class="reference internal" href="user-reference.html"><span class="doc">User Reference</span></a>.</p>
+</section>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h3>
+<p>You can configure OSMnx using the <code class="docutils literal notranslate"><span class="pre">settings</span></code> module. Here you can adjust logging behavior, caching, server endpoints, and more. You can also configure OSMnx to retrieve historical snapshots of OpenStreetMap data as of a certain date.</p>
+<p>Read more about the <a class="reference internal" href="user-reference.html#osmnx-settings-module"><span class="std std-ref">settings</span></a> module in the User Reference.</p>
+</section>
+<section id="geocoding-and-querying">
+<h3>Geocoding and Querying<a class="headerlink" href="#geocoding-and-querying" title="Link to this heading">¶</a></h3>
+<p>OSMnx geocodes place names and addresses with the OpenStreetMap <a class="reference external" href="https://nominatim.org">Nominatim</a> API. You can use the <code class="docutils literal notranslate"><span class="pre">geocoder</span></code> module to geocode place names or addresses to lat-lon coordinates. Or, you can retrieve place boundaries or any other OpenStreetMap elements by name or ID. Read more about the <a class="reference internal" href="user-reference.html#osmnx-geocoder-module"><span class="std std-ref">geocoder</span></a> module in the User Reference.</p>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">features</span></code> and <code class="docutils literal notranslate"><span class="pre">graph</span></code> modules, as described below, you can download data by lat-lon point, address, bounding box, bounding polygon, or place name (e.g., neighborhood, city, county, etc).</p>
+</section>
+<section id="urban-amenities">
+<h3>Urban Amenities<a class="headerlink" href="#urban-amenities" title="Link to this heading">¶</a></h3>
+<p>Using OSMnx’s <code class="docutils literal notranslate"><span class="pre">features</span></code> module, you can search for and download any geospatial <a class="reference external" href="https://wiki.openstreetmap.org/wiki/Map_features">features</a> (such as building footprints, grocery stores, schools, public parks, transit stops, etc) from the OpenStreetMap <a class="reference external" href="https://wiki.openstreetmap.org/wiki/Overpass_API">Overpass</a> API as a GeoPandas GeoDataFrame. This uses OpenStreetMap <a class="reference external" href="https://wiki.openstreetmap.org/wiki/Tags">tags</a> to search for matching <a class="reference external" href="https://wiki.openstreetmap.org/wiki/Elements">elements</a>.</p>
+<p>Read more about the <a class="reference internal" href="user-reference.html#osmnx-features-module"><span class="std std-ref">features</span></a> module in the User Reference.</p>
+</section>
+<section id="modeling-a-network">
+<h3>Modeling a Network<a class="headerlink" href="#modeling-a-network" title="Link to this heading">¶</a></h3>
+<p>Using OSMnx’s <code class="docutils literal notranslate"><span class="pre">graph</span></code> module, you can retrieve any spatial network data (such as streets, paths, rail, canals, etc) from the Overpass API and model them as NetworkX <a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/multidigraph.html">MultiDiGraphs</a>.</p>
+<p>In short, MultiDiGraphs are nonplanar directed graphs with possible self-loops and parallel edges. Thus, a one-way street will be represented with a single directed edge from node <em>u</em> to node <em>v</em>, but a bidirectional street will be represented with two reciprocal directed edges (with identical geometries): one from node <em>u</em> to node <em>v</em> and another from <em>v</em> to <em>u</em>, to represent both possible directions of flow. Because these graphs are nonplanar, they correctly model the topology of interchanges, bridges, and tunnels. That is, edge crossings in a two-dimensional plane are not intersections in an OSMnx model unless they represent true junctions in the three-dimensional real world.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">graph</span></code> module uses filters to query the Overpass API: you can either specify a built-in network type or provide your own custom filter with <a class="reference external" href="https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL">Overpass QL</a>. Under the hood, OSMnx does several things to generate the best possible model. It initially creates a 500m-buffered graph before truncating it to your desired query area, to ensure accurate streets-per-node stats and to attenuate graph perimeter effects. By default, it returns the largest weakly connected component. It also simplifies the graph topology as discussed below.</p>
+<p>Read more about the <a class="reference internal" href="user-reference.html#osmnx-graph-module"><span class="std std-ref">graph</span></a> module in the User Reference and refer to the official reference paper at the <a class="reference internal" href="further-reading.html"><span class="doc">Further Reading</span></a> page for complete modeling details.</p>
+</section>
+<section id="topology-clean-up">
+<h3>Topology Clean-Up<a class="headerlink" href="#topology-clean-up" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">simplification</span></code> module automatically processes the network’s topology from the original raw OpenStreetMap data, such that nodes represent intersections/dead-ends and edges represent the street segments that link them. This takes two primary forms: graph simplification and intersection consolidation.</p>
+<p><strong>Graph simplification</strong> cleans up the graph’s topology so that nodes represent intersections or dead-ends and edges represent street segments. This is important because in OpenStreetMap raw data, ways comprise sets of straight-line segments between nodes: that is, nodes are vertices for streets’ curving line geometries, not just intersections and dead-ends. By default, OSMnx simplifies this topology by discarding non-intersection/dead-end nodes while retaining the complete true edge geometry as an edge attribute. When multiple OpenStreetMap ways are merged into a single graph edge, the ways’ attribute values can be aggregated into a single value.</p>
+<p><strong>Intersection consolidation</strong> is important because many real-world street networks feature complex intersections and traffic circles, resulting in a cluster of graph nodes where there is really just one true intersection as we would think of it in transportation or urban design. Similarly, divided roads are often represented by separate centerline edges: the intersection of two divided roads thus creates 4 nodes, representing where each edge intersects a perpendicular edge, but these 4 nodes represent a single intersection in the real world. OSMnx can consolidate such complex intersections into a single node and optionally rebuild the graph’s edge topology accordingly. When multiple OpenStreetMap nodes are merged into a single graph node, the nodes’ attribute values can be aggregated into a single value.</p>
+<p>Read more about the <a class="reference internal" href="user-reference.html#osmnx-simplification-module"><span class="std std-ref">simplification</span></a> module in the User Reference.</p>
+</section>
+<section id="model-attributes">
+<h3>Model Attributes<a class="headerlink" href="#model-attributes" title="Link to this heading">¶</a></h3>
+<p>An OSMnx model has some standard required attributes, plus some optional attributes. The latter are sometimes present based on the source OSM data’s tagging, the <code class="docutils literal notranslate"><span class="pre">settings</span></code> module configuration, and any processing you may have done to add additional attributes (as noted in various functions’ documentation).</p>
+<p>As a NetworkX <a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/multidigraph.html">MultiDiGraph</a> object, it has top-level <code class="docutils literal notranslate"><span class="pre">graph</span></code>, <code class="docutils literal notranslate"><span class="pre">nodes</span></code>, and <code class="docutils literal notranslate"><span class="pre">edges</span></code> attributes. The <code class="docutils literal notranslate"><span class="pre">graph</span></code> attribute dictionary must contain a “crs” key defining its coordinate reference system. The <code class="docutils literal notranslate"><span class="pre">nodes</span></code> are identified by OSM ID and each must contain a <code class="docutils literal notranslate"><span class="pre">data</span></code> attribute dictionary that must have “x” and “y” keys defining its coordinates and a “street_count” key defining how many physical streets are incident to it. The <code class="docutils literal notranslate"><span class="pre">edges</span></code> are identified by a 3-tuple of “u” (source node ID), “v” (target node ID), and “key” (to differentiate parallel edges), and each must contain a <code class="docutils literal notranslate"><span class="pre">data</span></code> attribute dictionary that must have an “osmid” key defining its OSM ID and a “length” key defining its length in meters.</p>
+<p>The OSMnx <code class="docutils literal notranslate"><span class="pre">graph</span></code> module automatically creates MultiDiGraphs with these required attributes, plus additional optional attributes based on the <code class="docutils literal notranslate"><span class="pre">settings</span></code> module configuration. If you instead manually create your own graph model, make sure it has these required attributes at a minimum.</p>
+</section>
+<section id="convert-project-save">
+<h3>Convert, Project, Save<a class="headerlink" href="#convert-project-save" title="Link to this heading">¶</a></h3>
+<p>OSMnx’s <code class="docutils literal notranslate"><span class="pre">convert</span></code> module can convert a MultiDiGraph to a <a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/digraph.html">DiGraph</a> if you prefer a directed representation of the network without any parallel edges, or to a <a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/multigraph.html">MultiGraph</a> if you need an undirected representation for use with functions or algorithms that only accept a MultiGraph object. If you just want a fully bidirectional graph (such as for a walking network), just configure the <code class="docutils literal notranslate"><span class="pre">settings</span></code> module’s <code class="docutils literal notranslate"><span class="pre">bidirectional_network_types</span></code> before creating your graph.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">convert</span></code> module can also convert a MultiDiGraph to/from GeoPandas node and edge <a class="reference external" href="https://geopandas.org/en/stable/docs/reference/geodataframe.html">GeoDataFrames</a>. The nodes GeoDataFrame is indexed by OSM ID and the edges GeoDataFrame is multi-indexed by <code class="docutils literal notranslate"><span class="pre">u,</span> <span class="pre">v,</span> <span class="pre">key</span></code> just like a NetworkX edge. This allows you to load arbitrary node/edge ShapeFiles or GeoPackage layers as GeoDataFrames then model them as a MultiDiGraph for graph analysis. The <code class="docutils literal notranslate"><span class="pre">convert</span></code> module exposes validation functions to verify that your MultiDiGraph or GeoDataFrames satisfy OSMnx requirements. Read more about the <a class="reference internal" href="user-reference.html#osmnx-convert-module"><span class="std std-ref">convert</span></a> module in the User Reference.</p>
+<p>You can easily project your graph to different coordinate reference systems using the <code class="docutils literal notranslate"><span class="pre">projection</span></code> module. If you’re unsure which <a class="reference external" href="https://en.wikipedia.org/wiki/Coordinate_reference_system">CRS</a> you want to project to, OSMnx can automatically determine an appropriate UTM CRS for you. Read more about the <a class="reference internal" href="user-reference.html#osmnx-projection-module"><span class="std std-ref">projection</span></a> module in the User Reference.</p>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">io</span></code> module, you can save your graph to disk as a GraphML file (to load into other network analysis software), a GeoPackage (to load into other GIS software), or an OSM XML file. Use the GraphML format whenever saving a graph for later work with OSMnx. Read more about the <a class="reference internal" href="user-reference.html#osmnx-io-module"><span class="std std-ref">io</span></a> module in the User Reference.</p>
+</section>
+<section id="network-statistics">
+<h3>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading">¶</a></h3>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">stats</span></code> module to calculate a variety of geometric and topological measures as well as street network bearing and orientation statistics. These measures define streets as the edges in an undirected representation of the graph to prevent double-counting bidirectional edges of a two-way street. You can easily generate common stats in transportation studies, urban design, and network science, including intersection density, circuity, average node degree (connectedness), betweenness centrality, and much more. Read more about the <a class="reference internal" href="user-reference.html#osmnx-stats-module"><span class="std std-ref">stats</span></a> module in the User Reference.</p>
+<p>You can also use NetworkX directly to calculate additional topological network measures.</p>
+</section>
+<section id="working-with-elevation">
+<h3>Working with Elevation<a class="headerlink" href="#working-with-elevation" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">elevation</span></code> module lets you automatically attach elevations to the graph’s nodes from a local raster file or the Google Maps <a class="reference external" href="https://developers.google.com/maps/documentation/elevation">Elevation API</a> (or equivalent web API with a compatible interface). You can also calculate edge grades (i.e., rise-over-run) and analyze the steepness of certain streets or routes.</p>
+<p>Read more about the <a class="reference internal" href="user-reference.html#osmnx-elevation-module"><span class="std std-ref">elevation</span></a> module in the User Reference.</p>
+</section>
+<section id="routing">
+<h3>Routing<a class="headerlink" href="#routing" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">distance</span></code> module can find the nearest node(s) or edge(s) to coordinates using a fast spatial index. The <code class="docutils literal notranslate"><span class="pre">routing</span></code> module can solve shortest paths for network routing, parallelized with multiprocessing, using different weights (e.g., distance, travel time, elevation change, etc). It can also impute missing speeds to the graph edges. This imputation can obviously be imprecise, so the user can override it by passing in arguments that define local speed limits. It can also calculate free-flow travel times for each edge.</p>
+<p>Read more about the <a class="reference internal" href="user-reference.html#osmnx-distance-module"><span class="std std-ref">distance</span></a> and <a class="reference internal" href="user-reference.html#osmnx-routing-module"><span class="std std-ref">routing</span></a> modules in the User Reference.</p>
+</section>
+<section id="visualization">
+<h3>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">¶</a></h3>
+<p>You can plot graphs, routes, network figure-ground diagrams, building footprints, and street network orientation rose diagrams (aka, polar histograms) with the <code class="docutils literal notranslate"><span class="pre">plot</span></code> module. You can also explore street networks, routes, or geospatial features as interactive <a class="reference external" href="https://python-visualization.github.io/folium/">Folium</a> web maps.</p>
+<p>Read more about the <a class="reference internal" href="user-reference.html#osmnx-plot-module"><span class="std std-ref">plot</span></a> module in the User Reference.</p>
+</section>
+<section id="usage-limits">
+<h3>Usage Limits<a class="headerlink" href="#usage-limits" title="Link to this heading">¶</a></h3>
+<p>Refer to the <a class="reference external" href="https://operations.osmfoundation.org/policies/nominatim/">Nominatim Usage Policy</a> and <a class="reference external" href="https://dev.overpass-api.de/overpass-doc/en/preface/commons.html">Overpass Commons</a> documentation for API usage limits and restrictions to which you must adhere. If you configure OSMnx to use an alternative API instance, ensure you understand and follow their policies. If you feel you need to exceed these limits, consider installing your own hosted instance and setting OSMnx to use it.</p>
+</section>
+</section>
+<section id="more-info">
+<h2>More Info<a class="headerlink" href="#more-info" title="Link to this heading">¶</a></h2>
+<p>All of this functionality is demonstrated step-by-step in the OSMnx <a class="reference external" href="https://github.com/gboeing/osmnx-examples">Examples Gallery</a>, and usage is detailed in the <a class="reference internal" href="user-reference.html"><span class="doc">User Reference</span></a>. Feature development details are in the <a class="reference external" href="https://github.com/gboeing/osmnx/blob/main/CHANGELOG.md">Changelog</a>. Consult the <a class="reference internal" href="further-reading.html"><span class="doc">Further Reading</span></a> resources for additional technical details and research.</p>
+</section>
+<section id="frequently-asked-questions">
+<h2>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading">¶</a></h2>
+<p><em>How do I install OSMnx?</em> Follow the <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> guide.</p>
+<p><em>How do I use OSMnx?</em> Check out the step-by-step tutorials in the OSMnx <a class="reference external" href="https://github.com/gboeing/osmnx-examples">Examples Gallery</a>.</p>
+<p><em>How does this or that function work?</em> Consult the <a class="reference internal" href="user-reference.html"><span class="doc">User Reference</span></a>.</p>
+<p><em>What can I do with OSMnx?</em> Check out recent <a class="reference external" href="https://geoffboeing.com/2018/03/osmnx-features-roundup">projects</a> that use OSMnx.</p>
+<p><em>I have a usage question.</em> Please ask it on <a class="reference external" href="https://stackoverflow.com/search?q=osmnx">StackOverflow</a>.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="user-reference.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">User Reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="installation.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Installation</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2016-2026, Geoff Boeing
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#get-started-in-4-steps">Get Started in 4 Steps</a></li>
+<li><a class="reference internal" href="#introducing-osmnx">Introducing OSMnx</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#geocoding-and-querying">Geocoding and Querying</a></li>
+<li><a class="reference internal" href="#urban-amenities">Urban Amenities</a></li>
+<li><a class="reference internal" href="#modeling-a-network">Modeling a Network</a></li>
+<li><a class="reference internal" href="#topology-clean-up">Topology Clean-Up</a></li>
+<li><a class="reference internal" href="#model-attributes">Model Attributes</a></li>
+<li><a class="reference internal" href="#convert-project-save">Convert, Project, Save</a></li>
+<li><a class="reference internal" href="#network-statistics">Network Statistics</a></li>
+<li><a class="reference internal" href="#working-with-elevation">Working with Elevation</a></li>
+<li><a class="reference internal" href="#routing">Routing</a></li>
+<li><a class="reference internal" href="#visualization">Visualization</a></li>
+<li><a class="reference internal" href="#usage-limits">Usage Limits</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#more-info">More Info</a></li>
+<li><a class="reference internal" href="#frequently-asked-questions">Frequently Asked Questions</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=20623aea"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>
