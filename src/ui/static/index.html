@@ -362,6 +362,8 @@
                     <ol id="help-flow" class="help-list"></ol>
                     <h4>当前骨架检查点</h4>
                     <ul id="help-checks" class="help-list"></ul>
+                    <h4>地图验收说明</h4>
+                    <ul id="help-map-acceptance" class="help-list"></ul>
                   </div>
                 </section>
               </aside>
@@ -370,21 +372,59 @@
                 <section class="panel map-panel" data-expandable-panel="map">
                   <div class="panel-title-row">
                     <div>
-                      <h2>校园简图</h2>
-                      <span class="panel-subtitle">滚轮缩放 / 按住拖动平移</span>
+                      <h2>地图实验层</h2>
+                      <span id="map-renderer-subtitle" class="panel-subtitle">Leaflet GeoJSON 与 SVG fallback 可切换</span>
                     </div>
                     <div class="panel-actions">
+                      <div id="map-renderer-controls" class="renderer-toggle" role="group" aria-label="地图渲染器切换">
+                        <button class="renderer-toggle-button" type="button" data-map-renderer="leaflet_geo">
+                          Leaflet
+                        </button>
+                        <button class="renderer-toggle-button" type="button" data-map-renderer="simple_svg">
+                          SVG
+                        </button>
+                      </div>
                       <button class="panel-reset-button" id="map-reset-view" type="button">
-                        还原原始比例
+                        视图复位
                       </button>
                       <button class="panel-expand-button" type="button" data-expand-panel="map" aria-label="放大校园简图">
                         放大
                       </button>
                     </div>
                   </div>
+                  <div class="map-demo-toolbar" aria-label="地图演示控制台">
+                    <div class="map-demo-status">
+                      <span id="map-renderer-status" class="status-pill">渲染器加载中</span>
+                      <span id="map-data-status" class="status-pill">GeoJSON 待加载</span>
+                      <span id="map-route-status" class="status-pill">路线未规划</span>
+                    </div>
+                    <div class="map-demo-actions">
+                      <button class="ghost-button" type="button" data-demo-action="single-route">演示单目标</button>
+                      <button class="ghost-button" type="button" data-demo-action="multi-route">演示多目标</button>
+                      <button class="ghost-button" type="button" data-demo-action="clear-route">清空路线</button>
+                    </div>
+                  </div>
                   <div class="map-stage">
                     <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
                     <div id="leaflet-map" class="leaflet-map" aria-label="Leaflet GeoJSON 校园地图" hidden></div>
+                  </div>
+                  <div class="map-legend" aria-label="地图图例">
+                    <span class="map-legend-item">
+                      <span class="legend-swatch legend-swatch-road"></span>
+                      普通道路
+                    </span>
+                    <span class="map-legend-item">
+                      <span class="legend-swatch legend-swatch-route"></span>
+                      当前路线
+                    </span>
+                    <span class="map-legend-item">
+                      <span class="legend-swatch legend-swatch-node"></span>
+                      节点高亮
+                    </span>
+                    <span class="map-legend-item">
+                      <span class="legend-swatch legend-swatch-fallback"></span>
+                      fallback 直线段
+                    </span>
                   </div>
                   <p id="map-caption" class="map-caption">
                     地图加载完成后会在这里显示高亮说明。

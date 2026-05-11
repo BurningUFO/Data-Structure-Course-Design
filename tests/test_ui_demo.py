@@ -50,8 +50,14 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert any(item["id"] == "help" for item in payload["navigation"])
     assert any(item["id"] == "route" for item in payload["navigation"])
     assert next(item for item in payload["navigation"] if item["id"] == "diary")["status"] == "ready"
+    assert payload["help"]["launch_command"] == "py -B -m src.ui.demo_server"
+    assert payload["help"]["fallback_launch_command"] == "python -B -m src.ui.demo_server"
     assert payload["help"]["browser_url"] == "http://127.0.0.1:8765"
+    assert payload["help"]["stage"] == "正式产品演示版 · 地图方案 B M4"
     assert len(payload["help"]["demo_flow"]) >= 3
+    assert any("Leaflet / SVG" in item for item in payload["help"]["demo_flow"])
+    assert any("[lng, lat]" in item for item in payload["help"]["map_acceptance"])
+    assert any("不继续扩大真实道路数据或路由算法改动" in item for item in payload["help"]["map_acceptance"])
     assert any(item["value"] == "education" for item in payload["controls"]["scenic_categories"])
     print("test_demo_bootstrap_contains_map_and_controls passed.")
 
@@ -93,11 +99,22 @@ def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
     first_edge = edge_features[0]
     assert first_edge["geometry"]["type"] == "LineString"
     assert len(first_edge["geometry"]["coordinates"]) >= 2
-    assert {"kind", "from", "to", "name", "edge_type", "distance_m"} <= set(first_edge["properties"])
+    assert {
+        "kind",
+        "from",
+        "to",
+        "name",
+        "edge_type",
+        "distance_m",
+        "geometry_source",
+        "is_fallback_geometry",
+    } <= set(first_edge["properties"])
     source = node_index[first_edge["properties"]["from"]]
     target = node_index[first_edge["properties"]["to"]]
     assert first_edge["geometry"]["coordinates"][0] == [source["lng"], source["lat"]]
     assert first_edge["geometry"]["coordinates"][-1] == [target["lng"], target["lat"]]
+    assert any(edge["properties"]["geometry_source"] == "edge_geometry" for edge in edge_features)
+    assert any(edge["properties"]["geometry_source"] == "fallback_line" for edge in edge_features)
     print("test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order passed.")
 
 
@@ -526,10 +543,24 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'href="/vendor/leaflet/leaflet.css"' in html
     assert 'src="/vendor/leaflet/leaflet.js"' in html
     assert 'id="leaflet-map"' in html
+    assert 'id="map-renderer-controls"' in html
+    assert 'data-map-renderer="leaflet_geo"' in html
+    assert 'data-map-renderer="simple_svg"' in html
+    assert 'data-demo-action="single-route"' in html
+    assert 'data-demo-action="multi-route"' in html
+    assert 'id="help-map-acceptance"' in html
+    assert 'class="map-legend"' in html
+    assert "fallback 直线段" in html
     assert "renderSvgMap" in script
     assert "renderLeafletMap" in script
     assert "ensureLeafletMap" in script
     assert "syncLeafletRouteLayer" in script
+    assert "switchMapRenderer" in script
+    assert "runMapDemoAction" in script
+    assert "syncMapDemoPanel" in script
+    assert "routeGeometrySummaryText" in script
+    assert "appendRouteGeometryCaption" in script
+    assert "is_fallback_geometry" in script
     assert "isRenderableRouteGeoJson" in script
     assert "route_geojson" in script
     assert "fallbackToSvgMap" in script

@@ -156,11 +156,14 @@ FEATURE_NAVIGATION = [
 ]
 
 HELP_CONTENT = {
-    "stage": "正式产品演示版",
-    "launch_command": "python -B -m src.ui.demo_server",
+    "stage": "正式产品演示版 · 地图方案 B M4",
+    "launch_command": "py -B -m src.ui.demo_server",
+    "fallback_launch_command": "python -B -m src.ui.demo_server",
     "browser_url": "http://127.0.0.1:8765",
     "demo_flow": [
         "在首页确认当前站点和数据规模统计。",
+        "进入主要网站后，先用地图区的 Leaflet / SVG 按钮展示双渲染器对比。",
+        "点击地图区的演示单目标或演示多目标按钮，固定走可复现的答辩路线。",
         "进入综合查询，搜索图书馆或宿舍，并从结果规划单目标路线。",
         "进入场所查询或美食推荐，查看按真实路径距离排序的结果。",
         "进入日记中心，执行全文检索，或创建一条带评分和媒体占位的新日记。",
@@ -171,6 +174,12 @@ HELP_CONTENT = {
         "站点选择器已出现在主入口，当前远端数据只有 PKU 一个站点。",
         "主导航已固定为正式产品的页面结构。",
         "查询、推荐、路径、日记和 AIGC 轻量预览保持主链路可演示。",
+    ],
+    "map_acceptance": [
+        "Leaflet GeoJSON 层默认展示节点、道路和路线；SVG 简图作为现场可切换 fallback。",
+        "地图数据由现有图节点和边转换为 GeoJSON，坐标顺序统一为 [lng, lat]。",
+        "M4 只做视觉包装、演示控制和验收说明，不继续扩大真实道路数据或路由算法改动。",
+        "路线贴路能力通过 route_geojson 和 route_geometry_stats 说明，缺失 geometry 的边继续用直线段兜底。",
     ],
 }
 
@@ -350,6 +359,8 @@ class DemoUIService:
                         "name": edge["name"],
                         "edge_type": edge["type"],
                         "distance_m": edge["distance_m"],
+                        "geometry_source": "fallback_line" if used_fallback else "edge_geometry",
+                        "is_fallback_geometry": used_fallback,
                     },
                 }
             )

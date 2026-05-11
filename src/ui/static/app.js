@@ -4,6 +4,17 @@ const MAP_PADDING = 88;
 const MAP_MIN_SCALE = 0.75;
 const MAP_MAX_SCALE = 4;
 const MAP_ZOOM_STEP = 0.0016;
+const DEMO_ROUTE_SCENARIOS = {
+  single: {
+    start_node_id: "gate_north",
+    target_node_id: "library",
+  },
+  multi: {
+    start_node_id: "gate_north",
+    target_node_ids: ["library", "canteen"],
+    return_to_start: true,
+  },
+};
 
 const state = {
   bootstrap: null,
@@ -346,6 +357,7 @@ function bindForms() {
   });
 
   bindMapInteractions();
+  bindMapDemoControls();
 
   document.querySelector("#results-list").addEventListener("click", async (event) => {
     const diaryEditButton = event.target.closest("[data-diary-edit-id]");
@@ -467,6 +479,33 @@ function resetMapView() {
     fitLeafletToData();
   }
   renderMap();
+}
+
+function bindMapDemoControls() {
+  const rendererControls = document.querySelector("#map-renderer-controls");
+  if (rendererControls) {
+    rendererControls.addEventListener("click", (event) => {
+      const rendererButton = event.target.closest("[data-map-renderer]");
+      if (!rendererButton) {
+        return;
+      }
+      switchMapRenderer(rendererButton.dataset.mapRenderer);
+    });
+  }
+
+  document.querySelectorAll("[data-demo-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      void runMapDemoAction(button.dataset.demoAction || "");
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    const popupRouteButton = event.target.closest(".leaflet-popup-button[data-route-target]");
+    if (!popupRouteButton) {
+      return;
+    }
+    void planRoute(popupRouteButton.dataset.routeTarget);
+  });
 }
 
 function resetMapViewState() {
@@ -739,14 +778,23 @@ function renderFeatureGrid(navigation) {
 
 function renderHelpPanel(help) {
   document.querySelector("#help-stage").textContent = help.stage;
+  const fallbackLaunch = help.fallback_launch_command
+    ? `；备用：${help.fallback_launch_command}`
+    : "";
   document.querySelector("#help-launch").textContent =
-    `启动：${help.launch_command}，浏览器访问：${help.browser_url}`;
+    `启动：${help.launch_command}${fallbackLaunch}，浏览器访问：${help.browser_url}`;
   document.querySelector("#help-flow").innerHTML = help.demo_flow
     .map((item) => `<li>${escapeHtml(item)}</li>`)
     .join("");
   document.querySelector("#help-checks").innerHTML = help.checks
     .map((item) => `<li>${escapeHtml(item)}</li>`)
     .join("");
+  const mapAcceptance = document.querySelector("#help-map-acceptance");
+  if (mapAcceptance) {
+    mapAcceptance.innerHTML = (help.map_acceptance || [])
+      .map((item) => `<li>${escapeHtml(item)}</li>`)
+      .join("");
+  }
 }
 
 function updateActiveFeatureCaption() {
@@ -1108,6 +1156,75 @@ function handleMultiRoutePreset(preset) {
   void planMultiRoute(targetNodeIds);
 }
 
+function switchMapRenderer(renderer) {
+  if (!state.bootstrap) {
+    return;
+  }
+
+  const renderers = availableMapRenderers();
+  if (!renderers.includes(renderer)) {
+    setStatus(`当前站点不支持地图渲染器：${renderer}。`, "error");
+    return;
+  }
+
+  state.mapRenderer = renderer;
+  renderMap();
+  const label = renderer === "leaflet_geo" ? "Leaflet GeoJSON 实验层" : "SVG 稳定简图";
+  setStatus(`地图已切换到 ${label}。`, "info");
+}
+
+async function runMapDemoAction(action) {
+  if (!state.bootstrap) {
+    setStatus("地图数据尚未加载，无法执行演示动作。", "error");
+    return;
+  }
+
+  if (action === "single-route") {
+    const scenario = DEMO_ROUTE_SCENARIOS.single;
+    applyDemoStartNode(scenario.start_node_id);
+    setSelectValue("#route-target", scenario.target_node_id);
+    setSelectValue("#route-strategy", "shortest_distance");
+    setSelectValue("#route-transport", "any");
+    switchTab("route");
+    await planRoute(scenario.target_node_id);
+    return;
+  }
+
+  if (action === "multi-route") {
+    const scenario = DEMO_ROUTE_SCENARIOS.multi;
+    applyDemoStartNode(scenario.start_node_id);
+    setSelectValue("#route-strategy", "shortest_distance");
+    setSelectValue("#route-transport", "any");
+    setMultipleSelectValues("#multi-route-targets", scenario.target_node_ids);
+    const returnToStart = document.querySelector("#multi-route-return");
+    if (returnToStart) {
+      returnToStart.checked = scenario.return_to_start;
+    }
+    switchTab("route");
+    await planMultiRoute(scenario.target_node_ids);
+    return;
+  }
+
+  if (action === "clear-route") {
+    state.focusedNodeId = "";
+    clearRoute("演示路线已清空。");
+    setStatus("演示路线已清空，地图保留当前渲染器。", "info");
+  }
+}
+
+function applyDemoStartNode(nodeId) {
+  const startSelect = document.querySelector("#global-start-node");
+  if (!startSelect) {
+    return;
+  }
+  const hasNode = Array.from(startSelect.options).some((option) => option.value === nodeId);
+  if (!hasNode) {
+    return;
+  }
+  state.currentStartNodeId = nodeId;
+  setSelectValue("#global-start-node", nodeId);
+}
+
 async function runQuery(url, payload) {
   setStatus(feedback("query_loading", "正在查询，请稍候..."), "loading");
   renderResults({
@@ -1427,6 +1544,7 @@ function renderRoute(route, emptyMessage = "暂无路径") {
   }
 
   const summary = route.summary || {};
+  const geometrySummary = routeGeometrySummaryText(route);
   summaryContainer.className = "route-summary";
   summaryContainer.innerHTML = `
     <article class="summary-card">
@@ -1436,6 +1554,7 @@ function renderRoute(route, emptyMessage = "暂无路径") {
         <span class="metric-pill">${escapeHtml(summary.transport_text || "")}</span>
         <span class="metric-pill">${escapeHtml(summary.distance_text || "")}</span>
         <span class="metric-pill">${escapeHtml(summary.time_text || "")}</span>
+        ${geometrySummary ? `<span class="metric-pill">${escapeHtml(geometrySummary)}</span>` : ""}
       </div>
       <p>层级序列：${escapeHtml(summary.layer_text || "outdoor")}</p>
       <p>节点数：${route.route_overview.node_count}，跨层次数：${route.route_overview.cross_layer_step_count}</p>
@@ -1467,6 +1586,7 @@ function renderRoute(route, emptyMessage = "暂无路径") {
 
 function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
   const summary = route.summary || {};
+  const geometrySummary = routeGeometrySummaryText(route);
   summaryContainer.className = "route-summary";
   summaryContainer.innerHTML = `
     <article class="summary-card">
@@ -1476,6 +1596,7 @@ function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
         <span class="metric-pill">${escapeHtml(summary.transport_text || "")}</span>
         <span class="metric-pill">${escapeHtml(summary.distance_text || "")}</span>
         <span class="metric-pill">${escapeHtml(summary.time_text || "")}</span>
+        ${geometrySummary ? `<span class="metric-pill">${escapeHtml(geometrySummary)}</span>` : ""}
       </div>
       <p>访问顺序：${escapeHtml(summary.visit_order_text || "")}</p>
       <p>目标数：${summary.target_count || 0}，路径段数：${summary.leg_count || 0}</p>
@@ -1526,18 +1647,54 @@ function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
   stepsContainer.innerHTML = `${legMarkup}${stepMarkup}${overflowText}`;
 }
 
+function routeGeometryStats(route = state.currentRoute) {
+  return route?.ui?.route_geometry_stats || null;
+}
+
+function routeGeometryCoverageRatio(route = state.currentRoute) {
+  const stats = routeGeometryStats(route);
+  const total = Number(stats?.route_segment_count) || 0;
+  if (!total) {
+    return 0;
+  }
+  return (Number(stats.geometry_segment_count) || 0) / total;
+}
+
+function routeGeometrySummaryText(route = state.currentRoute) {
+  const stats = routeGeometryStats(route);
+  const total = Number(stats?.route_segment_count) || 0;
+  if (!total) {
+    return "";
+  }
+
+  const geometryCount = Number(stats.geometry_segment_count) || 0;
+  const fallbackCount = Number(stats.fallback_segment_count) || 0;
+  return `Geometry ${geometryCount}/${total} 段 · fallback ${fallbackCount} 段 · ${formatRatioPercent(routeGeometryCoverageRatio(route))}`;
+}
+
+function appendRouteGeometryCaption(captionText, route = state.currentRoute) {
+  const geometrySummary = routeGeometrySummaryText(route);
+  return geometrySummary ? `${captionText} ${geometrySummary}。` : captionText;
+}
+
 function selectedMapRenderer() {
   if (!state.bootstrap) {
     return "simple_svg";
   }
 
+  const renderers = availableMapRenderers();
   const capabilities = state.bootstrap.map_capabilities || {};
-  const renderers = Array.isArray(capabilities.renderers) ? capabilities.renderers : ["simple_svg"];
   const renderer = state.mapRenderer || state.bootstrap.map_renderer || capabilities.default_renderer || "simple_svg";
   return renderers.includes(renderer) ? renderer : "simple_svg";
 }
 
+function availableMapRenderers() {
+  const capabilities = state.bootstrap?.map_capabilities || {};
+  return Array.isArray(capabilities.renderers) ? capabilities.renderers : ["simple_svg"];
+}
+
 function renderMap() {
+  syncMapDemoPanel();
   if (selectedMapRenderer() === "leaflet_geo") {
     void renderLeafletMap();
     return;
@@ -1640,11 +1797,12 @@ function renderSvgMap(fallbackMessage = "") {
   `;
 
   const captionText = state.currentRoute
-    ? state.currentRoute.ui.caption
+    ? appendRouteGeometryCaption(state.currentRoute.ui.caption)
     : state.focusedNodeId
       ? `当前定位：${getNodeName(state.focusedNodeId)}。`
       : `当前展示的是室外节点分布；缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`;
   caption.textContent = fallbackMessage ? `${fallbackMessage} ${captionText}` : captionText;
+  syncMapDemoPanel();
 }
 
 async function renderLeafletMap() {
@@ -1652,6 +1810,7 @@ async function renderLeafletMap() {
   if (!state.bootstrap) {
     setMapRendererVisibility("leaflet_geo");
     caption.textContent = "地图尚未加载。";
+    syncMapDemoPanel();
     return;
   }
 
@@ -1671,10 +1830,11 @@ async function renderLeafletMap() {
 
     const stats = state.mapGeoJsonStats || {};
     caption.textContent = state.currentRoute
-      ? state.currentRoute.ui.caption
+      ? appendRouteGeometryCaption(state.currentRoute.ui.caption)
       : state.focusedNodeId
         ? `真实地图实验模式：当前定位 ${getNodeName(state.focusedNodeId)}。`
-        : `真实地图实验模式：已加载 ${stats.node_feature_count || 0} 个节点和 ${stats.edge_feature_count || 0} 条道路。`;
+        : `真实地图实验模式：已加载 ${stats.node_feature_count || 0} 个节点和 ${stats.edge_feature_count || 0} 条道路，geometry 覆盖 ${formatRatioPercent(stats.geometry_coverage_ratio || 0)}。`;
+    syncMapDemoPanel();
   } catch (error) {
     fallbackToSvgMap(error);
   }
@@ -1784,10 +1944,12 @@ function bindLeafletFeaturePopup(feature, layer) {
 function leafletEdgeStyle(feature) {
   const edgeType = feature.properties?.edge_type || "";
   const isRoad = edgeType.includes("road");
+  const isFallback = Boolean(feature.properties?.is_fallback_geometry);
   return {
-    color: isRoad ? "#586b78" : "#7b8790",
-    weight: isRoad ? 4 : 3,
-    opacity: 0.68,
+    color: isRoad ? "#6f7f78" : "#8b9a94",
+    weight: isRoad ? 3 : 2.4,
+    opacity: isFallback ? 0.34 : 0.42,
+    dashArray: isFallback ? "5 7" : "",
     lineCap: "round",
     lineJoin: "round",
   };
@@ -1796,12 +1958,13 @@ function leafletEdgeStyle(feature) {
 function leafletNodeStyle(feature) {
   const category = feature.properties?.category || "";
   const isHighlighted = getMapHighlightNodeIds().has(feature.properties?.id || "");
+  const isRoadNode = category === "road";
   return {
-    radius: isHighlighted ? 9 : category === "road" ? 4 : 6,
+    radius: isHighlighted ? 9 : isRoadNode ? 3 : 5.5,
     color: "#ffffff",
-    weight: 2,
+    weight: isHighlighted ? 3 : 1.5,
     fillColor: colorForCategory(category),
-    fillOpacity: isHighlighted ? 0.96 : 0.82,
+    fillOpacity: isHighlighted ? 0.96 : isRoadNode ? 0.42 : 0.76,
   };
 }
 
@@ -1933,6 +2096,62 @@ function setMapRendererVisibility(renderer) {
   if (leaflet) {
     leaflet.hidden = renderer !== "leaflet_geo";
   }
+}
+
+function syncMapDemoPanel() {
+  const renderer = selectedMapRenderer();
+  const rendererLabel = renderer === "leaflet_geo" ? "Leaflet GeoJSON 实验层" : "SVG 稳定简图";
+  const subtitle = document.querySelector("#map-renderer-subtitle");
+  if (subtitle) {
+    subtitle.textContent = renderer === "leaflet_geo"
+      ? "Leaflet 可拖动缩放；GeoJSON 坐标按 [lng, lat] 渲染"
+      : "SVG fallback 可用于现场对比和稳定回退";
+  }
+
+  document.querySelectorAll("[data-map-renderer]").forEach((button) => {
+    const isActive = button.dataset.mapRenderer === renderer;
+    const isAvailable = availableMapRenderers().includes(button.dataset.mapRenderer || "");
+    button.classList.toggle("active", isActive);
+    button.disabled = !isAvailable;
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  const rendererStatus = document.querySelector("#map-renderer-status");
+  if (rendererStatus) {
+    rendererStatus.textContent = rendererLabel;
+    rendererStatus.className = `status-pill ${renderer === "leaflet_geo" ? "status-pill-primary" : "status-pill-muted"}`;
+  }
+
+  const mapData = state.bootstrap?.map || {};
+  const stats = state.mapGeoJsonStats || {};
+  const nodeCount = stats.node_feature_count ?? mapData.node_count ?? 0;
+  const edgeCount = stats.edge_feature_count ?? mapData.edge_count ?? 0;
+  const geometryCount = stats.geometry_edge_count ?? mapData.geometry_edge_count ?? 0;
+  const coverageRatio = stats.geometry_coverage_ratio ?? mapData.geometry_coverage_ratio ?? 0;
+  const dataStatus = document.querySelector("#map-data-status");
+  if (dataStatus) {
+    dataStatus.textContent = `节点 ${nodeCount} · 道路 ${edgeCount} · 几何 ${geometryCount} 条 (${formatRatioPercent(coverageRatio)})`;
+  }
+
+  const routeStatus = document.querySelector("#map-route-status");
+  if (routeStatus) {
+    const routeStats = routeGeometryStats();
+    if (routeStats && routeStats.route_segment_count) {
+      routeStatus.textContent = `路线 ${routeStats.geometry_segment_count}/${routeStats.route_segment_count} 段贴路 · fallback ${routeStats.fallback_segment_count} 段`;
+      routeStatus.className = "status-pill status-pill-strong";
+    } else if (state.focusedNodeId) {
+      routeStatus.textContent = `定位 ${getNodeName(state.focusedNodeId)}`;
+      routeStatus.className = "status-pill status-pill-primary";
+    } else {
+      routeStatus.textContent = "路线未规划";
+      routeStatus.className = "status-pill status-pill-muted";
+    }
+  }
+}
+
+function formatRatioPercent(value) {
+  const numeric = Number(value) || 0;
+  return `${Math.round(numeric * 1000) / 10}%`;
 }
 
 function clearLeafletLayers() {
