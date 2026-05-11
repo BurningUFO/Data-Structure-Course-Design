@@ -17,6 +17,11 @@ const state = {
   currentResults: [],
   currentRoute: null,
   selectedDiaryId: "",
+  mapRenderer: "simple_svg",
+  mapGeoJson: null,
+  mapGeoJsonStats: null,
+  mapGeoJsonSiteId: "",
+  mapGeoJsonLoading: null,
   mapView: {
     scale: 1,
     translateX: 0,
@@ -24,6 +29,14 @@ const state = {
     isPanning: false,
     lastPointerX: 0,
     lastPointerY: 0,
+  },
+  leaflet: {
+    map: null,
+    edgeLayer: null,
+    nodeLayer: null,
+    baseGeoJson: null,
+    routeLayer: null,
+    fittedSiteId: "",
   },
 };
 
@@ -51,6 +64,12 @@ async function loadSiteBootstrap(siteId) {
   const query = siteId ? `?site_id=${encodeURIComponent(siteId)}` : "";
   const bootstrap = await apiGet(`/api/bootstrap${query}`);
   state.bootstrap = bootstrap;
+  state.mapRenderer = bootstrap.map_renderer || bootstrap.map_capabilities?.default_renderer || "simple_svg";
+  state.mapGeoJson = null;
+  state.mapGeoJsonStats = null;
+  state.mapGeoJsonSiteId = "";
+  state.mapGeoJsonLoading = null;
+  clearLeafletLayers();
   state.currentStartNodeId = bootstrap.default_start_node;
   hydrateBootstrap(bootstrap);
   resetInteractionState({ clearForms: true });
@@ -444,6 +463,9 @@ function zoomMapAt(offsetX, offsetY, deltaY) {
 
 function resetMapView() {
   resetMapViewState();
+  if (selectedMapRenderer() === "leaflet_geo") {
+    fitLeafletToData();
+  }
   renderMap();
 }
 
@@ -1504,9 +1526,29 @@ function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
   stepsContainer.innerHTML = `${legMarkup}${stepMarkup}${overflowText}`;
 }
 
+function selectedMapRenderer() {
+  if (!state.bootstrap) {
+    return "simple_svg";
+  }
+
+  const capabilities = state.bootstrap.map_capabilities || {};
+  const renderers = Array.isArray(capabilities.renderers) ? capabilities.renderers : ["simple_svg"];
+  const renderer = state.mapRenderer || state.bootstrap.map_renderer || capabilities.default_renderer || "simple_svg";
+  return renderers.includes(renderer) ? renderer : "simple_svg";
+}
+
 function renderMap() {
+  if (selectedMapRenderer() === "leaflet_geo") {
+    void renderLeafletMap();
+    return;
+  }
+  renderSvgMap();
+}
+
+function renderSvgMap(fallbackMessage = "") {
   const svg = document.querySelector("#campus-map");
   const caption = document.querySelector("#map-caption");
+  setMapRendererVisibility("simple_svg");
 
   if (!state.bootstrap) {
     svg.innerHTML = "";
@@ -1515,18 +1557,8 @@ function renderMap() {
   }
 
   const mapData = state.bootstrap.map;
-  const routePath = state.currentRoute ? state.currentRoute.ui.mappable_path_node_ids : [];
-  const highlightNodeIds = new Set(routePath);
-  if (state.focusedNodeId) {
-    highlightNodeIds.add(state.focusedNodeId);
-  }
-  if (state.currentRoute) {
-    (state.currentRoute.ui.highlight_node_ids || []).forEach((item) => {
-      if (item) {
-        highlightNodeIds.add(item);
-      }
-    });
-  }
+  const routePath = state.currentRoute?.ui?.mappable_path_node_ids || [];
+  const highlightNodeIds = getMapHighlightNodeIds();
 
   const projectedNodes = new Map(
     mapData.nodes.map((node) => [node.id, projectNode(node, mapData.bounds)]),
@@ -1603,15 +1635,319 @@ function renderMap() {
     <g transform="${mapTransform}">
       ${edgeMarkup}
       ${routeMarkup}
-    </g>
+      </g>
     ${nodeMarkup}
   `;
 
-  caption.textContent = state.currentRoute
+  const captionText = state.currentRoute
     ? state.currentRoute.ui.caption
     : state.focusedNodeId
       ? `当前定位：${getNodeName(state.focusedNodeId)}。`
       : `当前展示的是室外节点分布；缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`;
+  caption.textContent = fallbackMessage ? `${fallbackMessage} ${captionText}` : captionText;
+}
+
+async function renderLeafletMap() {
+  const caption = document.querySelector("#map-caption");
+  if (!state.bootstrap) {
+    setMapRendererVisibility("leaflet_geo");
+    caption.textContent = "地图尚未加载。";
+    return;
+  }
+
+  try {
+    setMapRendererVisibility("leaflet_geo");
+    ensureLeafletMap();
+    caption.textContent = "真实地图实验模式正在加载 GeoJSON...";
+
+    const geojson = await loadMapGeoJson();
+    if (selectedMapRenderer() !== "leaflet_geo") {
+      return;
+    }
+
+    syncLeafletBaseLayers(geojson);
+    syncLeafletRouteLayer();
+    invalidateLeafletSize();
+
+    const stats = state.mapGeoJsonStats || {};
+    caption.textContent = state.currentRoute
+      ? state.currentRoute.ui.caption
+      : state.focusedNodeId
+        ? `真实地图实验模式：当前定位 ${getNodeName(state.focusedNodeId)}。`
+        : `真实地图实验模式：已加载 ${stats.node_feature_count || 0} 个节点和 ${stats.edge_feature_count || 0} 条道路。`;
+  } catch (error) {
+    fallbackToSvgMap(error);
+  }
+}
+
+function ensureLeafletMap() {
+  if (!window.L) {
+    throw new Error("本地 Leaflet 运行库未加载");
+  }
+
+  const element = document.querySelector("#leaflet-map");
+  if (!element) {
+    throw new Error("Leaflet 地图容器缺失");
+  }
+
+  if (!state.leaflet.map) {
+    const center = mapCenterLatLng();
+    state.leaflet.map = L.map(element, {
+      attributionControl: false,
+      preferCanvas: true,
+    }).setView(center, 17);
+  }
+
+  return state.leaflet.map;
+}
+
+async function loadMapGeoJson() {
+  const siteId = currentSiteId();
+  if (state.mapGeoJson && state.mapGeoJsonSiteId === siteId) {
+    return state.mapGeoJson;
+  }
+  if (state.mapGeoJsonLoading) {
+    return state.mapGeoJsonLoading;
+  }
+
+  const endpoint = state.bootstrap.map_capabilities?.geojson_endpoint || "/api/map/geojson";
+  const separator = endpoint.includes("?") ? "&" : "?";
+  const url = `${endpoint}${separator}site_id=${encodeURIComponent(siteId)}`;
+  state.mapGeoJsonLoading = apiGet(url)
+    .then((payload) => {
+      if (!payload.success || !payload.geojson || payload.geojson.type !== "FeatureCollection") {
+        throw new Error(payload.message || "GeoJSON 响应格式无效");
+      }
+      state.mapGeoJson = payload.geojson;
+      state.mapGeoJsonStats = payload.stats || {};
+      state.mapGeoJsonSiteId = siteId;
+      return payload.geojson;
+    })
+    .finally(() => {
+      state.mapGeoJsonLoading = null;
+    });
+  return state.mapGeoJsonLoading;
+}
+
+function syncLeafletBaseLayers(geojson) {
+  const map = state.leaflet.map;
+  if (!map || state.leaflet.baseGeoJson === geojson) {
+    return;
+  }
+
+  removeLeafletLayer("edgeLayer");
+  removeLeafletLayer("nodeLayer");
+
+  state.leaflet.edgeLayer = L.geoJSON(geojson, {
+    filter: (feature) => feature.properties?.kind === "edge",
+    style: (feature) => leafletEdgeStyle(feature),
+    onEachFeature: bindLeafletFeaturePopup,
+  }).addTo(map);
+
+  state.leaflet.nodeLayer = L.geoJSON(geojson, {
+    filter: (feature) => feature.properties?.kind === "node",
+    pointToLayer: (feature, latlng) => L.circleMarker(latlng, leafletNodeStyle(feature)),
+    onEachFeature: bindLeafletFeaturePopup,
+  }).addTo(map);
+
+  state.leaflet.baseGeoJson = geojson;
+  state.leaflet.fittedSiteId = "";
+  fitLeafletToData();
+}
+
+function bindLeafletFeaturePopup(feature, layer) {
+  const properties = feature.properties || {};
+  if (properties.kind === "node") {
+    layer.bindPopup(`
+      <strong>${escapeHtml(properties.name || properties.id)}</strong><br>
+      <span>${escapeHtml(properties.category_label || properties.category || "")}</span><br>
+      <button class="route-button leaflet-popup-button" type="button" data-route-target="${escapeHtml(properties.id || "")}">
+        从当前起点规划路线
+      </button>
+    `);
+    layer.on("click", () => {
+      state.focusedNodeId = properties.id || "";
+      syncLeafletRouteLayer();
+    });
+    return;
+  }
+
+  if (properties.kind === "edge") {
+    layer.bindPopup(`
+      <strong>${escapeHtml(properties.name || "道路")}</strong><br>
+      <span>${escapeHtml(properties.edge_type || "")}</span><br>
+      <span>${formatDistance(properties.distance_m, "available")}</span>
+    `);
+  }
+}
+
+function leafletEdgeStyle(feature) {
+  const edgeType = feature.properties?.edge_type || "";
+  const isRoad = edgeType.includes("road");
+  return {
+    color: isRoad ? "#586b78" : "#7b8790",
+    weight: isRoad ? 4 : 3,
+    opacity: 0.68,
+    lineCap: "round",
+    lineJoin: "round",
+  };
+}
+
+function leafletNodeStyle(feature) {
+  const category = feature.properties?.category || "";
+  const isHighlighted = getMapHighlightNodeIds().has(feature.properties?.id || "");
+  return {
+    radius: isHighlighted ? 9 : category === "road" ? 4 : 6,
+    color: "#ffffff",
+    weight: 2,
+    fillColor: colorForCategory(category),
+    fillOpacity: isHighlighted ? 0.96 : 0.82,
+  };
+}
+
+function syncLeafletRouteLayer() {
+  const map = state.leaflet.map;
+  if (!map) {
+    return;
+  }
+
+  removeLeafletLayer("routeLayer");
+  const layer = L.layerGroup().addTo(map);
+  const nodeIndex = mapNodeIndex();
+  const routePath = state.currentRoute?.ui?.mappable_path_node_ids || [];
+  const routeLatLngs = routePath
+    .map((nodeId) => nodeIndex.get(nodeId))
+    .filter(Boolean)
+    .map((node) => [node.lat, node.lng]);
+
+  if (routeLatLngs.length >= 2) {
+    L.polyline(routeLatLngs, {
+      color: "#d98214",
+      weight: 8,
+      opacity: 0.94,
+      lineCap: "round",
+      lineJoin: "round",
+    }).addTo(layer);
+  }
+
+  getMapHighlightNodeIds().forEach((nodeId) => {
+    const node = nodeIndex.get(nodeId);
+    if (!node) {
+      return;
+    }
+    L.circleMarker([node.lat, node.lng], {
+      radius: 10,
+      color: "#ffffff",
+      weight: 3,
+      fillColor: "#d98214",
+      fillOpacity: 0.9,
+    })
+      .bindTooltip(node.name, { direction: "top" })
+      .addTo(layer);
+  });
+
+  state.leaflet.routeLayer = layer;
+}
+
+function fallbackToSvgMap(error) {
+  const message = `Leaflet 地图加载失败，已回退 SVG 简图：${error.message || error}。`;
+  state.mapRenderer = "simple_svg";
+  renderSvgMap(message);
+  setStatus(message, "error");
+}
+
+function setMapRendererVisibility(renderer) {
+  const stage = document.querySelector(".map-stage");
+  const svg = document.querySelector("#campus-map");
+  const leaflet = document.querySelector("#leaflet-map");
+
+  if (stage) {
+    stage.classList.toggle("map-renderer-simple-svg", renderer === "simple_svg");
+    stage.classList.toggle("map-renderer-leaflet", renderer === "leaflet_geo");
+  }
+  if (svg) {
+    svg.hidden = renderer !== "simple_svg";
+  }
+  if (leaflet) {
+    leaflet.hidden = renderer !== "leaflet_geo";
+  }
+}
+
+function clearLeafletLayers() {
+  removeLeafletLayer("edgeLayer");
+  removeLeafletLayer("nodeLayer");
+  removeLeafletLayer("routeLayer");
+  state.leaflet.baseGeoJson = null;
+  state.leaflet.fittedSiteId = "";
+}
+
+function removeLeafletLayer(layerName) {
+  const map = state.leaflet.map;
+  const layer = state.leaflet[layerName];
+  if (map && layer) {
+    map.removeLayer(layer);
+  }
+  state.leaflet[layerName] = null;
+}
+
+function fitLeafletToData() {
+  const map = state.leaflet.map;
+  if (!map) {
+    return;
+  }
+
+  const layers = [state.leaflet.edgeLayer, state.leaflet.nodeLayer].filter(Boolean);
+  if (!layers.length) {
+    map.setView(mapCenterLatLng(), 17);
+    return;
+  }
+
+  const bounds = L.featureGroup(layers).getBounds();
+  if (bounds.isValid()) {
+    map.fitBounds(bounds.pad(0.18), { animate: false });
+    state.leaflet.fittedSiteId = currentSiteId();
+  }
+}
+
+function invalidateLeafletSize() {
+  const map = state.leaflet.map;
+  if (!map) {
+    return;
+  }
+  setTimeout(() => {
+    map.invalidateSize(false);
+    if (state.leaflet.fittedSiteId !== currentSiteId()) {
+      fitLeafletToData();
+    }
+  }, 0);
+}
+
+function mapCenterLatLng() {
+  const bounds = state.bootstrap?.map?.bounds || {};
+  const lat = ((bounds.lat_min || 0) + (bounds.lat_max || 0)) / 2 || 39.9915;
+  const lng = ((bounds.lng_min || 0) + (bounds.lng_max || 0)) / 2 || 116.307;
+  return [lat, lng];
+}
+
+function mapNodeIndex() {
+  const nodes = state.bootstrap?.map?.nodes || [];
+  return new Map(nodes.map((node) => [node.id, node]));
+}
+
+function getMapHighlightNodeIds() {
+  const routePath = state.currentRoute?.ui?.mappable_path_node_ids || [];
+  const highlightNodeIds = new Set(routePath);
+  if (state.focusedNodeId) {
+    highlightNodeIds.add(state.focusedNodeId);
+  }
+  if (state.currentRoute) {
+    (state.currentRoute.ui?.highlight_node_ids || []).forEach((item) => {
+      if (item) {
+        highlightNodeIds.add(item);
+      }
+    });
+  }
+  return highlightNodeIds;
 }
 
 function projectNode(node, bounds) {

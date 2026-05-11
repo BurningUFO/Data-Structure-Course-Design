@@ -60,6 +60,23 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
                 self._write_json(selected_service.get_bootstrap_payload())
                 return
 
+            if path == "/api/map/geojson":
+                query = parse_qs(parsed.query)
+                site_id = (query.get("site_id") or query.get("site") or [None])[0]
+                try:
+                    selected_service = resolve_service(site_id)
+                except Exception as error:
+                    self._write_json(
+                        {
+                            "success": False,
+                            "message": f"{type(error).__name__}: {error}",
+                        },
+                        status=HTTPStatus.BAD_REQUEST,
+                    )
+                    return
+                self._write_json(selected_service.get_map_geojson_payload())
+                return
+
             if path == "/api/health":
                 query = parse_qs(parsed.query)
                 site_id = (query.get("site_id") or query.get("site") or [None])[0]
@@ -85,6 +102,13 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
                 file_path = (static_root / "assets" / asset_name).resolve()
                 asset_root = (static_root / "assets").resolve()
                 if asset_root not in file_path.parents and file_path != asset_root:
+                    self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
+                    return
+            elif path.startswith("/vendor/"):
+                vendor_name = path.removeprefix("/vendor/")
+                file_path = (static_root / "vendor" / vendor_name).resolve()
+                vendor_root = (static_root / "vendor").resolve()
+                if vendor_root not in file_path.parents and file_path != vendor_root:
                     self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
                     return
             else:

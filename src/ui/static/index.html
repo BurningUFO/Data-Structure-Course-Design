@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>智能校园导览系统</title>
+    <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
@@ -383,6 +384,7 @@
                   </div>
                   <div class="map-stage">
                     <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
+                    <div id="leaflet-map" class="leaflet-map" aria-label="Leaflet GeoJSON 校园地图" hidden></div>
                   </div>
                   <p id="map-caption" class="map-caption">
                     地图加载完成后会在这里显示高亮说明。
@@ -442,6 +444,7 @@
 
     <div class="panel-modal-backdrop" id="panel-modal-backdrop" hidden></div>
 
+    <script src="/vendor/leaflet/leaflet.js" defer></script>
     <script src="/app.js" defer></script>
   </body>
 </html>

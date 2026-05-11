@@ -18,6 +18,11 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["default_start_node"] == "gate_north"
     assert payload["map"]["node_count"] >= 10
     assert payload["map"]["edge_count"] >= 10
+    assert payload["map_renderer"] == "leaflet_geo"
+    assert payload["map_capabilities"]["renderers"] == ["simple_svg", "leaflet_geo"]
+    assert payload["map_capabilities"]["default_renderer"] == "leaflet_geo"
+    assert payload["map_capabilities"]["fallback_renderer"] == "simple_svg"
+    assert payload["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
     assert payload["stats"]["route_target_count"] >= 10
     assert payload["stats"]["site_count"] >= 1
     assert payload["stats"]["aigc_sample_count"] == 3
@@ -36,6 +41,44 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert len(payload["help"]["demo_flow"]) >= 3
     assert any(item["value"] == "education" for item in payload["controls"]["scenic_categories"])
     print("test_demo_bootstrap_contains_map_and_controls passed.")
+
+
+def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
+    service = DemoUIService("PKU")
+    payload = service.get_map_geojson_payload()
+
+    assert payload["success"] is True
+    assert payload["site_id"] == "PKU"
+    assert payload["geojson"]["type"] == "FeatureCollection"
+    assert payload["stats"]["node_feature_count"] > 0
+    assert payload["stats"]["edge_feature_count"] > 0
+    assert payload["stats"]["fallback_edge_count"] > 0
+
+    features = payload["geojson"]["features"]
+    node_features = [item for item in features if item["properties"]["kind"] == "node"]
+    edge_features = [item for item in features if item["properties"]["kind"] == "edge"]
+    assert len(node_features) == payload["stats"]["node_feature_count"]
+    assert len(edge_features) == payload["stats"]["edge_feature_count"]
+
+    node_index = {node["id"]: node for node in service.map_nodes}
+    first_node = node_features[0]
+    first_node_id = first_node["properties"]["id"]
+    assert first_node["geometry"]["type"] == "Point"
+    assert first_node["geometry"]["coordinates"] == [
+        node_index[first_node_id]["lng"],
+        node_index[first_node_id]["lat"],
+    ]
+    assert {"kind", "id", "name", "category", "category_label"} <= set(first_node["properties"])
+
+    first_edge = edge_features[0]
+    assert first_edge["geometry"]["type"] == "LineString"
+    assert len(first_edge["geometry"]["coordinates"]) >= 2
+    assert {"kind", "from", "to", "name", "edge_type", "distance_m"} <= set(first_edge["properties"])
+    source = node_index[first_edge["properties"]["from"]]
+    target = node_index[first_edge["properties"]["to"]]
+    assert first_edge["geometry"]["coordinates"][0] == [source["lng"], source["lat"]]
+    assert first_edge["geometry"]["coordinates"][-1] == [target["lng"], target["lat"]]
+    print("test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order passed.")
 
 
 def test_demo_scenic_search_is_routeable():
@@ -274,6 +317,28 @@ def test_demo_static_diary_center_contains_management_controls():
     print("test_demo_static_diary_center_contains_management_controls passed.")
 
 
+def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert 'href="/vendor/leaflet/leaflet.css"' in html
+    assert 'src="/vendor/leaflet/leaflet.js"' in html
+    assert 'id="leaflet-map"' in html
+    assert "renderSvgMap" in script
+    assert "renderLeafletMap" in script
+    assert "ensureLeafletMap" in script
+    assert "syncLeafletRouteLayer" in script
+    assert "fallbackToSvgMap" in script
+    assert '"/api/map/geojson"' in script
+    print("test_demo_static_leaflet_renderer_contains_local_assets_and_fallback passed.")
+
+
 def test_demo_aigc_preview_returns_template_storyboard():
     service = DemoUIService("PKU")
     response = service.aigc_preview(
@@ -380,12 +445,14 @@ def test_demo_multi_route_contains_visit_order_and_legs():
 def run_all_tests():
     print("Running UI demo service tests...")
     test_demo_bootstrap_contains_map_and_controls()
+    test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_diary_management_flow_links_to_route()
     test_demo_static_diary_center_contains_management_controls()
+    test_demo_static_leaflet_renderer_contains_local_assets_and_fallback()
     test_demo_aigc_preview_returns_template_storyboard()
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()

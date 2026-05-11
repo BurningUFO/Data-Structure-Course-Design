@@ -202,6 +202,13 @@ FEEDBACK_MESSAGES = {
     "route_unreachable": "当前路径不可达，请更换起点、终点或交通方式。",
 }
 
+MAP_CAPABILITIES = {
+    "renderers": ["simple_svg", "leaflet_geo"],
+    "default_renderer": "leaflet_geo",
+    "geojson_endpoint": "/api/map/geojson",
+    "fallback_renderer": "simple_svg",
+}
+
 
 def normalize_text(value: Any) -> str:
     if value is None:
@@ -272,6 +279,8 @@ class DemoUIService:
             },
             "aigc_samples": self._build_aigc_sample_options(),
             "presets": DEFAULT_PRESETS,
+            "map_renderer": MAP_CAPABILITIES["default_renderer"],
+            "map_capabilities": MAP_CAPABILITIES.copy(),
             "map": {
                 "nodes": self.map_nodes,
                 "edges": self.map_edges,
@@ -288,6 +297,71 @@ class DemoUIService:
                 "indoor_target_count": sum(
                     1 for item in self.route_targets if item["graph_type"] == "indoor"
                 ),
+            },
+        }
+
+    def get_map_geojson_payload(self) -> dict[str, Any]:
+        """Return outdoor nodes and edges as a GeoJSON FeatureCollection."""
+        features: list[dict[str, Any]] = []
+
+        for node in self.map_nodes:
+            features.append(
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [node["lng"], node["lat"]],
+                    },
+                    "properties": {
+                        "kind": "node",
+                        "id": node["id"],
+                        "name": node["name"],
+                        "category": node["category"],
+                        "category_label": node["category_label"],
+                    },
+                }
+            )
+
+        fallback_edge_count = 0
+        edge_feature_count = 0
+        for edge in self.map_edges:
+            coordinates, used_fallback = self._build_edge_geojson_coordinates(edge)
+            if len(coordinates) < 2:
+                continue
+            if used_fallback:
+                fallback_edge_count += 1
+            edge_feature_count += 1
+            features.append(
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": coordinates,
+                    },
+                    "properties": {
+                        "kind": "edge",
+                        "from": edge["from"],
+                        "to": edge["to"],
+                        "name": edge["name"],
+                        "edge_type": edge["type"],
+                        "distance_m": edge["distance_m"],
+                    },
+                }
+            )
+
+        node_feature_count = len(self.map_nodes)
+        return {
+            "success": True,
+            "site_id": self.site_id,
+            "geojson": {
+                "type": "FeatureCollection",
+                "features": features,
+            },
+            "stats": {
+                "node_feature_count": node_feature_count,
+                "edge_feature_count": edge_feature_count,
+                "fallback_edge_count": fallback_edge_count,
+                "feature_count": len(features),
             },
         }
 
@@ -780,17 +854,52 @@ class DemoUIService:
                 continue
             seen_pairs.add(pair_key)
 
-            edges.append(
-                {
-                    "from": source,
-                    "to": target,
-                    "name": normalize_text(edge.get("name")),
-                    "type": normalize_text(edge.get("type")) or "outdoor_road",
-                    "distance_m": float(edge.get("distance", 0)),
-                }
-            )
+            map_edge = {
+                "from": source,
+                "to": target,
+                "name": normalize_text(edge.get("name")),
+                "type": normalize_text(edge.get("type")) or "outdoor_road",
+                "distance_m": float(edge.get("distance", 0)),
+            }
+            geometry = self._normalize_edge_geometry(edge.get("geometry"))
+            if geometry:
+                map_edge["geometry"] = geometry
+            edges.append(map_edge)
 
         return edges
+
+    def _build_edge_geojson_coordinates(
+        self,
+        edge: dict[str, Any],
+    ) -> tuple[list[list[float]], bool]:
+        geometry = edge.get("geometry")
+        if isinstance(geometry, list) and len(geometry) >= 2:
+            return [[point["lng"], point["lat"]] for point in geometry], False
+
+        source = self.map_node_index.get(edge.get("from"))
+        target = self.map_node_index.get(edge.get("to"))
+        if not source or not target:
+            return [], True
+        return [[source["lng"], source["lat"]], [target["lng"], target["lat"]]], True
+
+    @staticmethod
+    def _normalize_edge_geometry(value: Any) -> list[dict[str, float]]:
+        if not isinstance(value, list):
+            return []
+
+        points: list[dict[str, float]] = []
+        for point in value:
+            if not isinstance(point, dict):
+                continue
+            lat = point.get("lat")
+            lng = point.get("lng")
+            if lat is None or lng is None:
+                continue
+            try:
+                points.append({"lat": float(lat), "lng": float(lng)})
+            except (TypeError, ValueError):
+                continue
+        return points if len(points) >= 2 else []
 
     def _build_map_bounds(self, nodes: list[dict[str, Any]]) -> dict[str, float]:
         if not nodes:

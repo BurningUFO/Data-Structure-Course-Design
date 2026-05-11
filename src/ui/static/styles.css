@@ -881,6 +881,18 @@ select[multiple] {
   background-size: 42px 42px, 42px 42px, auto;
 }
 
+.leaflet-map {
+  width: 100%;
+  min-height: 540px;
+  height: 540px;
+  background: #eef4f1;
+}
+
+.leaflet-map[hidden],
+#campus-map[hidden] {
+  display: none;
+}
+
 #campus-map {
   display: block;
   width: 100%;
@@ -892,6 +904,10 @@ select[multiple] {
 
 #campus-map.is-panning {
   cursor: grabbing;
+}
+
+.leaflet-popup-button {
+  margin-top: 8px;
 }
 
 .map-caption {
@@ -1035,6 +1051,11 @@ select[multiple] {
 }
 
 .map-panel.panel-expanded #campus-map {
+  min-height: 0;
+  height: 100%;
+}
+
+.map-panel.panel-expanded .leaflet-map {
   min-height: 0;
   height: 100%;
 }
@@ -1391,8 +1412,10 @@ select[multiple] {
   }
 
   .map-stage,
-  #campus-map {
+  #campus-map,
+  .leaflet-map {
     min-height: 430px;
+    height: 430px;
   }
 
   .panel-expanded {
