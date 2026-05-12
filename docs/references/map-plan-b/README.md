@@ -17,6 +17,8 @@ This directory stores local snapshots of reference materials used by the experim
 | `maplibre-add-geojson-line.html` | https://maplibre.org/maplibre-gl-js/docs/examples/add-a-geojson-line/ | Optional MapLibre comparison reference |
 | `mapshaper-command-reference.md` | https://raw.githubusercontent.com/wiki/mbloch/mapshaper/Command-Reference.md | Historical wiki pointer to the moved Mapshaper docs |
 | `mapshaper-cli-introduction.md` | https://raw.githubusercontent.com/wiki/mbloch/mapshaper/Introduction-to-the-Command-Line-Tool.md | Historical wiki pointer to the moved Mapshaper docs |
+| `osm-tile-usage-policy.html` | https://operations.osmfoundation.org/policies/tiles/ | OpenStreetMap tile usage policy for real basemap integration |
+| `openfreemap-quick-start.html` | https://openfreemap.org/quick_start/ | OpenFreeMap quick start reference for open basemap alternatives |
 
 ## Runtime Assets
 
@@ -39,5 +41,10 @@ Files downloaded there:
 
 ## Notes
 
-Leaflet is the recommended first implementation target for this branch. MapLibre is kept only as a comparison reference because it has a higher visual ceiling but a higher integration risk.
+Leaflet remains the recommended implementation target for this branch. MapLibre is kept only as a comparison reference because it has a higher visual ceiling but a higher integration risk.
 
+Post-M6 work should proceed in separate stages:
+
+1. Add a real Leaflet tile basemap with attribution and fallback.
+2. Extract and store local OSM-derived GeoJSON data under `data/sites/PKU/geo/`.
+3. Match course graph edges to OSM road geometries for more realistic route overlays.

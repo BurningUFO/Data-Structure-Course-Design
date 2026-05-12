@@ -56,7 +56,9 @@ When committing map-plan work, stage only files that are part of the current tas
 
 ## Map Plan B First-Stage Scope
 
-The first-stage implementation scope is only:
+The first-stage implementation scope applies only when the user explicitly asks for first-stage work. Later stages must follow the current user prompt and `docs/地图方案B真实地图层总路线计划.md`.
+
+The first-stage implementation scope is:
 
 1. Add a lightweight Leaflet + GeoJSON renderer.
 2. Preserve the existing SVG map as `simple_svg` fallback.
@@ -75,6 +77,16 @@ Out of scope for first stage:
 4. Do not add real road `geometry` to `data/sites/PKU/outdoor.json`.
 5. Do not rewrite routing algorithms.
 6. Do not rewrite graph loader semantics.
+
+## Post-M6 Map Work
+
+Post-M6 work may continue toward a more realistic daily-map appearance, but it must remain staged:
+
+1. M7: add a real Leaflet tile basemap, attribution, basemap controls, and offline/failure fallback.
+2. M8: extract OSM-derived roads/buildings/water/landuse into local files under `data/sites/PKU/geo/`.
+3. M9: match course graph edges to OSM road geometries while keeping the course graph as the routing authority.
+
+Do not combine M7-M9 into one large task unless the user explicitly requests it. Runtime UI code should not call OSMnx or Overpass directly; external data extraction belongs in preparation scripts or documented offline data steps.
 
 ## Stable Contracts
 
@@ -189,6 +201,36 @@ If a command cannot be run or fails, report:
 3. Whether the failure is related to the current changes.
 4. The safest next action.
 
+## Verification Pitfalls
+
+Recent map-plan verification exposed a few repeatable local-environment traps:
+
+1. Before trusting browser checks on `http://127.0.0.1:8765`, check whether something is already listening:
+
+```powershell
+netstat -ano | findstr :8765
+```
+
+If a stale demo server is already bound to `8765`, the browser may hit old code and return misleading GeoJSON stats. Stop only your own stale demo process when it is safe, or use a temporary port for smoke checks. After starting a fresh server, verify `/api/health` and confirm `/api/map/geojson?site_id=PKU` reports the expected current stats before browser assertions.
+
+2. For the current M6 baseline, a healthy current server should report:
+
+```text
+feature_count: 120
+edge_feature_count: 81
+geometry_edge_count: 14
+fallback_edge_count: 67
+geometry_coverage_ratio: 0.1728
+```
+
+If browser status shows `geometry 0` or `fallback 81`, suspect a stale server or wrong runtime before changing code.
+
+3. PowerShell inline scripts can garble Chinese request bodies when piping into Python. For API smoke checks with Chinese keywords, use `json.dumps(..., ensure_ascii=True)` or Unicode escapes in the inline script.
+
+4. Playwright CLI may create `.playwright-cli/`; temporary browser scripts may be placed under `.codex_tmp/`. Clean these directories after verification and never stage them.
+
+5. `py` and `python` resolution can differ between shells or tool contexts. Use the interpreter that successfully runs the project tests, and when launching a hidden demo server, check that the process did not exit early before proceeding.
+
 ## Commit Guidance
 
 Use focused commits. Suggested commit messages:
@@ -223,4 +265,3 @@ Stop and report instead of expanding the task if:
 3. Existing SVG map cannot be restored.
 4. Route endpoints require core algorithm rewrites.
 5. Leaflet integration forces unrelated changes in search, recommend, diary, graph, or routing modules.
-

@@ -136,14 +136,24 @@ M6 浏览器检查已使用 Playwright CLI 访问正式演示地址 `http://127.
 5. `simple_svg` 是正式回退能力，不应在合并前删除。
 6. 当前 route geometry overlay 以现有图 path 为基础，未做真实路网级别的重新寻路。
 
-## 9. 回退策略
+## 9. 后续真实地图升级路线
+
+如果目标从课程验收升级为“接近日常地图 App 的真实观感”，建议继续拆成三个阶段：
+
+1. M7：真实瓦片底图接入。用 Leaflet `tileLayer` 加载真实底图，增加底图模式切换、attribution、网络失败回退和合规说明。
+2. M8：离线 OSM 数据抽取与本地化。使用 OSMnx 或 Overpass 在准备阶段抽取 PKU 周边 roads / buildings / water / landuse，保存到 `data/sites/PKU/geo/`，运行时读取本地 GeoJSON。
+3. M9：课程图 edge 与 OSM 道路线形匹配。课程图仍作为算法权威，OSM 数据只提供更真实的 route geometry；匹配失败时继续使用 `manual` geometry 或 `fallback_line`。
+
+推进顺序必须是 M7 -> M8 -> M9，不建议一次性合并执行。M7 的视觉收益最大且风险最低；M9 最接近真实导航效果，但数据匹配和验证成本最高。
+
+## 10. 回退策略
 
 1. 功能级回退：在页面地图区点击 `SVG`，切换到 `simple_svg` 稳定简图。
 2. 自动回退：Leaflet 运行库或 GeoJSON 请求异常时，前端调用 `fallbackToSvgMap()` 并显示错误说明。
 3. 数据级回退：edge 缺少 `geometry` 时，后端输出 from/to 两点 `LineString`，并标记 `geometry_source=fallback_line`、`is_fallback_geometry=true`。
 4. 分支级回退：合并前如发现不可接受风险，保留 `main` 不变，继续在 `experiment/map-plan-b` 修复。
 
-## 10. 合并 main 前检查清单
+## 11. 合并 main 前检查清单
 
 - [ ] 确认当前分支仍为 `experiment/map-plan-b`。
 - [ ] 运行 `git status --short --branch`，确认没有误 staged 的 `scripts/` 或 `工作进度/` 文件。

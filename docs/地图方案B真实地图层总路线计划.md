@@ -57,6 +57,8 @@ src/ui/static/vendor/leaflet/
 | `docs/references/map-plan-b/mapshaper-command-reference.html` | Mapshaper 命令参考，用于裁剪和简化 GeoJSON |
 | `docs/references/map-plan-b/mapshaper-cli-command-line.html` | Mapshaper 命令行使用方式 |
 | `docs/references/map-plan-b/maplibre-add-geojson-line.html` | MapLibre 备选路线参考，不作为第一实现目标 |
+| `docs/references/map-plan-b/osm-tile-usage-policy.html` | OpenStreetMap 官方瓦片使用策略，用于约束真实底图接入 |
+| `docs/references/map-plan-b/openfreemap-quick-start.html` | OpenFreeMap 快速开始参考，作为后续开源底图候选 |
 | `src/ui/static/vendor/leaflet/leaflet.js` | 本地 Leaflet JS，支持离线加载 |
 | `src/ui/static/vendor/leaflet/leaflet.css` | 本地 Leaflet CSS |
 | `src/ui/static/vendor/leaflet/images/` | Leaflet 默认 marker 图片 |
@@ -339,6 +341,116 @@ data/sites/PKU/geo/
 3. 能解释为什么 GeoJSON 坐标顺序是 `[lng, lat]`。
 4. 能现场切换或回退到稳定 SVG 模式。
 
+### 阶段 6：真实瓦片底图接入
+
+目标：让地图视觉底座接近日常地图 App，而不是只在空白画布上叠加项目 GeoJSON。
+
+边界：
+
+1. 本阶段只接底图，不改路由算法。
+2. 本阶段不抽取 OSM 道路数据，不做课程图与 OSM 路网匹配。
+3. 本阶段不把外部瓦片下载进仓库。
+4. 本阶段必须保留无底图模式和 `simple_svg` 回退。
+
+任务：
+
+1. 在 Leaflet 中新增底图 layer，例如 `L.tileLayer(...)`。
+2. 增加底图模式状态：真实底图、无底图或简洁底图。
+3. 普通道路、节点和路线图层继续叠加在底图上方。
+4. 路线高亮样式需要在真实底图上仍然醒目。
+5. 页面 legend / caption 说明底图来源、网络依赖和本地 GeoJSON 的关系。
+6. 文档中记录瓦片服务的 attribution 和使用限制。
+
+候选底图：
+
+1. OpenStreetMap 标准瓦片：适合低频课程演示，但必须遵守官方 tile usage policy，不可当作无约束生产依赖。
+2. OpenFreeMap 或其他开源瓦片服务：可作为后续更合规的展示底图候选。
+3. 无底图模式：作为网络异常或瓦片不可用时的稳定展示兜底。
+
+验收标准：
+
+1. Leaflet 地图默认或可切换显示真实底图。
+2. 无底图模式可用，GeoJSON 节点、道路、路线仍能显示。
+3. `simple_svg` 回退仍可用。
+4. 文档明确说明底图来源、attribution、网络依赖和合规限制。
+5. `py -m pytest` 和 API smoke check 通过。
+
+### 阶段 7：离线 OSM 数据抽取与本地化
+
+目标：把“看起来像地图”的底图进一步升级为“项目掌控的本地真实路网与地物数据”，降低运行时网络依赖。
+
+边界：
+
+1. 抽取数据应保存到 `data/sites/PKU/geo/`，运行时优先读取本地文件。
+2. 外部数据抽取只作为构建/准备步骤，不应在 Web UI 请求时实时调用。
+3. 本阶段仍不替换课程图算法，只为 geometry、底图增强和后续匹配提供候选数据。
+
+建议数据文件：
+
+```text
+data/sites/PKU/geo/
+  osm_roads_raw.geojson
+  osm_roads_simplified.geojson
+  osm_buildings.geojson
+  osm_water_landuse.geojson
+  osm_extract_metadata.json
+```
+
+任务：
+
+1. 使用 OSMnx 或 Overpass 抽取 PKU 校园及周边道路、步道、建筑、水域、绿地。
+2. 用 Mapshaper 或脚本裁剪、简化和校验 GeoJSON。
+3. 记录数据来源、查询条件、抽取日期和 license / attribution。
+4. 在 Leaflet 中可选叠加本地 OSM roads / buildings / water / landuse layer。
+5. 保留现有项目节点、项目道路和 route overlay 的优先级。
+
+验收标准：
+
+1. 本地 GeoJSON 文件存在且可被解析。
+2. OSM 数据图层能在 Leaflet 中显示，并与当前 PKU 节点坐标大致对齐。
+3. 数据来源和 license / attribution 有文档记录。
+4. 不依赖运行时联网抽取 OSM 数据。
+5. 原项目图、路线规划和 fallback 不受影响。
+
+### 阶段 8：课程图 edge 与 OSM 道路线形匹配
+
+目标：让课程路径高亮真正贴近日常地图中的真实道路，而不是只靠人工折线或抽象图边。
+
+边界：
+
+1. 路由算法仍以课程图为准，不直接把 OSM 图替换为算法图。
+2. OSM 只提供可视化 geometry 和必要的道路形状候选。
+3. 匹配失败的 edge 继续使用手工 geometry 或 from/to fallback。
+
+任务：
+
+1. 为课程图 edge 建立匹配表，例如：
+
+```json
+{
+  "edge_key": "gate_north->square_center",
+  "source": "osm_matched",
+  "osm_way_ids": ["..."],
+  "geometry": [
+    {"lat": 39.9929, "lng": 116.3055},
+    {"lat": 39.9927, "lng": 116.3060}
+  ],
+  "confidence": 0.82
+}
+```
+
+2. 按 from/to 节点附近的 OSM road segments 查找候选线形。
+3. 对人工 geometry、OSM matched geometry 和 fallback line 设定优先级。
+4. 在 `/api/map/geojson` 和 `/api/route` stats 中标记 geometry 来源：`manual`、`osm_matched`、`fallback_line`。
+5. 更新路线贴路测试，覆盖 OSM matched geometry 和 fallback。
+
+验收标准：
+
+1. 关键演示路线优先使用 `osm_matched` 或高质量 `manual` geometry。
+2. route overlay 在真实底图上明显沿道路走，不再大段穿越建筑、水域或绿地。
+3. geometry 来源和覆盖率可在 API stats 或 UI caption 中解释。
+4. 失败匹配不会中断路线规划或 UI 展示。
+
 ## 7. 路网数据获取方案
 
 ### 7.1 OSMnx 路线
@@ -431,6 +543,9 @@ data/sites/PKU/geo/
 | --- | --- | --- |
 | 瓦片源加载失败 | 底图空白 | 本地 Leaflet + GeoJSON 空白底图继续显示，或回退 SVG |
 | OSM 数据不完整 | 路线仍有直线段 | 关键路线手工补 geometry |
+| 瓦片服务合规风险 | 演示可用但不适合长期生产 | 文档标注 attribution 和使用限制，必要时切换合规瓦片服务或无底图 |
+| 运行时网络不稳定 | 真实底图加载慢或空白 | 保留无底图模式、本地 GeoJSON 图层和 `simple_svg` |
+| OSM 与课程图不一致 | 真实路网与算法图路径冲突 | 课程图仍作为算法权威，OSM 只作为可视化 geometry 来源 |
 | 坐标顺序错误 | 地图点位漂移 | 后端集中转换 `[lng, lat]`，测试覆盖 |
 | Leaflet 与现有 SVG 状态冲突 | 地图显示异常 | 用 renderer 开关隔离两个渲染器 |
 | 多目标路线拼接复杂 | 高亮和步骤不一致 | 先单目标稳定，再接多目标 |
@@ -509,14 +624,55 @@ data/sites/PKU/geo/
 3. 新旧地图对比截图。
 4. 用户说明和验收文案更新。
 
+### M7：真实瓦片底图接入
+
+预计工作量：0.5 到 1.5 人日。
+
+产出：
+
+1. Leaflet tile layer。
+2. 底图模式切换。
+3. attribution 和网络依赖说明。
+4. 无底图 / SVG 回退验证。
+
+### M8：离线 OSM 数据抽取与本地化
+
+预计工作量：2 到 5 人日。
+
+产出：
+
+1. `data/sites/PKU/geo/` 本地 OSM roads / buildings / water / landuse GeoJSON。
+2. 抽取脚本或数据准备说明。
+3. 数据来源、license、抽取日期记录。
+4. Leaflet 本地 OSM 图层可选展示。
+
+### M9：课程图 edge 与 OSM 道路线形匹配
+
+预计工作量：3 到 7 人日。
+
+产出：
+
+1. 课程 edge 到 OSM geometry 的匹配表。
+2. `manual` / `osm_matched` / `fallback_line` geometry 来源统计。
+3. 更接近日常地图导航的 route overlay。
+4. 匹配失败回退和测试覆盖。
+
 ## 11. 是否值得继续推进
 
-建议继续推进，但必须按阶段验收。最小可合并版本是 M2 + M3 + 单目标 M4；如果这三个阶段不稳定，就不进入 M5 的真实路网数据抽取。
+M1-M6 已形成可验收的准真实地图层。若目标从课程验收提升到“接近日常真实地图”，后续应继续推进 M7-M9，但仍必须按阶段验收。
+
+推进优先级：
+
+1. 先做 M7：真实瓦片底图。视觉提升最大，风险较低，能快速让地图“像真实地图”。
+2. 再做 M8：离线 OSM 数据本地化。解决运行时依赖外部查询和数据来源不可追溯的问题。
+3. 最后做 M9：课程 edge 与 OSM roads 匹配。真正解决路线贴真实道路的问题，但实现和验证成本最高。
+
+不建议把 M7-M9 合并为一个大任务。底图、数据抽取、路网匹配是三类风险，合并后失败排查成本很高。
 
 对高分最有价值的讲法不是“我们接了一个地图插件”，而是：
 
 1. 图算法仍使用课程图结构和 Dijkstra / 多目标路径规划。
 2. UI 表现层通过 GeoJSON 把算法结果映射到真实地图空间。
 3. 道路 geometry 让路径高亮从“节点连线”升级为“贴近真实道路”。
-4. 系统保留 fallback，因此不是脆弱的演示工程。
-
+4. 真实瓦片底图和本地 OSM 图层可以进一步提升空间可信度。
+5. 系统保留 fallback，因此不是脆弱的演示工程。
