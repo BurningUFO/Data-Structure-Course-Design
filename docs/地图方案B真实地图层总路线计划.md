@@ -666,6 +666,8 @@ docs/地图方案B第八阶段OSM本地化记录.md
 
 预计工作量：3 到 7 人日。
 
+状态：已完成首批关键 edge 匹配。当前通过 `data/sites/PKU/geo/edge_osm_geometry_matches.json` 将 13 条课程图 edge 匹配到本地 OSM roads geometry；`/api/map/geojson` 和 route overlay 均可区分 `osm_matched`、`manual`、`fallback_line` 来源，课程图仍是 routing authority。
+
 产出：
 
 1. 课程 edge 到 OSM geometry 的匹配表。

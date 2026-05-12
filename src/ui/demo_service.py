@@ -156,7 +156,7 @@ FEATURE_NAVIGATION = [
 ]
 
 HELP_CONTENT = {
-    "stage": "正式产品演示版 · 地图方案 B M8",
+    "stage": "正式产品演示版 · 地图方案 B M9",
     "launch_command": "py -B -m src.ui.demo_server",
     "fallback_launch_command": "python -B -m src.ui.demo_server",
     "browser_url": "http://127.0.0.1:8765",
@@ -179,8 +179,8 @@ HELP_CONTENT = {
         "Leaflet GeoJSON 层默认展示真实瓦片底图、节点、道路和路线；SVG 简图作为现场可切换 fallback。",
         "底图可在真实瓦片和无底图之间切换，弱网时本地 GeoJSON 图层仍可展示。",
         "地图数据由现有图节点和边转换为 GeoJSON，坐标顺序统一为 [lng, lat]。",
-        "M8 增加本地 OSM roads / buildings / water / landuse 图层，不做课程图 edge 与 OSM 道路线形匹配。",
-        "路线贴路能力通过 route_geojson 和 route_geometry_stats 说明，缺失 geometry 的边继续用直线段兜底。",
+        "M8 增加本地 OSM roads / buildings / water / landuse 图层，M9 将关键课程图 edge 匹配到本地 OSM 道路线形。",
+        "route_geojson 优先使用 osm_matched geometry，其次 manual geometry，缺失 geometry 的边继续用直线段兜底。",
     ],
 }
 
@@ -280,6 +280,7 @@ OSM_LAYER_FILES = {
 }
 
 OSM_METADATA_FILE = "osm_extract_metadata.json"
+OSM_EDGE_MATCHES_FILE = "edge_osm_geometry_matches.json"
 
 
 def normalize_text(value: Any) -> str:
@@ -302,6 +303,8 @@ class DemoUIService:
         self.outdoor_graph_source = self._load_outdoor_graph_source(self.site_id)
         self.map_nodes = self._build_map_nodes(self.outdoor_graph_source)
         self.map_node_index = {node["id"]: node for node in self.map_nodes}
+        self.osm_edge_matches, self.osm_edge_match_warnings = self._load_osm_edge_geometry_matches()
+        self.osm_edge_match_lookup = self._build_osm_edge_match_lookup(self.osm_edge_matches)
         self.map_edges = self._build_map_edges(self.outdoor_graph_source)
         self.map_edge_lookup = self._build_map_edge_lookup(self.map_edges)
         self.start_nodes = self._build_start_nodes()
@@ -362,8 +365,11 @@ class DemoUIService:
                 "node_count": len(self.map_nodes),
                 "edge_count": len(self.map_edges),
                 "geometry_edge_count": map_geometry_stats["geometry_edge_count"],
+                "osm_matched_edge_count": map_geometry_stats["osm_matched_edge_count"],
+                "manual_geometry_edge_count": map_geometry_stats["manual_geometry_edge_count"],
                 "fallback_edge_count": map_geometry_stats["fallback_edge_count"],
                 "geometry_coverage_ratio": map_geometry_stats["geometry_coverage_ratio"],
+                "osm_matched_coverage_ratio": map_geometry_stats["osm_matched_coverage_ratio"],
             },
             "stats": {
                 "route_target_count": len(self.route_targets),
@@ -399,15 +405,19 @@ class DemoUIService:
                 }
             )
 
-        fallback_edge_count = 0
         edge_feature_count = 0
+        source_counts = {
+            "osm_matched": 0,
+            "manual": 0,
+            "fallback_line": 0,
+        }
         for edge in self.map_edges:
-            coordinates, used_fallback = self._build_edge_geojson_coordinates(edge)
+            coordinates, geometry_source = self._build_edge_geojson_coordinates(edge)
             if len(coordinates) < 2:
                 continue
-            if used_fallback:
-                fallback_edge_count += 1
+            source_counts[geometry_source] = source_counts.get(geometry_source, 0) + 1
             edge_feature_count += 1
+            is_fallback_geometry = geometry_source == "fallback_line"
             features.append(
                 {
                     "type": "Feature",
@@ -422,16 +432,26 @@ class DemoUIService:
                         "name": edge["name"],
                         "edge_type": edge["type"],
                         "distance_m": edge["distance_m"],
-                        "geometry_source": "fallback_line" if used_fallback else "edge_geometry",
-                        "is_fallback_geometry": used_fallback,
+                        "geometry_source": geometry_source,
+                        "geometry_confidence": edge.get("geometry_confidence"),
+                        "osm_way_ids": edge.get("osm_way_ids", []),
+                        "is_fallback_geometry": is_fallback_geometry,
                     },
                 }
             )
 
         node_feature_count = len(self.map_nodes)
-        geometry_edge_count = edge_feature_count - fallback_edge_count
+        osm_matched_edge_count = source_counts["osm_matched"]
+        manual_geometry_edge_count = source_counts["manual"]
+        fallback_edge_count = source_counts["fallback_line"]
+        geometry_edge_count = osm_matched_edge_count + manual_geometry_edge_count
         geometry_coverage_ratio = (
             round(geometry_edge_count / edge_feature_count, 4)
+            if edge_feature_count
+            else 0.0
+        )
+        osm_matched_coverage_ratio = (
+            round(osm_matched_edge_count / edge_feature_count, 4)
             if edge_feature_count
             else 0.0
         )
@@ -446,8 +466,11 @@ class DemoUIService:
                 "node_feature_count": node_feature_count,
                 "edge_feature_count": edge_feature_count,
                 "geometry_edge_count": geometry_edge_count,
+                "osm_matched_edge_count": osm_matched_edge_count,
+                "manual_geometry_edge_count": manual_geometry_edge_count,
                 "fallback_edge_count": fallback_edge_count,
                 "geometry_coverage_ratio": geometry_coverage_ratio,
+                "osm_matched_coverage_ratio": osm_matched_coverage_ratio,
                 "feature_count": len(features),
             },
         }
@@ -780,6 +803,97 @@ class DemoUIService:
             return self._empty_feature_collection(), "GeoJSON features field is not a list"
         return loaded, ""
 
+    def _load_osm_edge_geometry_matches(self) -> tuple[list[dict[str, Any]], list[str]]:
+        path = self._osm_geo_dir() / OSM_EDGE_MATCHES_FILE
+        if not path.exists():
+            return [], [f"missing {OSM_EDGE_MATCHES_FILE}"]
+        try:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            return [], [f"edge match read failed: {type(error).__name__}: {error}"]
+
+        if not isinstance(loaded, dict):
+            return [], ["edge match root is not an object"]
+
+        raw_matches = loaded.get("matches")
+        if not isinstance(raw_matches, list):
+            return [], ["edge match matches field is not a list"]
+
+        matches: list[dict[str, Any]] = []
+        warnings: list[str] = []
+        for index, item in enumerate(raw_matches):
+            match = self._normalize_osm_edge_match(item)
+            if match:
+                matches.append(match)
+            else:
+                warnings.append(f"skipped invalid edge match at index {index}")
+        return matches, warnings
+
+    def _normalize_osm_edge_match(self, item: Any) -> dict[str, Any]:
+        if not isinstance(item, dict):
+            return {}
+
+        source = normalize_text(item.get("from"))
+        target = normalize_text(item.get("to"))
+        if not source or not target:
+            edge_key = normalize_text(item.get("edge_key"))
+            if "->" in edge_key:
+                source, target = [part.strip() for part in edge_key.split("->", 1)]
+        if not source or not target:
+            return {}
+
+        geometry = self._normalize_edge_geometry(item.get("geometry"))
+        if not geometry:
+            return {}
+
+        raw_confidence = item.get("confidence")
+        try:
+            confidence = float(raw_confidence) if raw_confidence is not None else None
+        except (TypeError, ValueError):
+            confidence = None
+
+        raw_way_ids = item.get("osm_way_ids")
+        if isinstance(raw_way_ids, (list, tuple, set)):
+            osm_way_ids = [normalize_text(way_id) for way_id in raw_way_ids if normalize_text(way_id)]
+        else:
+            osm_way_ids = []
+
+        return {
+            "edge_key": normalize_text(item.get("edge_key")) or f"{source}->{target}",
+            "from": source,
+            "to": target,
+            "geometry_source": "osm_matched",
+            "confidence": confidence,
+            "osm_way_ids": osm_way_ids,
+            "geometry": geometry,
+            "notes": normalize_text(item.get("notes")),
+        }
+
+    @staticmethod
+    def _build_osm_edge_match_lookup(
+        matches: list[dict[str, Any]],
+    ) -> dict[tuple[str, str], dict[str, Any]]:
+        lookup: dict[tuple[str, str], dict[str, Any]] = {}
+        for match in matches:
+            source = normalize_text(match.get("from"))
+            target = normalize_text(match.get("to"))
+            if source and target and (source, target) not in lookup:
+                lookup[(source, target)] = match
+        return lookup
+
+    def _resolve_osm_edge_match(
+        self,
+        source: str,
+        target: str,
+    ) -> tuple[dict[str, Any] | None, bool]:
+        match = self.osm_edge_match_lookup.get((source, target))
+        if match is not None:
+            return match, False
+        match = self.osm_edge_match_lookup.get((target, source))
+        if match is not None:
+            return match, True
+        return None, False
+
     @staticmethod
     def _empty_feature_collection() -> dict[str, Any]:
         return {
@@ -1057,26 +1171,57 @@ class DemoUIService:
                 "type": normalize_text(edge.get("type")) or "outdoor_road",
                 "distance_m": float(edge.get("distance", 0)),
             }
-            geometry = self._normalize_edge_geometry(edge.get("geometry"))
-            if geometry:
-                map_edge["geometry"] = geometry
+            osm_match, reversed_match = self._resolve_osm_edge_match(source, target)
+            if osm_match:
+                geometry = list(osm_match["geometry"])
+                if reversed_match:
+                    geometry = list(reversed(geometry))
+                map_edge.update(
+                    {
+                        "geometry": geometry,
+                        "geometry_source": "osm_matched",
+                        "geometry_confidence": osm_match.get("confidence"),
+                        "osm_way_ids": osm_match.get("osm_way_ids", []),
+                        "osm_match_edge_key": osm_match.get("edge_key"),
+                        "osm_match_reversed": reversed_match,
+                    }
+                )
+            else:
+                geometry = self._normalize_edge_geometry(edge.get("geometry"))
+                if geometry:
+                    map_edge["geometry"] = geometry
+                    map_edge["geometry_source"] = "manual"
             edges.append(map_edge)
 
         return edges
 
     def _build_map_geometry_stats(self) -> dict[str, int | float]:
         edge_count = len(self.map_edges)
-        geometry_edge_count = sum(1 for edge in self.map_edges if edge.get("geometry"))
+        osm_matched_edge_count = sum(
+            1 for edge in self.map_edges if edge.get("geometry_source") == "osm_matched"
+        )
+        manual_geometry_edge_count = sum(
+            1 for edge in self.map_edges if edge.get("geometry_source") == "manual"
+        )
+        geometry_edge_count = osm_matched_edge_count + manual_geometry_edge_count
         fallback_edge_count = edge_count - geometry_edge_count
         geometry_coverage_ratio = (
             round(geometry_edge_count / edge_count, 4)
             if edge_count
             else 0.0
         )
+        osm_matched_coverage_ratio = (
+            round(osm_matched_edge_count / edge_count, 4)
+            if edge_count
+            else 0.0
+        )
         return {
             "geometry_edge_count": geometry_edge_count,
+            "osm_matched_edge_count": osm_matched_edge_count,
+            "manual_geometry_edge_count": manual_geometry_edge_count,
             "fallback_edge_count": fallback_edge_count,
             "geometry_coverage_ratio": geometry_coverage_ratio,
+            "osm_matched_coverage_ratio": osm_matched_coverage_ratio,
         }
 
     @staticmethod
@@ -1092,16 +1237,17 @@ class DemoUIService:
     def _build_edge_geojson_coordinates(
         self,
         edge: dict[str, Any],
-    ) -> tuple[list[list[float]], bool]:
+    ) -> tuple[list[list[float]], str]:
         geometry = edge.get("geometry")
         if isinstance(geometry, list) and len(geometry) >= 2:
-            return [[point["lng"], point["lat"]] for point in geometry], False
+            geometry_source = normalize_text(edge.get("geometry_source")) or "manual"
+            return [[point["lng"], point["lat"]] for point in geometry], geometry_source
 
         source = self.map_node_index.get(edge.get("from"))
         target = self.map_node_index.get(edge.get("to"))
         if not source or not target:
-            return [], True
-        return [[source["lng"], source["lat"]], [target["lng"], target["lat"]]], True
+            return [], "fallback_line"
+        return [[source["lng"], source["lat"]], [target["lng"], target["lat"]]], "fallback_line"
 
     @staticmethod
     def _normalize_edge_geometry(value: Any) -> list[dict[str, float]]:
@@ -1143,6 +1289,8 @@ class DemoUIService:
             "estimated_time_s": route.get("estimated_time_s"),
             "fallback_segment_count": stats["fallback_segment_count"],
             "geometry_segment_count": stats["geometry_segment_count"],
+            "osm_matched_segment_count": stats["osm_matched_segment_count"],
+            "manual_geometry_segment_count": stats["manual_geometry_segment_count"],
             "reverse_edge_reuse_count": stats["reverse_edge_reuse_count"],
         }
         if extra_properties:
@@ -1220,7 +1368,7 @@ class DemoUIService:
                 stats["skipped_unmapped_segment_count"] += 1
                 continue
 
-            segment_coordinates, used_fallback, used_reverse, missing_edge = (
+            segment_coordinates, geometry_source, used_reverse, missing_edge = (
                 self._resolve_route_segment_coordinates(source, target)
             )
             if len(segment_coordinates) < 2:
@@ -1228,11 +1376,15 @@ class DemoUIService:
                 continue
 
             stats["route_segment_count"] += 1
-            if used_fallback:
+            if geometry_source == "fallback_line":
                 stats["fallback_segment_count"] += 1
                 stats["fallback_edge_count"] += 1
+            elif geometry_source == "osm_matched":
+                stats["geometry_segment_count"] += 1
+                stats["osm_matched_segment_count"] += 1
             else:
                 stats["geometry_segment_count"] += 1
+                stats["manual_geometry_segment_count"] += 1
             if used_reverse:
                 stats["reverse_edge_reuse_count"] += 1
             if missing_edge:
@@ -1247,7 +1399,7 @@ class DemoUIService:
         self,
         source: str,
         target: str,
-    ) -> tuple[list[list[float]], bool, bool, bool]:
+    ) -> tuple[list[list[float]], str, bool, bool]:
         edge = self.map_edge_lookup.get((source, target))
         used_reverse = False
 
@@ -1256,21 +1408,21 @@ class DemoUIService:
             used_reverse = edge is not None
 
         if edge is not None:
-            coordinates, used_fallback = self._build_edge_geojson_coordinates(edge)
+            coordinates, geometry_source = self._build_edge_geojson_coordinates(edge)
             if used_reverse:
                 coordinates = list(reversed(coordinates))
-            return coordinates, used_fallback, used_reverse, False
+            return coordinates, geometry_source, used_reverse, False
 
         source_node = self.map_node_index.get(source)
         target_node = self.map_node_index.get(target)
         if not source_node or not target_node:
-            return [], True, False, True
+            return [], "fallback_line", False, True
         return (
             [
                 [source_node["lng"], source_node["lat"]],
                 [target_node["lng"], target_node["lat"]],
             ],
-            True,
+            "fallback_line",
             False,
             True,
         )
@@ -1280,6 +1432,8 @@ class DemoUIService:
         return {
             "route_segment_count": 0,
             "geometry_segment_count": 0,
+            "osm_matched_segment_count": 0,
+            "manual_geometry_segment_count": 0,
             "fallback_segment_count": 0,
             "fallback_edge_count": 0,
             "reverse_edge_reuse_count": 0,
@@ -1297,6 +1451,8 @@ class DemoUIService:
         for key in (
             "route_segment_count",
             "geometry_segment_count",
+            "osm_matched_segment_count",
+            "manual_geometry_segment_count",
             "fallback_segment_count",
             "fallback_edge_count",
             "reverse_edge_reuse_count",

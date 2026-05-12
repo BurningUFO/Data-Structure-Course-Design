@@ -996,6 +996,12 @@ select[multiple] {
   background: rgba(111, 127, 120, 0.48);
 }
 
+.legend-swatch-osm-match::before {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(47, 127, 111, 0.68);
+}
+
 .legend-swatch-route::before {
   height: 7px;
   border-radius: 999px;

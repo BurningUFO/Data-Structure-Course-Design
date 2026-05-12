@@ -1,0 +1,525 @@
+{
+  "metadata": {
+    "site_id": "PKU",
+    "stage": "M9",
+    "source": "local_osm_roads",
+    "source_file": "osm_roads_simplified.geojson",
+    "created_at": "2026-05-12",
+    "description": "Course graph edge to local OSM road geometry matches for Map Plan B M9",
+    "geometry_priority": [
+      "osm_matched",
+      "manual",
+      "fallback_line"
+    ],
+    "runtime_policy": {
+      "web_ui_calls_overpass": false,
+      "web_ui_calls_osmnx": false,
+      "routing_authority": "course_graph"
+    }
+  },
+  "matches": [
+    {
+      "edge_key": "gate_north->square_center",
+      "from": "gate_north",
+      "to": "square_center",
+      "geometry_source": "osm_matched",
+      "confidence": 0.74,
+      "osm_way_ids": [
+        "1075644762"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9929,
+          "lng": 116.3055
+        },
+        {
+          "lat": 39.9931694,
+          "lng": 116.306012
+        },
+        {
+          "lat": 39.9929564,
+          "lng": 116.3061721
+        },
+        {
+          "lat": 39.9922739,
+          "lng": 116.3061937
+        },
+        {
+          "lat": 39.9921576,
+          "lng": 116.3061806
+        },
+        {
+          "lat": 39.9920763,
+          "lng": 116.3061229
+        },
+        {
+          "lat": 39.9919705,
+          "lng": 116.3059375
+        },
+        {
+          "lat": 39.9917,
+          "lng": 116.3065
+        }
+      ],
+      "notes": "Matched to the nearest local OSM footway west of the square, with endpoint snap connectors to course graph nodes."
+    },
+    {
+      "edge_key": "square_center->library",
+      "from": "square_center",
+      "to": "library",
+      "geometry_source": "osm_matched",
+      "confidence": 0.86,
+      "osm_way_ids": [
+        "1154086721",
+        "1169804426"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9917,
+          "lng": 116.3065
+        },
+        {
+          "lat": 39.9917316,
+          "lng": 116.3063419
+        },
+        {
+          "lat": 39.9917501,
+          "lng": 116.3070098
+        },
+        {
+          "lat": 39.9916729,
+          "lng": 116.3071531
+        },
+        {
+          "lat": 39.9915,
+          "lng": 116.307
+        }
+      ],
+      "notes": "Matched to local OSM footway segments in front of the library."
+    },
+    {
+      "edge_key": "square_center->road_cross",
+      "from": "square_center",
+      "to": "road_cross",
+      "geometry_source": "osm_matched",
+      "confidence": 0.72,
+      "osm_way_ids": [
+        "1154086721",
+        "1151226558"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9917,
+          "lng": 116.3065
+        },
+        {
+          "lat": 39.9917316,
+          "lng": 116.3063419
+        },
+        {
+          "lat": 39.9916188,
+          "lng": 116.3063146
+        },
+        {
+          "lat": 39.991482,
+          "lng": 116.3064931
+        },
+        {
+          "lat": 39.9914485,
+          "lng": 116.3065687
+        },
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        }
+      ],
+      "notes": "Matched to nearby OSM footway/service geometry between the square and course graph road crossing."
+    },
+    {
+      "edge_key": "road_cross->canteen",
+      "from": "road_cross",
+      "to": "canteen",
+      "geometry_source": "osm_matched",
+      "confidence": 0.78,
+      "osm_way_ids": [
+        "226703721",
+        "1149802301"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.9916188,
+          "lng": 116.3063146
+        },
+        {
+          "lat": 39.9918802,
+          "lng": 116.3078459
+        },
+        {
+          "lat": 39.9919804,
+          "lng": 116.3080125
+        },
+        {
+          "lat": 39.9919906,
+          "lng": 116.3081654
+        },
+        {
+          "lat": 39.9918,
+          "lng": 116.3088
+        }
+      ],
+      "notes": "Matched to the local OSM east-west road and a path approaching the canteen."
+    },
+    {
+      "edge_key": "road_cross->gate_east",
+      "from": "road_cross",
+      "to": "gate_east",
+      "geometry_source": "osm_matched",
+      "confidence": 0.63,
+      "osm_way_ids": [
+        "1154086722",
+        "237011438"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.9917583,
+          "lng": 116.307219
+        },
+        {
+          "lat": 39.9918076,
+          "lng": 116.3088283
+        },
+        {
+          "lat": 39.9925392,
+          "lng": 116.30878
+        },
+        {
+          "lat": 39.9930758,
+          "lng": 116.309649
+        },
+        {
+          "lat": 39.9939607,
+          "lng": 116.3094675
+        },
+        {
+          "lat": 39.9935,
+          "lng": 116.3105
+        }
+      ],
+      "notes": "Matched to local OSM footway/cycleway geometry toward the east gate; confidence is lower because the course graph gate coordinate is schematic."
+    },
+    {
+      "edge_key": "road_cross->teaching_building_1",
+      "from": "road_cross",
+      "to": "teaching_building_1",
+      "geometry_source": "osm_matched",
+      "confidence": 0.77,
+      "osm_way_ids": [
+        "1159305380",
+        "1159305381",
+        "1151226559"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.9911048,
+          "lng": 116.3066532
+        },
+        {
+          "lat": 39.9911035,
+          "lng": 116.3065866
+        },
+        {
+          "lat": 39.9910692,
+          "lng": 116.306509
+        },
+        {
+          "lat": 39.9909702,
+          "lng": 116.3064454
+        },
+        {
+          "lat": 39.9908647,
+          "lng": 116.3064497
+        },
+        {
+          "lat": 39.9908,
+          "lng": 116.3062
+        }
+      ],
+      "notes": "Matched to OSM footway and steps near the teaching building approach."
+    },
+    {
+      "edge_key": "road_cross->teaching_building_2",
+      "from": "road_cross",
+      "to": "teaching_building_2",
+      "geometry_source": "osm_matched",
+      "confidence": 0.72,
+      "osm_way_ids": [
+        "1159305380"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.9911048,
+          "lng": 116.3066532
+        },
+        {
+          "lat": 39.9911035,
+          "lng": 116.3065866
+        },
+        {
+          "lat": 39.991,
+          "lng": 116.3068
+        }
+      ],
+      "notes": "Matched to the closest OSM footway near the second teaching building."
+    },
+    {
+      "edge_key": "road_cross->dormitory_1",
+      "from": "road_cross",
+      "to": "dormitory_1",
+      "geometry_source": "osm_matched",
+      "confidence": 0.66,
+      "osm_way_ids": [
+        "970687429",
+        "1159305375"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.9912235,
+          "lng": 116.3074832
+        },
+        {
+          "lat": 39.9912388,
+          "lng": 116.3078209
+        },
+        {
+          "lat": 39.990749,
+          "lng": 116.307851
+        },
+        {
+          "lat": 39.990735,
+          "lng": 116.3075238
+        },
+        {
+          "lat": 39.9903786,
+          "lng": 116.3075497
+        },
+        {
+          "lat": 39.99,
+          "lng": 116.3085
+        }
+      ],
+      "notes": "Matched to nearby OSM service and paved footway segments toward the dormitory node."
+    },
+    {
+      "edge_key": "road_cross->convenience_store",
+      "from": "road_cross",
+      "to": "convenience_store",
+      "geometry_source": "osm_matched",
+      "confidence": 0.72,
+      "osm_way_ids": [
+        "970687429",
+        "33457409",
+        "970687433"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9913,
+          "lng": 116.307
+        },
+        {
+          "lat": 39.9912235,
+          "lng": 116.3074832
+        },
+        {
+          "lat": 39.990749,
+          "lng": 116.307851
+        },
+        {
+          "lat": 39.9907995,
+          "lng": 116.3093076
+        },
+        {
+          "lat": 39.9908035,
+          "lng": 116.3095108
+        },
+        {
+          "lat": 39.9905,
+          "lng": 116.3095
+        }
+      ],
+      "notes": "Matched to OSM service and residential road geometry near the shopping node."
+    },
+    {
+      "edge_key": "gate_south->teaching_building_1",
+      "from": "gate_south",
+      "to": "teaching_building_1",
+      "geometry_source": "osm_matched",
+      "confidence": 0.65,
+      "osm_way_ids": [
+        "33457307",
+        "1159305373",
+        "1159305374",
+        "1151226559"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9895,
+          "lng": 116.3075
+        },
+        {
+          "lat": 39.9886735,
+          "lng": 116.3065184
+        },
+        {
+          "lat": 39.9902667,
+          "lng": 116.3063789
+        },
+        {
+          "lat": 39.9903323,
+          "lng": 116.3063755
+        },
+        {
+          "lat": 39.9903423,
+          "lng": 116.3066133
+        },
+        {
+          "lat": 39.9908647,
+          "lng": 116.3064497
+        },
+        {
+          "lat": 39.9908,
+          "lng": 116.3062
+        }
+      ],
+      "notes": "Matched to OSM road, footway, and step segments near the south gate approach."
+    },
+    {
+      "edge_key": "sports_ground->gate_north",
+      "from": "sports_ground",
+      "to": "gate_north",
+      "geometry_source": "osm_matched",
+      "confidence": 0.72,
+      "osm_way_ids": [
+        "1101010405",
+        "1172670686"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9912,
+          "lng": 116.305
+        },
+        {
+          "lat": 39.9912889,
+          "lng": 116.3047501
+        },
+        {
+          "lat": 39.9914007,
+          "lng": 116.3048939
+        },
+        {
+          "lat": 39.991462,
+          "lng": 116.3053959
+        },
+        {
+          "lat": 39.9920832,
+          "lng": 116.3051461
+        },
+        {
+          "lat": 39.9924092,
+          "lng": 116.3056511
+        },
+        {
+          "lat": 39.9929,
+          "lng": 116.3055
+        }
+      ],
+      "notes": "Matched to local OSM footways around the sports ground and west gate."
+    },
+    {
+      "edge_key": "parking_lot->gate_east",
+      "from": "parking_lot",
+      "to": "gate_east",
+      "geometry_source": "osm_matched",
+      "confidence": 0.66,
+      "osm_way_ids": [
+        "1111656405",
+        "237011438"
+      ],
+      "geometry": [
+        {
+          "lat": 39.992,
+          "lng": 116.309
+        },
+        {
+          "lat": 39.9917546,
+          "lng": 116.3090208
+        },
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        },
+        {
+          "lat": 39.9930758,
+          "lng": 116.309649
+        },
+        {
+          "lat": 39.9939607,
+          "lng": 116.3094675
+        },
+        {
+          "lat": 39.9935,
+          "lng": 116.3105
+        }
+      ],
+      "notes": "Matched to nearby OSM service/cycleway geometry for the parking demonstration route."
+    },
+    {
+      "edge_key": "toilet_sports_area->sports_ground",
+      "from": "toilet_sports_area",
+      "to": "sports_ground",
+      "geometry_source": "osm_matched",
+      "confidence": 0.74,
+      "osm_way_ids": [
+        "1101010405"
+      ],
+      "geometry": [
+        {
+          "lat": 39.9915,
+          "lng": 116.305
+        },
+        {
+          "lat": 39.9912889,
+          "lng": 116.3047501
+        },
+        {
+          "lat": 39.9914007,
+          "lng": 116.3048939
+        },
+        {
+          "lat": 39.9912,
+          "lng": 116.305
+        }
+      ],
+      "notes": "Matched to a local OSM footway for the sports-area restroom route."
+    }
+  ]
+}

@@ -51,8 +51,11 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["map"]["node_count"] >= 10
     assert payload["map"]["edge_count"] >= 10
     assert payload["map"]["geometry_edge_count"] > 8
+    assert payload["map"]["osm_matched_edge_count"] > 0
+    assert payload["map"]["manual_geometry_edge_count"] >= 0
     assert payload["map"]["fallback_edge_count"] > 0
     assert payload["map"]["geometry_coverage_ratio"] >= 0.17
+    assert payload["map"]["osm_matched_coverage_ratio"] > 0
     assert payload["map_renderer"] == "leaflet_geo"
     assert payload["map_capabilities"]["renderers"] == ["simple_svg", "leaflet_geo"]
     assert payload["map_capabilities"]["default_renderer"] == "leaflet_geo"
@@ -89,14 +92,41 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["help"]["launch_command"] == "py -B -m src.ui.demo_server"
     assert payload["help"]["fallback_launch_command"] == "python -B -m src.ui.demo_server"
     assert payload["help"]["browser_url"] == "http://127.0.0.1:8765"
-    assert payload["help"]["stage"] == "正式产品演示版 · 地图方案 B M8"
+    assert payload["help"]["stage"] == "正式产品演示版 · 地图方案 B M9"
     assert len(payload["help"]["demo_flow"]) >= 3
     assert any("Leaflet / SVG" in item for item in payload["help"]["demo_flow"])
     assert any("[lng, lat]" in item for item in payload["help"]["map_acceptance"])
     assert any("真实瓦片" in item for item in payload["help"]["map_acceptance"])
-    assert any("不做课程图 edge 与 OSM 道路线形匹配" in item for item in payload["help"]["map_acceptance"])
+    assert any("M9 将关键课程图 edge 匹配到本地 OSM 道路线形" in item for item in payload["help"]["map_acceptance"])
     assert any(item["value"] == "education" for item in payload["controls"]["scenic_categories"])
     print("test_demo_bootstrap_contains_map_and_controls passed.")
+
+
+def test_demo_osm_edge_matches_file_loads_for_m9():
+    service = DemoUIService("PKU")
+    match_path = Path("data/sites/PKU/geo/edge_osm_geometry_matches.json")
+    loaded = json.loads(match_path.read_text(encoding="utf-8"))
+
+    assert loaded["metadata"]["stage"] == "M9"
+    assert loaded["metadata"]["source_file"] == "osm_roads_simplified.geojson"
+    assert loaded["metadata"]["runtime_policy"]["routing_authority"] == "course_graph"
+    assert service.osm_edge_match_warnings == []
+    assert len(service.osm_edge_matches) == len(loaded["matches"])
+
+    edge_keys = {item["edge_key"] for item in service.osm_edge_matches}
+    assert {
+        "gate_north->square_center",
+        "square_center->library",
+        "road_cross->gate_east",
+        "road_cross->canteen",
+        "gate_south->teaching_building_1",
+    } <= edge_keys
+
+    first_match = service.osm_edge_matches[0]
+    assert first_match["geometry_source"] == "osm_matched"
+    assert first_match["osm_way_ids"]
+    assert len(first_match["geometry"]) >= 2
+    print("test_demo_osm_edge_matches_file_loads_for_m9 passed.")
 
 
 def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
@@ -109,6 +139,8 @@ def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
     assert payload["stats"]["node_feature_count"] > 0
     assert payload["stats"]["edge_feature_count"] > 0
     assert payload["stats"]["geometry_edge_count"] > 8
+    assert payload["stats"]["osm_matched_edge_count"] > 0
+    assert payload["stats"]["manual_geometry_edge_count"] >= 0
     assert payload["stats"]["fallback_edge_count"] > 0
     assert (
         payload["stats"]["geometry_edge_count"]
@@ -142,16 +174,28 @@ def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
         "to",
         "name",
         "edge_type",
-        "distance_m",
-        "geometry_source",
-        "is_fallback_geometry",
-    } <= set(first_edge["properties"])
+            "distance_m",
+            "geometry_source",
+            "geometry_confidence",
+            "osm_way_ids",
+            "is_fallback_geometry",
+        } <= set(first_edge["properties"])
     source = node_index[first_edge["properties"]["from"]]
     target = node_index[first_edge["properties"]["to"]]
     assert first_edge["geometry"]["coordinates"][0] == [source["lng"], source["lat"]]
     assert first_edge["geometry"]["coordinates"][-1] == [target["lng"], target["lat"]]
-    assert any(edge["properties"]["geometry_source"] == "edge_geometry" for edge in edge_features)
+    assert any(edge["properties"]["geometry_source"] == "osm_matched" for edge in edge_features)
+    assert any(edge["properties"]["geometry_source"] == "manual" for edge in edge_features)
     assert any(edge["properties"]["geometry_source"] == "fallback_line" for edge in edge_features)
+    gate_edge = next(
+        edge
+        for edge in edge_features
+        if edge["properties"]["from"] == "gate_north"
+        and edge["properties"]["to"] == "square_center"
+    )
+    assert gate_edge["properties"]["geometry_source"] == "osm_matched"
+    assert gate_edge["properties"]["geometry_confidence"] > 0
+    assert gate_edge["properties"]["osm_way_ids"] == ["1075644762"]
     print("test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order passed.")
 
 
@@ -160,22 +204,35 @@ def test_demo_map_geojson_reports_geometry_coverage_stats():
     payload = service.get_map_geojson_payload()
     stats = payload["stats"]
 
-    geometry_edge_count = sum(1 for edge in service.map_edges if edge.get("geometry"))
+    osm_matched_edge_count = sum(1 for edge in service.map_edges if edge.get("geometry_source") == "osm_matched")
+    manual_geometry_edge_count = sum(1 for edge in service.map_edges if edge.get("geometry_source") == "manual")
+    geometry_edge_count = osm_matched_edge_count + manual_geometry_edge_count
     fallback_edge_count = len(service.map_edges) - geometry_edge_count
 
     assert stats["edge_feature_count"] == len(service.map_edges)
     assert stats["geometry_edge_count"] == geometry_edge_count
+    assert stats["osm_matched_edge_count"] == osm_matched_edge_count
+    assert stats["manual_geometry_edge_count"] == manual_geometry_edge_count
     assert stats["fallback_edge_count"] == fallback_edge_count
+    assert stats["osm_matched_edge_count"] == 13
+    assert stats["manual_geometry_edge_count"] == 1
     assert stats["geometry_edge_count"] > 8
     assert stats["geometry_coverage_ratio"] == round(
         geometry_edge_count / len(service.map_edges),
         4,
     )
+    assert stats["osm_matched_coverage_ratio"] == round(
+        osm_matched_edge_count / len(service.map_edges),
+        4,
+    )
 
     bootstrap_map = service.get_bootstrap_payload()["map"]
     assert bootstrap_map["geometry_edge_count"] == stats["geometry_edge_count"]
+    assert bootstrap_map["osm_matched_edge_count"] == stats["osm_matched_edge_count"]
+    assert bootstrap_map["manual_geometry_edge_count"] == stats["manual_geometry_edge_count"]
     assert bootstrap_map["fallback_edge_count"] == stats["fallback_edge_count"]
     assert bootstrap_map["geometry_coverage_ratio"] == stats["geometry_coverage_ratio"]
+    assert bootstrap_map["osm_matched_coverage_ratio"] == stats["osm_matched_coverage_ratio"]
     print("test_demo_map_geojson_reports_geometry_coverage_stats passed.")
 
 
@@ -390,15 +447,53 @@ def test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry():
     assert 39 < lat < 40
 
     square_index = coordinates.index([116.3065, 39.9917])
-    assert coordinates[square_index + 1] == [116.30666, 39.99162]
+    assert coordinates[square_index + 1] == [116.3063419, 39.9917316]
 
     stats = response["ui"]["route_geometry_stats"]
     assert stats["route_segment_count"] == 2
     assert stats["geometry_segment_count"] == 2
+    assert stats["osm_matched_segment_count"] == 2
+    assert stats["manual_geometry_segment_count"] == 0
     assert stats["fallback_segment_count"] < stats["route_segment_count"]
     assert stats["reverse_edge_reuse_count"] == 1
+    assert geojson["properties"]["osm_matched_segment_count"] == 2
+    assert geojson["properties"]["manual_geometry_segment_count"] == 0
     assert response["ui"]["stats"]["route_geometry"] == stats
     print("test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry passed.")
+
+
+def test_demo_reverse_route_reuses_osm_matched_geometry_in_reverse():
+    service = DemoUIService("PKU")
+    forward = service.plan_route(
+        {
+            "start_node_id": "gate_north",
+            "target_node_id": "library",
+            "strategy": "shortest_distance",
+            "transport_mode": "any",
+        }
+    )
+    reverse = service.plan_route(
+        {
+            "start_node_id": "library",
+            "target_node_id": "gate_north",
+            "strategy": "shortest_distance",
+            "transport_mode": "any",
+        }
+    )
+
+    assert forward["success"] is True
+    assert reverse["success"] is True
+    forward_coordinates = forward["ui"]["route_geojson"]["geometry"]["coordinates"]
+    reverse_coordinates = reverse["ui"]["route_geojson"]["geometry"]["coordinates"]
+    assert reverse_coordinates == list(reversed(forward_coordinates))
+
+    stats = reverse["ui"]["route_geometry_stats"]
+    assert stats["route_segment_count"] == 2
+    assert stats["osm_matched_segment_count"] == 2
+    assert stats["manual_geometry_segment_count"] == 0
+    assert stats["fallback_segment_count"] == 0
+    assert stats["reverse_edge_reuse_count"] >= 1
+    print("test_demo_reverse_route_reuses_osm_matched_geometry_in_reverse passed.")
 
 
 def test_demo_route_overlay_falls_back_when_edge_has_no_geometry():
@@ -426,9 +521,44 @@ def test_demo_route_overlay_falls_back_when_edge_has_no_geometry():
     assert stats["route_segment_count"] == 1
     assert stats["fallback_segment_count"] == 1
     assert stats["geometry_segment_count"] == 0
+    assert stats["osm_matched_segment_count"] == 0
+    assert stats["manual_geometry_segment_count"] == 0
     assert stats["reverse_edge_reuse_count"] == 0
     assert stats["missing_edge_count"] == 0
     print("test_demo_route_overlay_falls_back_when_edge_has_no_geometry passed.")
+
+
+def test_demo_missing_osm_match_file_uses_manual_and_fallback_geometry():
+    original_osm_geo_dir = DemoUIService._osm_geo_dir
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        DemoUIService._osm_geo_dir = lambda self: temp_path
+        try:
+            service = DemoUIService("PKU")
+        finally:
+            DemoUIService._osm_geo_dir = original_osm_geo_dir
+
+    assert service.osm_edge_matches == []
+    assert service.osm_edge_match_warnings == ["missing edge_osm_geometry_matches.json"]
+    stats = service.get_map_geojson_payload()["stats"]
+    assert stats["osm_matched_edge_count"] == 0
+    assert stats["manual_geometry_edge_count"] == 14
+    assert stats["fallback_edge_count"] == 67
+
+    response = service.plan_route(
+        {
+            "start_node_id": "gate_north",
+            "target_node_id": "library",
+            "strategy": "shortest_distance",
+            "transport_mode": "any",
+        }
+    )
+    assert response["success"] is True
+    route_stats = response["ui"]["route_geometry_stats"]
+    assert route_stats["osm_matched_segment_count"] == 0
+    assert route_stats["manual_geometry_segment_count"] == 2
+    assert route_stats["fallback_segment_count"] == 0
+    print("test_demo_missing_osm_match_file_uses_manual_and_fallback_geometry passed.")
 
 
 def test_demo_priority_gate_routes_use_expanded_geometry():
@@ -452,6 +582,7 @@ def test_demo_priority_gate_routes_use_expanded_geometry():
         stats = response["ui"]["route_geometry_stats"]
         assert stats["route_segment_count"] == 1
         assert stats["geometry_segment_count"] == 1
+        assert stats["osm_matched_segment_count"] == 1
         assert stats["fallback_segment_count"] == 0
         assert stats["coordinate_count"] > 2
     print("test_demo_priority_gate_routes_use_expanded_geometry passed.")
@@ -723,6 +854,7 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'id="help-map-acceptance"' in html
     assert 'class="map-legend"' in html
     assert "fallback 直线段" in html
+    assert "OSM 匹配课程边" in html
     assert "OSM 道路" in html
     assert "水域 / 绿地" in html
     assert "renderSvgMap" in script
@@ -742,7 +874,11 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "syncMapDemoPanel" in script
     assert "routeGeometrySummaryText" in script
     assert "appendRouteGeometryCaption" in script
+    assert "OSM匹配" in script
+    assert "osm_matched" in script
+    assert "manual_geometry_segment_count" in script
     assert "is_fallback_geometry" in script
+    assert "edgeGeometrySourceLabel" in script
     assert "isRenderableRouteGeoJson" in script
     assert "route_geojson" in script
     assert "fallbackToSvgMap" in script
@@ -867,6 +1003,8 @@ def test_demo_multi_route_contains_visit_order_and_legs():
     stats = response["ui"]["route_geometry_stats"]
     assert stats["feature_count"] == len(route_geojson["features"])
     assert stats["route_segment_count"] >= len(response["leg_results"])
+    assert stats["osm_matched_segment_count"] > 0
+    assert stats["manual_geometry_segment_count"] >= 0
     assert stats["fallback_segment_count"] < stats["route_segment_count"]
     print("test_demo_multi_route_contains_visit_order_and_legs passed.")
 
@@ -874,6 +1012,7 @@ def test_demo_multi_route_contains_visit_order_and_legs():
 def run_all_tests():
     print("Running UI demo service tests...")
     test_demo_bootstrap_contains_map_and_controls()
+    test_demo_osm_edge_matches_file_loads_for_m9()
     test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
     test_demo_map_geojson_reports_geometry_coverage_stats()
     test_demo_osm_layers_payload_contains_local_feature_collections_and_stats()
@@ -882,7 +1021,9 @@ def run_all_tests():
     test_demo_server_osm_layers_endpoint_returns_payload()
     test_demo_outdoor_geometry_quality_and_geojson_coordinate_order()
     test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry()
+    test_demo_reverse_route_reuses_osm_matched_geometry_in_reverse()
     test_demo_route_overlay_falls_back_when_edge_has_no_geometry()
+    test_demo_missing_osm_match_file_uses_manual_and_fallback_geometry()
     test_demo_priority_gate_routes_use_expanded_geometry()
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()

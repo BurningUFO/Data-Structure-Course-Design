@@ -1757,8 +1757,10 @@ function routeGeometrySummaryText(route = state.currentRoute) {
   }
 
   const geometryCount = Number(stats.geometry_segment_count) || 0;
+  const osmMatchedCount = Number(stats.osm_matched_segment_count) || 0;
+  const manualCount = Number(stats.manual_geometry_segment_count) || Math.max(0, geometryCount - osmMatchedCount);
   const fallbackCount = Number(stats.fallback_segment_count) || 0;
-  return `Geometry ${geometryCount}/${total} 段 · fallback ${fallbackCount} 段 · ${formatRatioPercent(routeGeometryCoverageRatio(route))}`;
+  return `OSM匹配 ${osmMatchedCount}/${total} 段 · manual ${manualCount} 段 · fallback ${fallbackCount} 段 · ${formatRatioPercent(routeGeometryCoverageRatio(route))}`;
 }
 
 function appendRouteGeometryCaption(captionText, route = state.currentRoute) {
@@ -2292,10 +2294,15 @@ function bindLeafletFeaturePopup(feature, layer) {
   }
 
   if (properties.kind === "edge") {
+    const sourceText = edgeGeometrySourceLabel(properties.geometry_source);
+    const confidenceText = properties.geometry_confidence
+      ? `<br><span>匹配置信度：${escapeHtml(String(properties.geometry_confidence))}</span>`
+      : "";
     layer.bindPopup(`
       <strong>${escapeHtml(properties.name || "道路")}</strong><br>
       <span>${escapeHtml(properties.edge_type || "")}</span><br>
-      <span>${formatDistance(properties.distance_m, "available")}</span>
+      <span>${formatDistance(properties.distance_m, "available")}</span><br>
+      <span>${escapeHtml(sourceText)}</span>${confidenceText}
     `);
   }
 }
@@ -2303,15 +2310,31 @@ function bindLeafletFeaturePopup(feature, layer) {
 function leafletEdgeStyle(feature) {
   const edgeType = feature.properties?.edge_type || "";
   const isRoad = edgeType.includes("road");
+  const geometrySource = feature.properties?.geometry_source || "";
+  const isOsmMatched = geometrySource === "osm_matched";
+  const isManual = geometrySource === "manual";
   const isFallback = Boolean(feature.properties?.is_fallback_geometry);
   return {
-    color: isRoad ? "#6f7f78" : "#8b9a94",
-    weight: isRoad ? 3 : 2.4,
-    opacity: isFallback ? 0.34 : 0.42,
+    color: isOsmMatched ? "#2f7f6f" : isRoad ? "#6f7f78" : "#8b9a94",
+    weight: isOsmMatched ? 3.4 : isRoad ? 3 : 2.4,
+    opacity: isFallback ? 0.34 : isOsmMatched ? 0.58 : isManual ? 0.46 : 0.42,
     dashArray: isFallback ? "5 7" : "",
     lineCap: "round",
     lineJoin: "round",
   };
+}
+
+function edgeGeometrySourceLabel(source) {
+  if (source === "osm_matched") {
+    return "geometry_source: osm_matched";
+  }
+  if (source === "manual") {
+    return "geometry_source: manual";
+  }
+  if (source === "fallback_line") {
+    return "geometry_source: fallback_line";
+  }
+  return source ? `geometry_source: ${source}` : "geometry_source: unknown";
 }
 
 function leafletNodeStyle(feature) {
@@ -2576,17 +2599,23 @@ function syncMapDemoPanel() {
   const nodeCount = stats.node_feature_count ?? mapData.node_count ?? 0;
   const edgeCount = stats.edge_feature_count ?? mapData.edge_count ?? 0;
   const geometryCount = stats.geometry_edge_count ?? mapData.geometry_edge_count ?? 0;
+  const osmMatchedCount = stats.osm_matched_edge_count ?? mapData.osm_matched_edge_count ?? 0;
+  const manualCount = stats.manual_geometry_edge_count ?? mapData.manual_geometry_edge_count ?? 0;
+  const fallbackCount = stats.fallback_edge_count ?? mapData.fallback_edge_count ?? 0;
   const coverageRatio = stats.geometry_coverage_ratio ?? mapData.geometry_coverage_ratio ?? 0;
   const dataStatus = document.querySelector("#map-data-status");
   if (dataStatus) {
-    dataStatus.textContent = `节点 ${nodeCount} · 道路 ${edgeCount} · 几何 ${geometryCount} 条 (${formatRatioPercent(coverageRatio)})`;
+    dataStatus.textContent = `节点 ${nodeCount} · 道路 ${edgeCount} · OSM ${osmMatchedCount} · manual ${manualCount} · fallback ${fallbackCount} (${formatRatioPercent(coverageRatio)})`;
   }
 
   const routeStatus = document.querySelector("#map-route-status");
   if (routeStatus) {
     const routeStats = routeGeometryStats();
     if (routeStats && routeStats.route_segment_count) {
-      routeStatus.textContent = `路线 ${routeStats.geometry_segment_count}/${routeStats.route_segment_count} 段贴路 · fallback ${routeStats.fallback_segment_count} 段`;
+      const routeOsmCount = Number(routeStats.osm_matched_segment_count) || 0;
+      const routeManualCount = Number(routeStats.manual_geometry_segment_count) || 0;
+      const routeFallbackCount = Number(routeStats.fallback_segment_count) || 0;
+      routeStatus.textContent = `路线 OSM ${routeOsmCount}/${routeStats.route_segment_count} · manual ${routeManualCount} · fallback ${routeFallbackCount}`;
       routeStatus.className = "status-pill status-pill-strong";
     } else if (state.focusedNodeId) {
       routeStatus.textContent = `定位 ${getNodeName(state.focusedNodeId)}`;
