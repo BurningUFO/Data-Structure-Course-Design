@@ -35,6 +35,17 @@ const state = {
   mapGeoJsonStats: null,
   mapGeoJsonSiteId: "",
   mapGeoJsonLoading: null,
+  osmLayers: null,
+  osmLayersStats: null,
+  osmLayersMetadata: null,
+  osmLayersSiteId: "",
+  osmLayersLoading: null,
+  osmLayerError: "",
+  osmLayerVisibility: {
+    roads: true,
+    buildings: true,
+    water_landuse: true,
+  },
   mapView: {
     scale: 1,
     translateX: 0,
@@ -49,6 +60,10 @@ const state = {
     nodeLayer: null,
     tileLayer: null,
     tileLayerMode: "",
+    osmWaterLanduseLayer: null,
+    osmBuildingsLayer: null,
+    osmRoadsLayer: null,
+    osmLayersPayload: null,
     baseGeoJson: null,
     routeLayer: null,
     fittedSiteId: "",
@@ -86,6 +101,13 @@ async function loadSiteBootstrap(siteId) {
   state.mapGeoJsonStats = null;
   state.mapGeoJsonSiteId = "";
   state.mapGeoJsonLoading = null;
+  state.osmLayers = null;
+  state.osmLayersStats = null;
+  state.osmLayersMetadata = null;
+  state.osmLayersSiteId = "";
+  state.osmLayersLoading = null;
+  state.osmLayerError = "";
+  state.osmLayerVisibility = defaultOsmLayerVisibility(bootstrap);
   clearLeafletLayers();
   state.currentStartNodeId = bootstrap.default_start_node;
   hydrateBootstrap(bootstrap);
@@ -507,6 +529,17 @@ function bindMapDemoControls() {
         return;
       }
       switchBasemapMode(basemapButton.dataset.mapBasemap);
+    });
+  }
+
+  const osmLayerControls = document.querySelector("#map-osm-layer-controls");
+  if (osmLayerControls) {
+    osmLayerControls.addEventListener("click", (event) => {
+      const layerButton = event.target.closest("[data-osm-layer]");
+      if (!layerButton) {
+        return;
+      }
+      toggleOsmLayer(layerButton.dataset.osmLayer);
     });
   }
 
@@ -1208,6 +1241,27 @@ function switchBasemapMode(mode) {
   setStatus(`底图已切换到 ${basemapModeLabel(basemapMode)}。`, "info");
 }
 
+function toggleOsmLayer(layerId) {
+  if (!state.bootstrap || !layerId) {
+    return;
+  }
+
+  if (!availableOsmLayerConfigs().some((item) => item.id === layerId)) {
+    setStatus(`当前站点不支持本地 OSM 图层：${layerId}。`, "error");
+    return;
+  }
+
+  state.osmLayerVisibility[layerId] = !state.osmLayerVisibility[layerId];
+  if (state.leaflet.map) {
+    syncLeafletOsmLayers(state.osmLayers);
+    syncLeafletBaseLayers(state.mapGeoJson);
+    syncLeafletRouteLayer();
+    syncLeafletLayerOrder();
+  }
+  syncMapDemoPanel();
+  setStatus(`本地 OSM 图层已${state.osmLayerVisibility[layerId] ? "开启" : "关闭"}：${osmLayerLabel(layerId)}。`, "info");
+}
+
 async function runMapDemoAction(action) {
   if (!state.bootstrap) {
     setStatus("地图数据尚未加载，无法执行演示动作。", "error");
@@ -1783,6 +1837,34 @@ function basemapCaptionPrefix() {
   return `底图：${config.label}（${sourceText}，${networkText}${attributionText}）；项目道路、节点和路线来自本地 GeoJSON。${errorText}`;
 }
 
+function availableOsmLayerConfigs() {
+  const layers = state.bootstrap?.map_capabilities?.osm_layers?.layers;
+  return Array.isArray(layers) ? layers.filter((layer) => layer && layer.id) : [];
+}
+
+function defaultOsmLayerVisibility(bootstrap = state.bootstrap) {
+  const defaults = bootstrap?.map_capabilities?.osm_layers?.default_visible || {};
+  const visibility = {};
+  availableOsmLayerConfigsForBootstrap(bootstrap).forEach((layer) => {
+    visibility[layer.id] = defaults[layer.id] !== false;
+  });
+  return {
+    roads: visibility.roads !== false,
+    buildings: visibility.buildings !== false,
+    water_landuse: visibility.water_landuse !== false,
+    ...visibility,
+  };
+}
+
+function availableOsmLayerConfigsForBootstrap(bootstrap) {
+  const layers = bootstrap?.map_capabilities?.osm_layers?.layers;
+  return Array.isArray(layers) ? layers.filter((layer) => layer && layer.id) : [];
+}
+
+function osmLayerLabel(layerId) {
+  return availableOsmLayerConfigs().find((layer) => layer.id === layerId)?.label || layerId;
+}
+
 function renderMap() {
   syncMapDemoPanel();
   if (selectedMapRenderer() === "leaflet_geo") {
@@ -1911,13 +1993,16 @@ async function renderLeafletMap() {
     caption.textContent = `${basemapCaptionPrefix()} 正在加载 GeoJSON...`;
 
     const geojson = await loadMapGeoJson();
+    const osmPayload = await loadOsmLayersSafely();
     if (selectedMapRenderer() !== "leaflet_geo") {
       return;
     }
 
     syncLeafletBasemapLayer();
+    syncLeafletOsmLayers(osmPayload);
     syncLeafletBaseLayers(geojson);
     syncLeafletRouteLayer();
+    syncLeafletLayerOrder();
     invalidateLeafletSize();
 
     syncLeafletCaption();
@@ -1934,11 +2019,12 @@ function syncLeafletCaption() {
   }
 
   const stats = state.mapGeoJsonStats || {};
+  const osmText = osmLayerCaptionText();
   caption.textContent = state.currentRoute
-    ? `${appendRouteGeometryCaption(state.currentRoute.ui.caption)} ${basemapCaptionPrefix()}`
+    ? `${appendRouteGeometryCaption(state.currentRoute.ui.caption)} ${basemapCaptionPrefix()} ${osmText}`
     : state.focusedNodeId
-      ? `当前定位 ${getNodeName(state.focusedNodeId)}。${basemapCaptionPrefix()}`
-      : `已加载 ${stats.node_feature_count || 0} 个节点和 ${stats.edge_feature_count || 0} 条道路，geometry 覆盖 ${formatRatioPercent(stats.geometry_coverage_ratio || 0)}。${basemapCaptionPrefix()}`;
+      ? `当前定位 ${getNodeName(state.focusedNodeId)}。${basemapCaptionPrefix()} ${osmText}`
+      : `已加载 ${stats.node_feature_count || 0} 个节点和 ${stats.edge_feature_count || 0} 条道路，geometry 覆盖 ${formatRatioPercent(stats.geometry_coverage_ratio || 0)}。${basemapCaptionPrefix()} ${osmText}`;
 }
 
 function ensureLeafletMap() {
@@ -1986,8 +2072,51 @@ async function loadMapGeoJson() {
     })
     .finally(() => {
       state.mapGeoJsonLoading = null;
-    });
+  });
   return state.mapGeoJsonLoading;
+}
+
+async function loadOsmLayersSafely() {
+  try {
+    return await loadOsmLayers();
+  } catch (error) {
+    state.osmLayerError = `本地 OSM 图层加载失败：${error.message}`;
+    syncMapDemoPanel();
+    setStatus(`${state.osmLayerError}；项目地图和路线不受影响。`, "error");
+    return null;
+  }
+}
+
+async function loadOsmLayers() {
+  const siteId = currentSiteId();
+  if (state.osmLayers && state.osmLayersSiteId === siteId) {
+    return state.osmLayers;
+  }
+  if (state.osmLayersLoading) {
+    return state.osmLayersLoading;
+  }
+
+  const endpoint = state.bootstrap.map_capabilities?.osm_layers_endpoint || "/api/map/osm-layers";
+  const separator = endpoint.includes("?") ? "&" : "?";
+  const url = `${endpoint}${separator}site_id=${encodeURIComponent(siteId)}`;
+  state.osmLayersLoading = apiGet(url)
+    .then((payload) => {
+      if (!payload.success || !payload.layers || typeof payload.layers !== "object") {
+        throw new Error(payload.message || "本地 OSM 图层响应格式无效");
+      }
+      state.osmLayers = payload;
+      state.osmLayersStats = payload.stats || {};
+      state.osmLayersMetadata = payload.metadata || {};
+      state.osmLayersSiteId = siteId;
+      state.osmLayerError = Array.isArray(payload.warnings) && payload.warnings.length
+        ? `本地 OSM 图层有 ${payload.warnings.length} 条读取提示`
+        : "";
+      return payload;
+    })
+    .finally(() => {
+      state.osmLayersLoading = null;
+    });
+  return state.osmLayersLoading;
 }
 
 function syncLeafletBasemapLayer() {
@@ -2031,9 +2160,96 @@ function syncLeafletBasemapLayer() {
   state.leaflet.tileLayer = tileLayer;
 }
 
+function syncLeafletOsmLayers(payload) {
+  const map = state.leaflet.map;
+  if (!map) {
+    return;
+  }
+
+  removeLeafletLayer("osmWaterLanduseLayer");
+  removeLeafletLayer("osmBuildingsLayer");
+  removeLeafletLayer("osmRoadsLayer");
+  state.leaflet.osmLayersPayload = payload || null;
+
+  const layers = payload?.layers || {};
+  if (state.osmLayerVisibility.water_landuse && layers.water_landuse) {
+    state.leaflet.osmWaterLanduseLayer = L.geoJSON(layers.water_landuse, {
+      style: (feature) => leafletOsmLayerStyle("water_landuse", feature),
+      onEachFeature: bindLeafletOsmPopup,
+    }).addTo(map);
+  }
+
+  if (state.osmLayerVisibility.buildings && layers.buildings) {
+    state.leaflet.osmBuildingsLayer = L.geoJSON(layers.buildings, {
+      style: (feature) => leafletOsmLayerStyle("buildings", feature),
+      onEachFeature: bindLeafletOsmPopup,
+    }).addTo(map);
+  }
+
+  if (state.osmLayerVisibility.roads && layers.roads) {
+    state.leaflet.osmRoadsLayer = L.geoJSON(layers.roads, {
+      style: (feature) => leafletOsmLayerStyle("roads", feature),
+      onEachFeature: bindLeafletOsmPopup,
+    }).addTo(map);
+  }
+}
+
+function bindLeafletOsmPopup(feature, layer) {
+  const properties = feature.properties || {};
+  const label = osmLayerLabel(properties.layer || "");
+  const name = properties.name || label || "OSM 要素";
+  const typeText = properties.highway
+    || properties.building
+    || properties.natural
+    || properties.water
+    || properties.waterway
+    || properties.landuse
+    || properties.leisure
+    || properties.geometry_type
+    || "";
+  layer.bindPopup(`
+    <strong>${escapeHtml(name)}</strong><br>
+    <span>${escapeHtml(label)}</span><br>
+    <span>${escapeHtml(typeText)}</span>
+  `);
+}
+
+function leafletOsmLayerStyle(layerId, feature) {
+  if (layerId === "water_landuse") {
+    const properties = feature.properties || {};
+    const isWater = properties.natural === "water" || properties.water || properties.waterway;
+    return {
+      color: isWater ? "#2f7fb8" : "#6f9b58",
+      weight: isWater ? 1.2 : 0.9,
+      opacity: isWater ? 0.52 : 0.42,
+      fillColor: isWater ? "#8bc7e8" : "#b9d9a3",
+      fillOpacity: isWater ? 0.24 : 0.2,
+    };
+  }
+
+  if (layerId === "buildings") {
+    return {
+      color: "#9a8f7f",
+      weight: 0.8,
+      opacity: 0.42,
+      fillColor: "#d3c9b8",
+      fillOpacity: 0.24,
+    };
+  }
+
+  return {
+    color: "#a0a8a0",
+    weight: 1.25,
+    opacity: 0.36,
+    lineCap: "round",
+    lineJoin: "round",
+  };
+}
+
 function syncLeafletBaseLayers(geojson) {
   const map = state.leaflet.map;
   if (!map || state.leaflet.baseGeoJson === geojson) {
+    syncLeafletLayerOrder();
     return;
   }
 
@@ -2055,6 +2271,7 @@ function syncLeafletBaseLayers(geojson) {
   state.leaflet.baseGeoJson = geojson;
   state.leaflet.fittedSiteId = "";
   fitLeafletToData();
+  syncLeafletLayerOrder();
 }
 
 function bindLeafletFeaturePopup(feature, layer) {
@@ -2200,6 +2417,32 @@ function syncLeafletRouteLayer() {
   });
 
   state.leaflet.routeLayer = layer;
+  syncLeafletLayerOrder();
+}
+
+function syncLeafletLayerOrder() {
+  const order = [
+    state.leaflet.tileLayer,
+    state.leaflet.osmWaterLanduseLayer,
+    state.leaflet.osmBuildingsLayer,
+    state.leaflet.osmRoadsLayer,
+    state.leaflet.edgeLayer,
+    state.leaflet.nodeLayer,
+    state.leaflet.routeLayer,
+  ];
+
+  order.forEach((layer, index) => {
+    if (!layer) {
+      return;
+    }
+    if (index === 0 && typeof layer.bringToBack === "function") {
+      layer.bringToBack();
+      return;
+    }
+    if (typeof layer.bringToFront === "function") {
+      layer.bringToFront();
+    }
+  });
 }
 
 function addLeafletRouteGeoJson(layer, routeGeoJson, style) {
@@ -2282,6 +2525,15 @@ function syncMapDemoPanel() {
     button.setAttribute("aria-pressed", String(isActive));
   });
 
+  document.querySelectorAll("[data-osm-layer]").forEach((button) => {
+    const layerId = button.dataset.osmLayer || "";
+    const isAvailable = availableOsmLayerConfigs().some((layer) => layer.id === layerId);
+    const isActive = Boolean(state.osmLayerVisibility[layerId]);
+    button.classList.toggle("active", isActive);
+    button.disabled = !isAvailable || renderer !== "leaflet_geo";
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
   const rendererStatus = document.querySelector("#map-renderer-status");
   if (rendererStatus) {
     rendererStatus.textContent = rendererLabel;
@@ -2298,6 +2550,22 @@ function syncMapDemoPanel() {
       ? "status-pill status-error"
       : `status-pill ${basemapMode === "none" ? "status-pill-muted" : "status-pill-primary"}`;
   }
+
+  const osmStatus = document.querySelector("#map-osm-status");
+  if (osmStatus) {
+    const osmStats = state.osmLayersStats || {};
+    if (state.osmLayerError) {
+      osmStatus.textContent = `${state.osmLayerError} · 核心地图可用`;
+      osmStatus.className = "status-pill status-error";
+    } else if (osmStats.feature_count) {
+      osmStatus.textContent = `本地 OSM ${osmStats.feature_count} 项 · ${enabledOsmLayerCount()} 层开启`;
+      osmStatus.className = "status-pill status-pill-primary";
+    } else {
+      osmStatus.textContent = "本地 OSM 待加载";
+      osmStatus.className = "status-pill status-pill-muted";
+    }
+  }
+
   const leafletElement = document.querySelector("#leaflet-map");
   if (leafletElement) {
     leafletElement.classList.toggle("leaflet-basemap-none", basemapMode === "none");
@@ -2335,12 +2603,34 @@ function formatRatioPercent(value) {
   return `${Math.round(numeric * 1000) / 10}%`;
 }
 
+function enabledOsmLayerCount() {
+  return availableOsmLayerConfigs().filter((layer) => state.osmLayerVisibility[layer.id]).length;
+}
+
+function osmLayerCaptionText() {
+  const stats = state.osmLayersStats || {};
+  if (state.osmLayerError) {
+    return "本地 OSM 图层加载提示已显示，核心项目地图继续可用。";
+  }
+  if (!stats.feature_count) {
+    return "本地 OSM 图层正在准备或尚未加载。";
+  }
+
+  const metadata = state.osmLayersMetadata || {};
+  const attribution = metadata.license?.attribution || "© OpenStreetMap contributors";
+  return `本地 OSM 图层：道路 ${stats.roads_feature_count || 0}、建筑 ${stats.buildings_feature_count || 0}、水域/绿地 ${stats.water_landuse_feature_count || 0}，${attribution}。`;
+}
+
 function clearLeafletLayers() {
   removeLeafletLayer("tileLayer");
+  removeLeafletLayer("osmWaterLanduseLayer");
+  removeLeafletLayer("osmBuildingsLayer");
+  removeLeafletLayer("osmRoadsLayer");
   removeLeafletLayer("edgeLayer");
   removeLeafletLayer("nodeLayer");
   removeLeafletLayer("routeLayer");
   state.leaflet.tileLayerMode = "";
+  state.leaflet.osmLayersPayload = null;
   state.leaflet.baseGeoJson = null;
   state.leaflet.fittedSiteId = "";
 }

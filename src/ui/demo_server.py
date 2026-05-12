@@ -77,6 +77,23 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
                 self._write_json(selected_service.get_map_geojson_payload())
                 return
 
+            if path == "/api/map/osm-layers":
+                query = parse_qs(parsed.query)
+                site_id = (query.get("site_id") or query.get("site") or [None])[0]
+                try:
+                    selected_service = resolve_service(site_id)
+                except Exception as error:
+                    self._write_json(
+                        {
+                            "success": False,
+                            "message": f"{type(error).__name__}: {error}",
+                        },
+                        status=HTTPStatus.BAD_REQUEST,
+                    )
+                    return
+                self._write_json(selected_service.get_osm_layers_payload())
+                return
+
             if path == "/api/health":
                 query = parse_qs(parsed.query)
                 site_id = (query.get("site_id") or query.get("site") or [None])[0]

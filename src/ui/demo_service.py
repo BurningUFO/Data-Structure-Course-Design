@@ -156,7 +156,7 @@ FEATURE_NAVIGATION = [
 ]
 
 HELP_CONTENT = {
-    "stage": "正式产品演示版 · 地图方案 B M7",
+    "stage": "正式产品演示版 · 地图方案 B M8",
     "launch_command": "py -B -m src.ui.demo_server",
     "fallback_launch_command": "python -B -m src.ui.demo_server",
     "browser_url": "http://127.0.0.1:8765",
@@ -179,7 +179,7 @@ HELP_CONTENT = {
         "Leaflet GeoJSON 层默认展示真实瓦片底图、节点、道路和路线；SVG 简图作为现场可切换 fallback。",
         "底图可在真实瓦片和无底图之间切换，弱网时本地 GeoJSON 图层仍可展示。",
         "地图数据由现有图节点和边转换为 GeoJSON，坐标顺序统一为 [lng, lat]。",
-        "M7 只接入 Leaflet tile layer，不继续扩大真实道路数据或路由算法改动。",
+        "M8 增加本地 OSM roads / buildings / water / landuse 图层，不做课程图 edge 与 OSM 道路线形匹配。",
         "路线贴路能力通过 route_geojson 和 route_geometry_stats 说明，缺失 geometry 的边继续用直线段兜底。",
     ],
 }
@@ -216,7 +216,35 @@ MAP_CAPABILITIES = {
     "renderers": ["simple_svg", "leaflet_geo"],
     "default_renderer": "leaflet_geo",
     "geojson_endpoint": "/api/map/geojson",
+    "osm_layers_endpoint": "/api/map/osm-layers",
     "fallback_renderer": "simple_svg",
+    "osm_layers": {
+        "default_visible": {
+            "roads": True,
+            "buildings": True,
+            "water_landuse": True,
+        },
+        "layers": [
+            {
+                "id": "roads",
+                "label": "OSM 道路",
+                "file": "osm_roads_simplified.geojson",
+                "source": "本地 OSM 派生 GeoJSON",
+            },
+            {
+                "id": "buildings",
+                "label": "建筑",
+                "file": "osm_buildings.geojson",
+                "source": "本地 OSM 派生 GeoJSON",
+            },
+            {
+                "id": "water_landuse",
+                "label": "水域 / 绿地",
+                "file": "osm_water_landuse.geojson",
+                "source": "本地 OSM 派生 GeoJSON",
+            },
+        ],
+    },
     "basemaps": {
         "default": "real_map",
         "fallback": "none",
@@ -244,6 +272,14 @@ MAP_CAPABILITIES = {
         ],
     },
 }
+
+OSM_LAYER_FILES = {
+    "roads": "osm_roads_simplified.geojson",
+    "buildings": "osm_buildings.geojson",
+    "water_landuse": "osm_water_landuse.geojson",
+}
+
+OSM_METADATA_FILE = "osm_extract_metadata.json"
 
 
 def normalize_text(value: Any) -> str:
@@ -318,7 +354,7 @@ class DemoUIService:
             "aigc_samples": self._build_aigc_sample_options(),
             "presets": DEFAULT_PRESETS,
             "map_renderer": MAP_CAPABILITIES["default_renderer"],
-            "map_capabilities": MAP_CAPABILITIES.copy(),
+            "map_capabilities": json.loads(json.dumps(MAP_CAPABILITIES, ensure_ascii=False)),
             "map": {
                 "nodes": self.map_nodes,
                 "edges": self.map_edges,
@@ -414,6 +450,65 @@ class DemoUIService:
                 "geometry_coverage_ratio": geometry_coverage_ratio,
                 "feature_count": len(features),
             },
+        }
+
+    def get_osm_layers_payload(self) -> dict[str, Any]:
+        """Return local OSM-derived contextual layers for the Leaflet renderer."""
+        layers: dict[str, Any] = {}
+        layer_stats: dict[str, Any] = {}
+        warnings: list[dict[str, str]] = []
+        missing_files: list[str] = []
+
+        for layer_id, file_name in OSM_LAYER_FILES.items():
+            path = self._osm_geo_dir() / file_name
+            geojson, warning = self._load_osm_feature_collection(path)
+            if warning:
+                warnings.append(
+                    {
+                        "layer": layer_id,
+                        "file": file_name,
+                        "message": warning,
+                    }
+                )
+                if "missing" in warning:
+                    missing_files.append(file_name)
+
+            feature_count = len(geojson.get("features", []))
+            layers[layer_id] = geojson
+            layer_stats[layer_id] = {
+                "file": file_name,
+                "feature_count": feature_count,
+                "available": feature_count > 0,
+                "geometry_types": self._count_geojson_geometry_types(geojson),
+            }
+
+        metadata, metadata_warning = self._load_osm_metadata()
+        if metadata_warning:
+            warnings.append(
+                {
+                    "layer": "metadata",
+                    "file": OSM_METADATA_FILE,
+                    "message": metadata_warning,
+                }
+            )
+            missing_files.append(OSM_METADATA_FILE)
+
+        return {
+            "success": True,
+            "site_id": self.site_id,
+            "layers": layers,
+            "metadata": metadata,
+            "stats": {
+                "layers": layer_stats,
+                "roads_feature_count": layer_stats["roads"]["feature_count"],
+                "buildings_feature_count": layer_stats["buildings"]["feature_count"],
+                "water_landuse_feature_count": layer_stats["water_landuse"]["feature_count"],
+                "feature_count": sum(item["feature_count"] for item in layer_stats.values()),
+                "available_layer_count": sum(1 for item in layer_stats.values() if item["available"]),
+                "missing_files": missing_files,
+                "missing_file_count": len(missing_files),
+            },
+            "warnings": warnings,
         }
 
     def _build_site_options(self) -> list[dict[str, Any]]:
@@ -655,6 +750,56 @@ class DemoUIService:
         if not outdoor_path.exists():
             return {"nodes": [], "edges": []}
         return json.loads(outdoor_path.read_text(encoding="utf-8"))
+
+    def _osm_geo_dir(self) -> Path:
+        return Path(__file__).resolve().parents[2] / "data" / "sites" / self.site_id / "geo"
+
+    def _load_osm_metadata(self) -> tuple[dict[str, Any], str]:
+        metadata_path = self._osm_geo_dir() / OSM_METADATA_FILE
+        if not metadata_path.exists():
+            return {}, "missing metadata file"
+        try:
+            loaded = json.loads(metadata_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            return {}, f"metadata read failed: {type(error).__name__}: {error}"
+        if not isinstance(loaded, dict):
+            return {}, "metadata root is not an object"
+        return loaded, ""
+
+    def _load_osm_feature_collection(self, path: Path) -> tuple[dict[str, Any], str]:
+        if not path.exists():
+            return self._empty_feature_collection(), "missing GeoJSON file"
+        try:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            return self._empty_feature_collection(), f"GeoJSON read failed: {type(error).__name__}: {error}"
+
+        if not isinstance(loaded, dict) or loaded.get("type") != "FeatureCollection":
+            return self._empty_feature_collection(), "GeoJSON root is not a FeatureCollection"
+        if not isinstance(loaded.get("features"), list):
+            return self._empty_feature_collection(), "GeoJSON features field is not a list"
+        return loaded, ""
+
+    @staticmethod
+    def _empty_feature_collection() -> dict[str, Any]:
+        return {
+            "type": "FeatureCollection",
+            "features": [],
+        }
+
+    @staticmethod
+    def _count_geojson_geometry_types(geojson: dict[str, Any]) -> dict[str, int]:
+        counts: dict[str, int] = {}
+        for feature in geojson.get("features", []):
+            if not isinstance(feature, dict):
+                continue
+            geometry = feature.get("geometry")
+            if not isinstance(geometry, dict):
+                geometry_type = "unknown"
+            else:
+                geometry_type = normalize_text(geometry.get("type")) or "unknown"
+            counts[geometry_type] = counts.get(geometry_type, 0) + 1
+        return counts
 
     def _load_aigc_samples(self) -> list[dict[str, Any]]:
         sample_path = self._aigc_sample_path()

@@ -647,12 +647,20 @@ docs/地图方案B-M7真实瓦片底图接入记录.md
 
 预计工作量：2 到 5 人日。
 
+状态：已完成。当前已在 `data/sites/PKU/geo/` 保存 PKU 周边 OSM-derived roads / buildings / water / landuse GeoJSON，Web UI 运行时通过 `/api/map/osm-layers?site_id=PKU` 读取本地文件并在 Leaflet 中可选叠加展示。
+
 产出：
 
 1. `data/sites/PKU/geo/` 本地 OSM roads / buildings / water / landuse GeoJSON。
 2. 抽取脚本或数据准备说明。
 3. 数据来源、license、抽取日期记录。
 4. Leaflet 本地 OSM 图层可选展示。
+
+交付记录：
+
+```text
+docs/地图方案B第八阶段OSM本地化记录.md
+```
 
 ### M9：课程图 edge 与 OSM 道路线形匹配
 

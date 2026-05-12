@@ -1,0 +1,59 @@
+{
+  "site_id": "PKU",
+  "stage": "M8",
+  "data_status": "formal_osm_overpass_extract",
+  "extracted_at": "2026-05-12",
+  "source": {
+    "name": "OpenStreetMap",
+    "access": "Overpass API",
+    "endpoint": "https://overpass-api.de/api/interpreter",
+    "bbox": {
+      "south": 39.987,
+      "west": 116.3005,
+      "north": 39.997,
+      "east": 116.3165
+    },
+    "queries": {
+      "roads": "[out:json][timeout:25];way[\"highway\"](39.987,116.3005,39.997,116.3165);out tags geom;",
+      "buildings": "[out:json][timeout:25];way[\"building\"](39.987,116.3005,39.997,116.3165);out tags geom;",
+      "water_landuse": "[out:json][timeout:25];(way[\"natural\"=\"water\"](39.987,116.3005,39.997,116.3165);way[\"water\"](39.987,116.3005,39.997,116.3165);way[\"waterway\"](39.987,116.3005,39.997,116.3165);way[\"landuse\"=\"grass\"](39.987,116.3005,39.997,116.3165);way[\"landuse\"=\"forest\"](39.987,116.3005,39.997,116.3165);way[\"landuse\"=\"meadow\"](39.987,116.3005,39.997,116.3165);way[\"landuse\"=\"recreation_ground\"](39.987,116.3005,39.997,116.3165);way[\"landuse\"=\"village_green\"](39.987,116.3005,39.997,116.3165);way[\"leisure\"=\"park\"](39.987,116.3005,39.997,116.3165);way[\"leisure\"=\"garden\"](39.987,116.3005,39.997,116.3165););out tags geom;"
+    }
+  },
+  "license": {
+    "name": "Open Database License (ODbL) 1.0",
+    "attribution": "© OpenStreetMap contributors",
+    "url": "https://www.openstreetmap.org/copyright"
+  },
+  "files": {
+    "osm_roads_raw.geojson": {
+      "feature_count": 505,
+      "coordinate_count": 2579,
+      "coordinate_order": "[lng, lat]"
+    },
+    "osm_roads_simplified.geojson": {
+      "feature_count": 505,
+      "coordinate_count": 1642,
+      "coordinate_order": "[lng, lat]"
+    },
+    "osm_buildings.geojson": {
+      "feature_count": 353,
+      "coordinate_count": 2671,
+      "coordinate_order": "[lng, lat]"
+    },
+    "osm_water_landuse.geojson": {
+      "feature_count": 74,
+      "coordinate_count": 1277,
+      "coordinate_order": "[lng, lat]"
+    }
+  },
+  "runtime_policy": {
+    "web_ui_calls_overpass": false,
+    "web_ui_calls_osmnx": false,
+    "served_from_local_files": true
+  },
+  "known_limits": [
+    "This M8 dataset is a bounded PKU-area OSM extract; it is not an edge-to-course-graph match.",
+    "OSM completeness varies by contributor coverage and may omit some campus paths or named buildings.",
+    "Roads are displayed as a contextual local layer; course graph routing remains authoritative until M9."
+  ]
+}

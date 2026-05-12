@@ -1,10 +1,16 @@
 import json
 import os
 import sys
+import tempfile
+import threading
+import urllib.request
+from http.server import ThreadingHTTPServer
+from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.ui.demo_service import DemoUIService
+from src.ui.demo_server import build_handler
 
 
 def assert_close_coordinate(left, right, tolerance=0.00035):
@@ -14,6 +20,22 @@ def assert_close_coordinate(left, right, tolerance=0.00035):
 
 def is_number(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def iter_geojson_positions(geometry):
+    geometry_type = geometry.get("type")
+    coordinates = geometry.get("coordinates", [])
+    if geometry_type == "Point":
+        yield coordinates
+    elif geometry_type in {"LineString", "MultiPoint"}:
+        yield from coordinates
+    elif geometry_type in {"Polygon", "MultiLineString"}:
+        for part in coordinates:
+            yield from part
+    elif geometry_type == "MultiPolygon":
+        for polygon in coordinates:
+            for ring in polygon:
+                yield from ring
 
 
 def test_demo_bootstrap_contains_map_and_controls():
@@ -36,6 +58,12 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["map_capabilities"]["default_renderer"] == "leaflet_geo"
     assert payload["map_capabilities"]["fallback_renderer"] == "simple_svg"
     assert payload["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
+    assert payload["map_capabilities"]["osm_layers_endpoint"] == "/api/map/osm-layers"
+    osm_layers = payload["map_capabilities"]["osm_layers"]
+    assert [item["id"] for item in osm_layers["layers"]] == ["roads", "buildings", "water_landuse"]
+    assert osm_layers["default_visible"]["roads"] is True
+    assert osm_layers["default_visible"]["buildings"] is True
+    assert osm_layers["default_visible"]["water_landuse"] is True
     basemaps = payload["map_capabilities"]["basemaps"]
     assert basemaps["default"] == "real_map"
     assert basemaps["fallback"] == "none"
@@ -61,12 +89,12 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["help"]["launch_command"] == "py -B -m src.ui.demo_server"
     assert payload["help"]["fallback_launch_command"] == "python -B -m src.ui.demo_server"
     assert payload["help"]["browser_url"] == "http://127.0.0.1:8765"
-    assert payload["help"]["stage"] == "正式产品演示版 · 地图方案 B M7"
+    assert payload["help"]["stage"] == "正式产品演示版 · 地图方案 B M8"
     assert len(payload["help"]["demo_flow"]) >= 3
     assert any("Leaflet / SVG" in item for item in payload["help"]["demo_flow"])
     assert any("[lng, lat]" in item for item in payload["help"]["map_acceptance"])
     assert any("真实瓦片" in item for item in payload["help"]["map_acceptance"])
-    assert any("不继续扩大真实道路数据或路由算法改动" in item for item in payload["help"]["map_acceptance"])
+    assert any("不做课程图 edge 与 OSM 道路线形匹配" in item for item in payload["help"]["map_acceptance"])
     assert any(item["value"] == "education" for item in payload["controls"]["scenic_categories"])
     print("test_demo_bootstrap_contains_map_and_controls passed.")
 
@@ -149,6 +177,132 @@ def test_demo_map_geojson_reports_geometry_coverage_stats():
     assert bootstrap_map["fallback_edge_count"] == stats["fallback_edge_count"]
     assert bootstrap_map["geometry_coverage_ratio"] == stats["geometry_coverage_ratio"]
     print("test_demo_map_geojson_reports_geometry_coverage_stats passed.")
+
+
+def test_demo_osm_layers_payload_contains_local_feature_collections_and_stats():
+    service = DemoUIService("PKU")
+    payload = service.get_osm_layers_payload()
+
+    assert payload["success"] is True
+    assert payload["site_id"] == "PKU"
+    assert set(payload["layers"]) == {"roads", "buildings", "water_landuse"}
+    assert payload["metadata"]["data_status"] == "formal_osm_overpass_extract"
+    assert payload["metadata"]["runtime_policy"]["web_ui_calls_overpass"] is False
+    assert payload["metadata"]["runtime_policy"]["web_ui_calls_osmnx"] is False
+    assert "OpenStreetMap" in payload["metadata"]["source"]["name"]
+    assert "ODbL" in payload["metadata"]["license"]["name"]
+
+    for layer_id, geojson in payload["layers"].items():
+        assert geojson["type"] == "FeatureCollection"
+        assert isinstance(geojson["features"], list)
+        assert payload["stats"]["layers"][layer_id]["feature_count"] == len(geojson["features"])
+        assert len(geojson["features"]) > 0
+
+    assert payload["stats"]["roads_feature_count"] == len(payload["layers"]["roads"]["features"])
+    assert payload["stats"]["buildings_feature_count"] == len(payload["layers"]["buildings"]["features"])
+    assert payload["stats"]["water_landuse_feature_count"] == len(payload["layers"]["water_landuse"]["features"])
+    assert payload["stats"]["feature_count"] == (
+        payload["stats"]["roads_feature_count"]
+        + payload["stats"]["buildings_feature_count"]
+        + payload["stats"]["water_landuse_feature_count"]
+    )
+    assert payload["stats"]["missing_file_count"] == 0
+    print("test_demo_osm_layers_payload_contains_local_feature_collections_and_stats passed.")
+
+
+def test_demo_osm_layers_geojson_uses_lng_lat_coordinate_order():
+    service = DemoUIService("PKU")
+    payload = service.get_osm_layers_payload()
+
+    for layer in payload["layers"].values():
+        for feature in layer["features"]:
+            positions = list(iter_geojson_positions(feature["geometry"]))
+            assert positions
+            for lng, lat in positions:
+                assert is_number(lng)
+                assert is_number(lat)
+                assert 115.0 < lng < 117.5
+                assert 39.0 < lat < 41.0
+    print("test_demo_osm_layers_geojson_uses_lng_lat_coordinate_order passed.")
+
+
+def test_demo_osm_layers_missing_file_keeps_core_map_and_route_available():
+    service = DemoUIService("PKU")
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        roads_path = temp_path / "osm_roads_simplified.geojson"
+        roads_path.write_text(
+            json.dumps(
+                {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "LineString",
+                                "coordinates": [[116.3055, 39.9929], [116.307, 39.9915]],
+                            },
+                            "properties": {"kind": "osm", "layer": "roads"},
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        (temp_path / "osm_extract_metadata.json").write_text(
+            json.dumps({"site_id": "PKU", "data_status": "test_partial"}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        service._osm_geo_dir = lambda: temp_path
+
+        payload = service.get_osm_layers_payload()
+
+    assert payload["success"] is True
+    assert payload["layers"]["roads"]["type"] == "FeatureCollection"
+    assert payload["stats"]["roads_feature_count"] == 1
+    assert payload["stats"]["buildings_feature_count"] == 0
+    assert payload["stats"]["water_landuse_feature_count"] == 0
+    assert payload["stats"]["missing_file_count"] == 2
+    assert "osm_buildings.geojson" in payload["stats"]["missing_files"]
+    assert "osm_water_landuse.geojson" in payload["stats"]["missing_files"]
+
+    map_payload = service.get_map_geojson_payload()
+    route_payload = service.plan_route(
+        {
+            "start_node_id": "gate_north",
+            "target_node_id": "library",
+            "strategy": "shortest_distance",
+            "transport_mode": "any",
+        }
+    )
+    assert map_payload["success"] is True
+    assert route_payload["success"] is True
+    print("test_demo_osm_layers_missing_file_keeps_core_map_and_route_available passed.")
+
+
+def test_demo_server_osm_layers_endpoint_returns_payload():
+    service = DemoUIService("PKU")
+    server = ThreadingHTTPServer(("127.0.0.1", 0), build_handler(service))
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        port = server.server_address[1]
+        with urllib.request.urlopen(
+            f"http://127.0.0.1:{port}/api/map/osm-layers?site_id=PKU",
+            timeout=5,
+        ) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+        server.server_close()
+
+    assert payload["success"] is True
+    assert payload["site_id"] == "PKU"
+    assert payload["layers"]["roads"]["type"] == "FeatureCollection"
+    assert payload["stats"]["roads_feature_count"] > 0
+    print("test_demo_server_osm_layers_endpoint_returns_payload passed.")
 
 
 def test_demo_outdoor_geometry_quality_and_geojson_coordinate_order():
@@ -554,20 +708,32 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'id="leaflet-map"' in html
     assert 'id="map-renderer-controls"' in html
     assert 'id="map-basemap-controls"' in html
+    assert 'id="map-osm-layer-controls"' in html
+    assert 'id="map-osm-status"' in html
     assert 'id="map-basemap-status"' in html
     assert 'data-map-renderer="leaflet_geo"' in html
     assert 'data-map-renderer="simple_svg"' in html
     assert 'data-map-basemap="real_map"' in html
     assert 'data-map-basemap="none"' in html
+    assert 'data-osm-layer="roads"' in html
+    assert 'data-osm-layer="buildings"' in html
+    assert 'data-osm-layer="water_landuse"' in html
     assert 'data-demo-action="single-route"' in html
     assert 'data-demo-action="multi-route"' in html
     assert 'id="help-map-acceptance"' in html
     assert 'class="map-legend"' in html
     assert "fallback 直线段" in html
+    assert "OSM 道路" in html
+    assert "水域 / 绿地" in html
     assert "renderSvgMap" in script
     assert "renderLeafletMap" in script
     assert "ensureLeafletMap" in script
     assert "L.tileLayer" in script
+    assert "loadOsmLayers" in script
+    assert "syncLeafletOsmLayers" in script
+    assert "toggleOsmLayer" in script
+    assert "leafletOsmLayerStyle" in script
+    assert "syncLeafletLayerOrder" in script
     assert "syncLeafletBasemapLayer" in script
     assert "switchBasemapMode" in script
     assert "syncLeafletRouteLayer" in script
@@ -581,6 +747,7 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "route_geojson" in script
     assert "fallbackToSvgMap" in script
     assert '"/api/map/geojson"' in script
+    assert '"/api/map/osm-layers"' in script
     print("test_demo_static_leaflet_renderer_contains_local_assets_and_fallback passed.")
 
 
@@ -709,6 +876,10 @@ def run_all_tests():
     test_demo_bootstrap_contains_map_and_controls()
     test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
     test_demo_map_geojson_reports_geometry_coverage_stats()
+    test_demo_osm_layers_payload_contains_local_feature_collections_and_stats()
+    test_demo_osm_layers_geojson_uses_lng_lat_coordinate_order()
+    test_demo_osm_layers_missing_file_keeps_core_map_and_route_available()
+    test_demo_server_osm_layers_endpoint_returns_payload()
     test_demo_outdoor_geometry_quality_and_geojson_coordinate_order()
     test_demo_route_overlay_returns_geojson_with_reversed_edge_geometry()
     test_demo_route_overlay_falls_back_when_edge_has_no_geometry()

@@ -3,8 +3,8 @@
 ## 1. 交付基线
 
 - 当前分支：`experiment/map-plan-b`
-- 文档编写时最新提交：`a586867 docs: finalize map plan b acceptance record`
-- 交付阶段：M6 最终交付收口、答辩演示脚本、合并前检查与风险确认
+- M8 目标提交：`feat: add local osm map layers`
+- 交付阶段：M8 离线 OSM 数据抽取与本地化，保留 M6/M7 地图验收能力
 - 启动命令：
 
 ```powershell
@@ -17,7 +17,7 @@ py -B -m src.ui.demo_server
 http://127.0.0.1:8765
 ```
 
-本说明只做最终交付和合并准备，不继续扩大 geometry 数据，不接入 OSMnx、Overpass 或外部路网下载，不重写 routing、graph、search、recommend、diary、compress 模块。
+本说明只做最终交付和合并准备。M8 已在准备阶段通过 Overpass 抽取 PKU 周边 OSM 派生 GeoJSON 并保存到本地；Web UI 运行时不调用 OSMnx、Overpass 或外部路网下载，不重写 routing、graph、search、recommend、diary、compress 模块。
 
 ## 2. 最终能力概述
 
@@ -28,8 +28,10 @@ http://127.0.0.1:8765
 3. `GET /api/map/geojson?site_id=PKU` 输出当前室外节点和道路的 GeoJSON `FeatureCollection`。
 4. `/api/bootstrap` 保留旧字段，并新增 `map_renderer`、`map_capabilities`、底图能力和地图 geometry 覆盖统计。
 5. `/api/route` 和 `/api/route/multi` 返回 `route_geojson`、`route_line_coordinates`、`route_geometry_stats`，用于 Leaflet 路线高亮和 fallback 段说明。
-6. 地图区展示 renderer 状态、GeoJSON 节点/道路/geometry 覆盖统计、route geometry 统计、legend 和固定演示按钮。
-7. 首页、综合查询、场所查询、美食推荐、导航规划、日记中心、AIGC 演示入口继续保持可用。
+6. `GET /api/map/osm-layers?site_id=PKU` 输出本地 OSM-derived roads / buildings / water_landuse 图层、metadata 和 stats。
+7. Leaflet 可选叠加本地 OSM 道路、建筑、水域 / 绿地图层；项目道路、节点和 route overlay 仍保持更高显示优先级。
+8. 地图区展示 renderer 状态、GeoJSON 节点/道路/geometry 覆盖统计、本地 OSM 图层统计、route geometry 统计、legend 和固定演示按钮。
+9. 首页、综合查询、场所查询、美食推荐、导航规划、日记中心、AIGC 演示入口继续保持可用。
 
 ## 3. 相比原 SVG 直线图的改进
 
@@ -53,7 +55,8 @@ http://127.0.0.1:8765
 3. 前端通过 `renderMap()` 在 `leaflet_geo` 和 `simple_svg` 之间分发。
 4. Leaflet 初始化由 `renderLeafletMap()` 和 `ensureLeafletMap()` 负责；SVG fallback 由 `renderSvgMap()` 和 `fallbackToSvgMap()` 保留。
 5. 路线高亮由 `syncLeafletRouteLayer()` 同步，优先渲染 `route_geojson`；无法渲染真实 route geometry 时仍可回到已有节点路径高亮。
-6. `simple_svg` 作为稳定回退，不参与后端算法语义变更。
+6. M8 本地 OSM 图层由 `/api/map/osm-layers` 单独提供，前端通过 `syncLeafletOsmLayers()` 叠加，不改变 `/api/map/geojson` 的课程图契约。
+7. `simple_svg` 作为稳定回退，不参与后端算法语义变更。
 
 ## 5. 答辩演示脚本
 
@@ -80,6 +83,7 @@ http://127.0.0.1:8765
 | --- | --- |
 | `GET /api/bootstrap` | 保留原字段，返回 `map_renderer=leaflet_geo`、`map_capabilities.fallback_renderer=simple_svg` |
 | `GET /api/map/geojson?site_id=PKU` | 返回 `FeatureCollection`，包含 39 个 node feature、81 条 edge feature、14 条 geometry edge、67 条 fallback edge |
+| `GET /api/map/osm-layers?site_id=PKU` | 返回本地 OSM roads / buildings / water_landuse `FeatureCollection`、metadata 和 stats |
 | `POST /api/route` `gate_north -> library` | 成功返回路线、`route_geojson` 和 2/2 geometry 统计 |
 | `POST /api/route` `gate_north -> canteen` | 成功返回路线、`route_geojson` 和 3/3 geometry 统计 |
 | `POST /api/route/multi` `library + canteen` | 成功返回多目标访问顺序、leg 信息和 8/8 geometry 统计 |
@@ -90,7 +94,7 @@ http://127.0.0.1:8765
 
 ## 7. 测试结果
 
-M6 收口前基线测试：
+M8 完成后测试：
 
 ```powershell
 py -m pytest
@@ -99,15 +103,15 @@ py -m pytest
 结果：
 
 ```text
-102 passed in 0.87s
+106 passed in 1.71s
 ```
 
-M6 API smoke check 已覆盖：
+M8 API smoke check 覆盖：
 
 1. `GET /api/bootstrap`
 2. `GET /api/map/geojson?site_id=PKU`
-3. `POST /api/route`：`gate_north -> library`
-4. `POST /api/route`：`gate_north -> canteen`
+3. `GET /api/map/osm-layers?site_id=PKU`
+4. `POST /api/route`：`gate_north -> library`
 5. `POST /api/route/multi`：`library + canteen`
 6. `POST /api/search/scenic`
 7. `POST /api/search/places`
@@ -115,22 +119,24 @@ M6 API smoke check 已覆盖：
 9. `POST /api/diaries/fulltext`
 
 已确认 smoke check 返回 120 个 GeoJSON feature、81 条 edge、14 条 geometry edge、67 条 fallback edge。
+M8 smoke check 同时确认 `/api/map/osm-layers?site_id=PKU` 返回 505 条 roads、353 条 buildings、74 条 water / landuse feature。
 
-M6 浏览器检查已使用 Playwright CLI 访问正式演示地址 `http://127.0.0.1:8765`，并确认：
+M8 浏览器检查已使用 Playwright CLI 访问临时演示地址 `http://127.0.0.1:8891`，并确认：
 
 1. 首页加载成功。
 2. 可进入主要网站。
 3. Leaflet 地图显示，状态条包含 39 个节点、81 条道路、14 条 geometry edge。
-4. `gate_north -> library` 单目标路线高亮，状态为 2/2 段贴路、fallback 0 段。
-5. `gate_north -> canteen` 单目标路线高亮，状态为 3/3 段贴路、fallback 0 段。
-6. `library + canteen` 多目标路线高亮，状态为 8/8 段贴路、fallback 0 段。
-7. 地图 legend 和 caption 可说明 geometry / fallback。
-8. 可切换到 `simple_svg`，Leaflet 隐藏，SVG 稳定简图显示。
+4. 本地 OSM 状态条显示 932 项，OSM 道路、建筑、水域 / 绿地三层默认开启。
+5. OSM roads 图层可关闭到 2 层开启，再开启回 3 层开启。
+6. 切换到无底图模式后，本地 OSM 图层状态仍显示可用。
+7. `gate_north -> library` 单目标路线高亮，状态为 2/2 段贴路、fallback 0 段。
+8. 路线 caption 同时说明无底图、本地 OSM 图层统计和 OSM attribution。
+9. 可切换到 `simple_svg`，Leaflet 隐藏，SVG 稳定简图显示。
 
 ## 8. 已知限制
 
 1. 当前 geometry 覆盖率为 17.28%，优先覆盖答辩路线，非关键道路仍使用 fallback line。
-2. 未接入 OSMnx、Overpass、外部 OSM 路网数据或商业地图路网。
+2. 已在准备阶段接入 Overpass 抽取本地 OSM 派生数据；运行时不联网抽取 OSM 数据。
 3. 真实底图瓦片使用 OpenStreetMap 标准瓦片，适合低频课程演示；长期生产应切换合规瓦片服务或自托管。
 4. 真实底图瓦片可能受网络影响；无底图模式、Leaflet 本地运行库和 GeoJSON 图层仍可加载，Leaflet 初始化失败时回退 SVG。
 5. 路线算法、图加载语义、搜索、推荐、日记和 AIGC 模块未在方案 B 中重写。
@@ -142,10 +148,10 @@ M6 浏览器检查已使用 Playwright CLI 访问正式演示地址 `http://127.
 如果目标从课程验收升级为“接近日常地图 App 的真实观感”，建议继续拆成三个阶段：
 
 1. M7：真实瓦片底图接入已完成。当前用 Leaflet `tileLayer` 加载 OpenStreetMap 标准瓦片，提供真实底图 / 无底图切换、attribution、网络失败提示和合规说明。
-2. M8：离线 OSM 数据抽取与本地化。使用 OSMnx 或 Overpass 在准备阶段抽取 PKU 周边 roads / buildings / water / landuse，保存到 `data/sites/PKU/geo/`，运行时读取本地 GeoJSON。
+2. M8：离线 OSM 数据抽取与本地化已完成。当前使用 Overpass 在准备阶段抽取 PKU 周边 roads / buildings / water / landuse，保存到 `data/sites/PKU/geo/`，运行时读取本地 GeoJSON。
 3. M9：课程图 edge 与 OSM 道路线形匹配。课程图仍作为算法权威，OSM 数据只提供更真实的 route geometry；匹配失败时继续使用 `manual` geometry 或 `fallback_line`。
 
-后续推进顺序应是 M8 -> M9，不建议一次性合并执行。M8 解决本地 OSM 图层和数据来源，M9 最接近真实导航效果，但数据匹配和验证成本最高。
+后续推进顺序应进入 M9，不建议把 M8 本地图层展示和 M9 edge-to-OSM 匹配混成一次大改。M9 最接近真实导航效果，但数据匹配和验证成本最高。
 
 ## 10. 回退策略
 
