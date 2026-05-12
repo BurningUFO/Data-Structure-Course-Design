@@ -23,10 +23,10 @@ http://127.0.0.1:8765
 
 地图方案 B 已具备以下最终演示能力：
 
-1. 默认使用 `leaflet_geo` 渲染器展示 Leaflet + GeoJSON 地图实验层。
+1. 默认使用 `leaflet_geo` 渲染器展示 Leaflet 真实瓦片底图 + 本地 GeoJSON 地图实验层。
 2. 保留 `simple_svg` 渲染器，可在页面中手动切换，也可作为 Leaflet 或 GeoJSON 加载失败时的稳定回退。
 3. `GET /api/map/geojson?site_id=PKU` 输出当前室外节点和道路的 GeoJSON `FeatureCollection`。
-4. `/api/bootstrap` 保留旧字段，并新增 `map_renderer`、`map_capabilities` 和地图 geometry 覆盖统计。
+4. `/api/bootstrap` 保留旧字段，并新增 `map_renderer`、`map_capabilities`、底图能力和地图 geometry 覆盖统计。
 5. `/api/route` 和 `/api/route/multi` 返回 `route_geojson`、`route_line_coordinates`、`route_geometry_stats`，用于 Leaflet 路线高亮和 fallback 段说明。
 6. 地图区展示 renderer 状态、GeoJSON 节点/道路/geometry 覆盖统计、route geometry 统计、legend 和固定演示按钮。
 7. 首页、综合查询、场所查询、美食推荐、导航规划、日记中心、AIGC 演示入口继续保持可用。
@@ -130,28 +130,30 @@ M6 浏览器检查已使用 Playwright CLI 访问正式演示地址 `http://127.
 ## 8. 已知限制
 
 1. 当前 geometry 覆盖率为 17.28%，优先覆盖答辩路线，非关键道路仍使用 fallback line。
-2. 未接入 OSMnx、Overpass、外部 OSM 数据或商业地图路网。
-3. 真实底图瓦片可能受网络影响；Leaflet 本地运行库和 GeoJSON 图层仍可加载，Leaflet 初始化失败时回退 SVG。
-4. 路线算法、图加载语义、搜索、推荐、日记和 AIGC 模块未在方案 B 中重写。
-5. `simple_svg` 是正式回退能力，不应在合并前删除。
-6. 当前 route geometry overlay 以现有图 path 为基础，未做真实路网级别的重新寻路。
+2. 未接入 OSMnx、Overpass、外部 OSM 路网数据或商业地图路网。
+3. 真实底图瓦片使用 OpenStreetMap 标准瓦片，适合低频课程演示；长期生产应切换合规瓦片服务或自托管。
+4. 真实底图瓦片可能受网络影响；无底图模式、Leaflet 本地运行库和 GeoJSON 图层仍可加载，Leaflet 初始化失败时回退 SVG。
+5. 路线算法、图加载语义、搜索、推荐、日记和 AIGC 模块未在方案 B 中重写。
+6. `simple_svg` 是正式回退能力，不应在合并前删除。
+7. 当前 route geometry overlay 以现有图 path 为基础，未做真实路网级别的重新寻路。
 
 ## 9. 后续真实地图升级路线
 
 如果目标从课程验收升级为“接近日常地图 App 的真实观感”，建议继续拆成三个阶段：
 
-1. M7：真实瓦片底图接入。用 Leaflet `tileLayer` 加载真实底图，增加底图模式切换、attribution、网络失败回退和合规说明。
+1. M7：真实瓦片底图接入已完成。当前用 Leaflet `tileLayer` 加载 OpenStreetMap 标准瓦片，提供真实底图 / 无底图切换、attribution、网络失败提示和合规说明。
 2. M8：离线 OSM 数据抽取与本地化。使用 OSMnx 或 Overpass 在准备阶段抽取 PKU 周边 roads / buildings / water / landuse，保存到 `data/sites/PKU/geo/`，运行时读取本地 GeoJSON。
 3. M9：课程图 edge 与 OSM 道路线形匹配。课程图仍作为算法权威，OSM 数据只提供更真实的 route geometry；匹配失败时继续使用 `manual` geometry 或 `fallback_line`。
 
-推进顺序必须是 M7 -> M8 -> M9，不建议一次性合并执行。M7 的视觉收益最大且风险最低；M9 最接近真实导航效果，但数据匹配和验证成本最高。
+后续推进顺序应是 M8 -> M9，不建议一次性合并执行。M8 解决本地 OSM 图层和数据来源，M9 最接近真实导航效果，但数据匹配和验证成本最高。
 
 ## 10. 回退策略
 
 1. 功能级回退：在页面地图区点击 `SVG`，切换到 `simple_svg` 稳定简图。
-2. 自动回退：Leaflet 运行库或 GeoJSON 请求异常时，前端调用 `fallbackToSvgMap()` 并显示错误说明。
-3. 数据级回退：edge 缺少 `geometry` 时，后端输出 from/to 两点 `LineString`，并标记 `geometry_source=fallback_line`、`is_fallback_geometry=true`。
-4. 分支级回退：合并前如发现不可接受风险，保留 `main` 不变，继续在 `experiment/map-plan-b` 修复。
+2. 底图级回退：瓦片加载异常时切换到 `无底图`，本地 GeoJSON 道路、节点和路线仍显示。
+3. 自动回退：Leaflet 运行库或 GeoJSON 请求异常时，前端调用 `fallbackToSvgMap()` 并显示错误说明。
+4. 数据级回退：edge 缺少 `geometry` 时，后端输出 from/to 两点 `LineString`，并标记 `geometry_source=fallback_line`、`is_fallback_geometry=true`。
+5. 分支级回退：合并前如发现不可接受风险，保留 `main` 不变，继续在 `experiment/map-plan-b` 修复。
 
 ## 11. 合并 main 前检查清单
 

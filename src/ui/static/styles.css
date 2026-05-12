@@ -686,6 +686,11 @@ button {
   opacity: 0.45;
 }
 
+.compact-toggle .renderer-toggle-button {
+  min-width: 84px;
+  padding: 7px 10px;
+}
+
 .field {
   display: grid;
   gap: 8px;
@@ -1036,6 +1041,14 @@ select[multiple] {
   min-height: 500px;
   height: 500px;
   background: #eef4f1;
+}
+
+.leaflet-basemap-none {
+  background:
+    linear-gradient(90deg, rgba(15, 122, 112, 0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(15, 122, 112, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, #f7fbf8, #edf5f1);
+  background-size: 42px 42px, 42px 42px, auto;
 }
 
 .leaflet-map[hidden],

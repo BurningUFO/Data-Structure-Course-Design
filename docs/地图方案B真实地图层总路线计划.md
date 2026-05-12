@@ -628,12 +628,20 @@ data/sites/PKU/geo/
 
 预计工作量：0.5 到 1.5 人日。
 
+状态：已完成。当前 `leaflet_geo` 默认可显示 OpenStreetMap 标准瓦片底图，并可切换到无底图模式；瓦片失败时本地 GeoJSON 图层和路线高亮继续显示。
+
 产出：
 
 1. Leaflet tile layer。
 2. 底图模式切换。
 3. attribution 和网络依赖说明。
 4. 无底图 / SVG 回退验证。
+
+交付记录：
+
+```text
+docs/地图方案B-M7真实瓦片底图接入记录.md
+```
 
 ### M8：离线 OSM 数据抽取与本地化
 

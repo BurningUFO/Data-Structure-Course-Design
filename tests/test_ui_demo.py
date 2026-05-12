@@ -36,6 +36,14 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["map_capabilities"]["default_renderer"] == "leaflet_geo"
     assert payload["map_capabilities"]["fallback_renderer"] == "simple_svg"
     assert payload["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
+    basemaps = payload["map_capabilities"]["basemaps"]
+    assert basemaps["default"] == "real_map"
+    assert basemaps["fallback"] == "none"
+    assert [item["id"] for item in basemaps["modes"]] == ["real_map", "none"]
+    assert basemaps["modes"][0]["tile_url"] == "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    assert "OpenStreetMap" in basemaps["modes"][0]["attribution"]
+    assert basemaps["modes"][0]["network_required"] is True
+    assert basemaps["modes"][1]["network_required"] is False
     assert payload["stats"]["route_target_count"] >= 10
     assert payload["stats"]["site_count"] >= 1
     assert payload["stats"]["aigc_sample_count"] == 3
@@ -53,10 +61,11 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["help"]["launch_command"] == "py -B -m src.ui.demo_server"
     assert payload["help"]["fallback_launch_command"] == "python -B -m src.ui.demo_server"
     assert payload["help"]["browser_url"] == "http://127.0.0.1:8765"
-    assert payload["help"]["stage"] == "正式产品演示版 · 地图方案 B M4"
+    assert payload["help"]["stage"] == "正式产品演示版 · 地图方案 B M7"
     assert len(payload["help"]["demo_flow"]) >= 3
     assert any("Leaflet / SVG" in item for item in payload["help"]["demo_flow"])
     assert any("[lng, lat]" in item for item in payload["help"]["map_acceptance"])
+    assert any("真实瓦片" in item for item in payload["help"]["map_acceptance"])
     assert any("不继续扩大真实道路数据或路由算法改动" in item for item in payload["help"]["map_acceptance"])
     assert any(item["value"] == "education" for item in payload["controls"]["scenic_categories"])
     print("test_demo_bootstrap_contains_map_and_controls passed.")
@@ -544,8 +553,12 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'src="/vendor/leaflet/leaflet.js"' in html
     assert 'id="leaflet-map"' in html
     assert 'id="map-renderer-controls"' in html
+    assert 'id="map-basemap-controls"' in html
+    assert 'id="map-basemap-status"' in html
     assert 'data-map-renderer="leaflet_geo"' in html
     assert 'data-map-renderer="simple_svg"' in html
+    assert 'data-map-basemap="real_map"' in html
+    assert 'data-map-basemap="none"' in html
     assert 'data-demo-action="single-route"' in html
     assert 'data-demo-action="multi-route"' in html
     assert 'id="help-map-acceptance"' in html
@@ -554,6 +567,9 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "renderSvgMap" in script
     assert "renderLeafletMap" in script
     assert "ensureLeafletMap" in script
+    assert "L.tileLayer" in script
+    assert "syncLeafletBasemapLayer" in script
+    assert "switchBasemapMode" in script
     assert "syncLeafletRouteLayer" in script
     assert "switchMapRenderer" in script
     assert "runMapDemoAction" in script

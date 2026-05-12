@@ -396,10 +396,19 @@
                   <div class="map-demo-toolbar" aria-label="地图演示控制台">
                     <div class="map-demo-status">
                       <span id="map-renderer-status" class="status-pill">渲染器加载中</span>
+                      <span id="map-basemap-status" class="status-pill">底图待加载</span>
                       <span id="map-data-status" class="status-pill">GeoJSON 待加载</span>
                       <span id="map-route-status" class="status-pill">路线未规划</span>
                     </div>
                     <div class="map-demo-actions">
+                      <div id="map-basemap-controls" class="renderer-toggle compact-toggle" role="group" aria-label="Leaflet 底图模式切换">
+                        <button class="renderer-toggle-button" type="button" data-map-basemap="real_map">
+                          真实底图
+                        </button>
+                        <button class="renderer-toggle-button" type="button" data-map-basemap="none">
+                          无底图
+                        </button>
+                      </div>
                       <button class="ghost-button" type="button" data-demo-action="single-route">演示单目标</button>
                       <button class="ghost-button" type="button" data-demo-action="multi-route">演示多目标</button>
                       <button class="ghost-button" type="button" data-demo-action="clear-route">清空路线</button>

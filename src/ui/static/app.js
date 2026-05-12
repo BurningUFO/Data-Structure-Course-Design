@@ -29,6 +29,8 @@ const state = {
   currentRoute: null,
   selectedDiaryId: "",
   mapRenderer: "simple_svg",
+  basemapMode: "real_map",
+  basemapError: "",
   mapGeoJson: null,
   mapGeoJsonStats: null,
   mapGeoJsonSiteId: "",
@@ -45,6 +47,8 @@ const state = {
     map: null,
     edgeLayer: null,
     nodeLayer: null,
+    tileLayer: null,
+    tileLayerMode: "",
     baseGeoJson: null,
     routeLayer: null,
     fittedSiteId: "",
@@ -76,6 +80,8 @@ async function loadSiteBootstrap(siteId) {
   const bootstrap = await apiGet(`/api/bootstrap${query}`);
   state.bootstrap = bootstrap;
   state.mapRenderer = bootstrap.map_renderer || bootstrap.map_capabilities?.default_renderer || "simple_svg";
+  state.basemapMode = defaultBasemapMode(bootstrap);
+  state.basemapError = "";
   state.mapGeoJson = null;
   state.mapGeoJsonStats = null;
   state.mapGeoJsonSiteId = "";
@@ -490,6 +496,17 @@ function bindMapDemoControls() {
         return;
       }
       switchMapRenderer(rendererButton.dataset.mapRenderer);
+    });
+  }
+
+  const basemapControls = document.querySelector("#map-basemap-controls");
+  if (basemapControls) {
+    basemapControls.addEventListener("click", (event) => {
+      const basemapButton = event.target.closest("[data-map-basemap]");
+      if (!basemapButton) {
+        return;
+      }
+      switchBasemapMode(basemapButton.dataset.mapBasemap);
     });
   }
 
@@ -1173,6 +1190,24 @@ function switchMapRenderer(renderer) {
   setStatus(`地图已切换到 ${label}。`, "info");
 }
 
+function switchBasemapMode(mode) {
+  if (!state.bootstrap) {
+    return;
+  }
+
+  const basemapMode = resolveBasemapMode(mode);
+  if (!basemapMode) {
+    setStatus(`当前站点不支持底图模式：${mode}。`, "error");
+    return;
+  }
+
+  state.basemapMode = basemapMode;
+  state.basemapError = "";
+  syncLeafletBasemapLayer();
+  renderMap();
+  setStatus(`底图已切换到 ${basemapModeLabel(basemapMode)}。`, "info");
+}
+
 async function runMapDemoAction(action) {
   if (!state.bootstrap) {
     setStatus("地图数据尚未加载，无法执行演示动作。", "error");
@@ -1693,6 +1728,61 @@ function availableMapRenderers() {
   return Array.isArray(capabilities.renderers) ? capabilities.renderers : ["simple_svg"];
 }
 
+function basemapCapabilities(bootstrap = state.bootstrap) {
+  return bootstrap?.map_capabilities?.basemaps || {};
+}
+
+function availableBasemapModes() {
+  const modes = basemapCapabilities().modes;
+  return Array.isArray(modes) ? modes.filter((mode) => mode && mode.id) : [];
+}
+
+function defaultBasemapMode(bootstrap = state.bootstrap) {
+  const basemaps = basemapCapabilities(bootstrap);
+  const defaultMode = basemaps.default || "real_map";
+  const modes = Array.isArray(basemaps.modes) ? basemaps.modes : [];
+  return modes.some((mode) => mode.id === defaultMode) ? defaultMode : "none";
+}
+
+function resolveBasemapMode(mode) {
+  const requestedMode = mode || state.basemapMode || defaultBasemapMode();
+  const modes = availableBasemapModes();
+  if (modes.some((item) => item.id === requestedMode)) {
+    return requestedMode;
+  }
+
+  const fallbackMode = basemapCapabilities().fallback || "none";
+  if (modes.some((item) => item.id === fallbackMode)) {
+    return fallbackMode;
+  }
+  return modes.length ? modes[0].id : "";
+}
+
+function selectedBasemapMode() {
+  return resolveBasemapMode(state.basemapMode) || "none";
+}
+
+function basemapConfig(mode = selectedBasemapMode()) {
+  return availableBasemapModes().find((item) => item.id === mode) || null;
+}
+
+function basemapModeLabel(mode = selectedBasemapMode()) {
+  return basemapConfig(mode)?.label || mode || "无底图";
+}
+
+function basemapCaptionPrefix() {
+  const config = basemapConfig();
+  if (!config) {
+    return "底图：无底图；项目道路、节点和路线来自本地 GeoJSON。";
+  }
+
+  const networkText = config.network_required ? "需联网加载瓦片" : "无网络依赖";
+  const sourceText = config.source || config.label;
+  const attributionText = config.attribution ? `，attribution：${stripHtml(config.attribution)}` : "";
+  const errorText = state.basemapError ? ` ${state.basemapError}` : "";
+  return `底图：${config.label}（${sourceText}，${networkText}${attributionText}）；项目道路、节点和路线来自本地 GeoJSON。${errorText}`;
+}
+
 function renderMap() {
   syncMapDemoPanel();
   if (selectedMapRenderer() === "leaflet_geo") {
@@ -1817,27 +1907,38 @@ async function renderLeafletMap() {
   try {
     setMapRendererVisibility("leaflet_geo");
     ensureLeafletMap();
-    caption.textContent = "真实地图实验模式正在加载 GeoJSON...";
+    syncLeafletBasemapLayer();
+    caption.textContent = `${basemapCaptionPrefix()} 正在加载 GeoJSON...`;
 
     const geojson = await loadMapGeoJson();
     if (selectedMapRenderer() !== "leaflet_geo") {
       return;
     }
 
+    syncLeafletBasemapLayer();
     syncLeafletBaseLayers(geojson);
     syncLeafletRouteLayer();
     invalidateLeafletSize();
 
-    const stats = state.mapGeoJsonStats || {};
-    caption.textContent = state.currentRoute
-      ? appendRouteGeometryCaption(state.currentRoute.ui.caption)
-      : state.focusedNodeId
-        ? `真实地图实验模式：当前定位 ${getNodeName(state.focusedNodeId)}。`
-        : `真实地图实验模式：已加载 ${stats.node_feature_count || 0} 个节点和 ${stats.edge_feature_count || 0} 条道路，geometry 覆盖 ${formatRatioPercent(stats.geometry_coverage_ratio || 0)}。`;
+    syncLeafletCaption();
     syncMapDemoPanel();
   } catch (error) {
     fallbackToSvgMap(error);
   }
+}
+
+function syncLeafletCaption() {
+  const caption = document.querySelector("#map-caption");
+  if (!caption || selectedMapRenderer() !== "leaflet_geo") {
+    return;
+  }
+
+  const stats = state.mapGeoJsonStats || {};
+  caption.textContent = state.currentRoute
+    ? `${appendRouteGeometryCaption(state.currentRoute.ui.caption)} ${basemapCaptionPrefix()}`
+    : state.focusedNodeId
+      ? `当前定位 ${getNodeName(state.focusedNodeId)}。${basemapCaptionPrefix()}`
+      : `已加载 ${stats.node_feature_count || 0} 个节点和 ${stats.edge_feature_count || 0} 条道路，geometry 覆盖 ${formatRatioPercent(stats.geometry_coverage_ratio || 0)}。${basemapCaptionPrefix()}`;
 }
 
 function ensureLeafletMap() {
@@ -1853,7 +1954,7 @@ function ensureLeafletMap() {
   if (!state.leaflet.map) {
     const center = mapCenterLatLng();
     state.leaflet.map = L.map(element, {
-      attributionControl: false,
+      attributionControl: true,
       preferCanvas: true,
     }).setView(center, 17);
   }
@@ -1887,6 +1988,47 @@ async function loadMapGeoJson() {
       state.mapGeoJsonLoading = null;
     });
   return state.mapGeoJsonLoading;
+}
+
+function syncLeafletBasemapLayer() {
+  const map = state.leaflet.map;
+  if (!map) {
+    return;
+  }
+
+  const mode = selectedBasemapMode();
+  const config = basemapConfig(mode);
+  if (
+    state.leaflet.tileLayerMode === mode
+    && (mode === "none" || state.leaflet.tileLayer)
+  ) {
+    return;
+  }
+
+  removeLeafletLayer("tileLayer");
+  state.leaflet.tileLayerMode = mode;
+
+  if (!config || !config.tile_url) {
+    return;
+  }
+
+  const tileLayer = L.tileLayer(config.tile_url, {
+    attribution: config.attribution || "",
+    maxZoom: config.max_zoom || 19,
+    minZoom: config.min_zoom || 0,
+  });
+  tileLayer.on("tileerror", () => {
+    if (state.basemapError) {
+      return;
+    }
+    state.basemapError = "底图瓦片加载异常；本地 GeoJSON 道路、节点和路线仍可继续显示。";
+    syncMapDemoPanel();
+    syncLeafletCaption();
+    setStatus(state.basemapError, "error");
+  });
+  tileLayer.addTo(map);
+  tileLayer.bringToBack();
+  state.leaflet.tileLayer = tileLayer;
 }
 
 function syncLeafletBaseLayers(geojson) {
@@ -1983,9 +2125,16 @@ function syncLeafletRouteLayer() {
   if (isRenderableRouteGeoJson(routeGeoJson)) {
     try {
       addLeafletRouteGeoJson(layer, routeGeoJson, {
+        color: "#ffffff",
+        weight: 16,
+        opacity: 0.82,
+        lineCap: "round",
+        lineJoin: "round",
+      });
+      addLeafletRouteGeoJson(layer, routeGeoJson, {
         color: "#8f3c12",
-        weight: 12,
-        opacity: 0.36,
+        weight: 11,
+        opacity: 0.58,
         lineCap: "round",
         lineJoin: "round",
       });
@@ -2011,9 +2160,16 @@ function syncLeafletRouteLayer() {
 
     if (routeLatLngs.length >= 2) {
       L.polyline(routeLatLngs, {
+        color: "#ffffff",
+        weight: 16,
+        opacity: 0.82,
+        lineCap: "round",
+        lineJoin: "round",
+      }).addTo(layer);
+      L.polyline(routeLatLngs, {
         color: "#8f3c12",
-        weight: 12,
-        opacity: 0.32,
+        weight: 11,
+        opacity: 0.54,
         lineCap: "round",
         lineJoin: "round",
       }).addTo(layer);
@@ -2116,10 +2272,35 @@ function syncMapDemoPanel() {
     button.setAttribute("aria-pressed", String(isActive));
   });
 
+  const basemapMode = selectedBasemapMode();
+  const basemap = basemapConfig(basemapMode);
+  document.querySelectorAll("[data-map-basemap]").forEach((button) => {
+    const isActive = button.dataset.mapBasemap === basemapMode;
+    const isAvailable = availableBasemapModes().some((mode) => mode.id === button.dataset.mapBasemap);
+    button.classList.toggle("active", isActive);
+    button.disabled = !isAvailable;
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
   const rendererStatus = document.querySelector("#map-renderer-status");
   if (rendererStatus) {
     rendererStatus.textContent = rendererLabel;
     rendererStatus.className = `status-pill ${renderer === "leaflet_geo" ? "status-pill-primary" : "status-pill-muted"}`;
+  }
+
+  const basemapStatus = document.querySelector("#map-basemap-status");
+  if (basemapStatus) {
+    const networkLabel = basemap?.network_required ? "联网瓦片" : "本地空白";
+    basemapStatus.textContent = state.basemapError
+      ? "底图加载异常 · GeoJSON 可用"
+      : `底图 ${basemapModeLabel(basemapMode)} · ${networkLabel}`;
+    basemapStatus.className = state.basemapError
+      ? "status-pill status-error"
+      : `status-pill ${basemapMode === "none" ? "status-pill-muted" : "status-pill-primary"}`;
+  }
+  const leafletElement = document.querySelector("#leaflet-map");
+  if (leafletElement) {
+    leafletElement.classList.toggle("leaflet-basemap-none", basemapMode === "none");
   }
 
   const mapData = state.bootstrap?.map || {};
@@ -2155,9 +2336,11 @@ function formatRatioPercent(value) {
 }
 
 function clearLeafletLayers() {
+  removeLeafletLayer("tileLayer");
   removeLeafletLayer("edgeLayer");
   removeLeafletLayer("nodeLayer");
   removeLeafletLayer("routeLayer");
+  state.leaflet.tileLayerMode = "";
   state.leaflet.baseGeoJson = null;
   state.leaflet.fittedSiteId = "";
 }
@@ -2354,6 +2537,10 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function stripHtml(value) {
+  return String(value ?? "").replace(/<[^>]*>/g, "");
 }
 
 function clamp(value, minValue, maxValue) {

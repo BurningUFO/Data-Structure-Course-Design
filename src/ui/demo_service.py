@@ -156,7 +156,7 @@ FEATURE_NAVIGATION = [
 ]
 
 HELP_CONTENT = {
-    "stage": "正式产品演示版 · 地图方案 B M4",
+    "stage": "正式产品演示版 · 地图方案 B M7",
     "launch_command": "py -B -m src.ui.demo_server",
     "fallback_launch_command": "python -B -m src.ui.demo_server",
     "browser_url": "http://127.0.0.1:8765",
@@ -176,9 +176,10 @@ HELP_CONTENT = {
         "查询、推荐、路径、日记和 AIGC 轻量预览保持主链路可演示。",
     ],
     "map_acceptance": [
-        "Leaflet GeoJSON 层默认展示节点、道路和路线；SVG 简图作为现场可切换 fallback。",
+        "Leaflet GeoJSON 层默认展示真实瓦片底图、节点、道路和路线；SVG 简图作为现场可切换 fallback。",
+        "底图可在真实瓦片和无底图之间切换，弱网时本地 GeoJSON 图层仍可展示。",
         "地图数据由现有图节点和边转换为 GeoJSON，坐标顺序统一为 [lng, lat]。",
-        "M4 只做视觉包装、演示控制和验收说明，不继续扩大真实道路数据或路由算法改动。",
+        "M7 只接入 Leaflet tile layer，不继续扩大真实道路数据或路由算法改动。",
         "路线贴路能力通过 route_geojson 和 route_geometry_stats 说明，缺失 geometry 的边继续用直线段兜底。",
     ],
 }
@@ -216,6 +217,32 @@ MAP_CAPABILITIES = {
     "default_renderer": "leaflet_geo",
     "geojson_endpoint": "/api/map/geojson",
     "fallback_renderer": "simple_svg",
+    "basemaps": {
+        "default": "real_map",
+        "fallback": "none",
+        "modes": [
+            {
+                "id": "real_map",
+                "label": "真实底图",
+                "source": "OpenStreetMap 标准瓦片",
+                "tile_url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                "network_required": True,
+                "max_zoom": 19,
+                "usage_note": "仅适合低频课程演示；长期生产应切换合规瓦片服务或自托管。",
+            },
+            {
+                "id": "none",
+                "label": "无底图",
+                "source": "本地空白底图",
+                "tile_url": "",
+                "attribution": "",
+                "network_required": False,
+                "max_zoom": 19,
+                "usage_note": "网络异常或瓦片服务不可用时保留本地 GeoJSON 道路、节点和路线展示。",
+            },
+        ],
+    },
 }
 
 
