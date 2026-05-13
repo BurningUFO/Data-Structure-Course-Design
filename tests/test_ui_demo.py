@@ -238,6 +238,12 @@ def test_demo_white_road_skeleton_audit_matches_empty_stage():
     audit = json.loads(audit_path.read_text(encoding="utf-8"))
     outdoor = json.loads(outdoor_path.read_text(encoding="utf-8"))
     node_ids = {node["id"] for node in outdoor["nodes"]}
+    access_node_ids = {
+        node["id"]
+        for node in outdoor["nodes"]
+        if node.get("network_role") == "poi_access"
+    }
+    poi_nodes = [node for node in outdoor["nodes"] if node.get("category") != "road"]
 
     assert audit["metadata"]["stage"] == "M13A_white_road_empty_skeleton"
     assert audit["metadata"]["stage_boundary"] == "outdoor_edges_intentionally_empty"
@@ -248,6 +254,11 @@ def test_demo_white_road_skeleton_audit_matches_empty_stage():
     assert audit["summary"]["outdoor_edge_count"] == len(outdoor["edges"]) == 0
     assert audit["summary"]["match_count"] == 0
     assert audit["summary"]["poi_projection_needs_review_count"] == 0
+    assert audit["summary"]["generated_white_road_node_count"] == sum(
+        audit["generated_role_counts"][role]
+        for role in ("junction", "bend", "endpoint")
+    )
+    assert audit["summary"]["generated_access_node_count"] == len(access_node_ids)
     assert audit["generated_role_counts"]["junction"] >= 200
     assert audit["generated_role_counts"]["bend"] >= 100
     assert audit["generated_role_counts"]["endpoint"] >= 250
@@ -256,9 +267,28 @@ def test_demo_white_road_skeleton_audit_matches_empty_stage():
     assert audit["checks"]["outdoor_edges_empty"] is True
     assert audit["checks"]["matches_empty"] is True
     assert audit["checks"]["all_pois_have_route_anchor"] is True
+    assert audit["checks"]["m13b_review_passed"] is True
+    assert audit["review"]["status"] == "reviewed_pass"
+    assert audit["review"]["density"]["bbox_area_km2"] > 0
+    assert audit["review"]["density"]["nodes_per_km2"] > 0
+    assert (
+        audit["review"]["near_duplicate_review"]["threshold_m"]
+        == audit["rules"]["dedup_tolerance_m"]
+    )
+    assert audit["review"]["near_duplicate_review"]["pair_count"] == 0
+    assert (
+        audit["review"]["poi_projection_review"]["max_distance_m"]
+        <= audit["rules"]["access_review_distance_m"]
+    )
+    assert audit["review"]["poi_projection_review"]["needs_review_count"] == 0
+    assert all(audit["review"]["checks"].values())
+    assert len(poi_nodes) == 14
+    for poi in poi_nodes:
+        assert poi["route_anchor_node_id"] in access_node_ids
     assert len(audit["poi_projections"]) == 14
     for projection in audit["poi_projections"]:
         assert projection["anchor_node_id"] in node_ids
+        assert projection["anchor_node_id"] in access_node_ids
         assert projection["needs_review"] is False
         assert projection["projection_distance_m"] <= audit["rules"]["access_review_distance_m"]
     print("test_demo_white_road_skeleton_audit_matches_empty_stage passed.")

@@ -3,7 +3,7 @@
 
 本脚本采用课程硬指标强断言：
 - 10+ 用户、10+ 日记作者、必要文档、AIGC / 媒体占位样例。
-- 200+ 扩展推荐 / 查询对象、50+ 服务设施、M13A 白线道路骨架节点。
+- 200+ 扩展推荐 / 查询对象、50+ 服务设施、M13B 白线道路骨架审查后节点。
 
 使用说明：
   python -B tests/test_course_requirements.py
@@ -137,7 +137,7 @@ def test_required_course_documents_exist():
     print(f"test_required_course_documents_exist passed: docs={len(REQUIRED_DOC_PATHS)}")
 
 
-def test_current_scale_snapshot_for_m13a_white_road_gap_tracking():
+def test_current_scale_snapshot_for_m13b_white_road_audit_tracking():
     nodes, edges = collect_pku_nodes_and_edges()
     outdoor_payload = load_json(PKU_SITE_DIR / "outdoor.json")
     outdoor_nodes = outdoor_payload.get("nodes", [])
@@ -181,7 +181,7 @@ def test_current_scale_snapshot_for_m13a_white_road_gap_tracking():
         if str(node.get("network_role", "")).strip() == "poi_access"
     ]
 
-    assert len(nodes) >= 700
+    assert len(nodes) >= 690
     assert len(categories) >= 10
     assert len(facility_like_nodes) >= 50
     assert len(edges) >= 38
@@ -203,7 +203,7 @@ def test_current_scale_snapshot_for_m13a_white_road_gap_tracking():
         assert isinstance(record.get("tags", []), list)
         assert isinstance(record.get("keywords", []), list)
 
-    print("test_current_scale_snapshot_for_m13a_white_road_gap_tracking passed:")
+    print("test_current_scale_snapshot_for_m13b_white_road_audit_tracking passed:")
     print(f"  pku_nodes={len(nodes)}")
     print(f"  pku_edges={len(edges)}")
     print(f"  white_road_nodes={len(white_road_nodes)}")
@@ -220,7 +220,7 @@ def run_all_tests():
     test_user_samples_reach_course_minimum()
     test_aigc_and_media_placeholders_ready()
     test_required_course_documents_exist()
-    test_current_scale_snapshot_for_m13a_white_road_gap_tracking()
+    test_current_scale_snapshot_for_m13b_white_road_audit_tracking()
     print("All course requirement checks passed.")
 
 

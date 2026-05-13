@@ -36,15 +36,15 @@
     "east": 116.3149957
   },
   "summary": {
-    "input_outdoor_node_count": 42,
+    "input_outdoor_node_count": 676,
     "poi_node_count": 14,
-    "old_road_node_count_removed": 28,
+    "old_road_node_count_removed": 662,
     "road_feature_count_total": 505,
     "road_feature_count_filtered": 350,
     "road_segment_count_filtered": 634,
-    "generated_white_road_node_count": 667,
+    "generated_white_road_node_count": 648,
     "generated_access_node_count": 14,
-    "generated_node_count_total": 695,
+    "generated_node_count_total": 676,
     "outdoor_edge_count": 0,
     "match_count": 0,
     "poi_projection_needs_review_count": 0
@@ -56,8 +56,8 @@
     "raw_crossing_junction_count": 146
   },
   "generated_role_counts": {
-    "bend": 139,
-    "endpoint": 295,
+    "bend": 138,
+    "endpoint": 277,
     "junction": 233,
     "poi_access": 14
   },
@@ -324,10 +324,45 @@
       "needs_review": false
     }
   ],
+  "review": {
+    "status": "reviewed_pass",
+    "reviewed_at": "2026-05-13",
+    "density": {
+      "bbox_width_m": 1125.41,
+      "bbox_height_m": 976.32,
+      "bbox_area_km2": 1.0988,
+      "nodes_per_km2": 589.75
+    },
+    "near_duplicate_review": {
+      "threshold_m": 2.0,
+      "pair_count": 0,
+      "sample_pairs": [],
+      "nearest_min_m": 2.05,
+      "nearest_median_m": 10.43
+    },
+    "poi_projection_review": {
+      "max_distance_m": 52.46,
+      "average_distance_m": 4.57,
+      "needs_review_count": 0,
+      "access_nodes_colocated_with_white_road_nodes": 6,
+      "note": "Access nodes may intentionally share coordinates with existing white-road nodes because each POI still needs its own route anchor."
+    },
+    "checks": {
+      "white_road_near_duplicate_pair_count_is_zero": true,
+      "all_poi_projection_distances_within_review_threshold": true,
+      "access_node_count_is_expected": true,
+      "role_distribution_is_sufficient_for_next_stage": true
+    },
+    "notes": [
+      "White-road candidate nodes are deduplicated by true projected distance across neighboring quantization buckets.",
+      "Outdoor edges remain empty for this stage; M14/M15 can build and validate edges after this reviewed skeleton."
+    ]
+  },
   "checks": {
     "old_road_nodes_removed": true,
     "outdoor_edges_empty": true,
     "matches_empty": true,
-    "all_pois_have_route_anchor": true
+    "all_pois_have_route_anchor": true,
+    "m13b_review_passed": true
   }
 }

@@ -220,7 +220,8 @@ def add_candidate(
     role: str,
     source: dict[str, Any],
 ) -> None:
-    key = quantized_key(projection, lng, lat)
+    raw_key = quantized_key(projection, lng, lat)
+    key = find_nearby_candidate_key(candidates, projection, lng, lat, raw_key)
     role_priority = {"junction": 4, "poi_access": 3, "bend": 2, "endpoint": 1}
     existing = candidates.get(key)
     if existing is None:
@@ -236,6 +237,40 @@ def add_candidate(
     existing["sources"].append(source)
     if role_priority[role] > role_priority[existing["role"]]:
         existing["role"] = role
+
+
+def average_candidate_location(candidate: dict[str, Any]) -> tuple[float, float]:
+    return (
+        sum(candidate["lng_values"]) / len(candidate["lng_values"]),
+        sum(candidate["lat_values"]) / len(candidate["lat_values"]),
+    )
+
+
+def find_nearby_candidate_key(
+    candidates: dict[tuple[int, int], dict[str, Any]],
+    projection: LocalProjection,
+    lng: float,
+    lat: float,
+    raw_key: tuple[int, int],
+) -> tuple[int, int]:
+    best_key = raw_key
+    best_distance = DEDUP_TOLERANCE_M
+    for dx in (-1, 0, 1):
+        for dy in (-1, 0, 1):
+            candidate_key = (raw_key[0] + dx, raw_key[1] + dy)
+            candidate = candidates.get(candidate_key)
+            if candidate is None:
+                continue
+            candidate_lng_lat = average_candidate_location(candidate)
+            candidate_distance = distance_m(
+                projection,
+                (lng, lat),
+                candidate_lng_lat,
+            )
+            if candidate_distance <= best_distance:
+                best_distance = candidate_distance
+                best_key = candidate_key
+    return best_key
 
 
 def build_road_candidates(
@@ -543,6 +578,167 @@ def build_access_nodes(
     return access_nodes, audit_rows
 
 
+def node_lng_lat(node: dict[str, Any]) -> tuple[float, float]:
+    location = node["location"]
+    return float(location["lng"]), float(location["lat"])
+
+
+def bbox_density_stats(
+    nodes: list[dict[str, Any]],
+    projection: LocalProjection,
+) -> dict[str, Any]:
+    if not nodes:
+        return {
+            "bbox_width_m": 0.0,
+            "bbox_height_m": 0.0,
+            "bbox_area_km2": 0.0,
+            "nodes_per_km2": 0.0,
+        }
+    xy_points = [projection.to_xy(*node_lng_lat(node)) for node in nodes]
+    x_values = [point[0] for point in xy_points]
+    y_values = [point[1] for point in xy_points]
+    width_m = max(x_values) - min(x_values)
+    height_m = max(y_values) - min(y_values)
+    area_km2 = (width_m * height_m) / 1_000_000
+    return {
+        "bbox_width_m": round(width_m, 2),
+        "bbox_height_m": round(height_m, 2),
+        "bbox_area_km2": round(area_km2, 4),
+        "nodes_per_km2": round(len(nodes) / area_km2, 2) if area_km2 else 0.0,
+    }
+
+
+def near_duplicate_review(
+    nodes: list[dict[str, Any]],
+    projection: LocalProjection,
+    threshold_m: float,
+) -> dict[str, Any]:
+    near_pairs: list[dict[str, Any]] = []
+    nearest_by_index: list[float | None] = [None] * len(nodes)
+    for left_index, left in enumerate(nodes):
+        for right_index, right in enumerate(nodes[left_index + 1 :], start=left_index + 1):
+            pair_distance = distance_m(
+                projection,
+                node_lng_lat(left),
+                node_lng_lat(right),
+            )
+            if (
+                nearest_by_index[left_index] is None
+                or pair_distance < nearest_by_index[left_index]
+            ):
+                nearest_by_index[left_index] = pair_distance
+            if (
+                nearest_by_index[right_index] is None
+                or pair_distance < nearest_by_index[right_index]
+            ):
+                nearest_by_index[right_index] = pair_distance
+            if pair_distance < threshold_m:
+                near_pairs.append(
+                    {
+                        "from": left["id"],
+                        "to": right["id"],
+                        "distance_m": round(pair_distance, 3),
+                    }
+                )
+    nearest_distances = [
+        distance for distance in nearest_by_index if distance is not None
+    ]
+    nearest_distances.sort()
+    return {
+        "threshold_m": threshold_m,
+        "pair_count": len(near_pairs),
+        "sample_pairs": near_pairs[:10],
+        "nearest_min_m": round(nearest_distances[0], 2) if nearest_distances else None,
+        "nearest_median_m": (
+            round(nearest_distances[len(nearest_distances) // 2], 2)
+            if nearest_distances
+            else None
+        ),
+    }
+
+
+def nearest_white_distance(
+    access_node: dict[str, Any],
+    white_nodes: list[dict[str, Any]],
+    projection: LocalProjection,
+) -> float | None:
+    if not white_nodes:
+        return None
+    return min(
+        distance_m(projection, node_lng_lat(access_node), node_lng_lat(white_node))
+        for white_node in white_nodes
+    )
+
+
+def build_review_payload(
+    road_nodes: list[dict[str, Any]],
+    access_nodes: list[dict[str, Any]],
+    poi_projection_audit: list[dict[str, Any]],
+    projection: LocalProjection,
+) -> dict[str, Any]:
+    duplicate_review = near_duplicate_review(
+        road_nodes,
+        projection,
+        DEDUP_TOLERANCE_M,
+    )
+    density_review = bbox_density_stats(road_nodes, projection)
+    projection_distances = [
+        float(item["projection_distance_m"]) for item in poi_projection_audit
+    ]
+    max_projection_distance = max(projection_distances) if projection_distances else 0.0
+    average_projection_distance = (
+        sum(projection_distances) / len(projection_distances)
+        if projection_distances
+        else 0.0
+    )
+    access_white_distances = [
+        nearest_white_distance(access_node, road_nodes, projection)
+        for access_node in access_nodes
+    ]
+    colocated_access_count = sum(
+        1
+        for access_distance in access_white_distances
+        if access_distance is not None and access_distance < 0.01
+    )
+    checks = {
+        "white_road_near_duplicate_pair_count_is_zero": duplicate_review["pair_count"]
+        == 0,
+        "all_poi_projection_distances_within_review_threshold": all(
+            not item["needs_review"] for item in poi_projection_audit
+        ),
+        "access_node_count_is_expected": len(access_nodes) == 14,
+        "role_distribution_is_sufficient_for_next_stage": all(
+            Counter(node["network_role"] for node in road_nodes).get(role, 0) >= minimum
+            for role, minimum in {
+                "junction": 200,
+                "bend": 100,
+                "endpoint": 250,
+            }.items()
+        ),
+    }
+    status = "reviewed_pass" if all(checks.values()) else "needs_follow_up"
+    return {
+        "status": status,
+        "reviewed_at": "2026-05-13",
+        "density": density_review,
+        "near_duplicate_review": duplicate_review,
+        "poi_projection_review": {
+            "max_distance_m": round(max_projection_distance, 2),
+            "average_distance_m": round(average_projection_distance, 2),
+            "needs_review_count": sum(
+                1 for item in poi_projection_audit if item["needs_review"]
+            ),
+            "access_nodes_colocated_with_white_road_nodes": colocated_access_count,
+            "note": "Access nodes may intentionally share coordinates with existing white-road nodes because each POI still needs its own route anchor.",
+        },
+        "checks": checks,
+        "notes": [
+            "White-road candidate nodes are deduplicated by true projected distance across neighboring quantization buckets.",
+            "Outdoor edges remain empty for this stage; M14/M15 can build and validate edges after this reviewed skeleton.",
+        ],
+    }
+
+
 def rebuild(repo_root: Path, site_id: str) -> dict[str, Any]:
     site_dir = repo_root / "data" / "sites" / site_id
     geo_dir = site_dir / "geo"
@@ -605,6 +801,12 @@ def rebuild(repo_root: Path, site_id: str) -> dict[str, Any]:
         normalized_text((feature.get("properties") or {}).get("highway"))
         for feature in filtered_features
     )
+    review_payload = build_review_payload(
+        road_nodes,
+        access_nodes,
+        poi_projection_audit,
+        projection,
+    )
     audit_payload = {
         "metadata": {
             "site_id": site_id,
@@ -652,6 +854,7 @@ def rebuild(repo_root: Path, site_id: str) -> dict[str, Any]:
         "generated_role_counts": dict(sorted(role_counts.items())),
         "filtered_highway_counts": dict(sorted(highway_counts.items())),
         "poi_projections": poi_projection_audit,
+        "review": review_payload,
         "checks": {
             "old_road_nodes_removed": not any(
                 normalized_text(node.get("id")).startswith("road_")
@@ -669,6 +872,7 @@ def rebuild(repo_root: Path, site_id: str) -> dict[str, Any]:
             "all_pois_have_route_anchor": all(
                 normalized_text(node.get("route_anchor_node_id")) for node in poi_nodes
             ),
+            "m13b_review_passed": review_payload["status"] == "reviewed_pass",
         },
     }
 

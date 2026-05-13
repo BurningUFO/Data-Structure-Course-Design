@@ -393,11 +393,15 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "1251476911"
+      ],
+      "source_highways": [
+        "footway"
+      ],
       "location": {
-        "lat": 39.9864995,
-        "lng": 116.3102641
+        "lat": 39.9864953,
+        "lng": 116.3102644
       }
     },
     {
@@ -660,17 +664,19 @@
       "network_role": "junction",
       "source": "osm_roads_simplified",
       "source_osm_ids": [
+        "1157945339",
         "1159305391",
         "1159305393",
         "1159305396",
         "1159305397"
       ],
       "source_highways": [
-        "footway"
+        "footway",
+        "steps"
       ],
       "location": {
-        "lat": 39.9871964,
-        "lng": 116.3022024
+        "lat": 39.9871965,
+        "lng": 116.3022048
       }
     },
     {
@@ -1001,11 +1007,15 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "1159153754"
+      ],
+      "source_highways": [
+        "footway"
+      ],
       "location": {
-        "lat": 39.9874993,
-        "lng": 116.3082904
+        "lat": 39.9874999,
+        "lng": 116.3082873
       }
     },
     {
@@ -1170,8 +1180,8 @@
         "steps"
       ],
       "location": {
-        "lat": 39.9876331,
-        "lng": 116.307511
+        "lat": 39.9876346,
+        "lng": 116.3075109
       }
     },
     {
@@ -1935,6 +1945,7 @@
       "network_role": "junction",
       "source": "osm_roads_simplified",
       "source_osm_ids": [
+        "1157945334",
         "1160812162",
         "1160812163",
         "1160812164"
@@ -1944,8 +1955,8 @@
         "steps"
       ],
       "location": {
-        "lat": 39.9883784,
-        "lng": 116.3040431
+        "lat": 39.9883782,
+        "lng": 116.3040361
       }
     },
     {
@@ -2017,6 +2028,7 @@
       "network_role": "junction",
       "source": "osm_roads_simplified",
       "source_osm_ids": [
+        "1157945336",
         "1160812162",
         "1160812165",
         "1160812166",
@@ -2027,8 +2039,8 @@
         "steps"
       ],
       "location": {
-        "lat": 39.9885338,
-        "lng": 116.304667
+        "lat": 39.9885319,
+        "lng": 116.3046697
       }
     },
     {
@@ -2821,11 +2833,15 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "1206332681"
+      ],
+      "source_highways": [
+        "footway"
+      ],
       "location": {
-        "lat": 39.9889701,
-        "lng": 116.3121606
+        "lat": 39.9889724,
+        "lng": 116.3121605
       }
     },
     {
@@ -3025,11 +3041,16 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "1206332672",
+        "264247408"
+      ],
+      "source_highways": [
+        "residential"
+      ],
       "location": {
-        "lat": 39.9890235,
-        "lng": 116.3120969
+        "lat": 39.9890274,
+        "lng": 116.3120967
       }
     },
     {
@@ -3298,11 +3319,15 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "993427293"
+      ],
+      "source_highways": [
+        "footway"
+      ],
       "location": {
         "lat": 39.9891805,
-        "lng": 116.3051598
+        "lng": 116.3051603
       }
     },
     {
@@ -3597,11 +3622,15 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "369334396"
+      ],
+      "source_highways": [
+        "residential"
+      ],
       "location": {
-        "lat": 39.9893856,
-        "lng": 116.3120806
+        "lat": 39.9893855,
+        "lng": 116.3120775
       }
     },
     {
@@ -4017,11 +4046,16 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "369334423",
+        "369334553"
+      ],
+      "source_highways": [
+        "residential"
+      ],
       "location": {
-        "lat": 39.9897692,
-        "lng": 116.3135261
+        "lat": 39.9897647,
+        "lng": 116.3135265
       }
     },
     {
@@ -4040,11 +4074,15 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "369334397"
+      ],
+      "source_highways": [
+        "residential"
+      ],
       "location": {
-        "lat": 39.9898085,
-        "lng": 116.3144644
+        "lat": 39.9898087,
+        "lng": 116.3144674
       }
     },
     {
@@ -5034,11 +5072,15 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "1159305375"
+      ],
+      "source_highways": [
+        "footway"
+      ],
       "location": {
-        "lat": 39.9907318,
-        "lng": 116.307524
+        "lat": 39.9907334,
+        "lng": 116.3075239
       }
     },
     {
@@ -6162,11 +6204,15 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "1151226551"
+      ],
+      "source_highways": [
+        "footway"
+      ],
       "location": {
         "lat": 39.9924402,
-        "lng": 116.3061884
+        "lng": 116.3061876
       }
     },
     {
@@ -6298,11 +6344,17 @@
       "facilities": [],
       "network_role": "junction",
       "source": "osm_roads_simplified",
-      "source_osm_ids": [],
-      "source_highways": [],
+      "source_osm_ids": [
+        "1100821746",
+        "240825571"
+      ],
+      "source_highways": [
+        "footway",
+        "service"
+      ],
       "location": {
-        "lat": 39.9927502,
-        "lng": 116.3054584
+        "lat": 39.9927459,
+        "lng": 116.305452
       }
     },
     {
@@ -8025,8 +8077,8 @@
         "footway"
       ],
       "location": {
-        "lat": 39.9886556,
-        "lng": 116.3077898
+        "lat": 39.9886627,
+        "lng": 116.3077839
       }
     },
     {
@@ -8484,40 +8536,13 @@
         "footway"
       ],
       "location": {
-        "lat": 39.9898222,
-        "lng": 116.3023263
+        "lat": 39.9898297,
+        "lng": 116.3023316
       }
     },
     {
       "id": "road_white_bend_0068",
       "name": "白线道路硬拐点0068",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路硬拐点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路硬拐点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "bend",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1091239433"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9898371,
-        "lng": 116.302337
-      }
-    },
-    {
-      "id": "road_white_bend_0069",
-      "name": "白线道路硬拐点0069",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8543,8 +8568,8 @@
       }
     },
     {
-      "id": "road_white_bend_0070",
-      "name": "白线道路硬拐点0070",
+      "id": "road_white_bend_0069",
+      "name": "白线道路硬拐点0069",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8570,8 +8595,8 @@
       }
     },
     {
-      "id": "road_white_bend_0071",
-      "name": "白线道路硬拐点0071",
+      "id": "road_white_bend_0070",
+      "name": "白线道路硬拐点0070",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8597,8 +8622,8 @@
       }
     },
     {
-      "id": "road_white_bend_0072",
-      "name": "白线道路硬拐点0072",
+      "id": "road_white_bend_0071",
+      "name": "白线道路硬拐点0071",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8624,8 +8649,8 @@
       }
     },
     {
-      "id": "road_white_bend_0073",
-      "name": "白线道路硬拐点0073",
+      "id": "road_white_bend_0072",
+      "name": "白线道路硬拐点0072",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8651,8 +8676,8 @@
       }
     },
     {
-      "id": "road_white_bend_0074",
-      "name": "白线道路硬拐点0074",
+      "id": "road_white_bend_0073",
+      "name": "白线道路硬拐点0073",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8678,8 +8703,8 @@
       }
     },
     {
-      "id": "road_white_bend_0075",
-      "name": "白线道路硬拐点0075",
+      "id": "road_white_bend_0074",
+      "name": "白线道路硬拐点0074",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8705,8 +8730,8 @@
       }
     },
     {
-      "id": "road_white_bend_0076",
-      "name": "白线道路硬拐点0076",
+      "id": "road_white_bend_0075",
+      "name": "白线道路硬拐点0075",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8732,8 +8757,8 @@
       }
     },
     {
-      "id": "road_white_bend_0077",
-      "name": "白线道路硬拐点0077",
+      "id": "road_white_bend_0076",
+      "name": "白线道路硬拐点0076",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8759,8 +8784,8 @@
       }
     },
     {
-      "id": "road_white_bend_0078",
-      "name": "白线道路硬拐点0078",
+      "id": "road_white_bend_0077",
+      "name": "白线道路硬拐点0077",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8786,8 +8811,8 @@
       }
     },
     {
-      "id": "road_white_bend_0079",
-      "name": "白线道路硬拐点0079",
+      "id": "road_white_bend_0078",
+      "name": "白线道路硬拐点0078",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8813,8 +8838,8 @@
       }
     },
     {
-      "id": "road_white_bend_0080",
-      "name": "白线道路硬拐点0080",
+      "id": "road_white_bend_0079",
+      "name": "白线道路硬拐点0079",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8840,8 +8865,8 @@
       }
     },
     {
-      "id": "road_white_bend_0081",
-      "name": "白线道路硬拐点0081",
+      "id": "road_white_bend_0080",
+      "name": "白线道路硬拐点0080",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8867,8 +8892,8 @@
       }
     },
     {
-      "id": "road_white_bend_0082",
-      "name": "白线道路硬拐点0082",
+      "id": "road_white_bend_0081",
+      "name": "白线道路硬拐点0081",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8894,8 +8919,8 @@
       }
     },
     {
-      "id": "road_white_bend_0083",
-      "name": "白线道路硬拐点0083",
+      "id": "road_white_bend_0082",
+      "name": "白线道路硬拐点0082",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8921,8 +8946,8 @@
       }
     },
     {
-      "id": "road_white_bend_0084",
-      "name": "白线道路硬拐点0084",
+      "id": "road_white_bend_0083",
+      "name": "白线道路硬拐点0083",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8948,8 +8973,8 @@
       }
     },
     {
-      "id": "road_white_bend_0085",
-      "name": "白线道路硬拐点0085",
+      "id": "road_white_bend_0084",
+      "name": "白线道路硬拐点0084",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -8975,8 +9000,8 @@
       }
     },
     {
-      "id": "road_white_bend_0086",
-      "name": "白线道路硬拐点0086",
+      "id": "road_white_bend_0085",
+      "name": "白线道路硬拐点0085",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9002,8 +9027,8 @@
       }
     },
     {
-      "id": "road_white_bend_0087",
-      "name": "白线道路硬拐点0087",
+      "id": "road_white_bend_0086",
+      "name": "白线道路硬拐点0086",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9029,8 +9054,8 @@
       }
     },
     {
-      "id": "road_white_bend_0088",
-      "name": "白线道路硬拐点0088",
+      "id": "road_white_bend_0087",
+      "name": "白线道路硬拐点0087",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9056,8 +9081,8 @@
       }
     },
     {
-      "id": "road_white_bend_0089",
-      "name": "白线道路硬拐点0089",
+      "id": "road_white_bend_0088",
+      "name": "白线道路硬拐点0088",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9083,8 +9108,8 @@
       }
     },
     {
-      "id": "road_white_bend_0090",
-      "name": "白线道路硬拐点0090",
+      "id": "road_white_bend_0089",
+      "name": "白线道路硬拐点0089",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9110,8 +9135,8 @@
       }
     },
     {
-      "id": "road_white_bend_0091",
-      "name": "白线道路硬拐点0091",
+      "id": "road_white_bend_0090",
+      "name": "白线道路硬拐点0090",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9137,8 +9162,8 @@
       }
     },
     {
-      "id": "road_white_bend_0092",
-      "name": "白线道路硬拐点0092",
+      "id": "road_white_bend_0091",
+      "name": "白线道路硬拐点0091",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9164,8 +9189,8 @@
       }
     },
     {
-      "id": "road_white_bend_0093",
-      "name": "白线道路硬拐点0093",
+      "id": "road_white_bend_0092",
+      "name": "白线道路硬拐点0092",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9191,8 +9216,8 @@
       }
     },
     {
-      "id": "road_white_bend_0094",
-      "name": "白线道路硬拐点0094",
+      "id": "road_white_bend_0093",
+      "name": "白线道路硬拐点0093",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9218,8 +9243,8 @@
       }
     },
     {
-      "id": "road_white_bend_0095",
-      "name": "白线道路硬拐点0095",
+      "id": "road_white_bend_0094",
+      "name": "白线道路硬拐点0094",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9245,8 +9270,8 @@
       }
     },
     {
-      "id": "road_white_bend_0096",
-      "name": "白线道路硬拐点0096",
+      "id": "road_white_bend_0095",
+      "name": "白线道路硬拐点0095",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9272,8 +9297,8 @@
       }
     },
     {
-      "id": "road_white_bend_0097",
-      "name": "白线道路硬拐点0097",
+      "id": "road_white_bend_0096",
+      "name": "白线道路硬拐点0096",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9299,8 +9324,8 @@
       }
     },
     {
-      "id": "road_white_bend_0098",
-      "name": "白线道路硬拐点0098",
+      "id": "road_white_bend_0097",
+      "name": "白线道路硬拐点0097",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9326,8 +9351,8 @@
       }
     },
     {
-      "id": "road_white_bend_0099",
-      "name": "白线道路硬拐点0099",
+      "id": "road_white_bend_0098",
+      "name": "白线道路硬拐点0098",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9353,8 +9378,8 @@
       }
     },
     {
-      "id": "road_white_bend_0100",
-      "name": "白线道路硬拐点0100",
+      "id": "road_white_bend_0099",
+      "name": "白线道路硬拐点0099",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9380,8 +9405,8 @@
       }
     },
     {
-      "id": "road_white_bend_0101",
-      "name": "白线道路硬拐点0101",
+      "id": "road_white_bend_0100",
+      "name": "白线道路硬拐点0100",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9407,8 +9432,8 @@
       }
     },
     {
-      "id": "road_white_bend_0102",
-      "name": "白线道路硬拐点0102",
+      "id": "road_white_bend_0101",
+      "name": "白线道路硬拐点0101",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9434,8 +9459,8 @@
       }
     },
     {
-      "id": "road_white_bend_0103",
-      "name": "白线道路硬拐点0103",
+      "id": "road_white_bend_0102",
+      "name": "白线道路硬拐点0102",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9461,8 +9486,8 @@
       }
     },
     {
-      "id": "road_white_bend_0104",
-      "name": "白线道路硬拐点0104",
+      "id": "road_white_bend_0103",
+      "name": "白线道路硬拐点0103",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9488,8 +9513,8 @@
       }
     },
     {
-      "id": "road_white_bend_0105",
-      "name": "白线道路硬拐点0105",
+      "id": "road_white_bend_0104",
+      "name": "白线道路硬拐点0104",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9515,8 +9540,8 @@
       }
     },
     {
-      "id": "road_white_bend_0106",
-      "name": "白线道路硬拐点0106",
+      "id": "road_white_bend_0105",
+      "name": "白线道路硬拐点0105",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9542,8 +9567,8 @@
       }
     },
     {
-      "id": "road_white_bend_0107",
-      "name": "白线道路硬拐点0107",
+      "id": "road_white_bend_0106",
+      "name": "白线道路硬拐点0106",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9569,8 +9594,8 @@
       }
     },
     {
-      "id": "road_white_bend_0108",
-      "name": "白线道路硬拐点0108",
+      "id": "road_white_bend_0107",
+      "name": "白线道路硬拐点0107",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9596,8 +9621,8 @@
       }
     },
     {
-      "id": "road_white_bend_0109",
-      "name": "白线道路硬拐点0109",
+      "id": "road_white_bend_0108",
+      "name": "白线道路硬拐点0108",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9623,8 +9648,8 @@
       }
     },
     {
-      "id": "road_white_bend_0110",
-      "name": "白线道路硬拐点0110",
+      "id": "road_white_bend_0109",
+      "name": "白线道路硬拐点0109",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9650,8 +9675,8 @@
       }
     },
     {
-      "id": "road_white_bend_0111",
-      "name": "白线道路硬拐点0111",
+      "id": "road_white_bend_0110",
+      "name": "白线道路硬拐点0110",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9677,8 +9702,8 @@
       }
     },
     {
-      "id": "road_white_bend_0112",
-      "name": "白线道路硬拐点0112",
+      "id": "road_white_bend_0111",
+      "name": "白线道路硬拐点0111",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9704,8 +9729,8 @@
       }
     },
     {
-      "id": "road_white_bend_0113",
-      "name": "白线道路硬拐点0113",
+      "id": "road_white_bend_0112",
+      "name": "白线道路硬拐点0112",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9731,8 +9756,8 @@
       }
     },
     {
-      "id": "road_white_bend_0114",
-      "name": "白线道路硬拐点0114",
+      "id": "road_white_bend_0113",
+      "name": "白线道路硬拐点0113",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9758,8 +9783,8 @@
       }
     },
     {
-      "id": "road_white_bend_0115",
-      "name": "白线道路硬拐点0115",
+      "id": "road_white_bend_0114",
+      "name": "白线道路硬拐点0114",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9785,8 +9810,8 @@
       }
     },
     {
-      "id": "road_white_bend_0116",
-      "name": "白线道路硬拐点0116",
+      "id": "road_white_bend_0115",
+      "name": "白线道路硬拐点0115",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9812,8 +9837,8 @@
       }
     },
     {
-      "id": "road_white_bend_0117",
-      "name": "白线道路硬拐点0117",
+      "id": "road_white_bend_0116",
+      "name": "白线道路硬拐点0116",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9839,8 +9864,8 @@
       }
     },
     {
-      "id": "road_white_bend_0118",
-      "name": "白线道路硬拐点0118",
+      "id": "road_white_bend_0117",
+      "name": "白线道路硬拐点0117",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9866,8 +9891,8 @@
       }
     },
     {
-      "id": "road_white_bend_0119",
-      "name": "白线道路硬拐点0119",
+      "id": "road_white_bend_0118",
+      "name": "白线道路硬拐点0118",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9893,8 +9918,8 @@
       }
     },
     {
-      "id": "road_white_bend_0120",
-      "name": "白线道路硬拐点0120",
+      "id": "road_white_bend_0119",
+      "name": "白线道路硬拐点0119",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9920,8 +9945,8 @@
       }
     },
     {
-      "id": "road_white_bend_0121",
-      "name": "白线道路硬拐点0121",
+      "id": "road_white_bend_0120",
+      "name": "白线道路硬拐点0120",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9947,8 +9972,8 @@
       }
     },
     {
-      "id": "road_white_bend_0122",
-      "name": "白线道路硬拐点0122",
+      "id": "road_white_bend_0121",
+      "name": "白线道路硬拐点0121",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -9974,8 +9999,8 @@
       }
     },
     {
-      "id": "road_white_bend_0123",
-      "name": "白线道路硬拐点0123",
+      "id": "road_white_bend_0122",
+      "name": "白线道路硬拐点0122",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10001,8 +10026,8 @@
       }
     },
     {
-      "id": "road_white_bend_0124",
-      "name": "白线道路硬拐点0124",
+      "id": "road_white_bend_0123",
+      "name": "白线道路硬拐点0123",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10028,8 +10053,8 @@
       }
     },
     {
-      "id": "road_white_bend_0125",
-      "name": "白线道路硬拐点0125",
+      "id": "road_white_bend_0124",
+      "name": "白线道路硬拐点0124",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10055,8 +10080,8 @@
       }
     },
     {
-      "id": "road_white_bend_0126",
-      "name": "白线道路硬拐点0126",
+      "id": "road_white_bend_0125",
+      "name": "白线道路硬拐点0125",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10082,8 +10107,8 @@
       }
     },
     {
-      "id": "road_white_bend_0127",
-      "name": "白线道路硬拐点0127",
+      "id": "road_white_bend_0126",
+      "name": "白线道路硬拐点0126",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10109,8 +10134,8 @@
       }
     },
     {
-      "id": "road_white_bend_0128",
-      "name": "白线道路硬拐点0128",
+      "id": "road_white_bend_0127",
+      "name": "白线道路硬拐点0127",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10136,8 +10161,8 @@
       }
     },
     {
-      "id": "road_white_bend_0129",
-      "name": "白线道路硬拐点0129",
+      "id": "road_white_bend_0128",
+      "name": "白线道路硬拐点0128",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10163,8 +10188,8 @@
       }
     },
     {
-      "id": "road_white_bend_0130",
-      "name": "白线道路硬拐点0130",
+      "id": "road_white_bend_0129",
+      "name": "白线道路硬拐点0129",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10190,8 +10215,8 @@
       }
     },
     {
-      "id": "road_white_bend_0131",
-      "name": "白线道路硬拐点0131",
+      "id": "road_white_bend_0130",
+      "name": "白线道路硬拐点0130",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10217,8 +10242,8 @@
       }
     },
     {
-      "id": "road_white_bend_0132",
-      "name": "白线道路硬拐点0132",
+      "id": "road_white_bend_0131",
+      "name": "白线道路硬拐点0131",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10244,8 +10269,8 @@
       }
     },
     {
-      "id": "road_white_bend_0133",
-      "name": "白线道路硬拐点0133",
+      "id": "road_white_bend_0132",
+      "name": "白线道路硬拐点0132",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10271,8 +10296,8 @@
       }
     },
     {
-      "id": "road_white_bend_0134",
-      "name": "白线道路硬拐点0134",
+      "id": "road_white_bend_0133",
+      "name": "白线道路硬拐点0133",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10298,8 +10323,8 @@
       }
     },
     {
-      "id": "road_white_bend_0135",
-      "name": "白线道路硬拐点0135",
+      "id": "road_white_bend_0134",
+      "name": "白线道路硬拐点0134",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10325,8 +10350,8 @@
       }
     },
     {
-      "id": "road_white_bend_0136",
-      "name": "白线道路硬拐点0136",
+      "id": "road_white_bend_0135",
+      "name": "白线道路硬拐点0135",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10352,8 +10377,8 @@
       }
     },
     {
-      "id": "road_white_bend_0137",
-      "name": "白线道路硬拐点0137",
+      "id": "road_white_bend_0136",
+      "name": "白线道路硬拐点0136",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10379,8 +10404,8 @@
       }
     },
     {
-      "id": "road_white_bend_0138",
-      "name": "白线道路硬拐点0138",
+      "id": "road_white_bend_0137",
+      "name": "白线道路硬拐点0137",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10406,8 +10431,8 @@
       }
     },
     {
-      "id": "road_white_bend_0139",
-      "name": "白线道路硬拐点0139",
+      "id": "road_white_bend_0138",
+      "name": "白线道路硬拐点0138",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10638,33 +10663,6 @@
       "network_role": "endpoint",
       "source": "osm_roads_simplified",
       "source_osm_ids": [
-        "1251476911"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9864912,
-        "lng": 116.3102647
-      }
-    },
-    {
-      "id": "road_white_endpoint_0009",
-      "name": "白线道路端点0009",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
         "595592766"
       ],
       "source_highways": [
@@ -10676,8 +10674,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0010",
-      "name": "白线道路端点0010",
+      "id": "road_white_endpoint_0009",
+      "name": "白线道路端点0009",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10703,8 +10701,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0011",
-      "name": "白线道路端点0011",
+      "id": "road_white_endpoint_0010",
+      "name": "白线道路端点0010",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10730,8 +10728,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0012",
-      "name": "白线道路端点0012",
+      "id": "road_white_endpoint_0011",
+      "name": "白线道路端点0011",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10757,8 +10755,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0013",
-      "name": "白线道路端点0013",
+      "id": "road_white_endpoint_0012",
+      "name": "白线道路端点0012",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10784,8 +10782,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0014",
-      "name": "白线道路端点0014",
+      "id": "road_white_endpoint_0013",
+      "name": "白线道路端点0013",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10811,8 +10809,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0015",
-      "name": "白线道路端点0015",
+      "id": "road_white_endpoint_0014",
+      "name": "白线道路端点0014",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10839,8 +10837,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0016",
-      "name": "白线道路端点0016",
+      "id": "road_white_endpoint_0015",
+      "name": "白线道路端点0015",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10866,8 +10864,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0017",
-      "name": "白线道路端点0017",
+      "id": "road_white_endpoint_0016",
+      "name": "白线道路端点0016",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10893,8 +10891,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0018",
-      "name": "白线道路端点0018",
+      "id": "road_white_endpoint_0017",
+      "name": "白线道路端点0017",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10920,8 +10918,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0019",
-      "name": "白线道路端点0019",
+      "id": "road_white_endpoint_0018",
+      "name": "白线道路端点0018",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10947,8 +10945,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0020",
-      "name": "白线道路端点0020",
+      "id": "road_white_endpoint_0019",
+      "name": "白线道路端点0019",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -10974,8 +10972,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0021",
-      "name": "白线道路端点0021",
+      "id": "road_white_endpoint_0020",
+      "name": "白线道路端点0020",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11001,8 +10999,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0022",
-      "name": "白线道路端点0022",
+      "id": "road_white_endpoint_0021",
+      "name": "白线道路端点0021",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11028,8 +11026,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0023",
-      "name": "白线道路端点0023",
+      "id": "road_white_endpoint_0022",
+      "name": "白线道路端点0022",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11055,8 +11053,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0024",
-      "name": "白线道路端点0024",
+      "id": "road_white_endpoint_0023",
+      "name": "白线道路端点0023",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11082,8 +11080,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0025",
-      "name": "白线道路端点0025",
+      "id": "road_white_endpoint_0024",
+      "name": "白线道路端点0024",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11109,8 +11107,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0026",
-      "name": "白线道路端点0026",
+      "id": "road_white_endpoint_0025",
+      "name": "白线道路端点0025",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11136,8 +11134,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0027",
-      "name": "白线道路端点0027",
+      "id": "road_white_endpoint_0026",
+      "name": "白线道路端点0026",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11165,8 +11163,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0028",
-      "name": "白线道路端点0028",
+      "id": "road_white_endpoint_0027",
+      "name": "白线道路端点0027",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11194,8 +11192,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0029",
-      "name": "白线道路端点0029",
+      "id": "road_white_endpoint_0028",
+      "name": "白线道路端点0028",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11221,37 +11219,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0030",
-      "name": "白线道路端点0030",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1157945339",
-        "1159305397"
-      ],
-      "source_highways": [
-        "footway",
-        "steps"
-      ],
-      "location": {
-        "lat": 39.9871967,
-        "lng": 116.3022108
-      }
-    },
-    {
-      "id": "road_white_endpoint_0031",
-      "name": "白线道路端点0031",
+      "id": "road_white_endpoint_0029",
+      "name": "白线道路端点0029",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11277,8 +11246,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0032",
-      "name": "白线道路端点0032",
+      "id": "road_white_endpoint_0030",
+      "name": "白线道路端点0030",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11304,8 +11273,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0033",
-      "name": "白线道路端点0033",
+      "id": "road_white_endpoint_0031",
+      "name": "白线道路端点0031",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11333,8 +11302,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0034",
-      "name": "白线道路端点0034",
+      "id": "road_white_endpoint_0032",
+      "name": "白线道路端点0032",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11360,8 +11329,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0035",
-      "name": "白线道路端点0035",
+      "id": "road_white_endpoint_0033",
+      "name": "白线道路端点0033",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11387,8 +11356,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0036",
-      "name": "白线道路端点0036",
+      "id": "road_white_endpoint_0034",
+      "name": "白线道路端点0034",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11414,8 +11383,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0037",
-      "name": "白线道路端点0037",
+      "id": "road_white_endpoint_0035",
+      "name": "白线道路端点0035",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11441,8 +11410,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0038",
-      "name": "白线道路端点0038",
+      "id": "road_white_endpoint_0036",
+      "name": "白线道路端点0036",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11470,8 +11439,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0039",
-      "name": "白线道路端点0039",
+      "id": "road_white_endpoint_0037",
+      "name": "白线道路端点0037",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11497,8 +11466,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0040",
-      "name": "白线道路端点0040",
+      "id": "road_white_endpoint_0038",
+      "name": "白线道路端点0038",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11524,8 +11493,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0041",
-      "name": "白线道路端点0041",
+      "id": "road_white_endpoint_0039",
+      "name": "白线道路端点0039",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11553,8 +11522,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0042",
-      "name": "白线道路端点0042",
+      "id": "road_white_endpoint_0040",
+      "name": "白线道路端点0040",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11582,8 +11551,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0043",
-      "name": "白线道路端点0043",
+      "id": "road_white_endpoint_0041",
+      "name": "白线道路端点0041",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11609,8 +11578,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0044",
-      "name": "白线道路端点0044",
+      "id": "road_white_endpoint_0042",
+      "name": "白线道路端点0042",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11638,8 +11607,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0045",
-      "name": "白线道路端点0045",
+      "id": "road_white_endpoint_0043",
+      "name": "白线道路端点0043",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11665,8 +11634,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0046",
-      "name": "白线道路端点0046",
+      "id": "road_white_endpoint_0044",
+      "name": "白线道路端点0044",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11694,8 +11663,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0047",
-      "name": "白线道路端点0047",
+      "id": "road_white_endpoint_0045",
+      "name": "白线道路端点0045",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11723,8 +11692,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0048",
-      "name": "白线道路端点0048",
+      "id": "road_white_endpoint_0046",
+      "name": "白线道路端点0046",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11752,35 +11721,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0049",
-      "name": "白线道路端点0049",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1159153754"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9875005,
-        "lng": 116.3082842
-      }
-    },
-    {
-      "id": "road_white_endpoint_0050",
-      "name": "白线道路端点0050",
+      "id": "road_white_endpoint_0047",
+      "name": "白线道路端点0047",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11806,8 +11748,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0051",
-      "name": "白线道路端点0051",
+      "id": "road_white_endpoint_0048",
+      "name": "白线道路端点0048",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11833,8 +11775,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0052",
-      "name": "白线道路端点0052",
+      "id": "road_white_endpoint_0049",
+      "name": "白线道路端点0049",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11860,8 +11802,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0053",
-      "name": "白线道路端点0053",
+      "id": "road_white_endpoint_0050",
+      "name": "白线道路端点0050",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11889,8 +11831,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0054",
-      "name": "白线道路端点0054",
+      "id": "road_white_endpoint_0051",
+      "name": "白线道路端点0051",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11916,8 +11858,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0055",
-      "name": "白线道路端点0055",
+      "id": "road_white_endpoint_0052",
+      "name": "白线道路端点0052",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11943,8 +11885,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0056",
-      "name": "白线道路端点0056",
+      "id": "road_white_endpoint_0053",
+      "name": "白线道路端点0053",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11970,8 +11912,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0057",
-      "name": "白线道路端点0057",
+      "id": "road_white_endpoint_0054",
+      "name": "白线道路端点0054",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -11999,8 +11941,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0058",
-      "name": "白线道路端点0058",
+      "id": "road_white_endpoint_0055",
+      "name": "白线道路端点0055",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12026,8 +11968,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0059",
-      "name": "白线道路端点0059",
+      "id": "road_white_endpoint_0056",
+      "name": "白线道路端点0056",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12053,8 +11995,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0060",
-      "name": "白线道路端点0060",
+      "id": "road_white_endpoint_0057",
+      "name": "白线道路端点0057",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12082,35 +12024,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0061",
-      "name": "白线道路端点0061",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1159607774"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9876436,
-        "lng": 116.30751
-      }
-    },
-    {
-      "id": "road_white_endpoint_0062",
-      "name": "白线道路端点0062",
+      "id": "road_white_endpoint_0058",
+      "name": "白线道路端点0058",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12133,40 +12048,13 @@
         "steps"
       ],
       "location": {
-        "lat": 39.9876583,
-        "lng": 116.3080724
+        "lat": 39.9876622,
+        "lng": 116.308072
       }
     },
     {
-      "id": "road_white_endpoint_0063",
-      "name": "白线道路端点0063",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1160812176"
-      ],
-      "source_highways": [
-        "steps"
-      ],
-      "location": {
-        "lat": 39.9876699,
-        "lng": 116.3080713
-      }
-    },
-    {
-      "id": "road_white_endpoint_0064",
-      "name": "白线道路端点0064",
+      "id": "road_white_endpoint_0059",
+      "name": "白线道路端点0059",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12193,8 +12081,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0065",
-      "name": "白线道路端点0065",
+      "id": "road_white_endpoint_0060",
+      "name": "白线道路端点0060",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12220,8 +12108,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0066",
-      "name": "白线道路端点0066",
+      "id": "road_white_endpoint_0061",
+      "name": "白线道路端点0061",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12247,8 +12135,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0067",
-      "name": "白线道路端点0067",
+      "id": "road_white_endpoint_0062",
+      "name": "白线道路端点0062",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12274,8 +12162,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0068",
-      "name": "白线道路端点0068",
+      "id": "road_white_endpoint_0063",
+      "name": "白线道路端点0063",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12301,8 +12189,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0069",
-      "name": "白线道路端点0069",
+      "id": "road_white_endpoint_0064",
+      "name": "白线道路端点0064",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12328,8 +12216,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0070",
-      "name": "白线道路端点0070",
+      "id": "road_white_endpoint_0065",
+      "name": "白线道路端点0065",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12355,8 +12243,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0071",
-      "name": "白线道路端点0071",
+      "id": "road_white_endpoint_0066",
+      "name": "白线道路端点0066",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12384,8 +12272,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0072",
-      "name": "白线道路端点0072",
+      "id": "road_white_endpoint_0067",
+      "name": "白线道路端点0067",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12411,8 +12299,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0073",
-      "name": "白线道路端点0073",
+      "id": "road_white_endpoint_0068",
+      "name": "白线道路端点0068",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12438,8 +12326,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0074",
-      "name": "白线道路端点0074",
+      "id": "road_white_endpoint_0069",
+      "name": "白线道路端点0069",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12465,8 +12353,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0075",
-      "name": "白线道路端点0075",
+      "id": "road_white_endpoint_0070",
+      "name": "白线道路端点0070",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12493,8 +12381,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0076",
-      "name": "白线道路端点0076",
+      "id": "road_white_endpoint_0071",
+      "name": "白线道路端点0071",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12520,8 +12408,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0077",
-      "name": "白线道路端点0077",
+      "id": "road_white_endpoint_0072",
+      "name": "白线道路端点0072",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12547,8 +12435,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0078",
-      "name": "白线道路端点0078",
+      "id": "road_white_endpoint_0073",
+      "name": "白线道路端点0073",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12574,8 +12462,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0079",
-      "name": "白线道路端点0079",
+      "id": "road_white_endpoint_0074",
+      "name": "白线道路端点0074",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12601,8 +12489,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0080",
-      "name": "白线道路端点0080",
+      "id": "road_white_endpoint_0075",
+      "name": "白线道路端点0075",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12629,8 +12517,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0081",
-      "name": "白线道路端点0081",
+      "id": "road_white_endpoint_0076",
+      "name": "白线道路端点0076",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12656,8 +12544,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0082",
-      "name": "白线道路端点0082",
+      "id": "road_white_endpoint_0077",
+      "name": "白线道路端点0077",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12683,8 +12571,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0083",
-      "name": "白线道路端点0083",
+      "id": "road_white_endpoint_0078",
+      "name": "白线道路端点0078",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12710,8 +12598,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0084",
-      "name": "白线道路端点0084",
+      "id": "road_white_endpoint_0079",
+      "name": "白线道路端点0079",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12737,8 +12625,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0085",
-      "name": "白线道路端点0085",
+      "id": "road_white_endpoint_0080",
+      "name": "白线道路端点0080",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12765,8 +12653,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0086",
-      "name": "白线道路端点0086",
+      "id": "road_white_endpoint_0081",
+      "name": "白线道路端点0081",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12792,8 +12680,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0087",
-      "name": "白线道路端点0087",
+      "id": "road_white_endpoint_0082",
+      "name": "白线道路端点0082",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12819,8 +12707,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0088",
-      "name": "白线道路端点0088",
+      "id": "road_white_endpoint_0083",
+      "name": "白线道路端点0083",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12846,8 +12734,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0089",
-      "name": "白线道路端点0089",
+      "id": "road_white_endpoint_0084",
+      "name": "白线道路端点0084",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12875,8 +12763,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0090",
-      "name": "白线道路端点0090",
+      "id": "road_white_endpoint_0085",
+      "name": "白线道路端点0085",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12903,8 +12791,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0091",
-      "name": "白线道路端点0091",
+      "id": "road_white_endpoint_0086",
+      "name": "白线道路端点0086",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12932,8 +12820,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0092",
-      "name": "白线道路端点0092",
+      "id": "road_white_endpoint_0087",
+      "name": "白线道路端点0087",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12961,8 +12849,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0093",
-      "name": "白线道路端点0093",
+      "id": "road_white_endpoint_0088",
+      "name": "白线道路端点0088",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -12988,8 +12876,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0094",
-      "name": "白线道路端点0094",
+      "id": "road_white_endpoint_0089",
+      "name": "白线道路端点0089",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13016,8 +12904,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0095",
-      "name": "白线道路端点0095",
+      "id": "road_white_endpoint_0090",
+      "name": "白线道路端点0090",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13043,8 +12931,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0096",
-      "name": "白线道路端点0096",
+      "id": "road_white_endpoint_0091",
+      "name": "白线道路端点0091",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13070,8 +12958,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0097",
-      "name": "白线道路端点0097",
+      "id": "road_white_endpoint_0092",
+      "name": "白线道路端点0092",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13097,8 +12985,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0098",
-      "name": "白线道路端点0098",
+      "id": "road_white_endpoint_0093",
+      "name": "白线道路端点0093",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13124,8 +13012,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0099",
-      "name": "白线道路端点0099",
+      "id": "road_white_endpoint_0094",
+      "name": "白线道路端点0094",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13151,8 +13039,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0100",
-      "name": "白线道路端点0100",
+      "id": "road_white_endpoint_0095",
+      "name": "白线道路端点0095",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13178,8 +13066,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0101",
-      "name": "白线道路端点0101",
+      "id": "road_white_endpoint_0096",
+      "name": "白线道路端点0096",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13205,66 +13093,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0102",
-      "name": "白线道路端点0102",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1157945334",
-        "1160812163"
-      ],
-      "source_highways": [
-        "footway",
-        "steps"
-      ],
-      "location": {
-        "lat": 39.9883778,
-        "lng": 116.3040185
-      }
-    },
-    {
-      "id": "road_white_endpoint_0103",
-      "name": "白线道路端点0103",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1157945336",
-        "1160812167"
-      ],
-      "source_highways": [
-        "footway",
-        "steps"
-      ],
-      "location": {
-        "lat": 39.9885272,
-        "lng": 116.3046763
-      }
-    },
-    {
-      "id": "road_white_endpoint_0104",
-      "name": "白线道路端点0104",
+      "id": "road_white_endpoint_0097",
+      "name": "白线道路端点0097",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13290,8 +13120,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0105",
-      "name": "白线道路端点0105",
+      "id": "road_white_endpoint_0098",
+      "name": "白线道路端点0098",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13317,8 +13147,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0106",
-      "name": "白线道路端点0106",
+      "id": "road_white_endpoint_0099",
+      "name": "白线道路端点0099",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13344,8 +13174,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0107",
-      "name": "白线道路端点0107",
+      "id": "road_white_endpoint_0100",
+      "name": "白线道路端点0100",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13371,8 +13201,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0108",
-      "name": "白线道路端点0108",
+      "id": "road_white_endpoint_0101",
+      "name": "白线道路端点0101",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13400,8 +13230,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0109",
-      "name": "白线道路端点0109",
+      "id": "road_white_endpoint_0102",
+      "name": "白线道路端点0102",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13427,8 +13257,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0110",
-      "name": "白线道路端点0110",
+      "id": "road_white_endpoint_0103",
+      "name": "白线道路端点0103",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13454,8 +13284,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0111",
-      "name": "白线道路端点0111",
+      "id": "road_white_endpoint_0104",
+      "name": "白线道路端点0104",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13483,35 +13313,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0112",
-      "name": "白线道路端点0112",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1160812171"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9886697,
-        "lng": 116.307778
-      }
-    },
-    {
-      "id": "road_white_endpoint_0113",
-      "name": "白线道路端点0113",
+      "id": "road_white_endpoint_0105",
+      "name": "白线道路端点0105",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13533,13 +13336,13 @@
         "footway"
       ],
       "location": {
-        "lat": 39.9886779,
-        "lng": 116.3049607
+        "lat": 39.988681,
+        "lng": 116.3049606
       }
     },
     {
-      "id": "road_white_endpoint_0114",
-      "name": "白线道路端点0114",
+      "id": "road_white_endpoint_0106",
+      "name": "白线道路端点0106",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13565,35 +13368,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0115",
-      "name": "白线道路端点0115",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1182823483"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9886873,
-        "lng": 116.3049603
-      }
-    },
-    {
-      "id": "road_white_endpoint_0116",
-      "name": "白线道路端点0116",
+      "id": "road_white_endpoint_0107",
+      "name": "白线道路端点0107",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13619,8 +13395,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0117",
-      "name": "白线道路端点0117",
+      "id": "road_white_endpoint_0108",
+      "name": "白线道路端点0108",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13648,8 +13424,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0118",
-      "name": "白线道路端点0118",
+      "id": "road_white_endpoint_0109",
+      "name": "白线道路端点0109",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13675,8 +13451,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0119",
-      "name": "白线道路端点0119",
+      "id": "road_white_endpoint_0110",
+      "name": "白线道路端点0110",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13702,8 +13478,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0120",
-      "name": "白线道路端点0120",
+      "id": "road_white_endpoint_0111",
+      "name": "白线道路端点0111",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13729,8 +13505,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0121",
-      "name": "白线道路端点0121",
+      "id": "road_white_endpoint_0112",
+      "name": "白线道路端点0112",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13756,8 +13532,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0122",
-      "name": "白线道路端点0122",
+      "id": "road_white_endpoint_0113",
+      "name": "白线道路端点0113",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13783,8 +13559,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0123",
-      "name": "白线道路端点0123",
+      "id": "road_white_endpoint_0114",
+      "name": "白线道路端点0114",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13810,8 +13586,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0124",
-      "name": "白线道路端点0124",
+      "id": "road_white_endpoint_0115",
+      "name": "白线道路端点0115",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13837,8 +13613,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0125",
-      "name": "白线道路端点0125",
+      "id": "road_white_endpoint_0116",
+      "name": "白线道路端点0116",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13864,8 +13640,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0126",
-      "name": "白线道路端点0126",
+      "id": "road_white_endpoint_0117",
+      "name": "白线道路端点0117",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13891,8 +13667,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0127",
-      "name": "白线道路端点0127",
+      "id": "road_white_endpoint_0118",
+      "name": "白线道路端点0118",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13918,8 +13694,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0128",
-      "name": "白线道路端点0128",
+      "id": "road_white_endpoint_0119",
+      "name": "白线道路端点0119",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13945,8 +13721,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0129",
-      "name": "白线道路端点0129",
+      "id": "road_white_endpoint_0120",
+      "name": "白线道路端点0120",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13972,8 +13748,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0130",
-      "name": "白线道路端点0130",
+      "id": "road_white_endpoint_0121",
+      "name": "白线道路端点0121",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -13999,8 +13775,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0131",
-      "name": "白线道路端点0131",
+      "id": "road_white_endpoint_0122",
+      "name": "白线道路端点0122",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14026,35 +13802,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0132",
-      "name": "白线道路端点0132",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1206332681"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9889747,
-        "lng": 116.3121604
-      }
-    },
-    {
-      "id": "road_white_endpoint_0133",
-      "name": "白线道路端点0133",
+      "id": "road_white_endpoint_0123",
+      "name": "白线道路端点0123",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14080,8 +13829,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0134",
-      "name": "白线道路端点0134",
+      "id": "road_white_endpoint_0124",
+      "name": "白线道路端点0124",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14107,8 +13856,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0135",
-      "name": "白线道路端点0135",
+      "id": "road_white_endpoint_0125",
+      "name": "白线道路端点0125",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14134,36 +13883,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0136",
-      "name": "白线道路端点0136",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1206332672",
-        "264247408"
-      ],
-      "source_highways": [
-        "residential"
-      ],
-      "location": {
-        "lat": 39.9890293,
-        "lng": 116.3120966
-      }
-    },
-    {
-      "id": "road_white_endpoint_0137",
-      "name": "白线道路端点0137",
+      "id": "road_white_endpoint_0126",
+      "name": "白线道路端点0126",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14189,8 +13910,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0138",
-      "name": "白线道路端点0138",
+      "id": "road_white_endpoint_0127",
+      "name": "白线道路端点0127",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14216,8 +13937,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0139",
-      "name": "白线道路端点0139",
+      "id": "road_white_endpoint_0128",
+      "name": "白线道路端点0128",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14243,8 +13964,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0140",
-      "name": "白线道路端点0140",
+      "id": "road_white_endpoint_0129",
+      "name": "白线道路端点0129",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14270,8 +13991,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0141",
-      "name": "白线道路端点0141",
+      "id": "road_white_endpoint_0130",
+      "name": "白线道路端点0130",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14297,8 +14018,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0142",
-      "name": "白线道路端点0142",
+      "id": "road_white_endpoint_0131",
+      "name": "白线道路端点0131",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14325,8 +14046,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0143",
-      "name": "白线道路端点0143",
+      "id": "road_white_endpoint_0132",
+      "name": "白线道路端点0132",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14352,8 +14073,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0144",
-      "name": "白线道路端点0144",
+      "id": "road_white_endpoint_0133",
+      "name": "白线道路端点0133",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14379,35 +14100,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0145",
-      "name": "白线道路端点0145",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "993427293"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9891805,
-        "lng": 116.3051609
-      }
-    },
-    {
-      "id": "road_white_endpoint_0146",
-      "name": "白线道路端点0146",
+      "id": "road_white_endpoint_0134",
+      "name": "白线道路端点0134",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14434,8 +14128,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0147",
-      "name": "白线道路端点0147",
+      "id": "road_white_endpoint_0135",
+      "name": "白线道路端点0135",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14461,8 +14155,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0148",
-      "name": "白线道路端点0148",
+      "id": "road_white_endpoint_0136",
+      "name": "白线道路端点0136",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14488,8 +14182,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0149",
-      "name": "白线道路端点0149",
+      "id": "road_white_endpoint_0137",
+      "name": "白线道路端点0137",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14515,8 +14209,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0150",
-      "name": "白线道路端点0150",
+      "id": "road_white_endpoint_0138",
+      "name": "白线道路端点0138",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14542,8 +14236,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0151",
-      "name": "白线道路端点0151",
+      "id": "road_white_endpoint_0139",
+      "name": "白线道路端点0139",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14569,8 +14263,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0152",
-      "name": "白线道路端点0152",
+      "id": "road_white_endpoint_0140",
+      "name": "白线道路端点0140",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14596,8 +14290,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0153",
-      "name": "白线道路端点0153",
+      "id": "road_white_endpoint_0141",
+      "name": "白线道路端点0141",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14623,35 +14317,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0154",
-      "name": "白线道路端点0154",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "369334396"
-      ],
-      "source_highways": [
-        "residential"
-      ],
-      "location": {
-        "lat": 39.9893853,
-        "lng": 116.3120743
-      }
-    },
-    {
-      "id": "road_white_endpoint_0155",
-      "name": "白线道路端点0155",
+      "id": "road_white_endpoint_0142",
+      "name": "白线道路端点0142",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14677,8 +14344,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0156",
-      "name": "白线道路端点0156",
+      "id": "road_white_endpoint_0143",
+      "name": "白线道路端点0143",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14704,8 +14371,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0157",
-      "name": "白线道路端点0157",
+      "id": "road_white_endpoint_0144",
+      "name": "白线道路端点0144",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14732,8 +14399,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0158",
-      "name": "白线道路端点0158",
+      "id": "road_white_endpoint_0145",
+      "name": "白线道路端点0145",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14760,8 +14427,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0159",
-      "name": "白线道路端点0159",
+      "id": "road_white_endpoint_0146",
+      "name": "白线道路端点0146",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14787,8 +14454,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0160",
-      "name": "白线道路端点0160",
+      "id": "road_white_endpoint_0147",
+      "name": "白线道路端点0147",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14814,8 +14481,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0161",
-      "name": "白线道路端点0161",
+      "id": "road_white_endpoint_0148",
+      "name": "白线道路端点0148",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14841,8 +14508,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0162",
-      "name": "白线道路端点0162",
+      "id": "road_white_endpoint_0149",
+      "name": "白线道路端点0149",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14869,8 +14536,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0163",
-      "name": "白线道路端点0163",
+      "id": "road_white_endpoint_0150",
+      "name": "白线道路端点0150",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14896,8 +14563,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0164",
-      "name": "白线道路端点0164",
+      "id": "road_white_endpoint_0151",
+      "name": "白线道路端点0151",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14923,8 +14590,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0165",
-      "name": "白线道路端点0165",
+      "id": "road_white_endpoint_0152",
+      "name": "白线道路端点0152",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14950,8 +14617,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0166",
-      "name": "白线道路端点0166",
+      "id": "road_white_endpoint_0153",
+      "name": "白线道路端点0153",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -14978,8 +14645,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0167",
-      "name": "白线道路端点0167",
+      "id": "road_white_endpoint_0154",
+      "name": "白线道路端点0154",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15006,36 +14673,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0168",
-      "name": "白线道路端点0168",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "369334423",
-        "369334553"
-      ],
-      "source_highways": [
-        "residential"
-      ],
-      "location": {
-        "lat": 39.9897624,
-        "lng": 116.3135267
-      }
-    },
-    {
-      "id": "road_white_endpoint_0169",
-      "name": "白线道路端点0169",
+      "id": "road_white_endpoint_0155",
+      "name": "白线道路端点0155",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15061,8 +14700,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0170",
-      "name": "白线道路端点0170",
+      "id": "road_white_endpoint_0156",
+      "name": "白线道路端点0156",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15088,35 +14727,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0171",
-      "name": "白线道路端点0171",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "369334397"
-      ],
-      "source_highways": [
-        "residential"
-      ],
-      "location": {
-        "lat": 39.9898088,
-        "lng": 116.3144704
-      }
-    },
-    {
-      "id": "road_white_endpoint_0172",
-      "name": "白线道路端点0172",
+      "id": "road_white_endpoint_0157",
+      "name": "白线道路端点0157",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15142,8 +14754,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0173",
-      "name": "白线道路端点0173",
+      "id": "road_white_endpoint_0158",
+      "name": "白线道路端点0158",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15169,8 +14781,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0174",
-      "name": "白线道路端点0174",
+      "id": "road_white_endpoint_0159",
+      "name": "白线道路端点0159",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15196,8 +14808,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0175",
-      "name": "白线道路端点0175",
+      "id": "road_white_endpoint_0160",
+      "name": "白线道路端点0160",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15223,8 +14835,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0176",
-      "name": "白线道路端点0176",
+      "id": "road_white_endpoint_0161",
+      "name": "白线道路端点0161",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15250,8 +14862,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0177",
-      "name": "白线道路端点0177",
+      "id": "road_white_endpoint_0162",
+      "name": "白线道路端点0162",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15277,8 +14889,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0178",
-      "name": "白线道路端点0178",
+      "id": "road_white_endpoint_0163",
+      "name": "白线道路端点0163",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15305,8 +14917,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0179",
-      "name": "白线道路端点0179",
+      "id": "road_white_endpoint_0164",
+      "name": "白线道路端点0164",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15332,8 +14944,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0180",
-      "name": "白线道路端点0180",
+      "id": "road_white_endpoint_0165",
+      "name": "白线道路端点0165",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15361,8 +14973,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0181",
-      "name": "白线道路端点0181",
+      "id": "road_white_endpoint_0166",
+      "name": "白线道路端点0166",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15388,8 +15000,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0182",
-      "name": "白线道路端点0182",
+      "id": "road_white_endpoint_0167",
+      "name": "白线道路端点0167",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15415,8 +15027,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0183",
-      "name": "白线道路端点0183",
+      "id": "road_white_endpoint_0168",
+      "name": "白线道路端点0168",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15442,8 +15054,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0184",
-      "name": "白线道路端点0184",
+      "id": "road_white_endpoint_0169",
+      "name": "白线道路端点0169",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15469,8 +15081,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0185",
-      "name": "白线道路端点0185",
+      "id": "road_white_endpoint_0170",
+      "name": "白线道路端点0170",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15497,8 +15109,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0186",
-      "name": "白线道路端点0186",
+      "id": "road_white_endpoint_0171",
+      "name": "白线道路端点0171",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15524,8 +15136,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0187",
-      "name": "白线道路端点0187",
+      "id": "road_white_endpoint_0172",
+      "name": "白线道路端点0172",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15553,8 +15165,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0188",
-      "name": "白线道路端点0188",
+      "id": "road_white_endpoint_0173",
+      "name": "白线道路端点0173",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15580,8 +15192,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0189",
-      "name": "白线道路端点0189",
+      "id": "road_white_endpoint_0174",
+      "name": "白线道路端点0174",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15607,8 +15219,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0190",
-      "name": "白线道路端点0190",
+      "id": "road_white_endpoint_0175",
+      "name": "白线道路端点0175",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15634,8 +15246,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0191",
-      "name": "白线道路端点0191",
+      "id": "road_white_endpoint_0176",
+      "name": "白线道路端点0176",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15663,8 +15275,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0192",
-      "name": "白线道路端点0192",
+      "id": "road_white_endpoint_0177",
+      "name": "白线道路端点0177",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15690,8 +15302,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0193",
-      "name": "白线道路端点0193",
+      "id": "road_white_endpoint_0178",
+      "name": "白线道路端点0178",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15717,8 +15329,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0194",
-      "name": "白线道路端点0194",
+      "id": "road_white_endpoint_0179",
+      "name": "白线道路端点0179",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15744,8 +15356,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0195",
-      "name": "白线道路端点0195",
+      "id": "road_white_endpoint_0180",
+      "name": "白线道路端点0180",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15771,8 +15383,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0196",
-      "name": "白线道路端点0196",
+      "id": "road_white_endpoint_0181",
+      "name": "白线道路端点0181",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15798,8 +15410,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0197",
-      "name": "白线道路端点0197",
+      "id": "road_white_endpoint_0182",
+      "name": "白线道路端点0182",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15825,8 +15437,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0198",
-      "name": "白线道路端点0198",
+      "id": "road_white_endpoint_0183",
+      "name": "白线道路端点0183",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15852,8 +15464,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0199",
-      "name": "白线道路端点0199",
+      "id": "road_white_endpoint_0184",
+      "name": "白线道路端点0184",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15879,8 +15491,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0200",
-      "name": "白线道路端点0200",
+      "id": "road_white_endpoint_0185",
+      "name": "白线道路端点0185",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15906,8 +15518,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0201",
-      "name": "白线道路端点0201",
+      "id": "road_white_endpoint_0186",
+      "name": "白线道路端点0186",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15935,8 +15547,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0202",
-      "name": "白线道路端点0202",
+      "id": "road_white_endpoint_0187",
+      "name": "白线道路端点0187",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15964,8 +15576,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0203",
-      "name": "白线道路端点0203",
+      "id": "road_white_endpoint_0188",
+      "name": "白线道路端点0188",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -15993,8 +15605,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0204",
-      "name": "白线道路端点0204",
+      "id": "road_white_endpoint_0189",
+      "name": "白线道路端点0189",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16022,8 +15634,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0205",
-      "name": "白线道路端点0205",
+      "id": "road_white_endpoint_0190",
+      "name": "白线道路端点0190",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16051,8 +15663,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0206",
-      "name": "白线道路端点0206",
+      "id": "road_white_endpoint_0191",
+      "name": "白线道路端点0191",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16078,8 +15690,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0207",
-      "name": "白线道路端点0207",
+      "id": "road_white_endpoint_0192",
+      "name": "白线道路端点0192",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16105,8 +15717,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0208",
-      "name": "白线道路端点0208",
+      "id": "road_white_endpoint_0193",
+      "name": "白线道路端点0193",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16134,35 +15746,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0209",
-      "name": "白线道路端点0209",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1159305375"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.990735,
-        "lng": 116.3075238
-      }
-    },
-    {
-      "id": "road_white_endpoint_0210",
-      "name": "白线道路端点0210",
+      "id": "road_white_endpoint_0194",
+      "name": "白线道路端点0194",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16188,8 +15773,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0211",
-      "name": "白线道路端点0211",
+      "id": "road_white_endpoint_0195",
+      "name": "白线道路端点0195",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16215,8 +15800,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0212",
-      "name": "白线道路端点0212",
+      "id": "road_white_endpoint_0196",
+      "name": "白线道路端点0196",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16242,8 +15827,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0213",
-      "name": "白线道路端点0213",
+      "id": "road_white_endpoint_0197",
+      "name": "白线道路端点0197",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16269,8 +15854,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0214",
-      "name": "白线道路端点0214",
+      "id": "road_white_endpoint_0198",
+      "name": "白线道路端点0198",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16296,8 +15881,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0215",
-      "name": "白线道路端点0215",
+      "id": "road_white_endpoint_0199",
+      "name": "白线道路端点0199",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16324,8 +15909,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0216",
-      "name": "白线道路端点0216",
+      "id": "road_white_endpoint_0200",
+      "name": "白线道路端点0200",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16351,8 +15936,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0217",
-      "name": "白线道路端点0217",
+      "id": "road_white_endpoint_0201",
+      "name": "白线道路端点0201",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16378,8 +15963,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0218",
-      "name": "白线道路端点0218",
+      "id": "road_white_endpoint_0202",
+      "name": "白线道路端点0202",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16405,8 +15990,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0219",
-      "name": "白线道路端点0219",
+      "id": "road_white_endpoint_0203",
+      "name": "白线道路端点0203",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16434,8 +16019,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0220",
-      "name": "白线道路端点0220",
+      "id": "road_white_endpoint_0204",
+      "name": "白线道路端点0204",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16463,8 +16048,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0221",
-      "name": "白线道路端点0221",
+      "id": "road_white_endpoint_0205",
+      "name": "白线道路端点0205",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16490,8 +16075,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0222",
-      "name": "白线道路端点0222",
+      "id": "road_white_endpoint_0206",
+      "name": "白线道路端点0206",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16518,8 +16103,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0223",
-      "name": "白线道路端点0223",
+      "id": "road_white_endpoint_0207",
+      "name": "白线道路端点0207",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16545,8 +16130,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0224",
-      "name": "白线道路端点0224",
+      "id": "road_white_endpoint_0208",
+      "name": "白线道路端点0208",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16572,8 +16157,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0225",
-      "name": "白线道路端点0225",
+      "id": "road_white_endpoint_0209",
+      "name": "白线道路端点0209",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16599,8 +16184,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0226",
-      "name": "白线道路端点0226",
+      "id": "road_white_endpoint_0210",
+      "name": "白线道路端点0210",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16626,8 +16211,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0227",
-      "name": "白线道路端点0227",
+      "id": "road_white_endpoint_0211",
+      "name": "白线道路端点0211",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16653,8 +16238,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0228",
-      "name": "白线道路端点0228",
+      "id": "road_white_endpoint_0212",
+      "name": "白线道路端点0212",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16682,8 +16267,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0229",
-      "name": "白线道路端点0229",
+      "id": "road_white_endpoint_0213",
+      "name": "白线道路端点0213",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16709,8 +16294,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0230",
-      "name": "白线道路端点0230",
+      "id": "road_white_endpoint_0214",
+      "name": "白线道路端点0214",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16736,8 +16321,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0231",
-      "name": "白线道路端点0231",
+      "id": "road_white_endpoint_0215",
+      "name": "白线道路端点0215",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16763,8 +16348,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0232",
-      "name": "白线道路端点0232",
+      "id": "road_white_endpoint_0216",
+      "name": "白线道路端点0216",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16790,8 +16375,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0233",
-      "name": "白线道路端点0233",
+      "id": "road_white_endpoint_0217",
+      "name": "白线道路端点0217",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16817,8 +16402,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0234",
-      "name": "白线道路端点0234",
+      "id": "road_white_endpoint_0218",
+      "name": "白线道路端点0218",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16846,8 +16431,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0235",
-      "name": "白线道路端点0235",
+      "id": "road_white_endpoint_0219",
+      "name": "白线道路端点0219",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16873,8 +16458,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0236",
-      "name": "白线道路端点0236",
+      "id": "road_white_endpoint_0220",
+      "name": "白线道路端点0220",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16900,8 +16485,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0237",
-      "name": "白线道路端点0237",
+      "id": "road_white_endpoint_0221",
+      "name": "白线道路端点0221",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16927,8 +16512,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0238",
-      "name": "白线道路端点0238",
+      "id": "road_white_endpoint_0222",
+      "name": "白线道路端点0222",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16954,8 +16539,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0239",
-      "name": "白线道路端点0239",
+      "id": "road_white_endpoint_0223",
+      "name": "白线道路端点0223",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -16983,8 +16568,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0240",
-      "name": "白线道路端点0240",
+      "id": "road_white_endpoint_0224",
+      "name": "白线道路端点0224",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17010,8 +16595,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0241",
-      "name": "白线道路端点0241",
+      "id": "road_white_endpoint_0225",
+      "name": "白线道路端点0225",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17037,8 +16622,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0242",
-      "name": "白线道路端点0242",
+      "id": "road_white_endpoint_0226",
+      "name": "白线道路端点0226",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17064,8 +16649,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0243",
-      "name": "白线道路端点0243",
+      "id": "road_white_endpoint_0227",
+      "name": "白线道路端点0227",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17091,8 +16676,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0244",
-      "name": "白线道路端点0244",
+      "id": "road_white_endpoint_0228",
+      "name": "白线道路端点0228",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17118,8 +16703,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0245",
-      "name": "白线道路端点0245",
+      "id": "road_white_endpoint_0229",
+      "name": "白线道路端点0229",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17145,8 +16730,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0246",
-      "name": "白线道路端点0246",
+      "id": "road_white_endpoint_0230",
+      "name": "白线道路端点0230",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17172,8 +16757,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0247",
-      "name": "白线道路端点0247",
+      "id": "road_white_endpoint_0231",
+      "name": "白线道路端点0231",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17201,8 +16786,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0248",
-      "name": "白线道路端点0248",
+      "id": "road_white_endpoint_0232",
+      "name": "白线道路端点0232",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17230,8 +16815,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0249",
-      "name": "白线道路端点0249",
+      "id": "road_white_endpoint_0233",
+      "name": "白线道路端点0233",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17257,8 +16842,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0250",
-      "name": "白线道路端点0250",
+      "id": "road_white_endpoint_0234",
+      "name": "白线道路端点0234",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17284,8 +16869,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0251",
-      "name": "白线道路端点0251",
+      "id": "road_white_endpoint_0235",
+      "name": "白线道路端点0235",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17312,8 +16897,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0252",
-      "name": "白线道路端点0252",
+      "id": "road_white_endpoint_0236",
+      "name": "白线道路端点0236",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17341,8 +16926,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0253",
-      "name": "白线道路端点0253",
+      "id": "road_white_endpoint_0237",
+      "name": "白线道路端点0237",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17368,8 +16953,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0254",
-      "name": "白线道路端点0254",
+      "id": "road_white_endpoint_0238",
+      "name": "白线道路端点0238",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17395,8 +16980,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0255",
-      "name": "白线道路端点0255",
+      "id": "road_white_endpoint_0239",
+      "name": "白线道路端点0239",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17422,8 +17007,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0256",
-      "name": "白线道路端点0256",
+      "id": "road_white_endpoint_0240",
+      "name": "白线道路端点0240",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17449,8 +17034,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0257",
-      "name": "白线道路端点0257",
+      "id": "road_white_endpoint_0241",
+      "name": "白线道路端点0241",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17476,8 +17061,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0258",
-      "name": "白线道路端点0258",
+      "id": "road_white_endpoint_0242",
+      "name": "白线道路端点0242",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17503,8 +17088,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0259",
-      "name": "白线道路端点0259",
+      "id": "road_white_endpoint_0243",
+      "name": "白线道路端点0243",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17530,8 +17115,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0260",
-      "name": "白线道路端点0260",
+      "id": "road_white_endpoint_0244",
+      "name": "白线道路端点0244",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17557,8 +17142,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0261",
-      "name": "白线道路端点0261",
+      "id": "road_white_endpoint_0245",
+      "name": "白线道路端点0245",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17584,8 +17169,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0262",
-      "name": "白线道路端点0262",
+      "id": "road_white_endpoint_0246",
+      "name": "白线道路端点0246",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17611,8 +17196,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0263",
-      "name": "白线道路端点0263",
+      "id": "road_white_endpoint_0247",
+      "name": "白线道路端点0247",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17638,8 +17223,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0264",
-      "name": "白线道路端点0264",
+      "id": "road_white_endpoint_0248",
+      "name": "白线道路端点0248",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17665,8 +17250,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0265",
-      "name": "白线道路端点0265",
+      "id": "road_white_endpoint_0249",
+      "name": "白线道路端点0249",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17692,8 +17277,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0266",
-      "name": "白线道路端点0266",
+      "id": "road_white_endpoint_0250",
+      "name": "白线道路端点0250",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17720,8 +17305,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0267",
-      "name": "白线道路端点0267",
+      "id": "road_white_endpoint_0251",
+      "name": "白线道路端点0251",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17747,35 +17332,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0268",
-      "name": "白线道路端点0268",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1151226551"
-      ],
-      "source_highways": [
-        "footway"
-      ],
-      "location": {
-        "lat": 39.9924402,
-        "lng": 116.3061867
-      }
-    },
-    {
-      "id": "road_white_endpoint_0269",
-      "name": "白线道路端点0269",
+      "id": "road_white_endpoint_0252",
+      "name": "白线道路端点0252",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17801,8 +17359,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0270",
-      "name": "白线道路端点0270",
+      "id": "road_white_endpoint_0253",
+      "name": "白线道路端点0253",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17830,8 +17388,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0271",
-      "name": "白线道路端点0271",
+      "id": "road_white_endpoint_0254",
+      "name": "白线道路端点0254",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17857,8 +17415,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0272",
-      "name": "白线道路端点0272",
+      "id": "road_white_endpoint_0255",
+      "name": "白线道路端点0255",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17886,8 +17444,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0273",
-      "name": "白线道路端点0273",
+      "id": "road_white_endpoint_0256",
+      "name": "白线道路端点0256",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17913,37 +17471,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0274",
-      "name": "白线道路端点0274",
-      "type": "waypoint",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": [
-        "白线道路",
-        "道路接驳点",
-        "白线道路端点"
-      ],
-      "description": "由本地 OSM 白线道路代理自动生成的白线道路端点，用于检查真实道路骨架。",
-      "category": "road",
-      "facilities": [],
-      "network_role": "endpoint",
-      "source": "osm_roads_simplified",
-      "source_osm_ids": [
-        "1100821746",
-        "240825571"
-      ],
-      "source_highways": [
-        "footway",
-        "service"
-      ],
-      "location": {
-        "lat": 39.9927438,
-        "lng": 116.3054488
-      }
-    },
-    {
-      "id": "road_white_endpoint_0275",
-      "name": "白线道路端点0275",
+      "id": "road_white_endpoint_0257",
+      "name": "白线道路端点0257",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17969,8 +17498,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0276",
-      "name": "白线道路端点0276",
+      "id": "road_white_endpoint_0258",
+      "name": "白线道路端点0258",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -17996,8 +17525,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0277",
-      "name": "白线道路端点0277",
+      "id": "road_white_endpoint_0259",
+      "name": "白线道路端点0259",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18023,8 +17552,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0278",
-      "name": "白线道路端点0278",
+      "id": "road_white_endpoint_0260",
+      "name": "白线道路端点0260",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18052,8 +17581,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0279",
-      "name": "白线道路端点0279",
+      "id": "road_white_endpoint_0261",
+      "name": "白线道路端点0261",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18079,8 +17608,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0280",
-      "name": "白线道路端点0280",
+      "id": "road_white_endpoint_0262",
+      "name": "白线道路端点0262",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18106,8 +17635,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0281",
-      "name": "白线道路端点0281",
+      "id": "road_white_endpoint_0263",
+      "name": "白线道路端点0263",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18134,8 +17663,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0282",
-      "name": "白线道路端点0282",
+      "id": "road_white_endpoint_0264",
+      "name": "白线道路端点0264",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18161,8 +17690,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0283",
-      "name": "白线道路端点0283",
+      "id": "road_white_endpoint_0265",
+      "name": "白线道路端点0265",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18188,8 +17717,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0284",
-      "name": "白线道路端点0284",
+      "id": "road_white_endpoint_0266",
+      "name": "白线道路端点0266",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18216,8 +17745,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0285",
-      "name": "白线道路端点0285",
+      "id": "road_white_endpoint_0267",
+      "name": "白线道路端点0267",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18243,8 +17772,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0286",
-      "name": "白线道路端点0286",
+      "id": "road_white_endpoint_0268",
+      "name": "白线道路端点0268",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18270,8 +17799,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0287",
-      "name": "白线道路端点0287",
+      "id": "road_white_endpoint_0269",
+      "name": "白线道路端点0269",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18297,8 +17826,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0288",
-      "name": "白线道路端点0288",
+      "id": "road_white_endpoint_0270",
+      "name": "白线道路端点0270",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18324,8 +17853,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0289",
-      "name": "白线道路端点0289",
+      "id": "road_white_endpoint_0271",
+      "name": "白线道路端点0271",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18351,8 +17880,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0290",
-      "name": "白线道路端点0290",
+      "id": "road_white_endpoint_0272",
+      "name": "白线道路端点0272",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18379,8 +17908,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0291",
-      "name": "白线道路端点0291",
+      "id": "road_white_endpoint_0273",
+      "name": "白线道路端点0273",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18407,8 +17936,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0292",
-      "name": "白线道路端点0292",
+      "id": "road_white_endpoint_0274",
+      "name": "白线道路端点0274",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18434,8 +17963,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0293",
-      "name": "白线道路端点0293",
+      "id": "road_white_endpoint_0275",
+      "name": "白线道路端点0275",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18461,8 +17990,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0294",
-      "name": "白线道路端点0294",
+      "id": "road_white_endpoint_0276",
+      "name": "白线道路端点0276",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
@@ -18488,8 +18017,8 @@
       }
     },
     {
-      "id": "road_white_endpoint_0295",
-      "name": "白线道路端点0295",
+      "id": "road_white_endpoint_0277",
+      "name": "白线道路端点0277",
       "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
