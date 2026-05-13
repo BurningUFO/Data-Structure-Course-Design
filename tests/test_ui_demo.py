@@ -166,6 +166,10 @@ def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
     assert first_edge["properties"]["kind"] == "edge"
     assert first_edge["properties"]["geometry_source"] in {"osm_matched", "manual"}
     assert first_edge["properties"]["is_fallback_geometry"] is False
+    assert "source_osm_id" in first_edge["properties"]
+    assert "source_highway" in first_edge["properties"]
+    assert all(edge["properties"].get("source_osm_id") for edge in edge_features)
+    assert all(edge["properties"].get("source_highway") for edge in edge_features)
     for lng, lat in first_edge["geometry"]["coordinates"]:
         assert is_number(lng)
         assert is_number(lat)
@@ -1040,6 +1044,8 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'id="map-osm-layer-controls"' in html
     assert 'id="map-osm-status"' in html
     assert 'id="map-basemap-status"' in html
+    assert 'id="white-road-role-controls"' in html
+    assert 'id="white-road-edge-toggle"' in html
     assert 'data-map-renderer="leaflet_geo"' in html
     assert 'data-map-renderer="simple_svg"' in html
     assert 'data-map-basemap="real_map"' in html
@@ -1047,6 +1053,10 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'data-osm-layer="roads"' in html
     assert 'data-osm-layer="buildings"' in html
     assert 'data-osm-layer="water_landuse"' in html
+    assert 'data-white-road-role="junction"' in html
+    assert 'data-white-road-role="bend"' in html
+    assert 'data-white-road-role="endpoint"' in html
+    assert 'data-white-road-role="poi_access"' in html
     assert 'data-demo-action="single-route"' in html
     assert 'data-demo-action="multi-route"' in html
     assert 'id="help-map-acceptance"' in html
@@ -1071,6 +1081,11 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "syncLeafletLayerOrder" in script
     assert "syncLeafletBasemapLayer" in script
     assert "switchBasemapMode" in script
+    assert "toggleWhiteRoadRole" in script
+    assert "refreshLeafletInspectionLayers" in script
+    assert "shouldRenderWhiteRoadNode" in script
+    assert "shouldRenderWhiteRoadEdge" in script
+    assert 'edgeType === "white_road" || edgeType === "poi_access"' in script
     assert "syncLeafletRouteLayer" in script
     assert "switchMapRenderer" in script
     assert "runMapDemoAction" in script
@@ -1080,12 +1095,19 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "display_role" in script
     assert "is_waypoint" in script
     assert "network_role" in script
+    assert "source_osm_id(s)" in script
+    assert "source_highway(s)" in script
+    assert "anchor_for" in script
+    assert "projection_distance_m" in script
     assert "whiteRoadRoleLabel" in script
     assert "OSM匹配" in script
     assert "osm_matched" in script
     assert "manual_geometry_segment_count" in script
+    assert "missing_edge_count" in script
     assert "is_fallback_geometry" in script
     assert "edgeGeometrySourceLabel" in script
+    assert "source_osm_id" in script
+    assert "source_highway" in script
     assert "isRenderableRouteGeoJson" in script
     assert "route_geojson" in script
     assert "fallbackToSvgMap" in script

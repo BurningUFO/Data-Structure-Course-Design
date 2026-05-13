@@ -46,6 +46,13 @@ const state = {
     buildings: true,
     water_landuse: true,
   },
+  whiteRoadRoleVisibility: {
+    junction: true,
+    bend: true,
+    endpoint: true,
+    poi_access: true,
+  },
+  whiteRoadEdgesVisible: true,
   mapView: {
     scale: 1,
     translateX: 0,
@@ -108,6 +115,8 @@ async function loadSiteBootstrap(siteId) {
   state.osmLayersLoading = null;
   state.osmLayerError = "";
   state.osmLayerVisibility = defaultOsmLayerVisibility(bootstrap);
+  state.whiteRoadRoleVisibility = defaultWhiteRoadRoleVisibility();
+  state.whiteRoadEdgesVisible = true;
   clearLeafletLayers();
   state.currentStartNodeId = bootstrap.default_start_node;
   hydrateBootstrap(bootstrap);
@@ -540,6 +549,29 @@ function bindMapDemoControls() {
         return;
       }
       toggleOsmLayer(layerButton.dataset.osmLayer);
+    });
+  }
+
+  const whiteRoadRoleControls = document.querySelector("#white-road-role-controls");
+  if (whiteRoadRoleControls) {
+    whiteRoadRoleControls.addEventListener("click", (event) => {
+      const roleButton = event.target.closest("[data-white-road-role]");
+      if (!roleButton) {
+        return;
+      }
+      toggleWhiteRoadRole(roleButton.dataset.whiteRoadRole);
+    });
+  }
+
+  const whiteRoadEdgeToggle = document.querySelector("#white-road-edge-toggle");
+  if (whiteRoadEdgeToggle) {
+    whiteRoadEdgeToggle.addEventListener("change", (event) => {
+      state.whiteRoadEdgesVisible = Boolean(event.target.checked);
+      refreshLeafletInspectionLayers();
+      setStatus(
+        state.whiteRoadEdgesVisible ? "白线边已显示。" : "白线边已隐藏，POI 和路线仍可检查。",
+        "info",
+      );
     });
   }
 
@@ -1262,6 +1294,39 @@ function toggleOsmLayer(layerId) {
   setStatus(`本地 OSM 图层已${state.osmLayerVisibility[layerId] ? "开启" : "关闭"}：${osmLayerLabel(layerId)}。`, "info");
 }
 
+function toggleWhiteRoadRole(role) {
+  if (!Object.prototype.hasOwnProperty.call(state.whiteRoadRoleVisibility, role)) {
+    return;
+  }
+
+  const visibleCount = Object.values(state.whiteRoadRoleVisibility).filter(Boolean).length;
+  if (state.whiteRoadRoleVisibility[role] && visibleCount <= 1) {
+    setStatus("至少保留一个白线节点角色用于检查。", "info");
+    return;
+  }
+
+  state.whiteRoadRoleVisibility[role] = !state.whiteRoadRoleVisibility[role];
+  refreshLeafletInspectionLayers();
+  setStatus(
+    `${whiteRoadRoleLabel(role)} 已${state.whiteRoadRoleVisibility[role] ? "显示" : "隐藏"}。`,
+    "info",
+  );
+}
+
+function refreshLeafletInspectionLayers() {
+  if (!state.leaflet.map || selectedMapRenderer() !== "leaflet_geo" || !state.mapGeoJson) {
+    syncMapDemoPanel();
+    return;
+  }
+
+  state.leaflet.baseGeoJson = null;
+  syncLeafletBaseLayers(state.mapGeoJson);
+  syncLeafletRouteLayer();
+  syncLeafletLayerOrder();
+  syncLeafletCaption();
+  syncMapDemoPanel();
+}
+
 async function runMapDemoAction(action) {
   if (!state.bootstrap) {
     setStatus("地图数据尚未加载，无法执行演示动作。", "error");
@@ -1760,7 +1825,8 @@ function routeGeometrySummaryText(route = state.currentRoute) {
   const osmMatchedCount = Number(stats.osm_matched_segment_count) || 0;
   const manualCount = Number(stats.manual_geometry_segment_count) || Math.max(0, geometryCount - osmMatchedCount);
   const fallbackCount = Number(stats.fallback_segment_count) || 0;
-  return `真实路线 ${geometryCount}/${total} 段 · OSM匹配 ${osmMatchedCount} · manual ${manualCount} · fallback ${fallbackCount} · ${formatRatioPercent(routeGeometryCoverageRatio(route))}`;
+  const missingEdgeCount = Number(stats.missing_edge_count) || 0;
+  return `真实路线 ${geometryCount}/${total} 段 · OSM匹配 ${osmMatchedCount} · manual ${manualCount} · fallback ${fallbackCount} · missing ${missingEdgeCount} · ${formatRatioPercent(routeGeometryCoverageRatio(route))}`;
 }
 
 function appendRouteGeometryCaption(captionText, route = state.currentRoute) {
@@ -1854,6 +1920,15 @@ function defaultOsmLayerVisibility(bootstrap = state.bootstrap) {
     buildings: visibility.buildings !== false,
     water_landuse: visibility.water_landuse !== false,
     ...visibility,
+  };
+}
+
+function defaultWhiteRoadRoleVisibility() {
+  return {
+    junction: true,
+    bend: true,
+    endpoint: true,
+    poi_access: true,
   };
 }
 
@@ -2262,13 +2337,13 @@ function syncLeafletBaseLayers(geojson) {
   removeLeafletLayer("nodeLayer");
 
   state.leaflet.edgeLayer = L.geoJSON(geojson, {
-    filter: (feature) => feature.properties?.kind === "edge",
+    filter: (feature) => shouldRenderWhiteRoadEdge(feature),
     style: (feature) => leafletEdgeStyle(feature),
     onEachFeature: bindLeafletFeaturePopup,
   }).addTo(map);
 
   state.leaflet.nodeLayer = L.geoJSON(geojson, {
-    filter: (feature) => feature.properties?.kind === "node",
+    filter: (feature) => shouldRenderWhiteRoadNode(feature),
     pointToLayer: (feature, latlng) => L.circleMarker(latlng, leafletNodeStyle(feature)),
     onEachFeature: bindLeafletFeaturePopup,
   }).addTo(map);
@@ -2279,21 +2354,48 @@ function syncLeafletBaseLayers(geojson) {
   syncLeafletLayerOrder();
 }
 
+function shouldRenderWhiteRoadEdge(feature) {
+  if (feature.properties?.kind !== "edge") {
+    return false;
+  }
+
+  const edgeType = feature.properties?.edge_type || "";
+  if (!state.whiteRoadEdgesVisible && (edgeType === "white_road" || edgeType === "poi_access")) {
+    return false;
+  }
+  return true;
+}
+
+function shouldRenderWhiteRoadNode(feature) {
+  if (feature.properties?.kind !== "node") {
+    return false;
+  }
+
+  const role = feature.properties?.network_role || "";
+  if (!role || !Object.prototype.hasOwnProperty.call(state.whiteRoadRoleVisibility, role)) {
+    return true;
+  }
+  return state.whiteRoadRoleVisibility[role] !== false;
+}
+
 function bindLeafletFeaturePopup(feature, layer) {
   const properties = feature.properties || {};
   if (properties.kind === "node") {
     const isWaypoint = Boolean(properties.is_waypoint || properties.display_role === "waypoint");
     if (isWaypoint) {
       const roleLabel = whiteRoadRoleLabel(properties.network_role);
-      const anchorText = properties.anchor_for_name
-        ? `<br><span>锚定：${escapeHtml(properties.anchor_for_name)}</span>`
-        : "";
-      const projectionText = properties.projection_distance_m !== undefined
-        ? `<br><span>投影距离：${escapeHtml(String(properties.projection_distance_m))} m</span>`
-        : "";
+      const sourceOsm = properties.source_osm_id || properties.source_osm_ids;
+      const sourceHighway = properties.source_highway || properties.source_highways;
       layer.bindPopup(`
         <strong>${escapeHtml(properties.name || "道路接驳点")}</strong><br>
-        <span>${escapeHtml(roleLabel)}</span>${anchorText}${projectionText}<br>
+        <span>${escapeHtml(roleLabel)}</span>
+        ${leafletDetailRows([
+          ["network_role", properties.network_role],
+          ["source_osm_id(s)", sourceOsm],
+          ["source_highway(s)", sourceHighway],
+          ["anchor_for", properties.anchor_for || properties.anchor_for_name],
+          ["projection_distance_m", properties.projection_distance_m],
+        ])}
         <span>用于检查白线道路骨架，默认不作为搜索目的地展示。</span>
       `);
       layer.on("click", () => {
@@ -2330,10 +2432,36 @@ function bindLeafletFeaturePopup(feature, layer) {
     layer.bindPopup(`
       <strong>${escapeHtml(properties.name || "道路")}</strong><br>
       <span>${escapeHtml(properties.edge_type || "")}</span><br>
-      <span>${formatDistance(properties.distance_m, "available")}</span><br>
       <span>${escapeHtml(sourceText)}</span>${confidenceText}
+      ${leafletDetailRows([
+        ["from", properties.from],
+        ["to", properties.to],
+        ["distance_m", properties.distance_m],
+        ["geometry_source", properties.geometry_source],
+        ["source_osm_id", properties.source_osm_id],
+        ["source_highway", properties.source_highway],
+      ])}
     `);
   }
+}
+
+function leafletDetailRows(rows) {
+  return rows
+    .map(([label, value]) => {
+      const text = formatLeafletDetailValue(value);
+      return text ? `<br><span>${escapeHtml(label)}：${escapeHtml(text)}</span>` : "";
+    })
+    .join("");
+}
+
+function formatLeafletDetailValue(value) {
+  if (value === undefined || value === null || value === "") {
+    return "";
+  }
+  if (Array.isArray(value)) {
+    return value.join(", ");
+  }
+  return String(value);
 }
 
 function leafletEdgeStyle(feature) {
@@ -2614,6 +2742,20 @@ function syncMapDemoPanel() {
     button.disabled = !isAvailable || renderer !== "leaflet_geo";
     button.setAttribute("aria-pressed", String(isActive));
   });
+
+  document.querySelectorAll("[data-white-road-role]").forEach((button) => {
+    const role = button.dataset.whiteRoadRole || "";
+    const isActive = state.whiteRoadRoleVisibility[role] !== false;
+    button.classList.toggle("active", isActive);
+    button.disabled = renderer !== "leaflet_geo";
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  const whiteRoadEdgeToggle = document.querySelector("#white-road-edge-toggle");
+  if (whiteRoadEdgeToggle) {
+    whiteRoadEdgeToggle.checked = state.whiteRoadEdgesVisible !== false;
+    whiteRoadEdgeToggle.disabled = renderer !== "leaflet_geo";
+  }
 
   const rendererStatus = document.querySelector("#map-renderer-status");
   if (rendererStatus) {

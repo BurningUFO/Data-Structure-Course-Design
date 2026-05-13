@@ -460,6 +460,8 @@ class DemoUIService:
                         "geometry_source": geometry_source,
                         "geometry_confidence": edge.get("geometry_confidence"),
                         "osm_way_ids": edge.get("osm_way_ids", []),
+                        "source_osm_id": edge.get("source_osm_id"),
+                        "source_highway": edge.get("source_highway"),
                         "is_fallback_geometry": is_fallback_geometry,
                     },
                 }
@@ -895,6 +897,8 @@ class DemoUIService:
             "geometry_source": geometry_source,
             "confidence": confidence,
             "osm_way_ids": osm_way_ids,
+            "source_osm_id": normalize_text(item.get("source_osm_id")),
+            "source_highway": normalize_text(item.get("source_highway")),
             "geometry": geometry,
             "notes": normalize_text(item.get("notes")),
         }
@@ -1254,6 +1258,7 @@ class DemoUIService:
                 "name": normalize_text(edge.get("name")),
                 "type": normalize_text(edge.get("type")) or "outdoor_road",
                 "distance_m": float(edge.get("distance", 0)),
+                **self._resolve_edge_source_metadata(edge, source, target),
             }
             osm_match, reversed_match = self._resolve_osm_edge_match(source, target)
             if osm_match:
@@ -1266,6 +1271,8 @@ class DemoUIService:
                         "geometry_source": osm_match.get("geometry_source") or "osm_matched",
                         "geometry_confidence": osm_match.get("confidence"),
                         "osm_way_ids": osm_match.get("osm_way_ids", []),
+                        "source_osm_id": osm_match.get("source_osm_id") or map_edge.get("source_osm_id"),
+                        "source_highway": osm_match.get("source_highway") or map_edge.get("source_highway"),
                         "osm_match_edge_key": osm_match.get("edge_key"),
                         "osm_match_reversed": reversed_match,
                     }
@@ -1278,6 +1285,43 @@ class DemoUIService:
             edges.append(map_edge)
 
         return edges
+
+    def _resolve_edge_source_metadata(
+        self,
+        edge: dict[str, Any],
+        source: str,
+        target: str,
+    ) -> dict[str, str]:
+        metadata: dict[str, str] = {}
+        source_osm_id = normalize_text(edge.get("source_osm_id"))
+        source_highway = normalize_text(edge.get("source_highway"))
+        if source_osm_id:
+            metadata["source_osm_id"] = source_osm_id
+        if source_highway:
+            metadata["source_highway"] = source_highway
+
+        for node_id in (source, target):
+            node = self.map_node_index.get(node_id) or {}
+            if "source_osm_id" not in metadata:
+                node_osm_id = normalize_text(node.get("source_osm_id"))
+                if not node_osm_id:
+                    source_ids = node.get("source_osm_ids")
+                    if isinstance(source_ids, list) and source_ids:
+                        node_osm_id = normalize_text(source_ids[0])
+                if node_osm_id:
+                    metadata["source_osm_id"] = node_osm_id
+            if "source_highway" not in metadata:
+                node_highway = normalize_text(node.get("source_highway"))
+                if not node_highway:
+                    source_highways = node.get("source_highways")
+                    if isinstance(source_highways, list) and source_highways:
+                        node_highway = normalize_text(source_highways[0])
+                if node_highway:
+                    metadata["source_highway"] = node_highway
+            if "source_osm_id" in metadata and "source_highway" in metadata:
+                break
+
+        return metadata
 
     def _build_map_geometry_stats(self) -> dict[str, int | float]:
         edge_count = len(self.map_edges)
