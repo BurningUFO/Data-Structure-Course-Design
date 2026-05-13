@@ -3,186 +3,131 @@
 ## 1. 交付基线
 
 - 当前分支：`experiment/map-plan-b`
-- M9 目标提交：`feat: match course routes to local osm geometry`
-- 交付阶段：M9 课程图 edge 与本地 OSM 道路线形匹配，保留 M6/M7/M8 地图验收能力
+- 当前阶段：M12 精细化真实地图打磨
 - 启动命令：
 
 ```powershell
 py -B -m src.ui.demo_server
 ```
 
-- 访问地址：
+- 默认访问地址：
 
 ```text
 http://127.0.0.1:8765
 ```
 
-本说明只做最终交付和合并准备。M8 已在准备阶段通过 Overpass 抽取 PKU 周边 OSM 派生 GeoJSON 并保存到本地；M9 新增课程图 edge 到本地 OSM road geometry 的匹配表。Web UI 运行时不调用 OSMnx、Overpass 或外部路网下载，不重写 routing、graph、search、recommend、diary、compress 模块。
+Web UI 运行时只读取本地 JSON / GeoJSON 数据，不调用高德 API、OSMnx、Overpass 或外部路网下载服务。路线算法、图加载语义、搜索、推荐、日记和 AIGC 模块保持原有职责边界。
 
-M9 交付记录：
+M10-M12 阶段记录：
 
 ```text
-docs/地图方案B第九阶段OSM路线匹配记录.md
+docs/地图方案B第十阶段真实数据重制记录.md
+docs/地图方案B第十一阶段穿楼边清理与真实路口绕行记录.md
+docs/地图方案B第十二阶段精细化真实地图打磨记录.md
 ```
 
-## 2. 最终能力概述
+## 2. 当前能力
 
-地图方案 B 已具备以下最终演示能力：
+地图方案 B 在 M12 具备以下演示能力：
 
-1. 默认使用 `leaflet_geo` 渲染器展示 Leaflet 真实瓦片底图 + 本地 GeoJSON 地图实验层。
-2. 保留 `simple_svg` 渲染器，可在页面中手动切换，也可作为 Leaflet 或 GeoJSON 加载失败时的稳定回退。
-3. `GET /api/map/geojson?site_id=PKU` 输出当前室外节点和道路的 GeoJSON `FeatureCollection`。
-4. `/api/bootstrap` 保留旧字段，并新增 `map_renderer`、`map_capabilities`、底图能力和地图 geometry 覆盖统计。
-5. `/api/route` 和 `/api/route/multi` 返回 `route_geojson`、`route_line_coordinates`、`route_geometry_stats`，用于 Leaflet 路线高亮和 fallback 段说明。
-6. `GET /api/map/osm-layers?site_id=PKU` 输出本地 OSM-derived roads / buildings / water_landuse 图层、metadata 和 stats。
-7. `data/sites/PKU/geo/edge_osm_geometry_matches.json` 覆盖 13 条关键课程图 edge，route overlay 优先使用 `osm_matched` geometry。
-8. Leaflet 可选叠加本地 OSM 道路、建筑、水域 / 绿地图层；项目道路、节点和 route overlay 仍保持更高显示优先级。
-9. 地图区展示 renderer 状态、GeoJSON 节点/道路/OSM匹配/manual/fallback 覆盖统计、本地 OSM 图层统计、route geometry 统计、legend 和固定演示按钮。
-9. 首页、综合查询、场所查询、美食推荐、导航规划、日记中心、AIGC 演示入口继续保持可用。
+1. 默认使用 `leaflet_geo` 渲染器展示 Leaflet 真实瓦片底图和本地 GeoJSON 地图层。
+2. 保留 `simple_svg` 渲染器，可手动切换，也可作为 Leaflet 或 GeoJSON 加载失败时的回退。
+3. `GET /api/map/geojson?site_id=PKU` 输出 M12 室外节点和道路 `FeatureCollection`。
+4. `GET /api/map/osm-layers?site_id=PKU` 输出本地 OSM-derived roads / buildings / water_landuse 图层。
+5. `/api/bootstrap` 保留旧字段，并新增或保留地图 renderer、capabilities、basemap 和 geometry 覆盖统计。
+6. `/api/route` 和 `/api/route/multi` 返回 `route_geojson`、`route_line_coordinates`、`route_geometry_stats`。
+7. UI 弱化 `road` / waypoint 节点显示，普通搜索和 route target 列表不展示内部路网点。
+8. 本地 Leaflet runtime 继续使用 `src/ui/static/vendor/leaflet/`，核心地图渲染不依赖 CDN。
 
-## 3. 相比原 SVG 直线图的改进
+## 3. M12 数据状态
 
-1. 原 SVG 图仍可用，但默认展示升级为 Leaflet 地图层，支持拖动、缩放和 GeoJSON 图层管理。
-2. 道路和节点由后端 GeoJSON 输出驱动，坐标顺序统一为 RFC 7946 的 `[lng, lat]`。
-3. 已补充 geometry 的道路可以按折线贴路显示，不再只能在节点之间画直线。
-4. 路线高亮优先使用 `route_geojson`，能展示单目标和多目标路线的实际室外折线。
-5. 页面直接说明 geometry 覆盖率和 fallback 段数，答辩时可以解释当前阶段的数据覆盖边界。
-6. Leaflet 运行库使用本地 vendored 文件，不依赖 CDN 才能加载核心地图渲染逻辑。
+M10 已消除旧 `campus_service_*` 虚拟网格 id，替换为语义化 `road_*` waypoint。M11 删除穿楼、穿非真实通行区域或缺少真实路口的直连边。M12 不继续扩密路网，而是精修名称、tags、description、GeoJSON 展示字段和 UI 显示规则。
+
+当前核心统计：
+
+```text
+outdoor nodes: 42
+POI nodes: 14
+waypoint nodes: 28
+directed edges: 84
+undirected map edges: 42
+GeoJSON features: 84
+osm matched edges: 40
+manual geometry edges: 2
+fallback edges: 0
+geometry coverage ratio: 1.0000
+osm matched coverage ratio: 0.9524
+```
+
+补充审计文件：
+
+```text
+data/sites/PKU/geo/node_rebuild_decisions.json
+data/sites/PKU/geo/m11_blocked_edge_audit.json
+data/sites/PKU/geo/m11_removed_edges.json
+data/sites/PKU/geo/m11_added_waypoints.json
+data/sites/PKU/geo/M12_visual_audit.json
+```
+
+这些文件记录旧虚拟节点替换关系、M11 全量 edge 审计、删除直连边、替代绕行路径、M11 新增 waypoint 和 M12 视觉审计。运行时 `outdoor.json` 和 `edge_osm_geometry_matches.json` 不包含旧 `campus_service_*` id；当前 42 条无向 edge 均有 geometry 和 match 记录，`fallback_edge_count=0`。
 
 ## 4. 架构说明
 
-方案 B 采用“算法图不变、表现层增强”的结构：
+方案 B 采用“课程图仍为算法权威、地图表现层增强”的结构：
 
-1. 路由算法仍使用现有图结构、距离和路径规划实现。
-2. 后端服务层从现有 outdoor 节点和 edge 生成 GeoJSON：
-   - 节点输出为 `Point`。
-   - 道路输出为 `LineString`。
-   - 有 OSM 匹配记录的 edge 使用 `osm_matched` 道路线形。
-   - 无 OSM 匹配但有 `geometry` 的 edge 使用 `manual` 手工道路折线。
-   - 无 `geometry` 的 edge 使用 from/to 节点坐标生成两点 fallback line。
-3. 前端通过 `renderMap()` 在 `leaflet_geo` 和 `simple_svg` 之间分发。
-4. Leaflet 初始化由 `renderLeafletMap()` 和 `ensureLeafletMap()` 负责；SVG fallback 由 `renderSvgMap()` 和 `fallbackToSvgMap()` 保留。
-5. 路线高亮由 `syncLeafletRouteLayer()` 同步，优先渲染 `route_geojson`；无法渲染真实 route geometry 时仍可回到已有节点路径高亮。
-6. M8 本地 OSM 图层由 `/api/map/osm-layers` 单独提供，前端通过 `syncLeafletOsmLayers()` 叠加，不改变 `/api/map/geojson` 的课程图契约。
-7. `simple_svg` 作为稳定回退，不参与后端算法语义变更。
+1. `outdoor.json` 的节点和边仍是路径规划输入。
+2. 本地 OSM roads/buildings/water/landuse 是视觉层和离线校准参考。
+3. `edge_osm_geometry_matches.json` 提供路线覆盖层 geometry，匹配失败时按 edge 自带 manual geometry 或 fallback line 处理。
+4. 前端通过 `renderMap()` 在 `leaflet_geo` 和 `simple_svg` 间分发。
+5. Route overlay 由 `syncLeafletRouteLayer()` 同步，优先渲染后端返回的 `route_geojson`。
 
 ## 5. 答辩演示脚本
 
 建议现场按以下顺序操作：
 
 1. 启动服务：`py -B -m src.ui.demo_server`。
-2. 打开 `http://127.0.0.1:8765`，确认首页加载，说明当前站点和数据规模。
-3. 点击“进入主要网站”，进入应用页。
-4. 查看右侧地图区，确认默认是 Leaflet GeoJSON 实验层。
-5. 说明地图状态条：节点数、道路数、geometry 覆盖数、覆盖率和路线状态。
-6. 点击 `演示单目标`，规划 `gate_north -> library`，说明路线为 `gate_north -> square_center -> library`，2/2 段使用 `osm_matched`，0 段 manual，0 段 fallback。
-7. 在单目标路径表单中把目标切到 `canteen`，规划 `gate_north -> canteen`，说明路线为 `gate_north -> square_center -> road_cross -> canteen`，3/3 段使用 `osm_matched`，0 段 fallback。
-8. 点击 `演示多目标`，规划 `library + canteen` 多目标路线，说明 route stats 会分别显示 `osm_matched`、manual 和 fallback 段数。
-9. 展示 legend 和 caption，解释 `fallback 直线段` 的含义：不是路径算法失败，只表示该 edge 尚无道路折线。
-10. 点击 `SVG`，展示 `simple_svg` 稳定简图；再点击 `Leaflet` 可切回实验层。
-11. 可选：进入综合查询搜索“图书馆”，从结果执行地图定位或发起路线规划，证明业务查询链路未受地图改动影响。
-12. 可选：进入日记中心检索“图书馆 自习”，从日记结果说明仍可关联路线目标。
+2. 打开 `http://127.0.0.1:8765`，进入主要网站。
+3. 查看地图状态条，确认 renderer 为 Leaflet 真实地图，并显示 14 个 POI、28 个路网点、42 条道路、40 条 OSM matched、2 条 manual、0 条 fallback。
+4. 打开本地 OSM roads/buildings/water_landuse 图层，说明本地图层来自离线 OSM 抽取。
+5. 点击“演示单目标”，规划 `gate_north -> library`，说明路线经西门内侧步道口、未名湖东南步道和图书馆南侧步道口，5/5 段为 `osm_matched`。
+6. 规划 `gate_north -> canteen`、`gate_east -> canteen`、`gate_south -> teaching_building_1`，确认 route stats 均为 fallback 0。
+7. 点击“演示多目标”，规划 `library + canteen`，说明多段 leg 仍返回各自 geometry stats。
+8. 切换“无底图”模式，确认本地 OSM 图层、项目道路和路线仍可显示。
+9. 点击 `SVG`，展示 `simple_svg` 稳定回退；再切回 `Leaflet`。
+10. 可选：综合查询“图书馆”、场所查询“洗手间”、美食推荐、日记全文检索，分别从结果发起路线规划，证明业务链路未被地图改动破坏。
 
 ## 6. API 验证清单
 
-合并前至少验证以下接口：
+合并前至少验证：
 
 | 接口 | 验证重点 |
 | --- | --- |
-| `GET /api/bootstrap` | 保留原字段，返回 `map_renderer=leaflet_geo`、`map_capabilities.fallback_renderer=simple_svg` |
-| `GET /api/map/geojson?site_id=PKU` | 返回 `FeatureCollection`，包含 39 个 node feature、81 条 edge feature、13 条 `osm_matched` edge、1 条 manual edge、67 条 fallback edge |
-| `GET /api/map/osm-layers?site_id=PKU` | 返回本地 OSM roads / buildings / water_landuse `FeatureCollection`、metadata 和 stats |
-| `POST /api/route` `gate_north -> library` | 成功返回路线、`route_geojson` 和 2/2 `osm_matched` 统计 |
-| `POST /api/route` `gate_north -> canteen` | 成功返回路线、`route_geojson` 和 3/3 `osm_matched` 统计 |
-| `POST /api/route/multi` `library + canteen` | 成功返回多目标访问顺序、leg 信息和 `osm_matched` / manual / fallback 统计 |
-| `POST /api/search/scenic` | 图书馆查询可返回 route target |
-| `POST /api/search/places` | 洗手间查询可返回 route target，并可按距离排序 |
+| `GET /api/bootstrap` | 保留旧字段，返回 `map_renderer=leaflet_geo`、`fallback_renderer=simple_svg` |
+| `GET /api/map/geojson?site_id=PKU` | 返回 84 个 feature、14 个 POI、28 个 waypoint、42 条 edge、40 条 `osm_matched`、2 条 manual、0 条 fallback |
+| `GET /api/map/osm-layers?site_id=PKU` | 返回 roads / buildings / water_landuse 本地图层和 stats |
+| `POST /api/route` `gate_north -> library` | 5 段 route geometry，fallback 0 |
+| `POST /api/route` `gate_north -> canteen` | route geometry 正常，fallback 0 |
+| `POST /api/route` `gate_east -> canteen` | route geometry 正常，fallback 0 |
+| `POST /api/route/multi` `gate_north + library + canteen` | 多目标 leg geometry stats 正常，fallback 0 |
+| `POST /api/search/scenic` | 查询“图书馆”可返回 route target |
+| `POST /api/search/places` | 查询“洗手间”可返回 route target 并按距离排序 |
 | `POST /api/recommend/catering` | 餐饮推荐可返回 route target |
 | `POST /api/diaries/fulltext` | 日记全文检索可返回可规划目标 |
 
-## 7. 测试结果
+## 7. 测试建议
 
-M9 完成后测试：
+M12 合并前建议执行：
 
 ```powershell
+py -m pytest tests/test_ui_demo.py -q
+py -m pytest tests/test_routing.py -q
+py -m pytest tests/test_search.py -q
+py -m pytest tests/test_course_requirements.py -q
 py -m pytest
 ```
 
-结果：
+## 8. 后续边界
 
-```text
-109 passed in 2.47s
-```
-
-M8 API smoke check 覆盖：
-
-1. `GET /api/bootstrap`
-2. `GET /api/map/geojson?site_id=PKU`
-3. `GET /api/map/osm-layers?site_id=PKU`
-4. `POST /api/route`：`gate_north -> library`
-5. `POST /api/route/multi`：`library + canteen`
-6. `POST /api/search/scenic`
-7. `POST /api/search/places`
-8. `POST /api/recommend/catering`
-9. `POST /api/diaries/fulltext`
-
-M9 smoke check 已确认返回 120 个 GeoJSON feature、81 条 edge、14 条 geometry edge、13 条 `osm_matched` edge、1 条 manual edge、67 条 fallback edge。
-M8 smoke check 同时确认 `/api/map/osm-layers?site_id=PKU` 返回 505 条 roads、353 条 buildings、74 条 water / landuse feature。
-
-M9 smoke check 同时确认：
-
-1. `POST /api/route`：`gate_north -> library` 返回 `osm_matched_segment_count=2`、`manual_geometry_segment_count=0`、`fallback_segment_count=0`。
-2. `POST /api/route`：`gate_east -> canteen` 返回 `osm_matched_segment_count=2`、`manual_geometry_segment_count=0`、`fallback_segment_count=0`。
-3. `POST /api/route/multi`：`library + canteen` 返回 `osm_matched_segment_count=5`、`fallback_segment_count=0`。
-
-M9 浏览器检查已使用 Playwright CLI 访问临时演示地址 `http://127.0.0.1:8893` 和 `http://127.0.0.1:8894`，并确认：
-
-1. 首页加载成功。
-2. 可进入主要网站。
-3. Leaflet 地图显示，状态条包含 39 个节点、81 条道路、13 条 OSM matched edge、1 条 manual edge、67 条 fallback edge。
-4. 本地 OSM 状态条显示 932 项，OSM 道路、建筑、水域 / 绿地三层默认开启。
-5. OSM roads / buildings / water_landuse 本地图层可作为 Leaflet 叠加层显示。
-6. 切换到无底图模式后，本地 OSM 图层状态仍显示可用。
-7. `gate_north -> library` 单目标路线高亮，状态为 `路线 OSM 2/2 · manual 0 · fallback 0`。
-8. 路线 caption 同时说明真实底图、本地 OSM 图层统计和 OSM attribution。
-9. 可切换到 `simple_svg`，Leaflet 隐藏，SVG 稳定简图显示。
-
-## 8. 已知限制
-
-1. 当前 geometry 覆盖率为 17.28%，其中 `osm_matched` 覆盖率为 16.05%，优先覆盖答辩路线，非关键道路仍使用 fallback line。
-2. 已在准备阶段接入 Overpass 抽取本地 OSM 派生数据；运行时不联网抽取 OSM 数据。
-3. 真实底图瓦片使用 OpenStreetMap 标准瓦片，适合低频课程演示；长期生产应切换合规瓦片服务或自托管。
-4. 真实底图瓦片可能受网络影响；无底图模式、Leaflet 本地运行库和 GeoJSON 图层仍可加载，Leaflet 初始化失败时回退 SVG。
-5. 路线算法、图加载语义、搜索、推荐、日记和 AIGC 模块未在方案 B 中重写。
-6. `simple_svg` 是正式回退能力，不应在合并前删除。
-7. 当前 route geometry overlay 以现有图 path 为基础，未做真实路网级别的重新寻路；OSM 匹配只影响可视化线形。
-
-## 9. 后续真实地图升级路线
-
-如果目标从课程验收升级为“接近日常地图 App 的真实观感”，建议继续拆成三个阶段：
-
-1. M7：真实瓦片底图接入已完成。当前用 Leaflet `tileLayer` 加载 OpenStreetMap 标准瓦片，提供真实底图 / 无底图切换、attribution、网络失败提示和合规说明。
-2. M8：离线 OSM 数据抽取与本地化已完成。当前使用 Overpass 在准备阶段抽取 PKU 周边 roads / buildings / water / landuse，保存到 `data/sites/PKU/geo/`，运行时读取本地 GeoJSON。
-3. M9：课程图 edge 与 OSM 道路线形匹配已完成首批关键 edge 覆盖。课程图仍作为算法权威，OSM 数据只提供更真实的 route geometry；匹配失败时继续使用 `manual` geometry 或 `fallback_line`。
-
-后续推进应继续扩大 `edge_osm_geometry_matches.json` 覆盖范围，优先复核低置信度 edge，并保持 M8 本地图层展示和 M9 edge-to-OSM 匹配的职责边界。
-
-## 10. 回退策略
-
-1. 功能级回退：在页面地图区点击 `SVG`，切换到 `simple_svg` 稳定简图。
-2. 底图级回退：瓦片加载异常时切换到 `无底图`，本地 GeoJSON 道路、节点和路线仍显示。
-3. 自动回退：Leaflet 运行库或 GeoJSON 请求异常时，前端调用 `fallbackToSvgMap()` 并显示错误说明。
-4. 数据级回退：edge 缺少 `geometry` 时，后端输出 from/to 两点 `LineString`，并标记 `geometry_source=fallback_line`、`is_fallback_geometry=true`。
-5. 分支级回退：合并前如发现不可接受风险，保留 `main` 不变，继续在 `experiment/map-plan-b` 修复。
-
-## 11. 合并 main 前检查清单
-
-- [ ] 确认当前分支仍为 `experiment/map-plan-b`。
-- [ ] 运行 `git status --short --branch`，确认没有误 staged 的 `scripts/` 或 `工作进度/` 文件。
-- [ ] 运行 `py -m pytest`。
-- [ ] 执行 API smoke check 清单中的接口。
-- [ ] 启动 `py -B -m src.ui.demo_server`，访问 `http://127.0.0.1:8765`。
-- [ ] 浏览器确认首页、主要网站、Leaflet 地图、单目标路线、多目标路线、geometry/fallback 文案和 `simple_svg` 切换。
-- [ ] 运行 `git diff --cached --name-status`，确认只 staged 本阶段交付文档或明确的小修复。
-- [ ] 合并前确认评审方接受当前 17.28% geometry 覆盖率和 fallback 策略。
-- [ ] 不直接合并到 `main`，除非用户明确要求。
+1. 当前 M12 仍是课程设计演示数据，不把完整 OSM 路网作为运行时 routing graph。
+2. 真实底图瓦片依赖网络；无底图模式、本地 OSM 图层和 SVG fallback 可继续支持现场演示。
+3. 后续扩展前不做路网扩密、核心 POI route matrix、通用质量脚本或多景区模板。

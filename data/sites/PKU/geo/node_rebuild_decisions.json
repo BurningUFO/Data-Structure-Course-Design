@@ -1,0 +1,347 @@
+{
+  "metadata": {
+    "site_id": "PKU",
+    "stage": "M10",
+    "created_at": "2026-05-12",
+    "purpose": "记录旧网格占位节点到真实底图语义化道路 waypoint 的硬重建决策。",
+    "coordinate_policy": "最终坐标继续对齐当前 Leaflet/OSM 图层；高德只可作为离线参考，运行时不调用。"
+  },
+  "decisions": [
+    {
+      "node_id": "campus_service_01",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_lake_south_west",
+      "replacement_name": "未名湖南路西口",
+      "replacement_location": {
+        "lat": 39.9920485,
+        "lng": 116.3008391
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_02",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_lake_south_mid",
+      "replacement_name": "未名湖南路中段",
+      "replacement_location": {
+        "lat": 39.9918662,
+        "lng": 116.302612
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_03",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_library_south",
+      "replacement_name": "图书馆南侧步道口",
+      "replacement_location": {
+        "lat": 39.9917482,
+        "lng": 116.3030362
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_04",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_lake_southeast",
+      "replacement_name": "未名湖东南路口",
+      "replacement_location": {
+        "lat": 39.9918029,
+        "lng": 116.3060249
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_05",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_lijiao_north",
+      "replacement_name": "理教北侧路口",
+      "replacement_location": {
+        "lat": 39.9916188,
+        "lng": 116.3063146
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_06",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_chengfuyuan_west",
+      "replacement_name": "成府园南路西口",
+      "replacement_location": {
+        "lat": 39.9916729,
+        "lng": 116.3071531
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_07",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_chengfuyuan_east",
+      "replacement_name": "成府园南路东口",
+      "replacement_location": {
+        "lat": 39.991764,
+        "lng": 116.3092297
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_08",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_east_gate_north",
+      "replacement_name": "东门北侧接驳点",
+      "replacement_location": {
+        "lat": 39.9939607,
+        "lng": 116.3094675
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_09",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_east_gate_south",
+      "replacement_name": "东门南侧路口",
+      "replacement_location": {
+        "lat": 39.9917546,
+        "lng": 116.3090208
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_10",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_science_east",
+      "replacement_name": "科学路东口",
+      "replacement_location": {
+        "lat": 39.9907995,
+        "lng": 116.3093076
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_11",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_lake_southeast_footway",
+      "replacement_name": "未名湖东南步道",
+      "replacement_location": {
+        "lat": 39.9927438,
+        "lng": 116.3054488
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_12",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_west_gate_inner",
+      "replacement_name": "西门内侧步道口",
+      "replacement_location": {
+        "lat": 39.9920871,
+        "lng": 116.3058675
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_13",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_wusi_north",
+      "replacement_name": "五四路北侧路口",
+      "replacement_location": {
+        "lat": 39.9910584,
+        "lng": 116.3050398
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_14",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_wusi_mid",
+      "replacement_name": "五四路中段",
+      "replacement_location": {
+        "lat": 39.9902074,
+        "lng": 116.3051105
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_15",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_lijiao_west",
+      "replacement_name": "理教西路中段",
+      "replacement_location": {
+        "lat": 39.9902667,
+        "lng": 116.3063789
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_16",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_southeast_campus_west",
+      "replacement_name": "校园东南路西口",
+      "replacement_location": {
+        "lat": 39.9886735,
+        "lng": 116.3065184
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_17",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_second_teaching_west",
+      "replacement_name": "二教西路南口",
+      "replacement_location": {
+        "lat": 39.9874959,
+        "lng": 116.3065874
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_18",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_third_teaching_south_east",
+      "replacement_name": "三教南路东口",
+      "replacement_location": {
+        "lat": 39.9875709,
+        "lng": 116.3082777
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_19",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_nongyuan_north_west",
+      "replacement_name": "农园北路西口",
+      "replacement_location": {
+        "lat": 39.9880915,
+        "lng": 116.3052809
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_20",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_nongyuan_west_south",
+      "replacement_name": "农园西路南口",
+      "replacement_location": {
+        "lat": 39.9871644,
+        "lng": 116.3058359
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_21",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_centennial_plaza_east",
+      "replacement_name": "百讲广场东侧步道",
+      "replacement_location": {
+        "lat": 39.9886173,
+        "lng": 116.3052159
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_22",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_library_south_west",
+      "replacement_name": "图书馆南路西口",
+      "replacement_location": {
+        "lat": 39.9898554,
+        "lng": 116.3035441
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_23",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_second_gym_south_east",
+      "replacement_name": "二体南路东口",
+      "replacement_location": {
+        "lat": 39.9892565,
+        "lng": 116.3034735
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    },
+    {
+      "node_id": "campus_service_24",
+      "decision": "replace_with_semantic_waypoint",
+      "reason": "旧 id 属于规则 campus_service 网格占位节点，缺少稳定的真实地图语义。",
+      "replacement_node_id": "road_yannan_east",
+      "replacement_name": "燕南路东口",
+      "replacement_location": {
+        "lat": 39.9875503,
+        "lng": 116.3043071
+      },
+      "source": "local_osm_roads_simplified + Leaflet/OSM 人工目视校准",
+      "confidence": 0.82,
+      "notes": "替换节点保留已校准坐标和道路 geometry，但从运行时课程图中移除旧虚拟网格 id。"
+    }
+  ]
+}

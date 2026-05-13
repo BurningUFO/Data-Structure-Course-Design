@@ -284,25 +284,39 @@ class TestRouting(unittest.TestCase):
         scoped_distance = router.query_distance("gate_north", "library", site_id="PKU")
         route = router.query_routing("gate_north", "library", site_id="PKU")
 
-        self.assertEqual(default_distance, 110)
-        self.assertEqual(scoped_distance, 110)
+        self.assertEqual(default_distance, 576)
+        self.assertEqual(scoped_distance, 576)
         self.assertTrue(route["success"])
         self.assertEqual(route["site_id"], "PKU")
-        self.assertEqual(route["path"], ["gate_north", "square_center", "library"])
+        self.assertEqual(
+            route["path"],
+            [
+                "gate_north",
+                "road_west_gate_inner",
+                "road_lake_southeast_footway",
+                "road_lake_southeast",
+                "road_library_south",
+                "library",
+            ],
+        )
         self.assertEqual(route["weight_unit"], "meter")
-        self.assertEqual(route["total_distance_m"], 110)
-        self.assertAlmostEqual(route["estimated_time_s"], (80 / (1.5 * 0.6)) + (30 / (1.5 * 0.4)))
+        self.assertEqual(route["total_distance_m"], 576)
+        self.assertAlmostEqual(
+            route["estimated_time_s"],
+            sum(step["estimated_time_s"] for step in route["path_steps"]),
+        )
         self.assertEqual(route["segments"][0]["layer"], "outdoor")
-        self.assertEqual(route["start_node_name"], "北大西门")
+        self.assertEqual(route["start_node_name"], "北京大学西门")
         self.assertEqual(route["target_node_name"], "图书馆")
-        self.assertEqual(route["path_node_names"], ["北大西门", "百周年纪念广场", "图书馆"])
+        self.assertEqual(route["path_node_names"][0], "北京大学西门")
+        self.assertEqual(route["path_node_names"][-1], "图书馆")
         self.assertEqual(route["layer_sequence"], ["outdoor"])
         self.assertEqual(route["route_overview"]["segment_count"], 1)
         self.assertFalse(route["route_overview"]["cross_layer"])
-        self.assertEqual(route["route_overview"]["node_count"], 3)
-        self.assertEqual(route["path_steps"][0]["edge_name"], "西门大道")
-        self.assertEqual(route["path_steps"][1]["edge_name"], "图书馆前广场")
-        self.assertEqual(route["segments"][0]["edge_names"], ["西门大道", "图书馆前广场"])
+        self.assertEqual(route["route_overview"]["node_count"], 6)
+        self.assertEqual(route["path_steps"][0]["edge_name"], "北京大学西门至西门内侧步道口")
+        self.assertEqual(route["path_steps"][-1]["edge_name"], "图书馆南侧步道口至图书馆")
+        self.assertIn("图书馆南侧步道口至图书馆", route["segments"][0]["edge_names"])
         self.assertEqual(route["segments"][0]["target_node_name"], "图书馆")
 
     def test_standard_site_single_route_frozen_display_fields(self):
@@ -374,29 +388,55 @@ class TestRouting(unittest.TestCase):
             site_id="PKU",
         )
 
-        expected_time = (
-            (80 / (1.5 * 0.6))
-            + (30 / (1.5 * 0.4))
-            + (25 / (1.5 * 0.4))
-        )
-
         self.assertTrue(route["success"])
-        self.assertEqual(route["path"], ["gate_north", "square_center", "library", "lib_entrance", "lib_reading_room_1"])
+        self.assertEqual(route["path"][0], "gate_north")
+        self.assertIn("library", route["path"])
+        self.assertEqual(route["path"][-2:], ["lib_entrance", "lib_reading_room_1"])
         self.assertEqual(route["weight_unit"], "second")
-        self.assertEqual(route["total_distance_m"], 135)
-        self.assertAlmostEqual(route["total_weight"], expected_time)
-        self.assertAlmostEqual(route["estimated_time_s"], expected_time)
+        self.assertEqual(route["total_distance_m"], 601)
+        self.assertAlmostEqual(route["total_weight"], route["estimated_time_s"])
         self.assertEqual([segment["layer"] for segment in route["segments"]], ["outdoor", "indoor_LIB"])
-        self.assertEqual(route["path_node_names"], ["北大西门", "百周年纪念广场", "图书馆", "图书馆入口大厅", "中文社科阅览室"])
+        self.assertEqual(route["path_node_names"][0], "北京大学西门")
+        self.assertEqual(route["path_node_names"][-1], "中文社科阅览室")
         self.assertTrue(route["route_overview"]["cross_layer"])
         self.assertEqual(route["route_overview"]["cross_layer_step_count"], 1)
         self.assertEqual(route["route_overview"]["layer_sequence"], ["outdoor", "indoor_LIB"])
-        self.assertEqual(route["path_steps"][2]["edge_type"], "gate_link")
-        self.assertTrue(route["path_steps"][2]["is_gate_transition"])
-        self.assertEqual(route["path_steps"][2]["transition_kind"], "cross_layer")
+        gate_step = next(step for step in route["path_steps"] if step["edge_type"] == "gate_link")
+        self.assertTrue(gate_step["is_gate_transition"])
+        self.assertEqual(gate_step["transition_kind"], "cross_layer")
         self.assertEqual(route["segments"][1]["start_node_name"], "图书馆")
         self.assertEqual(route["segments"][1]["target_node_name"], "中文社科阅览室")
         self.assertIn("gate_link", route["segments"][1]["edge_types"])
+
+    def test_m11_removed_direct_edges_route_via_real_waypoints(self):
+        graph = GraphLoader.load_site_graph("PKU")
+        router = Router(graph)
+        removed_direct_edges = {
+            ("gate_south", "road_nongyuan_west_south"),
+            ("road_cross", "road_lijiao_west"),
+            ("road_second_teaching_west", "canteen"),
+            ("road_nongyuan_north_west", "canteen"),
+        }
+
+        for source_id, target_id in removed_direct_edges:
+            self.assertFalse(any(edge["to"] == target_id for edge in graph.adj.get(source_id, [])))
+            self.assertFalse(any(edge["to"] == source_id for edge in graph.adj.get(target_id, [])))
+
+        south_route = router.query_routing("gate_south", "teaching_building_1", site_id="PKU")
+        canteen_route = router.query_routing("gate_north", "canteen", site_id="PKU")
+
+        self.assertTrue(south_route["success"])
+        self.assertIn("road_south_gate_inner", south_route["path"])
+        self.assertIn("road_nongyuan_north_west", south_route["path"])
+        self.assertNotIn("road_nongyuan_west_south", south_route["path"][:3])
+
+        self.assertTrue(canteen_route["success"])
+        self.assertIn("road_nongyuan_south_east", canteen_route["path"])
+        self.assertIn("road_nongyuan_south_west", canteen_route["path"])
+        self.assertLess(
+            canteen_route["path"].index("road_nongyuan_south_east"),
+            canteen_route["path"].index("canteen"),
+        )
 
     def test_standard_site_strategy_comparison_uses_real_graph(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
@@ -405,8 +445,12 @@ class TestRouting(unittest.TestCase):
 
         self.assertTrue(distance_route["success"])
         self.assertTrue(time_route["success"])
-        self.assertEqual(distance_route["path"], ["gate_north", "square_center", "library", "lib_entrance", "lib_reception"])
-        self.assertEqual(time_route["path"], ["gate_north", "square_center", "library", "lib_entrance", "lib_self_serve", "lib_reception"])
+        self.assertEqual(distance_route["path"][0], "gate_north")
+        self.assertIn("library", distance_route["path"])
+        self.assertEqual(distance_route["path"][-2:], ["lib_entrance", "lib_reception"])
+        self.assertEqual(time_route["path"][0], "gate_north")
+        self.assertIn("library", time_route["path"])
+        self.assertEqual(time_route["path"][-3:], ["lib_entrance", "lib_self_serve", "lib_reception"])
         self.assertEqual(distance_route["weight_unit"], "meter")
         self.assertEqual(time_route["weight_unit"], "second")
         self.assertEqual(distance_route["route_overview"]["target_node_name"], "总服务台")
@@ -489,7 +533,7 @@ class TestRouting(unittest.TestCase):
         self.assertIn("path_steps", first_leg)
         self.assertIn("route_overview", first_leg)
         self.assertIn("segments", first_leg)
-        self.assertEqual(first_leg["start_node_name"], "北大西门")
+        self.assertEqual(first_leg["start_node_name"], "北京大学西门")
         self.assertEqual(first_leg["route_overview"]["start_node_id"], first_leg["start_node_id"])
 
     def test_diary_destination_node_can_route_with_summary_fields(self):

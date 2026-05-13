@@ -1219,7 +1219,7 @@ function switchMapRenderer(renderer) {
 
   state.mapRenderer = renderer;
   renderMap();
-  const label = renderer === "leaflet_geo" ? "Leaflet GeoJSON 实验层" : "SVG 稳定简图";
+  const label = renderer === "leaflet_geo" ? "Leaflet 真实地图" : "SVG 稳定简图";
   setStatus(`地图已切换到 ${label}。`, "info");
 }
 
@@ -1646,12 +1646,12 @@ function renderRoute(route, emptyMessage = "暂无路径") {
         ${geometrySummary ? `<span class="metric-pill">${escapeHtml(geometrySummary)}</span>` : ""}
       </div>
       <p>层级序列：${escapeHtml(summary.layer_text || "outdoor")}</p>
-      <p>节点数：${route.route_overview.node_count}，跨层次数：${route.route_overview.cross_layer_step_count}</p>
+      <p>路径点：${route.route_overview.node_count}，跨层次数：${route.route_overview.cross_layer_step_count}</p>
     </article>
   `;
 
   const steps = route.path_steps || [];
-  routeMeta.textContent = `${steps.length} 步 · ${route.path_node_names.length} 个节点`;
+  routeMeta.textContent = `${steps.length} 步 · ${route.path_node_names.length} 个路径点`;
   stepsContainer.className = "step-list";
   stepsContainer.innerHTML = steps
     .map((step, index) => {
@@ -1760,7 +1760,7 @@ function routeGeometrySummaryText(route = state.currentRoute) {
   const osmMatchedCount = Number(stats.osm_matched_segment_count) || 0;
   const manualCount = Number(stats.manual_geometry_segment_count) || Math.max(0, geometryCount - osmMatchedCount);
   const fallbackCount = Number(stats.fallback_segment_count) || 0;
-  return `OSM匹配 ${osmMatchedCount}/${total} 段 · manual ${manualCount} 段 · fallback ${fallbackCount} 段 · ${formatRatioPercent(routeGeometryCoverageRatio(route))}`;
+  return `真实路线 ${geometryCount}/${total} 段 · OSM匹配 ${osmMatchedCount} · manual ${manualCount} · fallback ${fallbackCount} · ${formatRatioPercent(routeGeometryCoverageRatio(route))}`;
 }
 
 function appendRouteGeometryCaption(captionText, route = state.currentRoute) {
@@ -1828,15 +1828,14 @@ function basemapModeLabel(mode = selectedBasemapMode()) {
 
 function basemapCaptionPrefix() {
   const config = basemapConfig();
-  if (!config) {
-    return "底图：无底图；项目道路、节点和路线来自本地 GeoJSON。";
+  if (!config || !config.tile_url) {
+    return "无底图模式：项目道路、POI 和路线来自本地 GeoJSON。";
   }
 
   const networkText = config.network_required ? "需联网加载瓦片" : "无网络依赖";
   const sourceText = config.source || config.label;
-  const attributionText = config.attribution ? `，attribution：${stripHtml(config.attribution)}` : "";
   const errorText = state.basemapError ? ` ${state.basemapError}` : "";
-  return `底图：${config.label}（${sourceText}，${networkText}${attributionText}）；项目道路、节点和路线来自本地 GeoJSON。${errorText}`;
+  return `真实底图：${sourceText}（${networkText}）；项目道路、POI 和路线来自本地 GeoJSON。${errorText}`;
 }
 
 function availableOsmLayerConfigs() {
@@ -1927,18 +1926,20 @@ function renderSvgMap(fallbackMessage = "") {
       const projected = screenNodes.get(node.id);
       const fill = colorForCategory(node.category);
       const isHighlighted = highlightNodeIds.has(node.id);
-      const radius = isHighlighted ? 12 : node.category === "entrance" ? 9 : 7;
-      const labelDy = node.category === "road" ? 0 : 20;
-      const labelText = node.category !== "road" ? escapeHtml(node.name) : "";
+      const isWaypoint = Boolean(node.is_waypoint || node.display_role === "waypoint" || node.category === "road");
+      const radius = isHighlighted ? 12 : isWaypoint ? 4 : node.category === "entrance" ? 9 : 7;
+      const labelDy = isWaypoint ? 0 : 20;
+      const showLabel = !isWaypoint && node.show_label !== false;
+      const labelText = showLabel ? escapeHtml(node.name) : "";
       const labelWidth = estimateLabelWidth(node.name);
       const labelX = projected.x - labelWidth / 2;
       const labelY = projected.y + labelDy - 14;
       return `
         <g>
           ${isHighlighted ? `<circle class="route-dot" cx="${projected.x}" cy="${projected.y}" r="${radius + 6}" fill="rgba(181, 94, 59, 0.16)" />` : ""}
-          <circle cx="${projected.x}" cy="${projected.y}" r="${radius}" fill="${fill}" stroke="white" stroke-width="3" />
+          <circle cx="${projected.x}" cy="${projected.y}" r="${radius}" fill="${fill}" stroke="white" stroke-width="${isWaypoint ? 2 : 3}" opacity="${isWaypoint && !isHighlighted ? 0.48 : 1}" />
           ${
-            node.category !== "road"
+            showLabel
               ? `
                 <rect class="node-label-bg" x="${labelX}" y="${labelY}" width="${labelWidth}" height="19" rx="8" />
                 <text class="node-label" x="${projected.x}" y="${projected.y + labelDy}" text-anchor="middle">${labelText}</text>
@@ -1974,7 +1975,7 @@ function renderSvgMap(fallbackMessage = "") {
     ? appendRouteGeometryCaption(state.currentRoute.ui.caption)
     : state.focusedNodeId
       ? `当前定位：${getNodeName(state.focusedNodeId)}。`
-      : `当前展示的是室外节点分布；缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`;
+      : `当前展示的是室外 POI 与弱化路网点；缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`;
   caption.textContent = fallbackMessage ? `${fallbackMessage} ${captionText}` : captionText;
   syncMapDemoPanel();
 }
@@ -2022,11 +2023,13 @@ function syncLeafletCaption() {
 
   const stats = state.mapGeoJsonStats || {};
   const osmText = osmLayerCaptionText();
+  const poiCount = stats.poi_node_count ?? 0;
+  const waypointCount = stats.waypoint_node_count ?? 0;
   caption.textContent = state.currentRoute
     ? `${appendRouteGeometryCaption(state.currentRoute.ui.caption)} ${basemapCaptionPrefix()} ${osmText}`
     : state.focusedNodeId
       ? `当前定位 ${getNodeName(state.focusedNodeId)}。${basemapCaptionPrefix()} ${osmText}`
-      : `已加载 ${stats.node_feature_count || 0} 个节点和 ${stats.edge_feature_count || 0} 条道路，geometry 覆盖 ${formatRatioPercent(stats.geometry_coverage_ratio || 0)}。${basemapCaptionPrefix()} ${osmText}`;
+      : `已加载 ${poiCount} 个 POI、${waypointCount} 个弱化路网点和 ${stats.edge_feature_count || 0} 条道路，geometry 覆盖 ${formatRatioPercent(stats.geometry_coverage_ratio || 0)}。${basemapCaptionPrefix()} ${osmText}`;
 }
 
 function ensureLeafletMap() {
@@ -2152,7 +2155,7 @@ function syncLeafletBasemapLayer() {
     if (state.basemapError) {
       return;
     }
-    state.basemapError = "底图瓦片加载异常；本地 GeoJSON 道路、节点和路线仍可继续显示。";
+    state.basemapError = "底图瓦片加载异常；本地 GeoJSON 道路、POI 和路线仍可继续显示。";
     syncMapDemoPanel();
     syncLeafletCaption();
     setStatus(state.basemapError, "error");
@@ -2279,6 +2282,20 @@ function syncLeafletBaseLayers(geojson) {
 function bindLeafletFeaturePopup(feature, layer) {
   const properties = feature.properties || {};
   if (properties.kind === "node") {
+    const isWaypoint = Boolean(properties.is_waypoint || properties.display_role === "waypoint");
+    if (isWaypoint) {
+      layer.bindPopup(`
+        <strong>${escapeHtml(properties.name || "道路接驳点")}</strong><br>
+        <span>道路接驳点</span><br>
+        <span>用于路线贴合真实步道，默认不作为搜索目的地展示。</span>
+      `);
+      layer.on("click", () => {
+        state.focusedNodeId = properties.id || "";
+        syncLeafletRouteLayer();
+      });
+      return;
+    }
+
     layer.bindPopup(`
       <strong>${escapeHtml(properties.name || properties.id)}</strong><br>
       <span>${escapeHtml(properties.category_label || properties.category || "")}</span><br>
@@ -2286,6 +2303,11 @@ function bindLeafletFeaturePopup(feature, layer) {
         从当前起点规划路线
       </button>
     `);
+    layer.bindTooltip(escapeHtml(properties.name || properties.id), {
+      direction: "top",
+      sticky: true,
+      opacity: 0.9,
+    });
     layer.on("click", () => {
       state.focusedNodeId = properties.id || "";
       syncLeafletRouteLayer();
@@ -2326,27 +2348,32 @@ function leafletEdgeStyle(feature) {
 
 function edgeGeometrySourceLabel(source) {
   if (source === "osm_matched") {
-    return "geometry_source: osm_matched";
+    return "OSM 匹配线形";
   }
   if (source === "manual") {
-    return "geometry_source: manual";
+    return "手工校准线形";
   }
   if (source === "fallback_line") {
-    return "geometry_source: fallback_line";
+    return "fallback 直线段";
   }
-  return source ? `geometry_source: ${source}` : "geometry_source: unknown";
+  return source ? `线形来源：${source}` : "线形来源：未知";
 }
 
 function leafletNodeStyle(feature) {
   const category = feature.properties?.category || "";
   const isHighlighted = getMapHighlightNodeIds().has(feature.properties?.id || "");
-  const isRoadNode = category === "road";
+  const isWaypoint = Boolean(
+    feature.properties?.is_waypoint
+    || feature.properties?.display_role === "waypoint"
+    || category === "road",
+  );
   return {
-    radius: isHighlighted ? 9 : isRoadNode ? 3 : 5.5,
+    radius: isHighlighted ? 9 : isWaypoint ? 2.5 : 5.8,
     color: "#ffffff",
-    weight: isHighlighted ? 3 : 1.5,
+    weight: isHighlighted ? 3 : isWaypoint ? 1 : 1.5,
     fillColor: colorForCategory(category),
-    fillOpacity: isHighlighted ? 0.96 : isRoadNode ? 0.42 : 0.76,
+    opacity: isWaypoint && !isHighlighted ? 0.42 : 1,
+    fillOpacity: isHighlighted ? 0.96 : isWaypoint ? 0.28 : 0.8,
   };
 }
 
@@ -2522,11 +2549,11 @@ function setMapRendererVisibility(renderer) {
 
 function syncMapDemoPanel() {
   const renderer = selectedMapRenderer();
-  const rendererLabel = renderer === "leaflet_geo" ? "Leaflet GeoJSON 实验层" : "SVG 稳定简图";
+  const rendererLabel = renderer === "leaflet_geo" ? "Leaflet 真实地图" : "SVG 稳定简图";
   const subtitle = document.querySelector("#map-renderer-subtitle");
   if (subtitle) {
     subtitle.textContent = renderer === "leaflet_geo"
-      ? "Leaflet 可拖动缩放；GeoJSON 坐标按 [lng, lat] 渲染"
+      ? "真实底图、本地 OSM 图层和课程路线叠加展示"
       : "SVG fallback 可用于现场对比和稳定回退";
   }
 
@@ -2597,15 +2624,16 @@ function syncMapDemoPanel() {
   const mapData = state.bootstrap?.map || {};
   const stats = state.mapGeoJsonStats || {};
   const nodeCount = stats.node_feature_count ?? mapData.node_count ?? 0;
+  const poiCount = stats.poi_node_count ?? mapData.poi_node_count ?? 0;
+  const waypointCount = stats.waypoint_node_count ?? mapData.waypoint_node_count ?? 0;
   const edgeCount = stats.edge_feature_count ?? mapData.edge_count ?? 0;
-  const geometryCount = stats.geometry_edge_count ?? mapData.geometry_edge_count ?? 0;
   const osmMatchedCount = stats.osm_matched_edge_count ?? mapData.osm_matched_edge_count ?? 0;
   const manualCount = stats.manual_geometry_edge_count ?? mapData.manual_geometry_edge_count ?? 0;
   const fallbackCount = stats.fallback_edge_count ?? mapData.fallback_edge_count ?? 0;
   const coverageRatio = stats.geometry_coverage_ratio ?? mapData.geometry_coverage_ratio ?? 0;
   const dataStatus = document.querySelector("#map-data-status");
   if (dataStatus) {
-    dataStatus.textContent = `节点 ${nodeCount} · 道路 ${edgeCount} · OSM ${osmMatchedCount} · manual ${manualCount} · fallback ${fallbackCount} (${formatRatioPercent(coverageRatio)})`;
+    dataStatus.textContent = `POI ${poiCount || nodeCount} · 路网点 ${waypointCount} · 道路 ${edgeCount} · OSM ${osmMatchedCount} · manual ${manualCount} · fallback ${fallbackCount} (${formatRatioPercent(coverageRatio)})`;
   }
 
   const routeStatus = document.querySelector("#map-route-status");
@@ -2615,7 +2643,7 @@ function syncMapDemoPanel() {
       const routeOsmCount = Number(routeStats.osm_matched_segment_count) || 0;
       const routeManualCount = Number(routeStats.manual_geometry_segment_count) || 0;
       const routeFallbackCount = Number(routeStats.fallback_segment_count) || 0;
-      routeStatus.textContent = `路线 OSM ${routeOsmCount}/${routeStats.route_segment_count} · manual ${routeManualCount} · fallback ${routeFallbackCount}`;
+      routeStatus.textContent = `路线真实线形 ${routeStats.geometry_segment_count}/${routeStats.route_segment_count} · OSM ${routeOsmCount} · manual ${routeManualCount} · fallback ${routeFallbackCount}`;
       routeStatus.className = "status-pill status-pill-strong";
     } else if (state.focusedNodeId) {
       routeStatus.textContent = `定位 ${getNodeName(state.focusedNodeId)}`;

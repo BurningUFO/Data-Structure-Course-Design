@@ -72,6 +72,23 @@ TARGET_CATEGORY_PRIORITY = {
     "road": 13,
 }
 
+LABEL_PRIORITY_BY_CATEGORY = {
+    "entrance": 90,
+    "education": 86,
+    "landmark": 82,
+    "catering": 78,
+    "sports": 74,
+    "shopping": 70,
+    "restroom": 66,
+    "dormitory": 62,
+    "parking": 58,
+    "hall": 54,
+    "reading_room": 50,
+    "service": 46,
+    "passage": 36,
+    "road": 10,
+}
+
 DEFAULT_PRESETS = {
     "scenic": [
         {"label": "图书馆", "keyword": "图书馆", "category": "education"},
@@ -156,7 +173,7 @@ FEATURE_NAVIGATION = [
 ]
 
 HELP_CONTENT = {
-    "stage": "正式产品演示版 · 地图方案 B M9",
+    "stage": "正式产品演示版 · 地图方案 B M12",
     "launch_command": "py -B -m src.ui.demo_server",
     "fallback_launch_command": "python -B -m src.ui.demo_server",
     "browser_url": "http://127.0.0.1:8765",
@@ -176,10 +193,10 @@ HELP_CONTENT = {
         "查询、推荐、路径、日记和 AIGC 轻量预览保持主链路可演示。",
     ],
     "map_acceptance": [
-        "Leaflet GeoJSON 层默认展示真实瓦片底图、节点、道路和路线；SVG 简图作为现场可切换 fallback。",
+        "Leaflet GeoJSON 层默认展示真实瓦片底图、POI、弱化路网点、道路和路线；SVG 简图作为现场可切换 fallback。",
         "底图可在真实瓦片和无底图之间切换，弱网时本地 GeoJSON 图层仍可展示。",
-        "地图数据由现有图节点和边转换为 GeoJSON，坐标顺序统一为 [lng, lat]。",
-        "M8 增加本地 OSM roads / buildings / water / landuse 图层，M9 将关键课程图 edge 匹配到本地 OSM 道路线形。",
+        "地图数据由课程图节点和边转换为 GeoJSON，坐标顺序统一为 [lng, lat]。",
+        "M12 在 M11 真实绕行基础上精修 POI、弱化路网点显示，并保持核心路线无 fallback。",
         "route_geojson 优先使用 osm_matched geometry，其次 manual geometry，缺失 geometry 的边继续用直线段兜底。",
     ],
 }
@@ -267,7 +284,7 @@ MAP_CAPABILITIES = {
                 "attribution": "",
                 "network_required": False,
                 "max_zoom": 19,
-                "usage_note": "网络异常或瓦片服务不可用时保留本地 GeoJSON 道路、节点和路线展示。",
+                "usage_note": "网络异常或瓦片服务不可用时保留本地 GeoJSON 道路、POI 和路线展示。",
             },
         ],
     },
@@ -297,7 +314,7 @@ class DemoUIService:
         self.site_meta = self._load_site_meta(self.site_id)
         self.graph = GraphLoader.load_site_graph(self.site_id)
         self.router = Router(self.graph)
-        self.site_records = load_site_records(self.site_id)
+        self.site_records = self._filter_searchable_site_records(load_site_records(self.site_id))
         self.diary_records = load_diary_records()
         self.diary_service = DiaryService(records=self.diary_records)
         self.outdoor_graph_source = self._load_outdoor_graph_source(self.site_id)
@@ -363,6 +380,8 @@ class DemoUIService:
                 "edges": self.map_edges,
                 "bounds": self._build_map_bounds(self.map_nodes),
                 "node_count": len(self.map_nodes),
+                "poi_node_count": sum(1 for node in self.map_nodes if not node["is_waypoint"]),
+                "waypoint_node_count": sum(1 for node in self.map_nodes if node["is_waypoint"]),
                 "edge_count": len(self.map_edges),
                 "geometry_edge_count": map_geometry_stats["geometry_edge_count"],
                 "osm_matched_edge_count": map_geometry_stats["osm_matched_edge_count"],
@@ -401,6 +420,11 @@ class DemoUIService:
                         "name": node["name"],
                         "category": node["category"],
                         "category_label": node["category_label"],
+                        "display_role": node["display_role"],
+                        "is_waypoint": node["is_waypoint"],
+                        "label_priority": node["label_priority"],
+                        "show_label": node["show_label"],
+                        "is_searchable": node["is_searchable"],
                     },
                 }
             )
@@ -464,6 +488,8 @@ class DemoUIService:
             },
             "stats": {
                 "node_feature_count": node_feature_count,
+                "poi_node_count": sum(1 for node in self.map_nodes if not node["is_waypoint"]),
+                "waypoint_node_count": sum(1 for node in self.map_nodes if node["is_waypoint"]),
                 "edge_feature_count": edge_feature_count,
                 "geometry_edge_count": geometry_edge_count,
                 "osm_matched_edge_count": osm_matched_edge_count,
@@ -858,11 +884,14 @@ class DemoUIService:
         else:
             osm_way_ids = []
 
+        raw_geometry_source = normalize_text(item.get("geometry_source")).casefold()
+        geometry_source = "manual" if raw_geometry_source in {"manual", "manual_real_map"} else "osm_matched"
+
         return {
             "edge_key": normalize_text(item.get("edge_key")) or f"{source}->{target}",
             "from": source,
             "to": target,
-            "geometry_source": "osm_matched",
+            "geometry_source": geometry_source,
             "confidence": confidence,
             "osm_way_ids": osm_way_ids,
             "geometry": geometry,
@@ -1127,12 +1156,14 @@ class DemoUIService:
                 continue
 
             category = normalize_text(node.get("category") or node.get("type")) or "unknown"
+            display_metadata = self._build_node_display_metadata(category, node.get("type"))
             nodes.append(
                 {
                     "id": normalize_text(node.get("id")),
                     "name": normalize_text(node.get("name")) or normalize_text(node.get("id")),
                     "category": category,
                     "category_label": CATEGORY_LABELS.get(category, category),
+                    **display_metadata,
                     "graph_type": "outdoor",
                     "lat": float(lat),
                     "lng": float(lng),
@@ -1148,6 +1179,32 @@ class DemoUIService:
         )
         return nodes
 
+    @classmethod
+    def _build_node_display_metadata(cls, category: str, node_type: Any = "") -> dict[str, Any]:
+        is_waypoint = cls._is_waypoint_category(category, node_type)
+        return {
+            "display_role": "waypoint" if is_waypoint else "poi",
+            "is_waypoint": is_waypoint,
+            "label_priority": 10 if is_waypoint else LABEL_PRIORITY_BY_CATEGORY.get(category, 40),
+            "show_label": not is_waypoint,
+            "is_searchable": not is_waypoint,
+        }
+
+    @staticmethod
+    def _is_waypoint_category(category: str, node_type: Any = "") -> bool:
+        return category == "road" or normalize_text(node_type).casefold() == "waypoint"
+
+    @classmethod
+    def _filter_searchable_site_records(cls, records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        return [
+            record
+            for record in records
+            if not cls._is_waypoint_category(
+                normalize_text(record.get("category") or record.get("type")),
+                record.get("type"),
+            )
+        ]
+
     def _build_map_edges(self, graph_data: dict[str, Any]) -> list[dict[str, Any]]:
         node_ids = {node["id"] for node in self.map_nodes}
         seen_pairs: set[tuple[str, str, str]] = set()
@@ -1159,7 +1216,7 @@ class DemoUIService:
             if source not in node_ids or target not in node_ids:
                 continue
 
-            pair_key = tuple(sorted((source, target)) + [normalize_text(edge.get("name"))])
+            pair_key = tuple(sorted((source, target)))
             if pair_key in seen_pairs:
                 continue
             seen_pairs.add(pair_key)
@@ -1179,7 +1236,7 @@ class DemoUIService:
                 map_edge.update(
                     {
                         "geometry": geometry,
-                        "geometry_source": "osm_matched",
+                        "geometry_source": osm_match.get("geometry_source") or "osm_matched",
                         "geometry_confidence": osm_match.get("confidence"),
                         "osm_way_ids": osm_match.get("osm_way_ids", []),
                         "osm_match_edge_key": osm_match.get("edge_key"),
@@ -1525,18 +1582,22 @@ class DemoUIService:
 
         for node_id, node_data in self.graph.nodes.items():
             category = normalize_text(node_data.get("category") or node_data.get("type")) or "unknown"
-            if category == "road":
+            if self._is_waypoint_category(category, node_data.get("type")):
                 continue
 
             graph_type = normalize_text(node_data.get("graph_type")) or "indoor"
             location = node_data.get("location") or {}
             has_location = node_id in self.map_node_index
+            display_metadata = self._build_node_display_metadata(category, node_data.get("type"))
             targets.append(
                 {
                     "id": node_id,
                     "name": normalize_text(node_data.get("name")) or node_id,
                     "category": category,
                     "category_label": CATEGORY_LABELS.get(category, category),
+                    "display_role": display_metadata["display_role"],
+                    "is_waypoint": display_metadata["is_waypoint"],
+                    "label_priority": display_metadata["label_priority"],
                     "graph_type": graph_type,
                     "layer": normalize_text(node_data.get("source_sub_graph_id")) or graph_type,
                     "has_map_location": has_location,
@@ -1841,14 +1902,14 @@ class DemoUIService:
         visit_order_text = " -> ".join(route.get("visit_order_names", []))
         base = f"多目标访问顺序：{visit_order_text}。"
         if not unmapped_path_node_ids:
-            return f"{base} 路径已在地图区高亮。"
+            return f"{base} 各段室外路线已沿真实道路高亮。"
 
         indoor_names = [
             self._resolve_node_name(node_id)
             for node_id in unmapped_path_node_ids
         ]
         return (
-            f"{base} 室外段已在地图区高亮；室内段请看右侧步骤卡片。"
+            f"{base} 室外段已沿真实道路高亮；室内段请看右侧步骤卡片。"
             f" 未直接绘制的节点：{', '.join(indoor_names)}。"
         )
 
@@ -1862,14 +1923,14 @@ class DemoUIService:
             f"{normalize_text(route.get('target_node_name'))}"
         )
         if not unmapped_path_node_ids:
-            return f"{base} 的整条路径都已在地图区高亮。"
+            return f"{base} 的室外路线已沿真实道路高亮。"
 
         indoor_names = [
             self._resolve_node_name(node_id)
             for node_id in unmapped_path_node_ids
         ]
         return (
-            f"{base} 的室外段已高亮；室内段请看右侧步骤卡片。"
+            f"{base} 的室外段已沿真实道路高亮；室内段请看右侧步骤卡片。"
             f" 未直接绘制的节点：{', '.join(indoor_names)}。"
         )
 

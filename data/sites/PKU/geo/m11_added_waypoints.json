@@ -1,0 +1,88 @@
+{
+  "metadata": {
+    "site_id": "PKU",
+    "stage": "M11",
+    "created_at": "2026-05-12",
+    "added_waypoint_count": 3,
+    "adjusted_route_target_count": 6
+  },
+  "added_waypoints": [
+    {
+      "id": "road_south_gate_inner",
+      "name": "南门内侧五四路口",
+      "location": {
+        "lat": 39.9861331,
+        "lng": 116.3053872
+      },
+      "reason": "将南门入口先接入五四路真实步道，再进入农园和教学区路网。"
+    },
+    {
+      "id": "road_nongyuan_south_west",
+      "name": "农园南路西口",
+      "location": {
+        "lat": 39.9869801,
+        "lng": 116.3060061
+      },
+      "reason": "补齐农园南侧西端转角，避免路线跨越建筑轮廓。"
+    },
+    {
+      "id": "road_nongyuan_south_east",
+      "name": "农园南路东口",
+      "location": {
+        "lat": 39.9869969,
+        "lng": 116.3064966
+      },
+      "reason": "补齐农园南侧东端转角，再连接二教西侧道路。"
+    }
+  ],
+  "adjusted_route_targets": [
+    {
+      "id": "library",
+      "location": {
+        "lat": 39.991735,
+        "lng": 116.30305
+      },
+      "reason": "Route target moved to an outdoor south footway entrance point."
+    },
+    {
+      "id": "teaching_building_1",
+      "location": {
+        "lat": 39.9914609,
+        "lng": 116.304341
+      },
+      "reason": "Route target moved to west-side outdoor entrance footway."
+    },
+    {
+      "id": "teaching_building_2",
+      "location": {
+        "lat": 39.9881439,
+        "lng": 116.3065508
+      },
+      "reason": "Route target moved to west-side outdoor entrance footway."
+    },
+    {
+      "id": "dormitory_1",
+      "location": {
+        "lat": 39.9875503,
+        "lng": 116.3043071
+      },
+      "reason": "Route target moved to dormitory-area outdoor access point on Yannan Road."
+    },
+    {
+      "id": "canteen",
+      "location": {
+        "lat": 39.9875162,
+        "lng": 116.3058135
+      },
+      "reason": "Route target moved to Nongyuan west-side entrance road."
+    },
+    {
+      "id": "toilet_lib_area",
+      "location": {
+        "lat": 39.9915897,
+        "lng": 116.3048394
+      },
+      "reason": "Route target moved to nearby outdoor footway."
+    }
+  ]
+}

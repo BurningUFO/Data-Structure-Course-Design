@@ -2,1103 +2,522 @@
   "metadata": {
     "site_id": "PKU",
     "stage": "M12",
-    "source": "local_osm_roads_with_m11_detours",
-    "source_file": "osm_roads_simplified.geojson",
-    "created_at": "2026-05-13",
-    "description": "Course graph edge geometry after M12 visual polish and real-map display audit.",
-    "geometry_priority": [
-      "osm_matched",
-      "manual",
-      "fallback_line"
-    ],
+    "created_at": "2026-05-12",
+    "edge_count": 42,
+    "accepted_edge_count": 42,
+    "fallback_edge_count": 0,
+    "low_confidence_reviewed_count": 0,
+    "low_confidence_edge_keys": [],
     "runtime_policy": {
-      "web_ui_calls_overpass": false,
+      "routing_authority": "course_graph",
+      "web_ui_calls_amap": false,
       "web_ui_calls_osmnx": false,
-      "routing_authority": "course_graph"
-    },
-    "manual_geometry_policy": "Manual geometry is retained for short restroom/access connectors where local OSM lacks a precise walkable segment; fallback edges remain disallowed for the PKU M12 baseline.",
-    "m12_note": "M12 keeps the M11 realistic detours, weakens waypoint display, and preserves 42 accepted undirected edges with zero fallback geometry."
+      "web_ui_calls_overpass": false
+    }
   },
-  "matches": [
+  "visual_audit": [
     {
       "edge_key": "gate_north->road_west_gate_inner",
       "from": "gate_north",
       "to": "road_west_gate_inner",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.78,
-      "osm_way_ids": [
-        "1075644762"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9929,
-          "lng": 116.3055
-        },
-        {
-          "lat": 39.9923749,
-          "lng": 116.3057472
-        },
-        {
-          "lat": 39.9919705,
-          "lng": 116.3059375
-        },
-        {
-          "lat": 39.9920871,
-          "lng": 116.3058675
-        }
-      ],
+      "geometry_confidence": 0.78,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lake_southeast_footway->road_west_gate_inner",
       "from": "road_lake_southeast_footway",
       "to": "road_west_gate_inner",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.82,
-      "osm_way_ids": [
-        "33457266",
-        "240825571"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9927438,
-          "lng": 116.3054488
-        },
-        {
-          "lat": 39.9924154,
-          "lng": 116.3056581
-        },
-        {
-          "lat": 39.9920871,
-          "lng": 116.3058675
-        }
-      ],
+      "geometry_confidence": 0.82,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lake_southeast->road_lake_southeast_footway",
       "from": "road_lake_southeast",
       "to": "road_lake_southeast_footway",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.84,
-      "osm_way_ids": [
-        "240825571",
-        "33457266"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9918029,
-          "lng": 116.3060249
-        },
-        {
-          "lat": 39.9922734,
-          "lng": 116.3057368
-        },
-        {
-          "lat": 39.9927438,
-          "lng": 116.3054488
-        }
-      ],
+      "geometry_confidence": 0.84,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lake_southeast->road_lijiao_north",
       "from": "road_lake_southeast",
       "to": "road_lijiao_north",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.86,
-      "osm_way_ids": [
-        "33457266"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9918029,
-          "lng": 116.3060249
-        },
-        {
-          "lat": 39.9916188,
-          "lng": 116.3063146
-        }
-      ],
+      "geometry_confidence": 0.86,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_chengfuyuan_west->road_lijiao_north",
       "from": "road_chengfuyuan_west",
       "to": "road_lijiao_north",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.88,
-      "osm_way_ids": [
-        "226703721",
-        "33278312"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9916729,
-          "lng": 116.3071531
-        },
-        {
-          "lat": 39.9916458,
-          "lng": 116.3067339
-        },
-        {
-          "lat": 39.9916188,
-          "lng": 116.3063146
-        }
-      ],
+      "geometry_confidence": 0.88,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_chengfuyuan_east->road_chengfuyuan_west",
       "from": "road_chengfuyuan_east",
       "to": "road_chengfuyuan_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.82,
-      "osm_way_ids": [
-        "1154086722",
-        "226703721"
-      ],
-      "geometry": [
-        {
-          "lat": 39.991764,
-          "lng": 116.3092297
-        },
-        {
-          "lat": 39.9918076,
-          "lng": 116.3088283
-        },
-        {
-          "lat": 39.9917565,
-          "lng": 116.3081923
-        },
-        {
-          "lat": 39.9916729,
-          "lng": 116.3071531
-        }
-      ],
+      "geometry_confidence": 0.82,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_chengfuyuan_east->road_east_gate_south",
       "from": "road_chengfuyuan_east",
       "to": "road_east_gate_south",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.78,
-      "osm_way_ids": [
-        "970687432",
-        "1111656405"
-      ],
-      "geometry": [
-        {
-          "lat": 39.991764,
-          "lng": 116.3092297
-        },
-        {
-          "lat": 39.9917638,
-          "lng": 116.3094006
-        },
-        {
-          "lat": 39.9917546,
-          "lng": 116.3090208
-        }
-      ],
+      "geometry_confidence": 0.78,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "gate_east->road_east_gate_south",
       "from": "gate_east",
       "to": "road_east_gate_south",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "1111656405",
-        "237011438"
-      ],
-      "geometry": [
-        {
-          "lat": 39.992919,
-          "lng": 116.3095453
-        },
-        {
-          "lat": 39.9925688,
-          "lng": 116.3097584
-        },
-        {
-          "lat": 39.9923203,
-          "lng": 116.3095332
-        },
-        {
-          "lat": 39.9917546,
-          "lng": 116.3090208
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "gate_east->parking_lot",
       "from": "gate_east",
       "to": "parking_lot",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "237011438",
-        "1111656405"
-      ],
-      "geometry": [
-        {
-          "lat": 39.992919,
-          "lng": 116.3095453
-        },
-        {
-          "lat": 39.9925688,
-          "lng": 116.3097584
-        },
-        {
-          "lat": 39.9917546,
-          "lng": 116.3090208
-        },
-        {
-          "lat": 39.9928559,
-          "lng": 116.3089338
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 4,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "gate_east->road_east_gate_north",
       "from": "gate_east",
       "to": "road_east_gate_north",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "237011438"
-      ],
-      "geometry": [
-        {
-          "lat": 39.992919,
-          "lng": 116.3095453
-        },
-        {
-          "lat": 39.9934399,
-          "lng": 116.3095064
-        },
-        {
-          "lat": 39.9939607,
-          "lng": 116.3094675
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lake_south_mid->road_lake_south_west",
       "from": "road_lake_south_mid",
       "to": "road_lake_south_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.8,
-      "osm_way_ids": [
-        "272355333"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9918662,
-          "lng": 116.302612
-        },
-        {
-          "lat": 39.9918722,
-          "lng": 116.3017091
-        },
-        {
-          "lat": 39.9918729,
-          "lng": 116.3016117
-        },
-        {
-          "lat": 39.9920485,
-          "lng": 116.3008391
-        }
-      ],
+      "geometry_confidence": 0.8,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lake_south_mid->road_library_south",
       "from": "road_lake_south_mid",
       "to": "road_library_south",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.84,
-      "osm_way_ids": [
-        "272355333"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9918662,
-          "lng": 116.302612
-        },
-        {
-          "lat": 39.9917482,
-          "lng": 116.3030362
-        }
-      ],
+      "geometry_confidence": 0.84,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "library->road_library_south",
       "from": "library",
       "to": "road_library_south",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "272355333"
-      ],
-      "geometry": [
-        {
-          "lat": 39.991735,
-          "lng": 116.30305
-        },
-        {
-          "lat": 39.9917482,
-          "lng": 116.3030362
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lake_southeast->road_library_south",
       "from": "road_lake_southeast",
       "to": "road_library_south",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.78,
-      "osm_way_ids": [
-        "272355333"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9918029,
-          "lng": 116.3060249
-        },
-        {
-          "lat": 39.9917755,
-          "lng": 116.3045305
-        },
-        {
-          "lat": 39.9917482,
-          "lng": 116.3030362
-        }
-      ],
+      "geometry_confidence": 0.78,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "sports_ground->toilet_sports_area",
       "from": "sports_ground",
       "to": "toilet_sports_area",
+      "status": "accepted",
       "geometry_source": "manual",
-      "confidence": null,
-      "osm_way_ids": [],
-      "geometry": [
-        {
-          "lat": 39.9912889,
-          "lng": 116.3047501
-        },
-        {
-          "lat": 39.9914007,
-          "lng": 116.3048939
-        }
-      ],
+      "geometry_confidence": null,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_wusi_north->sports_ground",
       "from": "road_wusi_north",
       "to": "sports_ground",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "1101010405",
-        "128753742"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9910584,
-          "lng": 116.3050398
-        },
-        {
-          "lat": 39.9912889,
-          "lng": 116.3047501
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_wusi_north->teaching_building_1",
       "from": "road_wusi_north",
       "to": "teaching_building_1",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "628032102",
-        "226702307"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9910584,
-          "lng": 116.3050398
-        },
-        {
-          "lat": 39.9912597,
-          "lng": 116.3046904
-        },
-        {
-          "lat": 39.9914609,
-          "lng": 116.304341
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_cross->road_wusi_north",
       "from": "road_cross",
       "to": "road_wusi_north",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.84,
-      "osm_way_ids": [
-        "272366717",
-        "33457409"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9906472,
-          "lng": 116.3052974
-        },
-        {
-          "lat": 39.9910584,
-          "lng": 116.3050398
-        }
-      ],
+      "geometry_confidence": 0.84,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_cross->road_wusi_mid",
       "from": "road_cross",
       "to": "road_wusi_mid",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.84,
-      "osm_way_ids": [
-        "33455720",
-        "33457409"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9906472,
-          "lng": 116.3052974
-        },
-        {
-          "lat": 39.9902074,
-          "lng": 116.3051105
-        }
-      ],
+      "geometry_confidence": 0.84,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_library_south_west->road_wusi_mid",
       "from": "road_library_south_west",
       "to": "road_wusi_mid",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.82,
-      "osm_way_ids": [
-        "1090663940",
-        "33455720"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9898554,
-          "lng": 116.3035441
-        },
-        {
-          "lat": 39.9897747,
-          "lng": 116.3046395
-        },
-        {
-          "lat": 39.9897386,
-          "lng": 116.3051295
-        },
-        {
-          "lat": 39.9902074,
-          "lng": 116.3051105
-        }
-      ],
+      "geometry_confidence": 0.82,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_library_south_west->road_second_gym_south_east",
       "from": "road_library_south_west",
       "to": "road_second_gym_south_east",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.84,
-      "osm_way_ids": [
-        "1100821739"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9898554,
-          "lng": 116.3035441
-        },
-        {
-          "lat": 39.989556,
-          "lng": 116.3035088
-        },
-        {
-          "lat": 39.9892565,
-          "lng": 116.3034735
-        }
-      ],
+      "geometry_confidence": 0.84,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "dormitory_1->road_yannan_east",
       "from": "dormitory_1",
       "to": "road_yannan_east",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [],
-      "geometry": [
-        {
-          "lat": 39.9875503,
-          "lng": 116.3041
-        },
-        {
-          "lat": 39.9875503,
-          "lng": 116.3043071
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_yannan_east->square_center",
       "from": "road_yannan_east",
       "to": "square_center",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.78,
-      "osm_way_ids": [
-        "1111656406",
-        "33278378"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9875503,
-          "lng": 116.3043071
-        },
-        {
-          "lat": 39.9881372,
-          "lng": 116.30402
-        },
-        {
-          "lat": 39.9882798,
-          "lng": 116.3039502
-        },
-        {
-          "lat": 39.9880767,
-          "lng": 116.3045067
-        }
-      ],
+      "geometry_confidence": 0.78,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_nongyuan_north_west->square_center",
       "from": "road_nongyuan_north_west",
       "to": "square_center",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.86,
-      "osm_way_ids": [
-        "33278378",
-        "240825552"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9880915,
-          "lng": 116.3052809
-        },
-        {
-          "lat": 39.9880841,
-          "lng": 116.3048938
-        },
-        {
-          "lat": 39.9880767,
-          "lng": 116.3045067
-        }
-      ],
+      "geometry_confidence": 0.86,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "canteen->road_nongyuan_west_south",
       "from": "canteen",
       "to": "road_nongyuan_west_south",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.78,
-      "osm_way_ids": [
-        "595764174"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9875162,
-          "lng": 116.3058135
-        },
-        {
-          "lat": 39.9871644,
-          "lng": 116.3058359
-        }
-      ],
+      "geometry_confidence": 0.78,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_centennial_plaza_east->road_nongyuan_north_west",
       "from": "road_centennial_plaza_east",
       "to": "road_nongyuan_north_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "1098564182",
-        "240825552"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9886173,
-          "lng": 116.3052159
-        },
-        {
-          "lat": 39.9880915,
-          "lng": 116.3052809
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_second_teaching_west->road_southeast_campus_west",
       "from": "road_second_teaching_west",
       "to": "road_southeast_campus_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.86,
-      "osm_way_ids": [
-        "240825553"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9874959,
-          "lng": 116.3065874
-        },
-        {
-          "lat": 39.9880847,
-          "lng": 116.3065529
-        },
-        {
-          "lat": 39.9886735,
-          "lng": 116.3065184
-        }
-      ],
+      "geometry_confidence": 0.86,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_second_teaching_west->teaching_building_2",
       "from": "road_second_teaching_west",
       "to": "teaching_building_2",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "240825560",
-        "1157605800"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9874959,
-          "lng": 116.3065874
-        },
-        {
-          "lat": 39.9878199,
-          "lng": 116.3065691
-        },
-        {
-          "lat": 39.9881439,
-          "lng": 116.3065508
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lijiao_west->road_southeast_campus_west",
       "from": "road_lijiao_west",
       "to": "road_southeast_campus_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.86,
-      "osm_way_ids": [
-        "33457307"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9902667,
-          "lng": 116.3063789
-        },
-        {
-          "lat": 39.9894701,
-          "lng": 116.3064486
-        },
-        {
-          "lat": 39.9886735,
-          "lng": 116.3065184
-        }
-      ],
+      "geometry_confidence": 0.86,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_east_gate_south->road_science_east",
       "from": "road_east_gate_south",
       "to": "road_science_east",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "970687433",
-        "33457522",
-        "1111656405"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9917546,
-          "lng": 116.3090208
-        },
-        {
-          "lat": 39.9912062,
-          "lng": 116.3093033
-        },
-        {
-          "lat": 39.9908035,
-          "lng": 116.3095108
-        },
-        {
-          "lat": 39.9907995,
-          "lng": 116.3093076
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "convenience_store->road_science_east",
       "from": "convenience_store",
       "to": "road_science_east",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "264247407",
-        "1206332679",
-        "1206332688"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9888829,
-          "lng": 116.3135887
-        },
-        {
-          "lat": 39.9890924,
-          "lng": 116.3137143
-        },
-        {
-          "lat": 39.9889651,
-          "lng": 116.3107253
-        },
-        {
-          "lat": 39.9889315,
-          "lng": 116.3099356
-        },
-        {
-          "lat": 39.9907995,
-          "lng": 116.3093076
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 4,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_cross->road_library_south_west",
       "from": "road_cross",
       "to": "road_library_south_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.78,
-      "osm_way_ids": [
-        "1090663940",
-        "272366718",
-        "33457409"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9906472,
-          "lng": 116.3052974
-        },
-        {
-          "lat": 39.9897386,
-          "lng": 116.3051295
-        },
-        {
-          "lat": 39.9897534,
-          "lng": 116.304929
-        },
-        {
-          "lat": 39.9898554,
-          "lng": 116.3035441
-        }
-      ],
+      "geometry_confidence": 0.78,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lijiao_north->road_lijiao_west",
       "from": "road_lijiao_north",
       "to": "road_lijiao_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.86,
-      "osm_way_ids": [
-        "33457307"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9916188,
-          "lng": 116.3063146
-        },
-        {
-          "lat": 39.9909428,
-          "lng": 116.3063467
-        },
-        {
-          "lat": 39.9902667,
-          "lng": 116.3063789
-        }
-      ],
+      "geometry_confidence": 0.86,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_wusi_mid->square_center",
       "from": "road_wusi_mid",
       "to": "square_center",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.76,
-      "osm_way_ids": [
-        "33455720",
-        "33278378"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9902074,
-          "lng": 116.3051105
-        },
-        {
-          "lat": 39.9890055,
-          "lng": 116.3051682
-        },
-        {
-          "lat": 39.9888498,
-          "lng": 116.3051874
-        },
-        {
-          "lat": 39.9880915,
-          "lng": 116.3052809
-        },
-        {
-          "lat": 39.9880767,
-          "lng": 116.3045067
-        }
-      ],
+      "geometry_confidence": 0.76,
+      "geometry_point_count": 4,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "gate_south->road_south_gate_inner",
       "from": "gate_south",
       "to": "road_south_gate_inner",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.8,
-      "osm_way_ids": [
-        "33455720"
-      ],
-      "geometry": [
-        {
-          "lat": 39.98527,
-          "lng": 116.3054565
-        },
-        {
-          "lat": 39.9857016,
-          "lng": 116.3054219
-        },
-        {
-          "lat": 39.9861331,
-          "lng": 116.3053872
-        }
-      ],
+      "geometry_confidence": 0.8,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_nongyuan_north_west->road_south_gate_inner",
       "from": "road_nongyuan_north_west",
       "to": "road_south_gate_inner",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.8,
-      "osm_way_ids": [
-        "33455720"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9880915,
-          "lng": 116.3052809
-        },
-        {
-          "lat": 39.9871123,
-          "lng": 116.305334
-        },
-        {
-          "lat": 39.9861331,
-          "lng": 116.3053872
-        }
-      ],
+      "geometry_confidence": 0.8,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_lijiao_west->road_wusi_mid",
       "from": "road_lijiao_west",
       "to": "road_wusi_mid",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.8,
-      "osm_way_ids": [
-        "33455720",
-        "33457307"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9902667,
-          "lng": 116.3063789
-        },
-        {
-          "lat": 39.9902371,
-          "lng": 116.3057447
-        },
-        {
-          "lat": 39.9902074,
-          "lng": 116.3051105
-        }
-      ],
+      "geometry_confidence": 0.8,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_nongyuan_south_west->road_nongyuan_west_south",
       "from": "road_nongyuan_south_west",
       "to": "road_nongyuan_west_south",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.8,
-      "osm_way_ids": [
-        "595764174"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9869801,
-          "lng": 116.3060061
-        },
-        {
-          "lat": 39.9871644,
-          "lng": 116.3058359
-        }
-      ],
+      "geometry_confidence": 0.8,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_nongyuan_south_east->road_nongyuan_south_west",
       "from": "road_nongyuan_south_east",
       "to": "road_nongyuan_south_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.8,
-      "osm_way_ids": [
-        "595764174"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9869969,
-          "lng": 116.3064966
-        },
-        {
-          "lat": 39.9869801,
-          "lng": 116.3060061
-        }
-      ],
+      "geometry_confidence": 0.8,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_nongyuan_south_east->road_second_teaching_west",
       "from": "road_nongyuan_south_east",
       "to": "road_second_teaching_west",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.8,
-      "osm_way_ids": [
-        "595764174",
-        "240825560"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9869969,
-          "lng": 116.3064966
-        },
-        {
-          "lat": 39.9871493,
-          "lng": 116.3064832
-        },
-        {
-          "lat": 39.9871544,
-          "lng": 116.3066074
-        },
-        {
-          "lat": 39.9872009,
-          "lng": 116.3066047
-        },
-        {
-          "lat": 39.9874959,
-          "lng": 116.3065874
-        }
-      ],
+      "geometry_confidence": 0.8,
+      "geometry_point_count": 4,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_second_teaching_west->road_third_teaching_south_east",
       "from": "road_second_teaching_west",
       "to": "road_third_teaching_south_east",
+      "status": "accepted",
       "geometry_source": "osm_matched",
-      "confidence": 0.8,
-      "osm_way_ids": [
-        "240825560"
-      ],
-      "geometry": [
-        {
-          "lat": 39.9874959,
-          "lng": 116.3065874
-        },
-        {
-          "lat": 39.9875334,
-          "lng": 116.3074326
-        },
-        {
-          "lat": 39.9875709,
-          "lng": 116.3082777
-        }
-      ],
+      "geometry_confidence": 0.8,
+      "geometry_point_count": 2,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     },
     {
       "edge_key": "road_wusi_north->toilet_lib_area",
       "from": "road_wusi_north",
       "to": "toilet_lib_area",
+      "status": "accepted",
       "geometry_source": "manual",
-      "confidence": null,
-      "osm_way_ids": [],
-      "geometry": [
-        {
-          "lat": 39.9910584,
-          "lng": 116.3050398
-        },
-        {
-          "lat": 39.9915619,
-          "lng": 116.3046936
-        },
-        {
-          "lat": 39.9915897,
-          "lng": 116.3048394
-        }
-      ],
+      "geometry_confidence": null,
+      "geometry_point_count": 3,
+      "issues": [],
+      "checked_by": "M12",
       "notes": "Accepted in M12 visual/data audit. Endpoint alignment and route stats were verified by API smoke checks; low-confidence OSM matches are retained only where they remain on local roads or footways."
     }
   ]

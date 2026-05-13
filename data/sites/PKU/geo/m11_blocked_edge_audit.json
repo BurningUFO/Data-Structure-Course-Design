@@ -1,0 +1,554 @@
+{
+  "metadata": {
+    "site_id": "PKU",
+    "stage": "M11",
+    "created_at": "2026-05-12",
+    "method": "Pure-Python geometry prefilter against local OSM buildings/water plus route visual/API verification; Shapely was unavailable in this local environment.",
+    "audited_undirected_edge_count": 45,
+    "removed_edge_count": 11,
+    "adjusted_edge_count": 6,
+    "final_post_change_scan": "42 undirected edges scanned, 0 building/water polygon crossings after excluding endpoint approaches."
+  },
+  "edges": [
+    {
+      "edge_key": "gate_north->road_west_gate_inner",
+      "from": "gate_north",
+      "to": "road_west_gate_inner",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_west_gate_inner->road_lake_southeast_footway",
+      "from": "road_west_gate_inner",
+      "to": "road_lake_southeast_footway",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_lake_southeast_footway->road_lake_southeast",
+      "from": "road_lake_southeast_footway",
+      "to": "road_lake_southeast",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_lake_southeast->road_lijiao_north",
+      "from": "road_lake_southeast",
+      "to": "road_lijiao_north",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_lijiao_north->road_chengfuyuan_west",
+      "from": "road_lijiao_north",
+      "to": "road_chengfuyuan_west",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_chengfuyuan_west->road_chengfuyuan_east",
+      "from": "road_chengfuyuan_west",
+      "to": "road_chengfuyuan_east",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_chengfuyuan_east->road_east_gate_south",
+      "from": "road_chengfuyuan_east",
+      "to": "road_east_gate_south",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_east_gate_south->gate_east",
+      "from": "road_east_gate_south",
+      "to": "gate_east",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "gate_east->parking_lot",
+      "from": "gate_east",
+      "to": "parking_lot",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_east_gate_north->gate_east",
+      "from": "road_east_gate_north",
+      "to": "gate_east",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_lake_south_west->road_lake_south_mid",
+      "from": "road_lake_south_west",
+      "to": "road_lake_south_mid",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_lake_south_mid->road_library_south",
+      "from": "road_lake_south_mid",
+      "to": "road_library_south",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_library_south->library",
+      "from": "road_library_south",
+      "to": "library",
+      "status": "fixed",
+      "issues": [
+        "endpoint_inside_building"
+      ],
+      "action": "adjust_geometry",
+      "notes": "M11 moved the route target or resampled the connector to an outdoor entrance/road geometry; final post-change scan reports no building/water crossing."
+    },
+    {
+      "edge_key": "road_library_south->road_lake_southeast",
+      "from": "road_library_south",
+      "to": "road_lake_southeast",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "library->toilet_lib_area",
+      "from": "library",
+      "to": "toilet_lib_area",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "library",
+        "road_library_south",
+        "road_lake_southeast",
+        "road_lijiao_north",
+        "road_lijiao_west",
+        "road_wusi_mid",
+        "road_cross",
+        "road_wusi_north",
+        "toilet_lib_area"
+      ],
+      "notes": "The direct library-restroom connector crossed the first teaching building area. The restroom now connects to Wusi north footway and routes around via road waypoints."
+    },
+    {
+      "edge_key": "sports_ground->toilet_sports_area",
+      "from": "sports_ground",
+      "to": "toilet_sports_area",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "sports_ground->road_wusi_north",
+      "from": "sports_ground",
+      "to": "road_wusi_north",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_wusi_north->teaching_building_1",
+      "from": "road_wusi_north",
+      "to": "teaching_building_1",
+      "status": "fixed",
+      "issues": [
+        "endpoint_inside_building"
+      ],
+      "action": "adjust_geometry",
+      "notes": "M11 moved the route target or resampled the connector to an outdoor entrance/road geometry; final post-change scan reports no building/water crossing."
+    },
+    {
+      "edge_key": "road_wusi_north->road_cross",
+      "from": "road_wusi_north",
+      "to": "road_cross",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_cross->road_wusi_mid",
+      "from": "road_cross",
+      "to": "road_wusi_mid",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_cross->road_lijiao_west",
+      "from": "road_cross",
+      "to": "road_lijiao_west",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_cross",
+        "road_wusi_mid",
+        "road_lijiao_west"
+      ],
+      "notes": "The direct road_cross to Lijiao west edge crossed the Geology building area. It is replaced by the real Wusi middle to Lijiao west road turn."
+    },
+    {
+      "edge_key": "road_wusi_mid->road_library_south_west",
+      "from": "road_wusi_mid",
+      "to": "road_library_south_west",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_library_south_west->road_second_gym_south_east",
+      "from": "road_library_south_west",
+      "to": "road_second_gym_south_east",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_second_gym_south_east->road_yannan_east",
+      "from": "road_second_gym_south_east",
+      "to": "road_yannan_east",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "low_confidence_manual_shortcut"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_second_gym_south_east",
+        "road_library_south_west",
+        "road_wusi_mid",
+        "square_center",
+        "road_yannan_east"
+      ],
+      "notes": "The southwest shortcut had no connected OSM road support and clipped dormitory building footprints."
+    },
+    {
+      "edge_key": "road_yannan_east->dormitory_1",
+      "from": "road_yannan_east",
+      "to": "dormitory_1",
+      "status": "fixed",
+      "issues": [
+        "endpoint_inside_building"
+      ],
+      "action": "adjust_geometry",
+      "notes": "M11 moved the route target or resampled the connector to an outdoor entrance/road geometry; final post-change scan reports no building/water crossing."
+    },
+    {
+      "edge_key": "square_center->road_yannan_east",
+      "from": "square_center",
+      "to": "road_yannan_east",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "square_center->road_nongyuan_north_west",
+      "from": "square_center",
+      "to": "road_nongyuan_north_west",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_nongyuan_north_west->canteen",
+      "from": "road_nongyuan_north_west",
+      "to": "canteen",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_nongyuan_north_west",
+        "square_center",
+        "road_wusi_mid",
+        "road_lijiao_west",
+        "road_southeast_campus_west",
+        "road_second_teaching_west",
+        "road_nongyuan_south_east",
+        "road_nongyuan_south_west",
+        "road_nongyuan_west_south",
+        "canteen"
+      ],
+      "notes": "The north-west Nongyuan connector crossed the Education building area; canteen access now uses the west/south side road entrance."
+    },
+    {
+      "edge_key": "road_nongyuan_west_south->canteen",
+      "from": "road_nongyuan_west_south",
+      "to": "canteen",
+      "status": "fixed",
+      "issues": [
+        "endpoint_inside_building"
+      ],
+      "action": "adjust_geometry",
+      "notes": "M11 moved the route target or resampled the connector to an outdoor entrance/road geometry; final post-change scan reports no building/water crossing."
+    },
+    {
+      "edge_key": "road_nongyuan_west_south->road_second_teaching_west",
+      "from": "road_nongyuan_west_south",
+      "to": "road_second_teaching_west",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "missing_waypoint_turns"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_nongyuan_west_south",
+        "road_nongyuan_south_west",
+        "road_nongyuan_south_east",
+        "road_second_teaching_west"
+      ],
+      "notes": "The M10 edge jumped between Nongyuan west road and second teaching west road without modeling the south road turns."
+    },
+    {
+      "edge_key": "road_second_teaching_west->canteen",
+      "from": "road_second_teaching_west",
+      "to": "canteen",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_second_teaching_west",
+        "road_nongyuan_south_east",
+        "road_nongyuan_south_west",
+        "road_nongyuan_west_south",
+        "canteen"
+      ],
+      "notes": "The direct second teaching west to canteen edge crossed the Nongyuan restaurant footprint. Access now goes around Nongyuan south and west-side entrance waypoints."
+    },
+    {
+      "edge_key": "gate_south->road_nongyuan_west_south",
+      "from": "gate_south",
+      "to": "road_nongyuan_west_south",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "gate_south",
+        "road_south_gate_inner",
+        "road_nongyuan_north_west",
+        "square_center",
+        "road_wusi_mid",
+        "road_lijiao_west",
+        "road_southeast_campus_west",
+        "road_second_teaching_west",
+        "road_nongyuan_south_east",
+        "road_nongyuan_south_west",
+        "road_nongyuan_west_south"
+      ],
+      "notes": "The M10 direct connector from the south gate to Nongyuan west road cut across building footprints instead of following Wusi Road and the Nongyuan south road turns."
+    },
+    {
+      "edge_key": "road_nongyuan_north_west->road_centennial_plaza_east",
+      "from": "road_nongyuan_north_west",
+      "to": "road_centennial_plaza_east",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_centennial_plaza_east->road_southeast_campus_west",
+      "from": "road_centennial_plaza_east",
+      "to": "road_southeast_campus_west",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_centennial_plaza_east",
+        "road_nongyuan_north_west",
+        "square_center",
+        "road_wusi_mid",
+        "road_lijiao_west",
+        "road_southeast_campus_west"
+      ],
+      "notes": "The direct plaza east to southeast campus edge crossed Zhihua building instead of routing around the plaza and Lijiao/Wusi road network."
+    },
+    {
+      "edge_key": "road_southeast_campus_west->road_second_teaching_west",
+      "from": "road_southeast_campus_west",
+      "to": "road_second_teaching_west",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_southeast_campus_west->teaching_building_2",
+      "from": "road_southeast_campus_west",
+      "to": "teaching_building_2",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_southeast_campus_west",
+        "road_second_teaching_west",
+        "teaching_building_2"
+      ],
+      "notes": "The southeast campus west to second teaching connector entered the teaching building footprint directly. Teaching Building 2 now connects from the west-side entrance route."
+    },
+    {
+      "edge_key": "road_second_teaching_west->teaching_building_2",
+      "from": "road_second_teaching_west",
+      "to": "teaching_building_2",
+      "status": "fixed",
+      "issues": [
+        "endpoint_inside_building"
+      ],
+      "action": "adjust_geometry",
+      "notes": "M11 moved the route target or resampled the connector to an outdoor entrance/road geometry; final post-change scan reports no building/water crossing."
+    },
+    {
+      "edge_key": "road_southeast_campus_west->road_lijiao_west",
+      "from": "road_southeast_campus_west",
+      "to": "road_lijiao_west",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_southeast_campus_west->road_third_teaching_south_east",
+      "from": "road_southeast_campus_west",
+      "to": "road_third_teaching_south_east",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "missing_waypoint_turns"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_southeast_campus_west",
+        "road_second_teaching_west",
+        "road_third_teaching_south_east"
+      ],
+      "notes": "The direct edge clipped the third teaching building footprint. The route is split through second teaching west and the real south road segment."
+    },
+    {
+      "edge_key": "road_third_teaching_south_east->road_science_east",
+      "from": "road_third_teaching_south_east",
+      "to": "road_science_east",
+      "status": "removed",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "action": "split_via_waypoints",
+      "replacement_path": [
+        "road_third_teaching_south_east",
+        "road_second_teaching_west",
+        "road_southeast_campus_west",
+        "road_lijiao_west",
+        "road_lijiao_north",
+        "road_chengfuyuan_west",
+        "road_chengfuyuan_east",
+        "road_east_gate_south",
+        "road_science_east"
+      ],
+      "notes": "The long third teaching to science east edge crossed intermediate building footprints and duplicated a route that should use existing road intersections."
+    },
+    {
+      "edge_key": "road_science_east->road_east_gate_south",
+      "from": "road_science_east",
+      "to": "road_east_gate_south",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_science_east->convenience_store",
+      "from": "road_science_east",
+      "to": "convenience_store",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_library_south_west->road_cross",
+      "from": "road_library_south_west",
+      "to": "road_cross",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_lijiao_west->road_lijiao_north",
+      "from": "road_lijiao_west",
+      "to": "road_lijiao_north",
+      "status": "accepted",
+      "issues": [],
+      "action": "keep",
+      "notes": "Post-change audit accepted this retained edge as road/footway/plaza access geometry."
+    },
+    {
+      "edge_key": "road_wusi_mid->square_center",
+      "from": "road_wusi_mid",
+      "to": "square_center",
+      "status": "fixed",
+      "issues": [
+        "minor_building_edge_overlap"
+      ],
+      "action": "adjust_geometry",
+      "notes": "M11 moved the route target or resampled the connector to an outdoor entrance/road geometry; final post-change scan reports no building/water crossing."
+    }
+  ]
+}

@@ -4,15 +4,16 @@
   "nodes": [
     {
       "id": "gate_north",
-      "name": "北大西门",
+      "name": "北京大学西门",
       "type": "entrance",
       "is_gate": true,
       "sub_graph_id": null,
       "tags": [
         "校门",
-        "标志性建筑"
+        "西门",
+        "入口"
       ],
-      "description": "北京大学正门，古典式校门建筑，是北大标志性景点之一。",
+      "description": "北京大学西门，连接校园内步道和周边道路，可作为路线起点或终点。",
       "category": "entrance",
       "facilities": [
         "安保亭"
@@ -24,40 +25,44 @@
     },
     {
       "id": "gate_east",
-      "name": "东门",
+      "name": "北京大学东门",
       "type": "entrance",
       "is_gate": true,
       "sub_graph_id": null,
       "tags": [
-        "校门"
+        "校门",
+        "东门",
+        "入口"
       ],
-      "description": "北京大学东门，临近中关村大街，主要车辆出入口。",
+      "description": "北京大学东门，连接校园内步道和周边道路，可作为路线起点或终点。",
       "category": "entrance",
       "facilities": [
         "安保亭"
       ],
       "location": {
-        "lat": 39.9935,
-        "lng": 116.3105
+        "lat": 39.992919,
+        "lng": 116.3095453
       }
     },
     {
       "id": "gate_south",
-      "name": "南门",
+      "name": "北京大学南门",
       "type": "entrance",
       "is_gate": true,
       "sub_graph_id": null,
       "tags": [
-        "校门"
+        "校门",
+        "南门",
+        "入口"
       ],
-      "description": "北京大学南门，临近海淀路。",
+      "description": "北京大学南门，连接校园内步道和周边道路，可作为路线起点或终点。",
       "category": "entrance",
       "facilities": [
         "安保亭"
       ],
       "location": {
-        "lat": 39.9895,
-        "lng": 116.3075
+        "lat": 39.98527,
+        "lng": 116.3054565
       }
     },
     {
@@ -70,9 +75,9 @@
         "学习",
         "自习",
         "阅览",
-        "藏书"
+        "图书馆"
       ],
-      "description": "北京大学图书馆，亚洲高校最大图书馆之一，藏书丰富。",
+      "description": "图书馆室外入口接驳点，连接周边步道和教学学习空间。",
       "category": "education",
       "facilities": [
         "自习室",
@@ -82,8 +87,8 @@
       ],
       "open_hours": "06:00-22:00",
       "location": {
-        "lat": 39.9915,
-        "lng": 116.307
+        "lat": 39.991735,
+        "lng": 116.30305
       }
     },
     {
@@ -95,9 +100,10 @@
       "tags": [
         "上课",
         "教室",
-        "教学楼"
+        "教学楼",
+        "一教"
       ],
-      "description": "第一教学楼，主要承担本科生公共课程教学任务。",
+      "description": "第一教学楼室外入口接驳点，连接周边步道和教学学习空间。",
       "category": "education",
       "facilities": [
         "教室",
@@ -105,8 +111,8 @@
         "饮水机"
       ],
       "location": {
-        "lat": 39.9908,
-        "lng": 116.3062
+        "lat": 39.9914609,
+        "lng": 116.304341
       }
     },
     {
@@ -118,9 +124,10 @@
       "tags": [
         "上课",
         "教室",
-        "教学楼"
+        "教学楼",
+        "二教"
       ],
-      "description": "第二教学楼，配备现代化多媒体教室。",
+      "description": "第二教学楼室外入口接驳点，连接周边步道和教学学习空间。",
       "category": "education",
       "facilities": [
         "教室",
@@ -128,30 +135,31 @@
         "电梯"
       ],
       "location": {
-        "lat": 39.991,
-        "lng": 116.3068
+        "lat": 39.9881439,
+        "lng": 116.3065508
       }
     },
     {
       "id": "dormitory_1",
-      "name": "学生宿舍1号楼",
+      "name": "学生宿舍31楼",
       "type": "dormitory",
       "is_gate": true,
       "sub_graph_id": "indoor_DORM1",
       "tags": [
         "宿舍",
         "住宿",
-        "生活"
+        "生活",
+        "31楼"
       ],
-      "description": "学生宿舍1号楼，本科生宿舍楼。",
+      "description": "学生宿舍31楼周边住宿生活区域，节点坐标对齐西南宿舍区外侧道路接驳点。",
       "category": "dormitory",
       "facilities": [
         "洗衣房",
         "开水房"
       ],
       "location": {
-        "lat": 39.99,
-        "lng": 116.3085
+        "lat": 39.9875503,
+        "lng": 116.3041
       }
     },
     {
@@ -163,9 +171,10 @@
       "tags": [
         "食堂",
         "餐饮",
-        "美食"
+        "美食",
+        "农园"
       ],
-      "description": "农园食堂，提供多种餐饮选择，是学生主要就餐地之一。",
+      "description": "农园食堂入口接驳点，连接周边步道，适合餐饮路线引导。",
       "category": "catering",
       "facilities": [
         "餐饮",
@@ -173,22 +182,23 @@
       ],
       "open_hours": "06:30-21:00",
       "location": {
-        "lat": 39.9918,
-        "lng": 116.3088
+        "lat": 39.9875162,
+        "lng": 116.3058135
       }
     },
     {
       "id": "convenience_store",
-      "name": "校内便利店",
+      "name": "中关新园超市",
       "type": "facility",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
         "购物",
         "便利店",
-        "生活用品"
+        "生活用品",
+        "中关新园"
       ],
-      "description": "校内便利店，出售日用百货和零食饮料。",
+      "description": "中关新园超市周边步道接驳点，可用于校内生活用品和便利服务导航。",
       "category": "shopping",
       "facilities": [
         "零售",
@@ -196,8 +206,8 @@
       ],
       "open_hours": "07:00-23:00",
       "location": {
-        "lat": 39.9905,
-        "lng": 116.3095
+        "lat": 39.9888829,
+        "lng": 116.3135887
       }
     },
     {
@@ -209,9 +219,10 @@
       "tags": [
         "体育",
         "运动",
-        "操场"
+        "操场",
+        "五四体育场"
       ],
-      "description": "五四体育场，配备田径跑道和足球场。",
+      "description": "五四体育场周边步道接驳点，服务操场、运动和体育活动路线。",
       "category": "sports",
       "facilities": [
         "田径场",
@@ -219,64 +230,68 @@
         "看台"
       ],
       "location": {
-        "lat": 39.9912,
-        "lng": 116.305
+        "lat": 39.9912889,
+        "lng": 116.3047501
       }
     },
     {
       "id": "square_center",
-      "name": "百周年纪念广场",
+      "name": "百周年纪念讲堂南广场",
       "type": "landmark",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
         "广场",
-        "纪念",
+        "百讲",
+        "纪念讲堂",
         "活动"
       ],
-      "description": "百周年纪念广场，位于图书馆前，是校园活动重要场所。",
+      "description": "百周年纪念讲堂南广场周边广场步道节点，连接图书馆、五四路和农园方向。",
       "category": "landmark",
       "facilities": [],
       "location": {
-        "lat": 39.9917,
-        "lng": 116.3065
+        "lat": 39.9880767,
+        "lng": 116.3045067
       }
     },
     {
       "id": "road_cross",
-      "name": "十字路口",
+      "name": "理教西路路口",
       "type": "intersection",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "路口"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "校园中心十字路口，连接各主要建筑。",
+      "description": "理教西路路口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
       "category": "road",
       "facilities": [],
       "location": {
-        "lat": 39.9913,
-        "lng": 116.307
+        "lat": 39.9906472,
+        "lng": 116.3052974
       }
     },
     {
       "id": "parking_lot",
-      "name": "停车场",
+      "name": "东门停车场",
       "type": "facility",
       "is_gate": true,
       "sub_graph_id": null,
       "tags": [
         "停车",
-        "车辆"
+        "车辆",
+        "东门"
       ],
-      "description": "校园地下停车场入口。",
+      "description": "东门停车场接驳点，连接东门内侧停车区域。",
       "category": "parking",
       "facilities": [
         "充电桩"
       ],
       "location": {
-        "lat": 39.992,
-        "lng": 116.309
+        "lat": 39.9928559,
+        "lng": 116.3089338
       }
     },
     {
@@ -287,9 +302,10 @@
       "sub_graph_id": null,
       "tags": [
         "洗手间",
-        "卫生间"
+        "卫生间",
+        "图书馆周边"
       ],
-      "description": "图书馆附近公共洗手间。",
+      "description": "图书馆区洗手间接入点，连接附近步道。",
       "category": "restroom",
       "facilities": [
         "洗手间",
@@ -297,21 +313,22 @@
       ],
       "is_indoor": false,
       "location": {
-        "lat": 39.9914,
-        "lng": 116.3068
+        "lat": 39.9915897,
+        "lng": 116.3048394
       }
     },
     {
       "id": "toilet_sports_area",
-      "name": "体育场洗手间",
+      "name": "五四体育场洗手间",
       "type": "facility",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
         "洗手间",
-        "卫生间"
+        "卫生间",
+        "五四体育场"
       ],
-      "description": "五四体育场附近公共洗手间。",
+      "description": "五四体育场洗手间接入点，连接附近步道。",
       "category": "restroom",
       "facilities": [
         "洗手间"
@@ -319,2529 +336,2588 @@
       "is_indoor": true,
       "indoor_building": "体育场配套建筑",
       "location": {
-        "lat": 39.9915,
-        "lng": 116.305
+        "lat": 39.9914007,
+        "lng": 116.3048939
       }
     },
     {
-      "id": "campus_service_01",
-      "name": "???????",
-      "type": "facility",
+      "id": "road_lake_south_west",
+      "name": "未名湖南路西口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "???????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "未名湖南路西口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9898,
-        "lng": 116.305
+        "lat": 39.9920485,
+        "lng": 116.3008391
       }
     },
     {
-      "id": "campus_service_02",
-      "name": "??????",
-      "type": "facility",
+      "id": "road_lake_south_mid",
+      "name": "未名湖南路中段",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "??????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "未名湖南路中段，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99025,
-        "lng": 116.305
+        "lat": 39.9918662,
+        "lng": 116.302612
       }
     },
     {
-      "id": "campus_service_03",
-      "name": "??????",
-      "type": "facility",
+      "id": "road_library_south",
+      "name": "图书馆南侧步道口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "??????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "图书馆南侧步道口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9907,
-        "lng": 116.305
+        "lat": 39.9917482,
+        "lng": 116.3030362
       }
     },
     {
-      "id": "campus_service_04",
-      "name": "????????",
-      "type": "facility",
+      "id": "road_lake_southeast",
+      "name": "未名湖东南路口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "????????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "未名湖东南路口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99115,
-        "lng": 116.305
+        "lat": 39.9918029,
+        "lng": 116.3060249
       }
     },
     {
-      "id": "campus_service_05",
-      "name": "??????",
-      "type": "facility",
+      "id": "road_lijiao_north",
+      "name": "理教北侧路口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "??????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "????"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "理教北侧路口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9916,
-        "lng": 116.305
+        "lat": 39.9916188,
+        "lng": 116.3063146
       }
     },
     {
-      "id": "campus_service_06",
-      "name": "???????",
-      "type": "facility",
+      "id": "road_chengfuyuan_west",
+      "name": "成府园南路西口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "???????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "成府园南路西口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99205,
-        "lng": 116.305
+        "lat": 39.9916729,
+        "lng": 116.3071531
       }
     },
     {
-      "id": "campus_service_07",
-      "name": "???????",
-      "type": "facility",
+      "id": "road_chengfuyuan_east",
+      "name": "成府园南路东口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "???????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "????",
-        "??",
-        "????"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "成府园南路东口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9898,
-        "lng": 116.30575
+        "lat": 39.991764,
+        "lng": 116.3092297
       }
     },
     {
-      "id": "campus_service_08",
-      "name": "?????",
-      "type": "facility",
+      "id": "road_east_gate_north",
+      "name": "东门北侧接驳点",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "?????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "????"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "东门北侧接驳点，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99025,
-        "lng": 116.30575
+        "lat": 39.9939607,
+        "lng": 116.3094675
       }
     },
     {
-      "id": "campus_service_09",
-      "name": "??????",
-      "type": "facility",
+      "id": "road_east_gate_south",
+      "name": "东门南侧路口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "??????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "东门南侧路口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9907,
-        "lng": 116.30575
+        "lat": 39.9917546,
+        "lng": 116.3090208
       }
     },
     {
-      "id": "campus_service_10",
-      "name": "????????",
-      "type": "facility",
+      "id": "road_science_east",
+      "name": "科学路东口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "????????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "科学路东口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99115,
-        "lng": 116.30575
+        "lat": 39.9907995,
+        "lng": 116.3093076
       }
     },
     {
-      "id": "campus_service_11",
-      "name": "????????",
-      "type": "facility",
+      "id": "road_lake_southeast_footway",
+      "name": "未名湖东南步道",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "????????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "未名湖东南步道，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9916,
-        "lng": 116.30575
+        "lat": 39.9927438,
+        "lng": 116.3054488
       }
     },
     {
-      "id": "campus_service_12",
-      "name": "????????",
-      "type": "facility",
+      "id": "road_west_gate_inner",
+      "name": "西门内侧步道口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "????????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "西门内侧步道口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99205,
-        "lng": 116.30575
+        "lat": 39.9920871,
+        "lng": 116.3058675
       }
     },
     {
-      "id": "campus_service_13",
-      "name": "???????",
-      "type": "facility",
+      "id": "road_wusi_north",
+      "name": "五四路北侧路口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "???????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "五四路北侧路口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9898,
-        "lng": 116.3065
+        "lat": 39.9910584,
+        "lng": 116.3050398
       }
     },
     {
-      "id": "campus_service_14",
-      "name": "???????",
-      "type": "facility",
+      "id": "road_wusi_mid",
+      "name": "五四路中段",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "???????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "五四路中段，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99025,
-        "lng": 116.3065
+        "lat": 39.9902074,
+        "lng": 116.3051105
       }
     },
     {
-      "id": "campus_service_15",
-      "name": "????????",
-      "type": "facility",
+      "id": "road_lijiao_west",
+      "name": "理教西路中段",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "????????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "理教西路中段，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9907,
-        "lng": 116.3065
+        "lat": 39.9902667,
+        "lng": 116.3063789
       }
     },
     {
-      "id": "campus_service_16",
-      "name": "???????",
-      "type": "facility",
+      "id": "road_southeast_campus_west",
+      "name": "校园东南路西口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "???????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "校园东南路西口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99115,
-        "lng": 116.3065
+        "lat": 39.9886735,
+        "lng": 116.3065184
       }
     },
     {
-      "id": "campus_service_17",
-      "name": "?????????",
-      "type": "facility",
+      "id": "road_second_teaching_west",
+      "name": "二教西路南口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "?????????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "二教西路南口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9916,
-        "lng": 116.3065
+        "lat": 39.9874959,
+        "lng": 116.3065874
       }
     },
     {
-      "id": "campus_service_18",
-      "name": "?????",
-      "type": "facility",
+      "id": "road_third_teaching_south_east",
+      "name": "三教南路东口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "?????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "三教南路东口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99205,
-        "lng": 116.3065
+        "lat": 39.9875709,
+        "lng": 116.3082777
       }
     },
     {
-      "id": "campus_service_19",
-      "name": "?????",
-      "type": "facility",
+      "id": "road_nongyuan_north_west",
+      "name": "农园北路西口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "?????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "农园北路西口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9898,
-        "lng": 116.30725
+        "lat": 39.9880915,
+        "lng": 116.3052809
       }
     },
     {
-      "id": "campus_service_20",
-      "name": "??????",
-      "type": "facility",
+      "id": "road_nongyuan_west_south",
+      "name": "农园西路南口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "??????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "农园西路南口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99025,
-        "lng": 116.30725
+        "lat": 39.9871644,
+        "lng": 116.3058359
       }
     },
     {
-      "id": "campus_service_21",
-      "name": "????????",
-      "type": "facility",
+      "id": "road_centennial_plaza_east",
+      "name": "百讲广场东侧步道",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "???",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "????????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "???",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "百讲广场东侧步道，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9907,
-        "lng": 116.30725
+        "lat": 39.9886173,
+        "lng": 116.3052159
       }
     },
     {
-      "id": "campus_service_22",
-      "name": "???????",
-      "type": "facility",
+      "id": "road_library_south_west",
+      "name": "图书馆南路西口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "???????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "????",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "图书馆南路西口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99115,
-        "lng": 116.30725
+        "lat": 39.9898554,
+        "lng": 116.3035441
       }
     },
     {
-      "id": "campus_service_23",
-      "name": "??????",
-      "type": "facility",
+      "id": "road_second_gym_south_east",
+      "name": "二体南路东口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "??????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "???",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "二体南路东口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.9916,
-        "lng": 116.30725
+        "lat": 39.9892565,
+        "lng": 116.3034735
       }
     },
     {
-      "id": "campus_service_24",
-      "name": "???????",
-      "type": "facility",
+      "id": "road_yannan_east",
+      "name": "燕南路东口",
+      "type": "waypoint",
       "is_gate": false,
       "sub_graph_id": null,
       "tags": [
-        "??",
-        "??????",
-        "????"
+        "路口",
+        "步道",
+        "道路接驳"
       ],
-      "description": "???????????????????????????????",
-      "category": "service",
-      "facilities": [
-        "??",
-        "??",
-        "??"
-      ],
-      "open_hours": "07:00-22:00",
+      "description": "燕南路东口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
       "is_indoor": false,
       "location": {
-        "lat": 39.99205,
-        "lng": 116.30725
+        "lat": 39.9875503,
+        "lng": 116.3043071
+      }
+    },
+    {
+      "id": "road_south_gate_inner",
+      "name": "南门内侧五四路口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "路口",
+        "步道",
+        "道路接驳"
+      ],
+      "description": "南门内侧五四路口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
+      "location": {
+        "lat": 39.9861331,
+        "lng": 116.3053872
+      }
+    },
+    {
+      "id": "road_nongyuan_south_west",
+      "name": "农园南路西口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "路口",
+        "步道",
+        "道路接驳"
+      ],
+      "description": "农园南路西口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
+      "location": {
+        "lat": 39.9869801,
+        "lng": 116.3060061
+      }
+    },
+    {
+      "id": "road_nongyuan_south_east",
+      "name": "农园南路东口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "路口",
+        "步道",
+        "道路接驳"
+      ],
+      "description": "农园南路东口，连接校园实际道路或步道，用于支撑路线沿可通行空间展示。",
+      "category": "road",
+      "facilities": [],
+      "location": {
+        "lat": 39.9869969,
+        "lng": 116.3064966
       }
     }
   ],
   "edges": [
     {
-      "from": "gate_north",
-      "to": "square_center",
-      "distance": 80,
+      "from": "road_lake_southeast",
+      "to": "road_lijiao_north",
+      "distance": 32,
       "type": "outdoor_road",
-      "congestion": 0.6,
-      "ideal_speed": 1.5,
-      "vehicle_access": "all",
-      "name": "西门大道",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "未名湖东南路口至理教北侧路口",
       "geometry": [
         {
-          "lat": 39.9929,
-          "lng": 116.3055
+          "lat": 39.9918029,
+          "lng": 116.3060249
         },
         {
-          "lat": 39.99274,
-          "lng": 116.30557
-        },
-        {
-          "lat": 39.99242,
-          "lng": 116.30586
-        },
-        {
-          "lat": 39.99207,
-          "lng": 116.30622
-        },
-        {
-          "lat": 39.9917,
-          "lng": 116.3065
+          "lat": 39.9916188,
+          "lng": 116.3063146
         }
       ]
     },
     {
-      "from": "square_center",
-      "to": "gate_north",
-      "distance": 80,
+      "from": "road_lijiao_north",
+      "to": "road_lake_southeast",
+      "distance": 32,
       "type": "outdoor_road",
-      "congestion": 0.6,
-      "ideal_speed": 1.5,
-      "vehicle_access": "all",
-      "name": "西门大道"
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "理教北侧路口至未名湖东南路口",
+      "geometry": [
+        {
+          "lat": 39.9916188,
+          "lng": 116.3063146
+        },
+        {
+          "lat": 39.9918029,
+          "lng": 116.3060249
+        }
+      ]
     },
     {
-      "from": "gate_east",
-      "to": "road_cross",
-      "distance": 120,
+      "from": "road_chengfuyuan_east",
+      "to": "road_east_gate_south",
+      "distance": 47,
       "type": "outdoor_road",
       "congestion": 0.8,
-      "ideal_speed": 1.2,
-      "vehicle_access": "all",
-      "name": "东门大道",
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "成府园南路东口至东门南侧路口",
       "geometry": [
         {
-          "lat": 39.9935,
-          "lng": 116.3105
+          "lat": 39.991764,
+          "lng": 116.3092297
         },
         {
-          "lat": 39.99334,
-          "lng": 116.31002
+          "lat": 39.9917638,
+          "lng": 116.3094006
         },
         {
-          "lat": 39.99286,
-          "lng": 116.30915
-        },
-        {
-          "lat": 39.99225,
-          "lng": 116.30805
-        },
-        {
-          "lat": 39.99168,
-          "lng": 116.30735
-        },
-        {
-          "lat": 39.9913,
-          "lng": 116.307
+          "lat": 39.9917546,
+          "lng": 116.3090208
         }
       ]
     },
     {
-      "from": "road_cross",
-      "to": "gate_east",
-      "distance": 120,
+      "from": "road_east_gate_south",
+      "to": "road_chengfuyuan_east",
+      "distance": 47,
       "type": "outdoor_road",
       "congestion": 0.8,
-      "ideal_speed": 1.2,
-      "vehicle_access": "all",
-      "name": "东门大道"
-    },
-    {
-      "from": "gate_south",
-      "to": "teaching_building_1",
-      "distance": 50,
-      "type": "outdoor_road",
-      "congestion": 0.5,
-      "ideal_speed": 1.5,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "南门步道",
+      "name": "东门南侧路口至成府园南路东口",
       "geometry": [
         {
-          "lat": 39.9895,
-          "lng": 116.3075
+          "lat": 39.9917546,
+          "lng": 116.3090208
         },
         {
-          "lat": 39.98982,
-          "lng": 116.30718
+          "lat": 39.9917638,
+          "lng": 116.3094006
         },
         {
-          "lat": 39.9902,
-          "lng": 116.30682
-        },
-        {
-          "lat": 39.99052,
-          "lng": 116.30648
-        },
-        {
-          "lat": 39.9908,
-          "lng": 116.3062
-        }
-      ]
-    },
-    {
-      "from": "teaching_building_1",
-      "to": "gate_south",
-      "distance": 50,
-      "type": "outdoor_road",
-      "congestion": 0.5,
-      "ideal_speed": 1.5,
-      "vehicle_access": "pedestrian_only",
-      "name": "南门步道"
-    },
-    {
-      "from": "library",
-      "to": "square_center",
-      "distance": 30,
-      "type": "outdoor_road",
-      "congestion": 0.4,
-      "ideal_speed": 1.5,
-      "vehicle_access": "pedestrian_only",
-      "name": "图书馆前广场",
-      "geometry": [
-        {
-          "lat": 39.9915,
-          "lng": 116.307
-        },
-        {
-          "lat": 39.99154,
-          "lng": 116.30684
-        },
-        {
-          "lat": 39.99162,
-          "lng": 116.30666
-        },
-        {
-          "lat": 39.9917,
-          "lng": 116.3065
-        }
-      ]
-    },
-    {
-      "from": "square_center",
-      "to": "library",
-      "distance": 30,
-      "type": "outdoor_road",
-      "congestion": 0.4,
-      "ideal_speed": 1.5,
-      "vehicle_access": "pedestrian_only",
-      "name": "图书馆前广场"
-    },
-    {
-      "from": "square_center",
-      "to": "road_cross",
-      "distance": 25,
-      "type": "outdoor_road",
-      "congestion": 0.3,
-      "ideal_speed": 2.0,
-      "vehicle_access": "all",
-      "name": "广场连接路",
-      "geometry": [
-        {
-          "lat": 39.9917,
-          "lng": 116.3065
-        },
-        {
-          "lat": 39.99162,
-          "lng": 116.30665
-        },
-        {
-          "lat": 39.99148,
-          "lng": 116.30683
-        },
-        {
-          "lat": 39.9913,
-          "lng": 116.307
-        }
-      ]
-    },
-    {
-      "from": "road_cross",
-      "to": "square_center",
-      "distance": 25,
-      "type": "outdoor_road",
-      "congestion": 0.3,
-      "ideal_speed": 2.0,
-      "vehicle_access": "all",
-      "name": "广场连接路"
-    },
-    {
-      "from": "road_cross",
-      "to": "teaching_building_1",
-      "distance": 40,
-      "type": "outdoor_road",
-      "congestion": 0.5,
-      "ideal_speed": 1.5,
-      "vehicle_access": "all",
-      "name": "教学楼路",
-      "geometry": [
-        {
-          "lat": 39.9913,
-          "lng": 116.307
-        },
-        {
-          "lat": 39.99118,
-          "lng": 116.30678
-        },
-        {
-          "lat": 39.99102,
-          "lng": 116.30654
-        },
-        {
-          "lat": 39.99088,
-          "lng": 116.30634
-        },
-        {
-          "lat": 39.9908,
-          "lng": 116.3062
-        }
-      ]
-    },
-    {
-      "from": "teaching_building_1",
-      "to": "road_cross",
-      "distance": 40,
-      "type": "outdoor_road",
-      "congestion": 0.5,
-      "ideal_speed": 1.5,
-      "vehicle_access": "all",
-      "name": "教学楼路"
-    },
-    {
-      "from": "road_cross",
-      "to": "teaching_building_2",
-      "distance": 35,
-      "type": "outdoor_road",
-      "congestion": 0.5,
-      "ideal_speed": 1.5,
-      "vehicle_access": "all",
-      "name": "教学楼连接路",
-      "geometry": [
-        {
-          "lat": 39.9913,
-          "lng": 116.307
-        },
-        {
-          "lat": 39.99122,
-          "lng": 116.30692
-        },
-        {
-          "lat": 39.9911,
-          "lng": 116.30682
-        },
-        {
-          "lat": 39.991,
-          "lng": 116.3068
-        }
-      ]
-    },
-    {
-      "from": "teaching_building_2",
-      "to": "road_cross",
-      "distance": 35,
-      "type": "outdoor_road",
-      "congestion": 0.5,
-      "ideal_speed": 1.5,
-      "vehicle_access": "all",
-      "name": "教学楼连接路"
-    },
-    {
-      "from": "road_cross",
-      "to": "canteen",
-      "distance": 30,
-      "type": "outdoor_road",
-      "congestion": 0.7,
-      "ideal_speed": 1.0,
-      "vehicle_access": "pedestrian_only",
-      "name": "食堂通道",
-      "geometry": [
-        {
-          "lat": 39.9913,
-          "lng": 116.307
-        },
-        {
-          "lat": 39.99145,
-          "lng": 116.30738
-        },
-        {
-          "lat": 39.99156,
-          "lng": 116.30786
-        },
-        {
-          "lat": 39.99168,
-          "lng": 116.30832
-        },
-        {
-          "lat": 39.9918,
-          "lng": 116.3088
-        }
-      ]
-    },
-    {
-      "from": "canteen",
-      "to": "road_cross",
-      "distance": 30,
-      "type": "outdoor_road",
-      "congestion": 0.7,
-      "ideal_speed": 1.0,
-      "vehicle_access": "pedestrian_only",
-      "name": "食堂通道"
-    },
-    {
-      "from": "road_cross",
-      "to": "convenience_store",
-      "distance": 45,
-      "type": "outdoor_road",
-      "congestion": 0.4,
-      "ideal_speed": 1.5,
-      "vehicle_access": "all",
-      "name": "商业街",
-      "geometry": [
-        {
-          "lat": 39.9913,
-          "lng": 116.307
-        },
-        {
-          "lat": 39.99112,
-          "lng": 116.30748
-        },
-        {
-          "lat": 39.99092,
-          "lng": 116.30808
-        },
-        {
-          "lat": 39.9907,
-          "lng": 116.30878
-        },
-        {
-          "lat": 39.9905,
-          "lng": 116.3095
-        }
-      ]
-    },
-    {
-      "from": "convenience_store",
-      "to": "road_cross",
-      "distance": 45,
-      "type": "outdoor_road",
-      "congestion": 0.4,
-      "ideal_speed": 1.5,
-      "vehicle_access": "all",
-      "name": "商业街"
-    },
-    {
-      "from": "road_cross",
-      "to": "dormitory_1",
-      "distance": 60,
-      "type": "outdoor_road",
-      "congestion": 0.5,
-      "ideal_speed": 1.3,
-      "vehicle_access": "all",
-      "name": "宿舍区路",
-      "geometry": [
-        {
-          "lat": 39.9913,
-          "lng": 116.307
-        },
-        {
-          "lat": 39.99102,
-          "lng": 116.30736
-        },
-        {
-          "lat": 39.99062,
-          "lng": 116.30785
-        },
-        {
-          "lat": 39.99028,
-          "lng": 116.30822
-        },
-        {
-          "lat": 39.99,
-          "lng": 116.3085
-        }
-      ]
-    },
-    {
-      "from": "dormitory_1",
-      "to": "road_cross",
-      "distance": 60,
-      "type": "outdoor_road",
-      "congestion": 0.5,
-      "ideal_speed": 1.3,
-      "vehicle_access": "all",
-      "name": "宿舍区路"
-    },
-    {
-      "from": "sports_ground",
-      "to": "gate_north",
-      "distance": 40,
-      "type": "outdoor_road",
-      "congestion": 0.3,
-      "ideal_speed": 2.0,
-      "vehicle_access": "pedestrian_only",
-      "name": "体育场连接路",
-      "geometry": [
-        {
-          "lat": 39.9912,
-          "lng": 116.305
-        },
-        {
-          "lat": 39.99156,
-          "lng": 116.30502
-        },
-        {
-          "lat": 39.99205,
-          "lng": 116.30512
-        },
-        {
-          "lat": 39.99248,
-          "lng": 116.30532
-        },
-        {
-          "lat": 39.9929,
-          "lng": 116.3055
-        }
-      ]
-    },
-    {
-      "from": "gate_north",
-      "to": "sports_ground",
-      "distance": 40,
-      "type": "outdoor_road",
-      "congestion": 0.3,
-      "ideal_speed": 2.0,
-      "vehicle_access": "pedestrian_only",
-      "name": "体育场连接路"
-    },
-    {
-      "from": "parking_lot",
-      "to": "gate_east",
-      "distance": 30,
-      "type": "outdoor_road",
-      "congestion": 0.6,
-      "ideal_speed": 1.0,
-      "vehicle_access": "vehicle_only",
-      "name": "停车场通道",
-      "geometry": [
-        {
-          "lat": 39.992,
-          "lng": 116.309
-        },
-        {
-          "lat": 39.99228,
-          "lng": 116.30922
-        },
-        {
-          "lat": 39.99272,
-          "lng": 116.30968
-        },
-        {
-          "lat": 39.99312,
-          "lng": 116.31012
-        },
-        {
-          "lat": 39.9935,
-          "lng": 116.3105
+          "lat": 39.991764,
+          "lng": 116.3092297
         }
       ]
     },
     {
       "from": "gate_east",
       "to": "parking_lot",
-      "distance": 30,
+      "distance": 276,
       "type": "outdoor_road",
-      "congestion": 0.6,
+      "congestion": 0.65,
       "ideal_speed": 1.0,
       "vehicle_access": "vehicle_only",
-      "name": "停车场通道"
-    },
-    {
-      "from": "toilet_lib_area",
-      "to": "library",
-      "distance": 15,
-      "type": "outdoor_road",
-      "congestion": 0.2,
-      "ideal_speed": 2.0,
-      "vehicle_access": "pedestrian_only",
-      "name": "洗手间便道",
+      "name": "北京大学东门至东门停车场",
       "geometry": [
         {
-          "lat": 39.9914,
-          "lng": 116.3068
+          "lat": 39.992919,
+          "lng": 116.3095453
         },
         {
-          "lat": 39.99145,
-          "lng": 116.3069
+          "lat": 39.9925688,
+          "lng": 116.3097584
         },
         {
-          "lat": 39.9915,
-          "lng": 116.307
+          "lat": 39.9917546,
+          "lng": 116.3090208
+        },
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        }
+      ]
+    },
+    {
+      "from": "parking_lot",
+      "to": "gate_east",
+      "distance": 276,
+      "type": "outdoor_road",
+      "congestion": 0.65,
+      "ideal_speed": 1.0,
+      "vehicle_access": "vehicle_only",
+      "name": "东门停车场至北京大学东门",
+      "geometry": [
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        },
+        {
+          "lat": 39.9917546,
+          "lng": 116.3090208
+        },
+        {
+          "lat": 39.9925688,
+          "lng": 116.3097584
+        },
+        {
+          "lat": 39.992919,
+          "lng": 116.3095453
+        }
+      ]
+    },
+    {
+      "from": "road_lake_south_mid",
+      "to": "road_library_south",
+      "distance": 38,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "未名湖南路中段至图书馆南侧步道口",
+      "geometry": [
+        {
+          "lat": 39.9918662,
+          "lng": 116.302612
+        },
+        {
+          "lat": 39.9917482,
+          "lng": 116.3030362
+        }
+      ]
+    },
+    {
+      "from": "road_library_south",
+      "to": "road_lake_south_mid",
+      "distance": 38,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "图书馆南侧步道口至未名湖南路中段",
+      "geometry": [
+        {
+          "lat": 39.9917482,
+          "lng": 116.3030362
+        },
+        {
+          "lat": 39.9918662,
+          "lng": 116.302612
         }
       ]
     },
     {
       "from": "library",
-      "to": "toilet_lib_area",
-      "distance": 15,
+      "to": "road_library_south",
+      "distance": 2,
       "type": "outdoor_road",
-      "congestion": 0.2,
-      "ideal_speed": 2.0,
+      "congestion": 0.65,
+      "ideal_speed": 1.2,
       "vehicle_access": "pedestrian_only",
-      "name": "洗手间便道",
+      "name": "图书馆至图书馆南侧步道口",
       "geometry": [
         {
-          "lat": 39.9915,
-          "lng": 116.307
+          "lat": 39.991735,
+          "lng": 116.30305
         },
         {
-          "lat": 39.99145,
-          "lng": 116.3069
-        },
-        {
-          "lat": 39.9914,
-          "lng": 116.3068
+          "lat": 39.9917482,
+          "lng": 116.3030362
         }
       ]
     },
     {
-      "from": "toilet_sports_area",
-      "to": "sports_ground",
-      "distance": 20,
+      "from": "road_library_south",
+      "to": "library",
+      "distance": 2,
       "type": "outdoor_road",
-      "congestion": 0.2,
-      "ideal_speed": 2.0,
+      "congestion": 0.65,
+      "ideal_speed": 1.2,
       "vehicle_access": "pedestrian_only",
-      "name": "洗手间便道",
+      "name": "图书馆南侧步道口至图书馆",
       "geometry": [
         {
-          "lat": 39.9915,
-          "lng": 116.305
+          "lat": 39.9917482,
+          "lng": 116.3030362
         },
         {
-          "lat": 39.99136,
-          "lng": 116.305
-        },
-        {
-          "lat": 39.9912,
-          "lng": 116.305
+          "lat": 39.991735,
+          "lng": 116.30305
         }
       ]
     },
     {
       "from": "sports_ground",
       "to": "toilet_sports_area",
-      "distance": 20,
+      "distance": 17,
       "type": "outdoor_road",
-      "congestion": 0.2,
-      "ideal_speed": 2.0,
+      "congestion": 0.85,
+      "ideal_speed": 1.2,
       "vehicle_access": "pedestrian_only",
-      "name": "洗手间便道"
+      "name": "五四体育场至五四体育场洗手间",
+      "geometry": [
+        {
+          "lat": 39.9912889,
+          "lng": 116.3047501
+        },
+        {
+          "lat": 39.9914007,
+          "lng": 116.3048939
+        }
+      ]
+    },
+    {
+      "from": "toilet_sports_area",
+      "to": "sports_ground",
+      "distance": 17,
+      "type": "outdoor_road",
+      "congestion": 0.85,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "五四体育场洗手间至五四体育场",
+      "geometry": [
+        {
+          "lat": 39.9914007,
+          "lng": 116.3048939
+        },
+        {
+          "lat": 39.9912889,
+          "lng": 116.3047501
+        }
+      ]
+    },
+    {
+      "from": "road_wusi_north",
+      "to": "sports_ground",
+      "distance": 36,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "五四路北侧路口至五四体育场",
+      "geometry": [
+        {
+          "lat": 39.9910584,
+          "lng": 116.3050398
+        },
+        {
+          "lat": 39.9912889,
+          "lng": 116.3047501
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "road_wusi_north",
+      "distance": 36,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "五四体育场至五四路北侧路口",
+      "geometry": [
+        {
+          "lat": 39.9912889,
+          "lng": 116.3047501
+        },
+        {
+          "lat": 39.9910584,
+          "lng": 116.3050398
+        }
+      ]
+    },
+    {
+      "from": "road_cross",
+      "to": "road_wusi_north",
+      "distance": 51,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "理教西路路口至五四路北侧路口",
+      "geometry": [
+        {
+          "lat": 39.9906472,
+          "lng": 116.3052974
+        },
+        {
+          "lat": 39.9910584,
+          "lng": 116.3050398
+        }
+      ]
+    },
+    {
+      "from": "road_wusi_north",
+      "to": "road_cross",
+      "distance": 51,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "五四路北侧路口至理教西路路口",
+      "geometry": [
+        {
+          "lat": 39.9910584,
+          "lng": 116.3050398
+        },
+        {
+          "lat": 39.9906472,
+          "lng": 116.3052974
+        }
+      ]
+    },
+    {
+      "from": "road_cross",
+      "to": "road_wusi_mid",
+      "distance": 51,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "理教西路路口至五四路中段",
+      "geometry": [
+        {
+          "lat": 39.9906472,
+          "lng": 116.3052974
+        },
+        {
+          "lat": 39.9902074,
+          "lng": 116.3051105
+        }
+      ]
+    },
+    {
+      "from": "road_wusi_mid",
+      "to": "road_cross",
+      "distance": 51,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "五四路中段至理教西路路口",
+      "geometry": [
+        {
+          "lat": 39.9902074,
+          "lng": 116.3051105
+        },
+        {
+          "lat": 39.9906472,
+          "lng": 116.3052974
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "road_yannan_east",
+      "distance": 18,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "学生宿舍31楼至燕南路东口",
+      "geometry": [
+        {
+          "lat": 39.9875503,
+          "lng": 116.3041
+        },
+        {
+          "lat": 39.9875503,
+          "lng": 116.3043071
+        }
+      ]
+    },
+    {
+      "from": "road_yannan_east",
+      "to": "dormitory_1",
+      "distance": 18,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "燕南路东口至学生宿舍31楼",
+      "geometry": [
+        {
+          "lat": 39.9875503,
+          "lng": 116.3043071
+        },
+        {
+          "lat": 39.9875503,
+          "lng": 116.3041
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "road_nongyuan_west_south",
+      "distance": 39,
+      "type": "outdoor_road",
+      "congestion": 0.7,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园食堂至农园西路南口",
+      "geometry": [
+        {
+          "lat": 39.9875162,
+          "lng": 116.3058135
+        },
+        {
+          "lat": 39.9871644,
+          "lng": 116.3058359
+        }
+      ]
+    },
+    {
+      "from": "road_nongyuan_west_south",
+      "to": "canteen",
+      "distance": 39,
+      "type": "outdoor_road",
+      "congestion": 0.7,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园西路南口至农园食堂",
+      "geometry": [
+        {
+          "lat": 39.9871644,
+          "lng": 116.3058359
+        },
+        {
+          "lat": 39.9875162,
+          "lng": 116.3058135
+        }
+      ]
+    },
+    {
+      "from": "road_centennial_plaza_east",
+      "to": "road_nongyuan_north_west",
+      "distance": 59,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "百讲广场东侧步道至农园北路西口",
+      "geometry": [
+        {
+          "lat": 39.9886173,
+          "lng": 116.3052159
+        },
+        {
+          "lat": 39.9880915,
+          "lng": 116.3052809
+        }
+      ]
+    },
+    {
+      "from": "road_nongyuan_north_west",
+      "to": "road_centennial_plaza_east",
+      "distance": 59,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园北路西口至百讲广场东侧步道",
+      "geometry": [
+        {
+          "lat": 39.9880915,
+          "lng": 116.3052809
+        },
+        {
+          "lat": 39.9886173,
+          "lng": 116.3052159
+        }
+      ]
+    },
+    {
+      "from": "road_nongyuan_south_west",
+      "to": "road_nongyuan_west_south",
+      "distance": 25,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园南路西口至农园西路南口",
+      "geometry": [
+        {
+          "lat": 39.9869801,
+          "lng": 116.3060061
+        },
+        {
+          "lat": 39.9871644,
+          "lng": 116.3058359
+        }
+      ]
+    },
+    {
+      "from": "road_nongyuan_west_south",
+      "to": "road_nongyuan_south_west",
+      "distance": 25,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园西路南口至农园南路西口",
+      "geometry": [
+        {
+          "lat": 39.9871644,
+          "lng": 116.3058359
+        },
+        {
+          "lat": 39.9869801,
+          "lng": 116.3060061
+        }
+      ]
+    },
+    {
+      "from": "road_nongyuan_south_east",
+      "to": "road_nongyuan_south_west",
+      "distance": 42,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园南路东口至农园南路西口",
+      "geometry": [
+        {
+          "lat": 39.9869969,
+          "lng": 116.3064966
+        },
+        {
+          "lat": 39.9869801,
+          "lng": 116.3060061
+        }
+      ]
+    },
+    {
+      "from": "road_nongyuan_south_west",
+      "to": "road_nongyuan_south_east",
+      "distance": 42,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园南路西口至农园南路东口",
+      "geometry": [
+        {
+          "lat": 39.9869801,
+          "lng": 116.3060061
+        },
+        {
+          "lat": 39.9869969,
+          "lng": 116.3064966
+        }
+      ]
+    },
+    {
+      "from": "road_wusi_north",
+      "to": "toilet_lib_area",
+      "distance": 76,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "五四路北侧路口至图书馆区洗手间",
+      "geometry": [
+        {
+          "lat": 39.9910584,
+          "lng": 116.3050398
+        },
+        {
+          "lat": 39.9915619,
+          "lng": 116.3046936
+        },
+        {
+          "lat": 39.9915897,
+          "lng": 116.3048394
+        }
+      ]
+    },
+    {
+      "from": "toilet_lib_area",
+      "to": "road_wusi_north",
+      "distance": 76,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "图书馆区洗手间至五四路北侧路口",
+      "geometry": [
+        {
+          "lat": 39.9915897,
+          "lng": 116.3048394
+        },
+        {
+          "lat": 39.9915619,
+          "lng": 116.3046936
+        },
+        {
+          "lat": 39.9910584,
+          "lng": 116.3050398
+        }
+      ]
     },
     {
       "from": "gate_north",
-      "to": "campus_service_01",
-      "distance": 180,
+      "to": "road_west_gate_inner",
+      "distance": 124,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.7,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????1"
+      "name": "北京大学西门至西门内侧步道口",
+      "geometry": [
+        {
+          "lat": 39.9929,
+          "lng": 116.3055
+        },
+        {
+          "lat": 39.9923749,
+          "lng": 116.3057472
+        },
+        {
+          "lat": 39.9919705,
+          "lng": 116.3059375
+        },
+        {
+          "lat": 39.9920871,
+          "lng": 116.3058675
+        }
+      ]
     },
     {
-      "from": "campus_service_01",
+      "from": "road_west_gate_inner",
       "to": "gate_north",
-      "distance": 180,
+      "distance": 124,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.7,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????1"
+      "name": "西门内侧步道口至北京大学西门",
+      "geometry": [
+        {
+          "lat": 39.9920871,
+          "lng": 116.3058675
+        },
+        {
+          "lat": 39.9919705,
+          "lng": 116.3059375
+        },
+        {
+          "lat": 39.9923749,
+          "lng": 116.3057472
+        },
+        {
+          "lat": 39.9929,
+          "lng": 116.3055
+        }
+      ]
     },
     {
-      "from": "square_center",
-      "to": "campus_service_02",
-      "distance": 190,
+      "from": "road_lake_southeast_footway",
+      "to": "road_west_gate_inner",
+      "distance": 80,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????2"
+      "name": "未名湖东南步道至西门内侧步道口",
+      "geometry": [
+        {
+          "lat": 39.9927438,
+          "lng": 116.3054488
+        },
+        {
+          "lat": 39.9924154,
+          "lng": 116.3056581
+        },
+        {
+          "lat": 39.9920871,
+          "lng": 116.3058675
+        }
+      ]
     },
     {
-      "from": "campus_service_02",
-      "to": "square_center",
-      "distance": 190,
+      "from": "road_west_gate_inner",
+      "to": "road_lake_southeast_footway",
+      "distance": 80,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????2"
+      "name": "西门内侧步道口至未名湖东南步道",
+      "geometry": [
+        {
+          "lat": 39.9920871,
+          "lng": 116.3058675
+        },
+        {
+          "lat": 39.9924154,
+          "lng": 116.3056581
+        },
+        {
+          "lat": 39.9927438,
+          "lng": 116.3054488
+        }
+      ]
     },
     {
-      "from": "library",
-      "to": "campus_service_03",
-      "distance": 200,
+      "from": "road_lake_southeast",
+      "to": "road_lake_southeast_footway",
+      "distance": 116,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????3"
+      "name": "未名湖东南路口至未名湖东南步道",
+      "geometry": [
+        {
+          "lat": 39.9918029,
+          "lng": 116.3060249
+        },
+        {
+          "lat": 39.9922734,
+          "lng": 116.3057368
+        },
+        {
+          "lat": 39.9927438,
+          "lng": 116.3054488
+        }
+      ]
     },
     {
-      "from": "campus_service_03",
-      "to": "library",
-      "distance": 200,
+      "from": "road_lake_southeast_footway",
+      "to": "road_lake_southeast",
+      "distance": 116,
       "type": "outdoor_road",
-      "congestion": 0.9,
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "未名湖东南步道至未名湖东南路口",
+      "geometry": [
+        {
+          "lat": 39.9927438,
+          "lng": 116.3054488
+        },
+        {
+          "lat": 39.9922734,
+          "lng": 116.3057368
+        },
+        {
+          "lat": 39.9918029,
+          "lng": 116.3060249
+        }
+      ]
+    },
+    {
+      "from": "road_chengfuyuan_west",
+      "to": "road_lijiao_north",
+      "distance": 72,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "成府园南路西口至理教北侧路口",
+      "geometry": [
+        {
+          "lat": 39.9916729,
+          "lng": 116.3071531
+        },
+        {
+          "lat": 39.9916458,
+          "lng": 116.3067339
+        },
+        {
+          "lat": 39.9916188,
+          "lng": 116.3063146
+        }
+      ]
+    },
+    {
+      "from": "road_lijiao_north",
+      "to": "road_chengfuyuan_west",
+      "distance": 72,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "理教北侧路口至成府园南路西口",
+      "geometry": [
+        {
+          "lat": 39.9916188,
+          "lng": 116.3063146
+        },
+        {
+          "lat": 39.9916458,
+          "lng": 116.3067339
+        },
+        {
+          "lat": 39.9916729,
+          "lng": 116.3071531
+        }
+      ]
+    },
+    {
+      "from": "road_chengfuyuan_east",
+      "to": "road_chengfuyuan_west",
+      "distance": 178,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "成府园南路东口至成府园南路西口",
+      "geometry": [
+        {
+          "lat": 39.991764,
+          "lng": 116.3092297
+        },
+        {
+          "lat": 39.9918076,
+          "lng": 116.3088283
+        },
+        {
+          "lat": 39.9917565,
+          "lng": 116.3081923
+        },
+        {
+          "lat": 39.9916729,
+          "lng": 116.3071531
+        }
+      ]
+    },
+    {
+      "from": "road_chengfuyuan_west",
+      "to": "road_chengfuyuan_east",
+      "distance": 178,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "成府园南路西口至成府园南路东口",
+      "geometry": [
+        {
+          "lat": 39.9916729,
+          "lng": 116.3071531
+        },
+        {
+          "lat": 39.9917565,
+          "lng": 116.3081923
+        },
+        {
+          "lat": 39.9918076,
+          "lng": 116.3088283
+        },
+        {
+          "lat": 39.991764,
+          "lng": 116.3092297
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "road_east_gate_south",
+      "distance": 152,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "北京大学东门至东门南侧路口",
+      "geometry": [
+        {
+          "lat": 39.992919,
+          "lng": 116.3095453
+        },
+        {
+          "lat": 39.9925688,
+          "lng": 116.3097584
+        },
+        {
+          "lat": 39.9923203,
+          "lng": 116.3095332
+        },
+        {
+          "lat": 39.9917546,
+          "lng": 116.3090208
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate_south",
+      "to": "gate_east",
+      "distance": 152,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "东门南侧路口至北京大学东门",
+      "geometry": [
+        {
+          "lat": 39.9917546,
+          "lng": 116.3090208
+        },
+        {
+          "lat": 39.9923203,
+          "lng": 116.3095332
+        },
+        {
+          "lat": 39.9925688,
+          "lng": 116.3097584
+        },
+        {
+          "lat": 39.992919,
+          "lng": 116.3095453
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "road_east_gate_north",
+      "distance": 116,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "北京大学东门至东门北侧接驳点",
+      "geometry": [
+        {
+          "lat": 39.992919,
+          "lng": 116.3095453
+        },
+        {
+          "lat": 39.9934399,
+          "lng": 116.3095064
+        },
+        {
+          "lat": 39.9939607,
+          "lng": 116.3094675
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate_north",
+      "to": "gate_east",
+      "distance": 116,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "东门北侧接驳点至北京大学东门",
+      "geometry": [
+        {
+          "lat": 39.9939607,
+          "lng": 116.3094675
+        },
+        {
+          "lat": 39.9934399,
+          "lng": 116.3095064
+        },
+        {
+          "lat": 39.992919,
+          "lng": 116.3095453
+        }
+      ]
+    },
+    {
+      "from": "road_lake_south_mid",
+      "to": "road_lake_south_west",
+      "distance": 154,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "未名湖南路中段至未名湖南路西口",
+      "geometry": [
+        {
+          "lat": 39.9918662,
+          "lng": 116.302612
+        },
+        {
+          "lat": 39.9918722,
+          "lng": 116.3017091
+        },
+        {
+          "lat": 39.9918729,
+          "lng": 116.3016117
+        },
+        {
+          "lat": 39.9920485,
+          "lng": 116.3008391
+        }
+      ]
+    },
+    {
+      "from": "road_lake_south_west",
+      "to": "road_lake_south_mid",
+      "distance": 154,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "未名湖南路西口至未名湖南路中段",
+      "geometry": [
+        {
+          "lat": 39.9920485,
+          "lng": 116.3008391
+        },
+        {
+          "lat": 39.9918729,
+          "lng": 116.3016117
+        },
+        {
+          "lat": 39.9918722,
+          "lng": 116.3017091
+        },
+        {
+          "lat": 39.9918662,
+          "lng": 116.302612
+        }
+      ]
+    },
+    {
+      "from": "road_lake_southeast",
+      "to": "road_library_south",
+      "distance": 254,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "未名湖东南路口至图书馆南侧步道口",
+      "geometry": [
+        {
+          "lat": 39.9918029,
+          "lng": 116.3060249
+        },
+        {
+          "lat": 39.9917755,
+          "lng": 116.3045305
+        },
+        {
+          "lat": 39.9917482,
+          "lng": 116.3030362
+        }
+      ]
+    },
+    {
+      "from": "road_library_south",
+      "to": "road_lake_southeast",
+      "distance": 254,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "图书馆南侧步道口至未名湖东南路口",
+      "geometry": [
+        {
+          "lat": 39.9917482,
+          "lng": 116.3030362
+        },
+        {
+          "lat": 39.9917755,
+          "lng": 116.3045305
+        },
+        {
+          "lat": 39.9918029,
+          "lng": 116.3060249
+        }
+      ]
+    },
+    {
+      "from": "road_wusi_north",
+      "to": "teaching_building_1",
+      "distance": 74,
+      "type": "outdoor_road",
+      "congestion": 0.75,
       "ideal_speed": 1.2,
       "vehicle_access": "pedestrian_only",
-      "name": "??????3"
+      "name": "五四路北侧路口至第一教学楼",
+      "geometry": [
+        {
+          "lat": 39.9910584,
+          "lng": 116.3050398
+        },
+        {
+          "lat": 39.9912597,
+          "lng": 116.3046904
+        },
+        {
+          "lat": 39.9914609,
+          "lng": 116.304341
+        }
+      ]
     },
     {
       "from": "teaching_building_1",
-      "to": "campus_service_04",
-      "distance": 210,
+      "to": "road_wusi_north",
+      "distance": 74,
       "type": "outdoor_road",
-      "congestion": 0.9,
+      "congestion": 0.75,
       "ideal_speed": 1.2,
       "vehicle_access": "pedestrian_only",
-      "name": "??????4"
+      "name": "第一教学楼至五四路北侧路口",
+      "geometry": [
+        {
+          "lat": 39.9914609,
+          "lng": 116.304341
+        },
+        {
+          "lat": 39.9912597,
+          "lng": 116.3046904
+        },
+        {
+          "lat": 39.9910584,
+          "lng": 116.3050398
+        }
+      ]
     },
     {
-      "from": "campus_service_04",
-      "to": "teaching_building_1",
-      "distance": 210,
+      "from": "road_library_south_west",
+      "to": "road_wusi_mid",
+      "distance": 188,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????4"
+      "name": "图书馆南路西口至五四路中段",
+      "geometry": [
+        {
+          "lat": 39.9898554,
+          "lng": 116.3035441
+        },
+        {
+          "lat": 39.9897747,
+          "lng": 116.3046395
+        },
+        {
+          "lat": 39.9897386,
+          "lng": 116.3051295
+        },
+        {
+          "lat": 39.9902074,
+          "lng": 116.3051105
+        }
+      ]
     },
     {
-      "from": "teaching_building_2",
-      "to": "campus_service_05",
-      "distance": 220,
+      "from": "road_wusi_mid",
+      "to": "road_library_south_west",
+      "distance": 188,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????5"
+      "name": "五四路中段至图书馆南路西口",
+      "geometry": [
+        {
+          "lat": 39.9902074,
+          "lng": 116.3051105
+        },
+        {
+          "lat": 39.9897386,
+          "lng": 116.3051295
+        },
+        {
+          "lat": 39.9897747,
+          "lng": 116.3046395
+        },
+        {
+          "lat": 39.9898554,
+          "lng": 116.3035441
+        }
+      ]
     },
     {
-      "from": "campus_service_05",
-      "to": "teaching_building_2",
-      "distance": 220,
+      "from": "road_library_south_west",
+      "to": "road_second_gym_south_east",
+      "distance": 66,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????5"
+      "name": "图书馆南路西口至二体南路东口",
+      "geometry": [
+        {
+          "lat": 39.9898554,
+          "lng": 116.3035441
+        },
+        {
+          "lat": 39.989556,
+          "lng": 116.3035088
+        },
+        {
+          "lat": 39.9892565,
+          "lng": 116.3034735
+        }
+      ]
     },
     {
-      "from": "road_cross",
-      "to": "campus_service_06",
-      "distance": 230,
+      "from": "road_second_gym_south_east",
+      "to": "road_library_south_west",
+      "distance": 66,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????6"
+      "name": "二体南路东口至图书馆南路西口",
+      "geometry": [
+        {
+          "lat": 39.9892565,
+          "lng": 116.3034735
+        },
+        {
+          "lat": 39.989556,
+          "lng": 116.3035088
+        },
+        {
+          "lat": 39.9898554,
+          "lng": 116.3035441
+        }
+      ]
     },
     {
-      "from": "campus_service_06",
-      "to": "road_cross",
-      "distance": 230,
+      "from": "road_yannan_east",
+      "to": "square_center",
+      "distance": 138,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
       "vehicle_access": "pedestrian_only",
-      "name": "??????6"
-    },
-    {
-      "from": "canteen",
-      "to": "campus_service_07",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????7"
-    },
-    {
-      "from": "campus_service_07",
-      "to": "canteen",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????7"
-    },
-    {
-      "from": "convenience_store",
-      "to": "campus_service_08",
-      "distance": 250,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????8"
-    },
-    {
-      "from": "campus_service_08",
-      "to": "convenience_store",
-      "distance": 250,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????8"
-    },
-    {
-      "from": "dormitory_1",
-      "to": "campus_service_09",
-      "distance": 180,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????9"
-    },
-    {
-      "from": "campus_service_09",
-      "to": "dormitory_1",
-      "distance": 180,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????9"
-    },
-    {
-      "from": "sports_ground",
-      "to": "campus_service_10",
-      "distance": 190,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????10"
-    },
-    {
-      "from": "campus_service_10",
-      "to": "sports_ground",
-      "distance": 190,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????10"
-    },
-    {
-      "from": "gate_east",
-      "to": "campus_service_11",
-      "distance": 200,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????11"
-    },
-    {
-      "from": "campus_service_11",
-      "to": "gate_east",
-      "distance": 200,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????11"
-    },
-    {
-      "from": "gate_south",
-      "to": "campus_service_12",
-      "distance": 210,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????12"
-    },
-    {
-      "from": "campus_service_12",
-      "to": "gate_south",
-      "distance": 210,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????12"
-    },
-    {
-      "from": "toilet_lib_area",
-      "to": "campus_service_14",
-      "distance": 230,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????14"
-    },
-    {
-      "from": "campus_service_14",
-      "to": "toilet_lib_area",
-      "distance": 230,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????14"
-    },
-    {
-      "from": "toilet_sports_area",
-      "to": "campus_service_15",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????15"
-    },
-    {
-      "from": "campus_service_15",
-      "to": "toilet_sports_area",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????15"
+      "name": "燕南路东口至百周年纪念讲堂南广场",
+      "geometry": [
+        {
+          "lat": 39.9875503,
+          "lng": 116.3043071
+        },
+        {
+          "lat": 39.9881372,
+          "lng": 116.30402
+        },
+        {
+          "lat": 39.9882798,
+          "lng": 116.3039502
+        },
+        {
+          "lat": 39.9880767,
+          "lng": 116.3045067
+        }
+      ]
     },
     {
       "from": "square_center",
-      "to": "campus_service_16",
-      "distance": 250,
+      "to": "road_yannan_east",
+      "distance": 138,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
       "vehicle_access": "pedestrian_only",
-      "name": "??????16"
+      "name": "百周年纪念讲堂南广场至燕南路东口",
+      "geometry": [
+        {
+          "lat": 39.9880767,
+          "lng": 116.3045067
+        },
+        {
+          "lat": 39.9882798,
+          "lng": 116.3039502
+        },
+        {
+          "lat": 39.9881372,
+          "lng": 116.30402
+        },
+        {
+          "lat": 39.9875503,
+          "lng": 116.3043071
+        }
+      ]
     },
     {
-      "from": "campus_service_16",
+      "from": "road_nongyuan_north_west",
       "to": "square_center",
-      "distance": 250,
+      "distance": 66,
       "type": "outdoor_road",
-      "congestion": 0.9,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园北路西口至百周年纪念讲堂南广场",
+      "geometry": [
+        {
+          "lat": 39.9880915,
+          "lng": 116.3052809
+        },
+        {
+          "lat": 39.9880841,
+          "lng": 116.3048938
+        },
+        {
+          "lat": 39.9880767,
+          "lng": 116.3045067
+        }
+      ]
+    },
+    {
+      "from": "square_center",
+      "to": "road_nongyuan_north_west",
+      "distance": 66,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "百周年纪念讲堂南广场至农园北路西口",
+      "geometry": [
+        {
+          "lat": 39.9880767,
+          "lng": 116.3045067
+        },
+        {
+          "lat": 39.9880841,
+          "lng": 116.3048938
+        },
+        {
+          "lat": 39.9880915,
+          "lng": 116.3052809
+        }
+      ]
+    },
+    {
+      "from": "road_second_teaching_west",
+      "to": "road_southeast_campus_west",
+      "distance": 130,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "二教西路南口至校园东南路西口",
+      "geometry": [
+        {
+          "lat": 39.9874959,
+          "lng": 116.3065874
+        },
+        {
+          "lat": 39.9880847,
+          "lng": 116.3065529
+        },
+        {
+          "lat": 39.9886735,
+          "lng": 116.3065184
+        }
+      ]
+    },
+    {
+      "from": "road_southeast_campus_west",
+      "to": "road_second_teaching_west",
+      "distance": 130,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "校园东南路西口至二教西路南口",
+      "geometry": [
+        {
+          "lat": 39.9886735,
+          "lng": 116.3065184
+        },
+        {
+          "lat": 39.9880847,
+          "lng": 116.3065529
+        },
+        {
+          "lat": 39.9874959,
+          "lng": 116.3065874
+        }
+      ]
+    },
+    {
+      "from": "road_second_teaching_west",
+      "to": "teaching_building_2",
+      "distance": 72,
+      "type": "outdoor_road",
+      "congestion": 0.75,
       "ideal_speed": 1.2,
       "vehicle_access": "pedestrian_only",
-      "name": "??????16"
+      "name": "二教西路南口至第二教学楼",
+      "geometry": [
+        {
+          "lat": 39.9874959,
+          "lng": 116.3065874
+        },
+        {
+          "lat": 39.9878199,
+          "lng": 116.3065691
+        },
+        {
+          "lat": 39.9881439,
+          "lng": 116.3065508
+        }
+      ]
+    },
+    {
+      "from": "teaching_building_2",
+      "to": "road_second_teaching_west",
+      "distance": 72,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "第二教学楼至二教西路南口",
+      "geometry": [
+        {
+          "lat": 39.9881439,
+          "lng": 116.3065508
+        },
+        {
+          "lat": 39.9878199,
+          "lng": 116.3065691
+        },
+        {
+          "lat": 39.9874959,
+          "lng": 116.3065874
+        }
+      ]
+    },
+    {
+      "from": "road_lijiao_west",
+      "to": "road_southeast_campus_west",
+      "distance": 176,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "理教西路中段至校园东南路西口",
+      "geometry": [
+        {
+          "lat": 39.9902667,
+          "lng": 116.3063789
+        },
+        {
+          "lat": 39.9894701,
+          "lng": 116.3064486
+        },
+        {
+          "lat": 39.9886735,
+          "lng": 116.3065184
+        }
+      ]
+    },
+    {
+      "from": "road_southeast_campus_west",
+      "to": "road_lijiao_west",
+      "distance": 176,
+      "type": "outdoor_road",
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "校园东南路西口至理教西路中段",
+      "geometry": [
+        {
+          "lat": 39.9886735,
+          "lng": 116.3065184
+        },
+        {
+          "lat": 39.9894701,
+          "lng": 116.3064486
+        },
+        {
+          "lat": 39.9902667,
+          "lng": 116.3063789
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate_south",
+      "to": "road_science_east",
+      "distance": 130,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "东门南侧路口至科学路东口",
+      "geometry": [
+        {
+          "lat": 39.9917546,
+          "lng": 116.3090208
+        },
+        {
+          "lat": 39.9912062,
+          "lng": 116.3093033
+        },
+        {
+          "lat": 39.9908035,
+          "lng": 116.3095108
+        },
+        {
+          "lat": 39.9907995,
+          "lng": 116.3093076
+        }
+      ]
+    },
+    {
+      "from": "road_science_east",
+      "to": "road_east_gate_south",
+      "distance": 130,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "科学路东口至东门南侧路口",
+      "geometry": [
+        {
+          "lat": 39.9907995,
+          "lng": 116.3093076
+        },
+        {
+          "lat": 39.9908035,
+          "lng": 116.3095108
+        },
+        {
+          "lat": 39.9912062,
+          "lng": 116.3093033
+        },
+        {
+          "lat": 39.9917546,
+          "lng": 116.3090208
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "road_science_east",
+      "distance": 562,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "中关新园超市至科学路东口",
+      "geometry": [
+        {
+          "lat": 39.9888829,
+          "lng": 116.3135887
+        },
+        {
+          "lat": 39.9890924,
+          "lng": 116.3137143
+        },
+        {
+          "lat": 39.9889651,
+          "lng": 116.3107253
+        },
+        {
+          "lat": 39.9889315,
+          "lng": 116.3099356
+        },
+        {
+          "lat": 39.9907995,
+          "lng": 116.3093076
+        }
+      ]
+    },
+    {
+      "from": "road_science_east",
+      "to": "convenience_store",
+      "distance": 562,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
+      "vehicle_access": "pedestrian_only",
+      "name": "科学路东口至中关新园超市",
+      "geometry": [
+        {
+          "lat": 39.9907995,
+          "lng": 116.3093076
+        },
+        {
+          "lat": 39.9889315,
+          "lng": 116.3099356
+        },
+        {
+          "lat": 39.9889651,
+          "lng": 116.3107253
+        },
+        {
+          "lat": 39.9890924,
+          "lng": 116.3137143
+        },
+        {
+          "lat": 39.9888829,
+          "lng": 116.3135887
+        }
+      ]
     },
     {
       "from": "road_cross",
-      "to": "campus_service_17",
-      "distance": 180,
+      "to": "road_library_south_west",
+      "distance": 238,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????17"
+      "name": "理教西路路口至图书馆南路西口",
+      "geometry": [
+        {
+          "lat": 39.9906472,
+          "lng": 116.3052974
+        },
+        {
+          "lat": 39.9897386,
+          "lng": 116.3051295
+        },
+        {
+          "lat": 39.9897534,
+          "lng": 116.304929
+        },
+        {
+          "lat": 39.9898554,
+          "lng": 116.3035441
+        }
+      ]
     },
     {
-      "from": "campus_service_17",
+      "from": "road_library_south_west",
       "to": "road_cross",
-      "distance": 180,
+      "distance": 238,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????17"
+      "name": "图书馆南路西口至理教西路路口",
+      "geometry": [
+        {
+          "lat": 39.9898554,
+          "lng": 116.3035441
+        },
+        {
+          "lat": 39.9897534,
+          "lng": 116.304929
+        },
+        {
+          "lat": 39.9897386,
+          "lng": 116.3051295
+        },
+        {
+          "lat": 39.9906472,
+          "lng": 116.3052974
+        }
+      ]
     },
     {
-      "from": "library",
-      "to": "campus_service_18",
-      "distance": 190,
+      "from": "road_lijiao_north",
+      "to": "road_lijiao_west",
+      "distance": 150,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????18"
+      "name": "理教北侧路口至理教西路中段",
+      "geometry": [
+        {
+          "lat": 39.9916188,
+          "lng": 116.3063146
+        },
+        {
+          "lat": 39.9909428,
+          "lng": 116.3063467
+        },
+        {
+          "lat": 39.9902667,
+          "lng": 116.3063789
+        }
+      ]
     },
     {
-      "from": "campus_service_18",
-      "to": "library",
-      "distance": 190,
+      "from": "road_lijiao_west",
+      "to": "road_lijiao_north",
+      "distance": 150,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.8,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????18"
+      "name": "理教西路中段至理教北侧路口",
+      "geometry": [
+        {
+          "lat": 39.9902667,
+          "lng": 116.3063789
+        },
+        {
+          "lat": 39.9909428,
+          "lng": 116.3063467
+        },
+        {
+          "lat": 39.9916188,
+          "lng": 116.3063146
+        }
+      ]
     },
     {
-      "from": "canteen",
-      "to": "campus_service_19",
-      "distance": 200,
+      "from": "road_wusi_mid",
+      "to": "square_center",
+      "distance": 300,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
       "vehicle_access": "pedestrian_only",
-      "name": "??????19"
+      "name": "五四路中段至百周年纪念讲堂南广场",
+      "geometry": [
+        {
+          "lat": 39.9902074,
+          "lng": 116.3051105
+        },
+        {
+          "lat": 39.9890055,
+          "lng": 116.3051682
+        },
+        {
+          "lat": 39.9888498,
+          "lng": 116.3051874
+        },
+        {
+          "lat": 39.9880915,
+          "lng": 116.3052809
+        },
+        {
+          "lat": 39.9880767,
+          "lng": 116.3045067
+        }
+      ]
     },
     {
-      "from": "campus_service_19",
-      "to": "canteen",
-      "distance": 200,
+      "from": "square_center",
+      "to": "road_wusi_mid",
+      "distance": 300,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.75,
+      "ideal_speed": 1.3,
       "vehicle_access": "pedestrian_only",
-      "name": "??????19"
-    },
-    {
-      "from": "dormitory_1",
-      "to": "campus_service_20",
-      "distance": 210,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????20"
-    },
-    {
-      "from": "campus_service_20",
-      "to": "dormitory_1",
-      "distance": 210,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????20"
-    },
-    {
-      "from": "sports_ground",
-      "to": "campus_service_21",
-      "distance": 220,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????21"
-    },
-    {
-      "from": "campus_service_21",
-      "to": "sports_ground",
-      "distance": 220,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????21"
-    },
-    {
-      "from": "gate_north",
-      "to": "campus_service_22",
-      "distance": 230,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????22"
-    },
-    {
-      "from": "campus_service_22",
-      "to": "gate_north",
-      "distance": 230,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????22"
-    },
-    {
-      "from": "gate_east",
-      "to": "campus_service_23",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????23"
-    },
-    {
-      "from": "campus_service_23",
-      "to": "gate_east",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????23"
+      "name": "百周年纪念讲堂南广场至五四路中段",
+      "geometry": [
+        {
+          "lat": 39.9880767,
+          "lng": 116.3045067
+        },
+        {
+          "lat": 39.9880915,
+          "lng": 116.3052809
+        },
+        {
+          "lat": 39.9888498,
+          "lng": 116.3051874
+        },
+        {
+          "lat": 39.9890055,
+          "lng": 116.3051682
+        },
+        {
+          "lat": 39.9902074,
+          "lng": 116.3051105
+        }
+      ]
     },
     {
       "from": "gate_south",
-      "to": "campus_service_24",
-      "distance": 250,
+      "to": "road_south_gate_inner",
+      "distance": 96,
       "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
       "vehicle_access": "pedestrian_only",
-      "name": "??????24"
+      "name": "北京大学南门至南门内侧五四路口",
+      "geometry": [
+        {
+          "lat": 39.98527,
+          "lng": 116.3054565
+        },
+        {
+          "lat": 39.9857016,
+          "lng": 116.3054219
+        },
+        {
+          "lat": 39.9861331,
+          "lng": 116.3053872
+        }
+      ]
     },
     {
-      "from": "campus_service_24",
+      "from": "road_south_gate_inner",
       "to": "gate_south",
-      "distance": 250,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????24"
-    },
-    {
-      "from": "campus_service_01",
-      "to": "campus_service_02",
-      "distance": 160,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????1"
-    },
-    {
-      "from": "campus_service_02",
-      "to": "campus_service_01",
-      "distance": 160,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????1"
-    },
-    {
-      "from": "campus_service_02",
-      "to": "campus_service_03",
-      "distance": 172,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????2"
-    },
-    {
-      "from": "campus_service_03",
-      "to": "campus_service_02",
-      "distance": 172,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????2"
-    },
-    {
-      "from": "campus_service_03",
-      "to": "campus_service_04",
-      "distance": 184,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????3"
-    },
-    {
-      "from": "campus_service_04",
-      "to": "campus_service_03",
-      "distance": 184,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????3"
-    },
-    {
-      "from": "campus_service_04",
-      "to": "campus_service_05",
-      "distance": 196,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????4"
-    },
-    {
-      "from": "campus_service_05",
-      "to": "campus_service_04",
-      "distance": 196,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????4"
-    },
-    {
-      "from": "campus_service_05",
-      "to": "campus_service_06",
-      "distance": 208,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????5"
-    },
-    {
-      "from": "campus_service_06",
-      "to": "campus_service_05",
-      "distance": 208,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????5"
-    },
-    {
-      "from": "campus_service_06",
-      "to": "campus_service_07",
-      "distance": 220,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????6"
-    },
-    {
-      "from": "campus_service_07",
-      "to": "campus_service_06",
-      "distance": 220,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????6"
-    },
-    {
-      "from": "campus_service_07",
-      "to": "campus_service_08",
-      "distance": 232,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????7"
-    },
-    {
-      "from": "campus_service_08",
-      "to": "campus_service_07",
-      "distance": 232,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????7"
-    },
-    {
-      "from": "campus_service_08",
-      "to": "campus_service_09",
-      "distance": 160,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????8"
-    },
-    {
-      "from": "campus_service_09",
-      "to": "campus_service_08",
-      "distance": 160,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????8"
-    },
-    {
-      "from": "campus_service_09",
-      "to": "campus_service_10",
-      "distance": 172,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????9"
-    },
-    {
-      "from": "campus_service_10",
-      "to": "campus_service_09",
-      "distance": 172,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????9"
-    },
-    {
-      "from": "campus_service_10",
-      "to": "campus_service_11",
-      "distance": 184,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????10"
-    },
-    {
-      "from": "campus_service_11",
-      "to": "campus_service_10",
-      "distance": 184,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????10"
-    },
-    {
-      "from": "campus_service_11",
-      "to": "campus_service_12",
-      "distance": 196,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????11"
-    },
-    {
-      "from": "campus_service_12",
-      "to": "campus_service_11",
-      "distance": 196,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????11"
-    },
-    {
-      "from": "campus_service_12",
-      "to": "campus_service_13",
-      "distance": 208,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????12"
-    },
-    {
-      "from": "campus_service_13",
-      "to": "campus_service_12",
-      "distance": 208,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????12"
-    },
-    {
-      "from": "campus_service_13",
-      "to": "campus_service_14",
-      "distance": 220,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????13"
-    },
-    {
-      "from": "campus_service_14",
-      "to": "campus_service_13",
-      "distance": 220,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????13"
-    },
-    {
-      "from": "campus_service_14",
-      "to": "campus_service_15",
-      "distance": 232,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????14"
-    },
-    {
-      "from": "campus_service_15",
-      "to": "campus_service_14",
-      "distance": 232,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????14"
-    },
-    {
-      "from": "campus_service_15",
-      "to": "campus_service_16",
-      "distance": 160,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????15"
-    },
-    {
-      "from": "campus_service_16",
-      "to": "campus_service_15",
-      "distance": 160,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????15"
-    },
-    {
-      "from": "campus_service_16",
-      "to": "campus_service_17",
-      "distance": 172,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????16"
-    },
-    {
-      "from": "campus_service_17",
-      "to": "campus_service_16",
-      "distance": 172,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????16"
-    },
-    {
-      "from": "campus_service_17",
-      "to": "campus_service_18",
-      "distance": 184,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????17"
-    },
-    {
-      "from": "campus_service_18",
-      "to": "campus_service_17",
-      "distance": 184,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????17"
-    },
-    {
-      "from": "campus_service_18",
-      "to": "campus_service_19",
-      "distance": 196,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????18"
-    },
-    {
-      "from": "campus_service_19",
-      "to": "campus_service_18",
-      "distance": 196,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????18"
-    },
-    {
-      "from": "campus_service_19",
-      "to": "campus_service_20",
-      "distance": 208,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????19"
-    },
-    {
-      "from": "campus_service_20",
-      "to": "campus_service_19",
-      "distance": 208,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????19"
-    },
-    {
-      "from": "campus_service_20",
-      "to": "campus_service_21",
-      "distance": 220,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????20"
-    },
-    {
-      "from": "campus_service_21",
-      "to": "campus_service_20",
-      "distance": 220,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????20"
-    },
-    {
-      "from": "campus_service_21",
-      "to": "campus_service_22",
-      "distance": 232,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????21"
-    },
-    {
-      "from": "campus_service_22",
-      "to": "campus_service_21",
-      "distance": 232,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????21"
-    },
-    {
-      "from": "campus_service_22",
-      "to": "campus_service_23",
-      "distance": 160,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????22"
-    },
-    {
-      "from": "campus_service_23",
-      "to": "campus_service_22",
-      "distance": 160,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????22"
-    },
-    {
-      "from": "campus_service_23",
-      "to": "campus_service_24",
-      "distance": 172,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????23"
-    },
-    {
-      "from": "campus_service_24",
-      "to": "campus_service_23",
-      "distance": 172,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "???????23"
-    },
-    {
-      "from": "campus_service_01",
-      "to": "campus_service_05",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????1"
-    },
-    {
-      "from": "campus_service_05",
-      "to": "campus_service_01",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????1"
-    },
-    {
-      "from": "campus_service_02",
-      "to": "campus_service_06",
-      "distance": 255,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????2"
-    },
-    {
-      "from": "campus_service_06",
-      "to": "campus_service_02",
-      "distance": 255,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????2"
-    },
-    {
-      "from": "campus_service_03",
-      "to": "campus_service_07",
-      "distance": 270,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????3"
-    },
-    {
-      "from": "campus_service_07",
-      "to": "campus_service_03",
-      "distance": 270,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????3"
-    },
-    {
-      "from": "campus_service_04",
-      "to": "campus_service_08",
-      "distance": 285,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????4"
-    },
-    {
-      "from": "campus_service_08",
-      "to": "campus_service_04",
-      "distance": 285,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????4"
-    },
-    {
-      "from": "campus_service_05",
-      "to": "campus_service_09",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????5"
-    },
-    {
-      "from": "campus_service_09",
-      "to": "campus_service_05",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????5"
-    },
-    {
-      "from": "campus_service_06",
-      "to": "campus_service_10",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????6"
-    },
-    {
-      "from": "campus_service_10",
-      "to": "campus_service_06",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????6"
-    },
-    {
-      "from": "campus_service_07",
-      "to": "campus_service_11",
-      "distance": 255,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????7"
-    },
-    {
-      "from": "campus_service_11",
-      "to": "campus_service_07",
-      "distance": 255,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????7"
-    },
-    {
-      "from": "campus_service_08",
-      "to": "campus_service_12",
-      "distance": 270,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????8"
-    },
-    {
-      "from": "campus_service_12",
-      "to": "campus_service_08",
-      "distance": 270,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????8"
-    },
-    {
-      "from": "campus_service_09",
-      "to": "campus_service_13",
-      "distance": 285,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????9"
-    },
-    {
-      "from": "campus_service_13",
-      "to": "campus_service_09",
-      "distance": 285,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????9"
-    },
-    {
-      "from": "campus_service_10",
-      "to": "campus_service_14",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????10"
-    },
-    {
-      "from": "campus_service_14",
-      "to": "campus_service_10",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????10"
-    },
-    {
-      "from": "campus_service_11",
-      "to": "campus_service_15",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????11"
-    },
-    {
-      "from": "campus_service_15",
-      "to": "campus_service_11",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????11"
-    },
-    {
-      "from": "campus_service_12",
-      "to": "campus_service_16",
-      "distance": 255,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????12"
-    },
-    {
-      "from": "campus_service_16",
-      "to": "campus_service_12",
-      "distance": 255,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????12"
-    },
-    {
-      "from": "campus_service_13",
-      "to": "campus_service_17",
-      "distance": 270,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????13"
-    },
-    {
-      "from": "campus_service_17",
-      "to": "campus_service_13",
-      "distance": 270,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????13"
-    },
-    {
-      "from": "campus_service_14",
-      "to": "campus_service_18",
-      "distance": 285,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????14"
-    },
-    {
-      "from": "campus_service_18",
-      "to": "campus_service_14",
-      "distance": 285,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????14"
-    },
-    {
-      "from": "campus_service_15",
-      "to": "campus_service_19",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????15"
-    },
-    {
-      "from": "campus_service_19",
-      "to": "campus_service_15",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????15"
-    },
-    {
-      "from": "campus_service_16",
-      "to": "campus_service_20",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????16"
-    },
-    {
-      "from": "campus_service_20",
-      "to": "campus_service_16",
-      "distance": 240,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????16"
-    },
-    {
-      "from": "campus_service_17",
-      "to": "campus_service_21",
-      "distance": 255,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????17"
-    },
-    {
-      "from": "campus_service_21",
-      "to": "campus_service_17",
-      "distance": 255,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????17"
-    },
-    {
-      "from": "campus_service_18",
-      "to": "campus_service_22",
-      "distance": 270,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????18"
-    },
-    {
-      "from": "campus_service_22",
-      "to": "campus_service_18",
-      "distance": 270,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????18"
-    },
-    {
-      "from": "campus_service_19",
-      "to": "campus_service_23",
-      "distance": 285,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????19"
-    },
-    {
-      "from": "campus_service_23",
-      "to": "campus_service_19",
-      "distance": 285,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????19"
-    },
-    {
-      "from": "campus_service_20",
-      "to": "campus_service_24",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????20"
-    },
-    {
-      "from": "campus_service_24",
-      "to": "campus_service_20",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "?????????20"
-    },
-    {
-      "from": "gate_east",
-      "to": "campus_service_13",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????13"
-    },
-    {
-      "from": "campus_service_13",
-      "to": "gate_east",
-      "distance": 300,
-      "type": "outdoor_road",
-      "congestion": 0.9,
-      "ideal_speed": 1.2,
-      "vehicle_access": "pedestrian_only",
-      "name": "??????13"
+      "distance": 96,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "南门内侧五四路口至北京大学南门",
+      "geometry": [
+        {
+          "lat": 39.9861331,
+          "lng": 116.3053872
+        },
+        {
+          "lat": 39.9857016,
+          "lng": 116.3054219
+        },
+        {
+          "lat": 39.98527,
+          "lng": 116.3054565
+        }
+      ]
+    },
+    {
+      "from": "road_nongyuan_north_west",
+      "to": "road_south_gate_inner",
+      "distance": 216,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园北路西口至南门内侧五四路口",
+      "geometry": [
+        {
+          "lat": 39.9880915,
+          "lng": 116.3052809
+        },
+        {
+          "lat": 39.9871123,
+          "lng": 116.305334
+        },
+        {
+          "lat": 39.9861331,
+          "lng": 116.3053872
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate_inner",
+      "to": "road_nongyuan_north_west",
+      "distance": 216,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "南门内侧五四路口至农园北路西口",
+      "geometry": [
+        {
+          "lat": 39.9861331,
+          "lng": 116.3053872
+        },
+        {
+          "lat": 39.9871123,
+          "lng": 116.305334
+        },
+        {
+          "lat": 39.9880915,
+          "lng": 116.3052809
+        }
+      ]
+    },
+    {
+      "from": "road_lijiao_west",
+      "to": "road_wusi_mid",
+      "distance": 108,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "理教西路中段至五四路中段",
+      "geometry": [
+        {
+          "lat": 39.9902667,
+          "lng": 116.3063789
+        },
+        {
+          "lat": 39.9902371,
+          "lng": 116.3057447
+        },
+        {
+          "lat": 39.9902074,
+          "lng": 116.3051105
+        }
+      ]
+    },
+    {
+      "from": "road_wusi_mid",
+      "to": "road_lijiao_west",
+      "distance": 108,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "五四路中段至理教西路中段",
+      "geometry": [
+        {
+          "lat": 39.9902074,
+          "lng": 116.3051105
+        },
+        {
+          "lat": 39.9902371,
+          "lng": 116.3057447
+        },
+        {
+          "lat": 39.9902667,
+          "lng": 116.3063789
+        }
+      ]
+    },
+    {
+      "from": "road_nongyuan_south_east",
+      "to": "road_second_teaching_west",
+      "distance": 66,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "农园南路东口至二教西路南口",
+      "geometry": [
+        {
+          "lat": 39.9869969,
+          "lng": 116.3064966
+        },
+        {
+          "lat": 39.9871493,
+          "lng": 116.3064832
+        },
+        {
+          "lat": 39.9871544,
+          "lng": 116.3066074
+        },
+        {
+          "lat": 39.9872009,
+          "lng": 116.3066047
+        },
+        {
+          "lat": 39.9874959,
+          "lng": 116.3065874
+        }
+      ]
+    },
+    {
+      "from": "road_second_teaching_west",
+      "to": "road_nongyuan_south_east",
+      "distance": 66,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "二教西路南口至农园南路东口",
+      "geometry": [
+        {
+          "lat": 39.9874959,
+          "lng": 116.3065874
+        },
+        {
+          "lat": 39.9872009,
+          "lng": 116.3066047
+        },
+        {
+          "lat": 39.9871544,
+          "lng": 116.3066074
+        },
+        {
+          "lat": 39.9871493,
+          "lng": 116.3064832
+        },
+        {
+          "lat": 39.9869969,
+          "lng": 116.3064966
+        }
+      ]
+    },
+    {
+      "from": "road_second_teaching_west",
+      "to": "road_third_teaching_south_east",
+      "distance": 144,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "二教西路南口至三教南路东口",
+      "geometry": [
+        {
+          "lat": 39.9874959,
+          "lng": 116.3065874
+        },
+        {
+          "lat": 39.9875334,
+          "lng": 116.3074326
+        },
+        {
+          "lat": 39.9875709,
+          "lng": 116.3082777
+        }
+      ]
+    },
+    {
+      "from": "road_third_teaching_south_east",
+      "to": "road_second_teaching_west",
+      "distance": 144,
+      "type": "outdoor_road",
+      "congestion": 0.75,
+      "ideal_speed": 1.4,
+      "vehicle_access": "pedestrian_only",
+      "name": "三教南路东口至二教西路南口",
+      "geometry": [
+        {
+          "lat": 39.9875709,
+          "lng": 116.3082777
+        },
+        {
+          "lat": 39.9875334,
+          "lng": 116.3074326
+        },
+        {
+          "lat": 39.9874959,
+          "lng": 116.3065874
+        }
+      ]
     }
   ]
 }

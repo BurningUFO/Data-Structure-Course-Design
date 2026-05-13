@@ -1,0 +1,221 @@
+{
+  "metadata": {
+    "site_id": "PKU",
+    "stage": "M11",
+    "created_at": "2026-05-12",
+    "removed_undirected_edge_count": 11
+  },
+  "removed_edges": [
+    {
+      "edge_key": "gate_south->road_nongyuan_west_south",
+      "reverse_edge_key": "road_nongyuan_west_south->gate_south",
+      "from": "gate_south",
+      "to": "road_nongyuan_west_south",
+      "reason": "The M10 direct connector from the south gate to Nongyuan west road cut across building footprints instead of following Wusi Road and the Nongyuan south road turns.",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "replacement_path": [
+        "gate_south",
+        "road_south_gate_inner",
+        "road_nongyuan_north_west",
+        "square_center",
+        "road_wusi_mid",
+        "road_lijiao_west",
+        "road_southeast_campus_west",
+        "road_second_teaching_west",
+        "road_nongyuan_south_east",
+        "road_nongyuan_south_west",
+        "road_nongyuan_west_south"
+      ]
+    },
+    {
+      "edge_key": "library->toilet_lib_area",
+      "reverse_edge_key": "toilet_lib_area->library",
+      "from": "library",
+      "to": "toilet_lib_area",
+      "reason": "The direct library-restroom connector crossed the first teaching building area. The restroom now connects to Wusi north footway and routes around via road waypoints.",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "replacement_path": [
+        "library",
+        "road_library_south",
+        "road_lake_southeast",
+        "road_lijiao_north",
+        "road_lijiao_west",
+        "road_wusi_mid",
+        "road_cross",
+        "road_wusi_north",
+        "toilet_lib_area"
+      ]
+    },
+    {
+      "edge_key": "road_centennial_plaza_east->road_southeast_campus_west",
+      "reverse_edge_key": "road_southeast_campus_west->road_centennial_plaza_east",
+      "from": "road_centennial_plaza_east",
+      "to": "road_southeast_campus_west",
+      "reason": "The direct plaza east to southeast campus edge crossed Zhihua building instead of routing around the plaza and Lijiao/Wusi road network.",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "replacement_path": [
+        "road_centennial_plaza_east",
+        "road_nongyuan_north_west",
+        "square_center",
+        "road_wusi_mid",
+        "road_lijiao_west",
+        "road_southeast_campus_west"
+      ]
+    },
+    {
+      "edge_key": "road_cross->road_lijiao_west",
+      "reverse_edge_key": "road_lijiao_west->road_cross",
+      "from": "road_cross",
+      "to": "road_lijiao_west",
+      "reason": "The direct road_cross to Lijiao west edge crossed the Geology building area. It is replaced by the real Wusi middle to Lijiao west road turn.",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "replacement_path": [
+        "road_cross",
+        "road_wusi_mid",
+        "road_lijiao_west"
+      ]
+    },
+    {
+      "edge_key": "road_nongyuan_west_south->road_second_teaching_west",
+      "reverse_edge_key": "road_second_teaching_west->road_nongyuan_west_south",
+      "from": "road_nongyuan_west_south",
+      "to": "road_second_teaching_west",
+      "reason": "The M10 edge jumped between Nongyuan west road and second teaching west road without modeling the south road turns.",
+      "issues": [
+        "crosses_building",
+        "missing_waypoint_turns"
+      ],
+      "replacement_path": [
+        "road_nongyuan_west_south",
+        "road_nongyuan_south_west",
+        "road_nongyuan_south_east",
+        "road_second_teaching_west"
+      ]
+    },
+    {
+      "edge_key": "road_second_teaching_west->canteen",
+      "reverse_edge_key": "canteen->road_second_teaching_west",
+      "from": "road_second_teaching_west",
+      "to": "canteen",
+      "reason": "The direct second teaching west to canteen edge crossed the Nongyuan restaurant footprint. Access now goes around Nongyuan south and west-side entrance waypoints.",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "replacement_path": [
+        "road_second_teaching_west",
+        "road_nongyuan_south_east",
+        "road_nongyuan_south_west",
+        "road_nongyuan_west_south",
+        "canteen"
+      ]
+    },
+    {
+      "edge_key": "road_second_gym_south_east->road_yannan_east",
+      "reverse_edge_key": "road_yannan_east->road_second_gym_south_east",
+      "from": "road_second_gym_south_east",
+      "to": "road_yannan_east",
+      "reason": "The southwest shortcut had no connected OSM road support and clipped dormitory building footprints.",
+      "issues": [
+        "crosses_building",
+        "low_confidence_manual_shortcut"
+      ],
+      "replacement_path": [
+        "road_second_gym_south_east",
+        "road_library_south_west",
+        "road_wusi_mid",
+        "square_center",
+        "road_yannan_east"
+      ]
+    },
+    {
+      "edge_key": "road_southeast_campus_west->teaching_building_2",
+      "reverse_edge_key": "teaching_building_2->road_southeast_campus_west",
+      "from": "road_southeast_campus_west",
+      "to": "teaching_building_2",
+      "reason": "The southeast campus west to second teaching connector entered the teaching building footprint directly. Teaching Building 2 now connects from the west-side entrance route.",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "replacement_path": [
+        "road_southeast_campus_west",
+        "road_second_teaching_west",
+        "teaching_building_2"
+      ]
+    },
+    {
+      "edge_key": "road_southeast_campus_west->road_third_teaching_south_east",
+      "reverse_edge_key": "road_third_teaching_south_east->road_southeast_campus_west",
+      "from": "road_southeast_campus_west",
+      "to": "road_third_teaching_south_east",
+      "reason": "The direct edge clipped the third teaching building footprint. The route is split through second teaching west and the real south road segment.",
+      "issues": [
+        "crosses_building",
+        "missing_waypoint_turns"
+      ],
+      "replacement_path": [
+        "road_southeast_campus_west",
+        "road_second_teaching_west",
+        "road_third_teaching_south_east"
+      ]
+    },
+    {
+      "edge_key": "road_third_teaching_south_east->road_science_east",
+      "reverse_edge_key": "road_science_east->road_third_teaching_south_east",
+      "from": "road_third_teaching_south_east",
+      "to": "road_science_east",
+      "reason": "The long third teaching to science east edge crossed intermediate building footprints and duplicated a route that should use existing road intersections.",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "replacement_path": [
+        "road_third_teaching_south_east",
+        "road_second_teaching_west",
+        "road_southeast_campus_west",
+        "road_lijiao_west",
+        "road_lijiao_north",
+        "road_chengfuyuan_west",
+        "road_chengfuyuan_east",
+        "road_east_gate_south",
+        "road_science_east"
+      ]
+    },
+    {
+      "edge_key": "road_nongyuan_north_west->canteen",
+      "reverse_edge_key": "canteen->road_nongyuan_north_west",
+      "from": "road_nongyuan_north_west",
+      "to": "canteen",
+      "reason": "The north-west Nongyuan connector crossed the Education building area; canteen access now uses the west/south side road entrance.",
+      "issues": [
+        "crosses_building",
+        "not_real_direct_access"
+      ],
+      "replacement_path": [
+        "road_nongyuan_north_west",
+        "square_center",
+        "road_wusi_mid",
+        "road_lijiao_west",
+        "road_southeast_campus_west",
+        "road_second_teaching_west",
+        "road_nongyuan_south_east",
+        "road_nongyuan_south_west",
+        "road_nongyuan_west_south",
+        "canteen"
+      ]
+    }
+  ]
+}

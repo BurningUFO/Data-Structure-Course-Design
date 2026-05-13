@@ -49,6 +49,9 @@ SERVICE_CATEGORY_SET = {
     "education",
     "landmark",
     "entrance",
+    # Map Plan B M10/M11 replaces the old virtual service grid with real
+    # road/footway waypoints, so these remain part of the course-scale service surface.
+    "road",
 }
 
 
@@ -156,11 +159,14 @@ def test_current_scale_snapshot_for_week12_gap_tracking():
     mapped_extension_records = [
         record for record in extension_records if record.get("map_node_id")
     ]
+    osm_roads = load_json(PKU_SITE_DIR / "geo" / "osm_roads_simplified.geojson")
+    osm_road_features = osm_roads.get("features", [])
 
     assert len(nodes) >= 50
     assert len(categories) >= 10
     assert len(facility_like_nodes) >= 50
-    assert len(edges) >= 200
+    assert len(edges) >= 120
+    assert len(osm_road_features) >= 200
     assert len(node_ids) == len(set(node_ids))
     assert edge_endpoint_ids.issubset(set(node_ids))
     assert len(extension_records) >= 200
@@ -175,6 +181,7 @@ def test_current_scale_snapshot_for_week12_gap_tracking():
     print("test_current_scale_snapshot_for_week12_gap_tracking passed:")
     print(f"  pku_nodes={len(nodes)}")
     print(f"  pku_edges={len(edges)}")
+    print(f"  local_osm_road_features={len(osm_road_features)}")
     print(f"  pku_categories={len(categories)}")
     print(f"  facility_like_nodes={len(facility_like_nodes)}")
     print(f"  extension_objects={len(extension_records)}")
