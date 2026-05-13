@@ -656,6 +656,107 @@ def test_demo_priority_outdoor_routes_are_reachable_without_fallback():
     print("test_demo_priority_outdoor_routes_are_reachable_without_fallback passed.")
 
 
+def test_demo_m15_core_white_road_routes_have_auditable_geometry_stats():
+    service = DemoUIService("PKU")
+    route_cases = (
+        ("gate_north", "library", 200, 550),
+        ("gate_east", "canteen", 700, 1200),
+        ("gate_south", "teaching_building_1", 500, 950),
+        ("library", "sports_ground", 120, 350),
+        ("gate_north", "toilet_lib_area", 160, 450),
+        ("gate_east", "parking_lot", 20, 120),
+    )
+
+    for start_node_id, target_node_id, min_distance_m, max_distance_m in route_cases:
+        response = service.plan_route(
+            {
+                "start_node_id": start_node_id,
+                "target_node_id": target_node_id,
+                "strategy": "shortest_distance",
+                "transport_mode": "any",
+            }
+        )
+
+        assert response["success"] is True
+        assert response["path"][0] == start_node_id
+        assert response["path"][-1] == target_node_id
+        assert min_distance_m <= response["total_distance_m"] <= max_distance_m
+
+        route_geojson = response["ui"]["route_geojson"]
+        assert route_geojson["geometry"]["type"] == "LineString"
+        assert len(route_geojson["geometry"]["coordinates"]) >= 2
+
+        stats = response["ui"]["route_geometry_stats"]
+        assert stats["fallback_segment_count"] == 0
+        assert stats["fallback_edge_count"] == 0
+        assert stats["missing_edge_count"] == 0
+        assert stats["skipped_unmapped_segment_count"] == 0
+        assert stats["geometry_segment_count"] == stats["route_segment_count"]
+        assert stats["osm_matched_segment_count"] > 0
+        assert stats["manual_geometry_segment_count"] >= 2
+
+        properties = route_geojson["properties"]
+        for key in (
+            "route_segment_count",
+            "fallback_segment_count",
+            "fallback_edge_count",
+            "geometry_segment_count",
+            "osm_matched_segment_count",
+            "manual_geometry_segment_count",
+            "missing_edge_count",
+            "skipped_unmapped_segment_count",
+        ):
+            assert properties[key] == stats[key]
+    print("test_demo_m15_core_white_road_routes_have_auditable_geometry_stats passed.")
+
+
+def test_demo_m15_indoor_and_multi_target_routes_keep_expected_geometry_boundaries():
+    service = DemoUIService("PKU")
+    indoor_response = service.plan_route(
+        {
+            "start_node_id": "library",
+            "target_node_id": "lib_reading_room_1",
+            "strategy": "shortest_distance",
+            "transport_mode": "any",
+        }
+    )
+
+    assert indoor_response["success"] is True
+    assert indoor_response["path"] == ["library", "lib_entrance", "lib_reading_room_1"]
+    assert indoor_response["total_distance_m"] <= 100
+    assert indoor_response["ui"]["route_geojson"] is None
+    indoor_stats = indoor_response["ui"]["route_geometry_stats"]
+    assert indoor_stats["route_segment_count"] == 0
+    assert indoor_stats["fallback_segment_count"] == 0
+    assert indoor_stats["missing_edge_count"] == 0
+    assert indoor_stats["skipped_unmapped_segment_count"] == 2
+
+    multi_response = service.plan_multi_route(
+        {
+            "start_node_id": "gate_north",
+            "target_node_ids": ["library", "canteen"],
+            "strategy": "shortest_distance",
+            "transport_mode": "any",
+            "return_to_start": False,
+        }
+    )
+
+    assert multi_response["success"] is True
+    assert multi_response["visit_order"] == ["gate_north", "library", "canteen"]
+    assert 800 <= multi_response["total_distance_m"] <= 1300
+    assert multi_response["ui"]["route_geojson"]["type"] == "FeatureCollection"
+    assert len(multi_response["ui"]["route_geojson"]["features"]) == 2
+    stats = multi_response["ui"]["route_geometry_stats"]
+    assert stats["fallback_segment_count"] == 0
+    assert stats["fallback_edge_count"] == 0
+    assert stats["missing_edge_count"] == 0
+    assert stats["skipped_unmapped_segment_count"] == 0
+    assert stats["geometry_segment_count"] == stats["route_segment_count"]
+    assert stats["osm_matched_segment_count"] > 0
+    assert stats["manual_geometry_segment_count"] >= 4
+    print("test_demo_m15_indoor_and_multi_target_routes_keep_expected_geometry_boundaries passed.")
+
+
 def test_demo_waypoints_are_not_regular_route_targets_or_search_results():
     service = DemoUIService("PKU")
     bootstrap = service.get_bootstrap_payload()
@@ -1105,6 +1206,8 @@ def run_all_tests():
     test_demo_poi_access_anchors_are_exposed()
     test_demo_missing_osm_match_file_keeps_outdoor_geometry_routeable()
     test_demo_priority_outdoor_routes_are_reachable_without_fallback()
+    test_demo_m15_core_white_road_routes_have_auditable_geometry_stats()
+    test_demo_m15_indoor_and_multi_target_routes_keep_expected_geometry_boundaries()
     test_demo_waypoints_are_not_regular_route_targets_or_search_results()
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()

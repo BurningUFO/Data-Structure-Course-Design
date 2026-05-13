@@ -1371,11 +1371,16 @@ class DemoUIService:
             "target_node_id": normalize_text(route.get("target_node_id")),
             "distance_m": route.get("total_distance_m"),
             "estimated_time_s": route.get("estimated_time_s"),
+            "route_segment_count": stats["route_segment_count"],
             "fallback_segment_count": stats["fallback_segment_count"],
+            "fallback_edge_count": stats["fallback_edge_count"],
             "geometry_segment_count": stats["geometry_segment_count"],
             "osm_matched_segment_count": stats["osm_matched_segment_count"],
             "manual_geometry_segment_count": stats["manual_geometry_segment_count"],
             "reverse_edge_reuse_count": stats["reverse_edge_reuse_count"],
+            "missing_edge_count": stats["missing_edge_count"],
+            "skipped_unmapped_segment_count": stats["skipped_unmapped_segment_count"],
+            "coordinate_count": stats["coordinate_count"],
         }
         if extra_properties:
             properties.update(extra_properties)
