@@ -284,10 +284,11 @@ class TestRouting(unittest.TestCase):
         scoped_distance = router.query_distance("gate_north", "library", site_id="PKU")
         route = router.query_routing("gate_north", "library", site_id="PKU")
 
-        self.assertEqual(default_distance, float("inf"))
-        self.assertEqual(scoped_distance, float("inf"))
-        self.assertFalse(route["success"])
-        self.assertEqual(route["message"], "无法从起点到达终点。")
+        self.assertGreater(default_distance, 0)
+        self.assertEqual(scoped_distance, default_distance)
+        self.assertTrue(route["success"])
+        self.assertEqual(route["path"][0], "gate_north")
+        self.assertEqual(route["path"][-1], "library")
 
     def test_standard_site_single_route_frozen_display_fields(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
@@ -380,7 +381,7 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(route["segments"][0]["target_node_name"], "中文社科阅览室")
         self.assertIn("gate_link", route["segments"][0]["edge_types"])
 
-    def test_m13a_empty_outdoor_skeleton_has_no_route_edges(self):
+    def test_m14_white_road_outdoor_graph_has_route_edges(self):
         graph = GraphLoader.load_site_graph("PKU")
         router = Router(graph)
         outdoor_node_ids = {
@@ -397,7 +398,7 @@ class TestRouting(unittest.TestCase):
             and edge.get("type") != "gate_link"
         ]
 
-        self.assertEqual(outdoor_edges, [])
+        self.assertGreater(len(outdoor_edges), 0)
         self.assertIn("road_access_gate_north", graph.nodes)
         self.assertEqual(graph.nodes["gate_north"]["route_anchor_node_id"], "road_access_gate_north")
         for start_node_id, target_node_id in (
@@ -405,8 +406,10 @@ class TestRouting(unittest.TestCase):
             ("gate_north", "canteen"),
         ):
             route = router.query_routing(start_node_id, target_node_id, site_id="PKU")
-            self.assertFalse(route["success"])
-            self.assertEqual(route["message"], "无法从起点到达终点。")
+            self.assertTrue(route["success"])
+            self.assertIn(f"road_access_{start_node_id}", route["path"])
+            self.assertIn(f"road_access_{target_node_id}", route["path"])
+            self.assertTrue(any(node_id.startswith("road_white_") for node_id in route["path"]))
 
     def test_standard_site_strategy_comparison_uses_real_graph(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
@@ -433,14 +436,13 @@ class TestRouting(unittest.TestCase):
         car_to_library = router.query_routing("gate_north", "library", transport_mode="car")
         car_to_parking = router.query_routing("gate_east", "parking_lot", transport_mode="car")
 
-        self.assertFalse(walk_to_parking["success"])
+        self.assertTrue(walk_to_parking["success"])
         self.assertFalse(car_to_library["success"])
         self.assertFalse(car_to_parking["success"])
-        self.assertEqual(walk_to_parking["message"], "无法从起点到达终点。")
         self.assertEqual(car_to_library["message"], "无法从起点到达终点。")
         self.assertEqual(car_to_parking["message"], "无法从起点到达终点。")
 
-    def test_standard_site_multi_target_is_unreachable_in_empty_skeleton(self):
+    def test_standard_site_multi_target_uses_white_road_graph(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
         route = router.query_multi_target(
             "gate_north",
@@ -451,10 +453,12 @@ class TestRouting(unittest.TestCase):
             site_id="PKU",
         )
 
-        self.assertFalse(route["success"])
-        self.assertEqual(route["message"], "无法找到覆盖所有目标点的可行路径。")
+        self.assertTrue(route["success"])
+        self.assertEqual(route["visit_order"][0], "gate_north")
+        self.assertEqual(route["visit_order"][-1], "gate_north")
+        self.assertTrue(any(node_id.startswith("road_white_") for node_id in route["path"]))
 
-    def test_diary_destination_node_reports_unreachable_in_empty_skeleton(self):
+    def test_diary_destination_node_routes_through_white_road_graph(self):
         diary_path = Path(__file__).resolve().parents[1] / "data" / "diary_data.json"
         with diary_path.open("r", encoding="utf-8") as f:
             diaries = json.load(f)
@@ -463,8 +467,10 @@ class TestRouting(unittest.TestCase):
         router = Router(GraphLoader.load_site_graph("PKU"))
         route = router.query_routing("gate_north", diary["destination_node_id"])
 
-        self.assertFalse(route["success"])
-        self.assertEqual(route["message"], "无法从起点到达终点。")
+        self.assertTrue(route["success"])
+        self.assertEqual(route["path"][0], "gate_north")
+        self.assertEqual(route["path"][-1], diary["destination_node_id"])
+        self.assertTrue(any(node_id.startswith("road_white_") for node_id in route["path"]))
 
 if __name__ == '__main__':
     unittest.main()

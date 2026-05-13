@@ -173,7 +173,7 @@ FEATURE_NAVIGATION = [
 ]
 
 HELP_CONTENT = {
-    "stage": "正式产品演示版 · 地图方案 B M13A",
+    "stage": "正式产品演示版 · 地图方案 B M14",
     "launch_command": "py -B -m src.ui.demo_server",
     "fallback_launch_command": "python -B -m src.ui.demo_server",
     "browser_url": "http://127.0.0.1:8765",
@@ -196,8 +196,8 @@ HELP_CONTENT = {
         "Leaflet GeoJSON 层默认展示真实瓦片底图、POI、弱化路网点、道路和路线；SVG 简图作为现场可切换 fallback。",
         "底图可在真实瓦片和无底图之间切换，弱网时本地 GeoJSON 图层仍可展示。",
         "地图数据由课程图节点和边转换为 GeoJSON，坐标顺序统一为 [lng, lat]。",
-        "M13A 清空室外边，按本地 OSM 白线道路代理自动生成交叉口、硬拐点和 POI 接驳点，供人工检查。",
-        "本阶段室外路线暂时不可达；后续阶段只沿白线道路相邻节点建立边。",
+        "M14 只沿本地 OSM 白线道路相邻节点建立室外边，每条边带可渲染 geometry。",
+        "POI 只通过短接驳边连接到自己的 road_access 接驳点，课程图仍是路由权威。",
     ],
 }
 

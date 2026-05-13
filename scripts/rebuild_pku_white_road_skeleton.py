@@ -1,9 +1,8 @@
-"""Rebuild the PKU outdoor graph as a white-road inspection skeleton.
+"""Rebuild the PKU outdoor graph from local white-road geometry.
 
-This script intentionally stops before adding route edges.  It keeps outdoor
-POIs at their display coordinates, removes old road waypoints, creates new
-white-road nodes from local OSM road geometry, and adds one projected road
-access node for each outdoor POI.
+The M13 stages created an empty inspection skeleton.  M14 keeps the same local
+OSM white-road source and connects only adjacent nodes along each local
+LineString, plus short POI-to-access edges.
 """
 
 from __future__ import annotations
@@ -40,6 +39,8 @@ WORK_BOUNDS_PADDING_M = 120.0
 DEDUP_TOLERANCE_M = 2.0
 HARD_BEND_DEGREES = 30.0
 ACCESS_REVIEW_DISTANCE_M = 80.0
+NODE_ON_LINE_TOLERANCE_M = 2.75
+WALK_SPEED_MPS = 1.25
 
 
 def load_json(path: Path) -> Any:
@@ -479,13 +480,16 @@ def build_road_nodes(
         for index, item in enumerate(items, start=1):
             node_id = f"road_white_{role}_{index:04d}"
             sources = item["sources"]
-            source_osm_ids = sorted(
-                {
-                    normalized_text(source.get("source_osm_id"))
-                    for source in sources
-                    if normalized_text(source.get("source_osm_id"))
-                }
-            )
+            source_osm_id_values: set[str] = set()
+            for source in sources:
+                source_osm_id = normalized_text(source.get("source_osm_id"))
+                if source_osm_id:
+                    source_osm_id_values.add(source_osm_id)
+                for nested_osm_id in source.get("source_osm_ids", []):
+                    nested_value = normalized_text(nested_osm_id)
+                    if nested_value:
+                        source_osm_id_values.add(nested_value)
+            source_osm_ids = sorted(source_osm_id_values)
             source_highways = sorted(
                 {
                     normalized_text(source.get("source_highway"))
@@ -581,6 +585,450 @@ def build_access_nodes(
 def node_lng_lat(node: dict[str, Any]) -> tuple[float, float]:
     location = node["location"]
     return float(location["lng"]), float(location["lat"])
+
+
+def rounded_geometry_point(lng: float, lat: float) -> dict[str, float]:
+    return {"lat": round(lat, 7), "lng": round(lng, 7)}
+
+
+def geometry_distance_m(
+    projection: LocalProjection,
+    geometry: list[dict[str, float]],
+) -> float:
+    total = 0.0
+    for start, end in zip(geometry, geometry[1:]):
+        total += distance_m(
+            projection,
+            (float(start["lng"]), float(start["lat"])),
+            (float(end["lng"]), float(end["lat"])),
+        )
+    return total
+
+
+def normalize_geometry_payload(
+    projection: LocalProjection,
+    points: list[tuple[float, float]],
+) -> list[dict[str, float]]:
+    geometry: list[dict[str, float]] = []
+    for lng, lat in points:
+        point = rounded_geometry_point(lng, lat)
+        if geometry and distance_m(
+            projection,
+            (geometry[-1]["lng"], geometry[-1]["lat"]),
+            (point["lng"], point["lat"]),
+        ) < 0.01:
+            continue
+        geometry.append(point)
+    if len(geometry) == 1:
+        geometry.append(dict(geometry[0]))
+    return geometry
+
+
+def polyline_cumulative_distances(
+    projection: LocalProjection,
+    coordinates: list[tuple[float, float]],
+) -> list[float]:
+    cumulative = [0.0]
+    for start, end in zip(coordinates, coordinates[1:]):
+        cumulative.append(cumulative[-1] + distance_m(projection, start, end))
+    return cumulative
+
+
+def interpolate_polyline_point(
+    projection: LocalProjection,
+    coordinates: list[tuple[float, float]],
+    cumulative: list[float],
+    along_m: float,
+) -> tuple[float, float]:
+    if along_m <= 0:
+        return coordinates[0]
+    if along_m >= cumulative[-1]:
+        return coordinates[-1]
+
+    for index, (start, end) in enumerate(zip(coordinates, coordinates[1:])):
+        segment_start = cumulative[index]
+        segment_end = cumulative[index + 1]
+        if along_m > segment_end:
+            continue
+        segment_length = segment_end - segment_start
+        if segment_length <= 0:
+            return start
+        ratio = (along_m - segment_start) / segment_length
+        sx, sy = projection.to_xy(start[0], start[1])
+        ex, ey = projection.to_xy(end[0], end[1])
+        return projection.to_lng_lat(
+            sx + (ex - sx) * ratio,
+            sy + (ey - sy) * ratio,
+        )
+    return coordinates[-1]
+
+
+def project_point_to_polyline(
+    projection: LocalProjection,
+    point: tuple[float, float],
+    coordinates: list[tuple[float, float]],
+    cumulative: list[float],
+) -> dict[str, Any]:
+    best: dict[str, Any] | None = None
+    for index, (start, end) in enumerate(zip(coordinates, coordinates[1:])):
+        segment = {"start": start, "end": end}
+        projected_distance, projected = project_point_to_segment(
+            projection,
+            point,
+            segment,
+        )
+        segment_distance = distance_m(projection, start, projected)
+        along_m = cumulative[index] + segment_distance
+        candidate = {
+            "distance_m": projected_distance,
+            "along_m": along_m,
+            "projected": projected,
+            "segment_index": index,
+        }
+        if best is None or projected_distance < best["distance_m"]:
+            best = candidate
+    if best is None:
+        raise ValueError("Cannot project onto an empty polyline.")
+    return best
+
+
+def slice_polyline_geometry(
+    projection: LocalProjection,
+    coordinates: list[tuple[float, float]],
+    cumulative: list[float],
+    from_along_m: float,
+    to_along_m: float,
+) -> list[dict[str, float]]:
+    reverse = from_along_m > to_along_m
+    start_along = min(from_along_m, to_along_m)
+    end_along = max(from_along_m, to_along_m)
+    points = [interpolate_polyline_point(projection, coordinates, cumulative, start_along)]
+
+    for vertex, vertex_along in zip(coordinates[1:-1], cumulative[1:-1]):
+        if start_along < vertex_along < end_along:
+            points.append(vertex)
+
+    points.append(interpolate_polyline_point(projection, coordinates, cumulative, end_along))
+    if reverse:
+        points = list(reversed(points))
+    return normalize_geometry_payload(projection, points)
+
+
+def make_directed_edge(
+    source: str,
+    target: str,
+    name: str,
+    edge_type: str,
+    distance: float,
+    geometry: list[dict[str, float]],
+    description: str,
+) -> dict[str, Any]:
+    return {
+        "from": source,
+        "to": target,
+        "distance": round(distance, 2),
+        "congestion": 1.0,
+        "ideal_speed": WALK_SPEED_MPS,
+        "type": edge_type,
+        "vehicle_access": "pedestrian_only",
+        "name": name,
+        "description": description,
+        "geometry": geometry,
+    }
+
+
+def reversed_geometry(geometry: list[dict[str, float]]) -> list[dict[str, float]]:
+    return [dict(point) for point in reversed(geometry)]
+
+
+def build_access_edges_and_matches(
+    poi_nodes: list[dict[str, Any]],
+    node_index: dict[str, dict[str, Any]],
+    projection: LocalProjection,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    directed_edges: list[dict[str, Any]] = []
+    matches: list[dict[str, Any]] = []
+    excluded: list[dict[str, Any]] = []
+
+    for poi in poi_nodes:
+        poi_id = normalized_text(poi.get("id"))
+        access_id = normalized_text(poi.get("route_anchor_node_id"))
+        access_node = node_index.get(access_id)
+        if not poi_id or access_node is None:
+            excluded.append(
+                {
+                    "kind": "poi_access",
+                    "from": poi_id,
+                    "to": access_id,
+                    "reason": "missing_access_node",
+                }
+            )
+            continue
+
+        geometry = normalize_geometry_payload(
+            projection,
+            [node_lng_lat(poi), node_lng_lat(access_node)],
+        )
+        distance = geometry_distance_m(projection, geometry)
+        source_osm_id = normalized_text(access_node.get("source_osm_id"))
+        source_highway = normalized_text(access_node.get("source_highway"))
+        name = f"{poi.get('name', poi_id)}接驳短边"
+        description = "POI 只通过本短边连接到自己的 road_access 接驳点。"
+        directed_edges.append(
+            make_directed_edge(
+                poi_id,
+                access_id,
+                name,
+                "poi_access",
+                distance,
+                geometry,
+                description,
+            )
+        )
+        directed_edges.append(
+            make_directed_edge(
+                access_id,
+                poi_id,
+                name,
+                "poi_access",
+                distance,
+                reversed_geometry(geometry),
+                description,
+            )
+        )
+        matches.append(
+            {
+                "edge_key": f"{poi_id}->{access_id}",
+                "from": poi_id,
+                "to": access_id,
+                "geometry_source": "manual",
+                "white_road_source": "poi_access_projection",
+                "source_osm_id": source_osm_id,
+                "source_highway": source_highway,
+                "osm_way_ids": [source_osm_id] if source_osm_id else [],
+                "distance_m": round(distance, 2),
+                "confidence": 1.0,
+                "geometry": geometry,
+                "notes": "Short POI-to-access connector; not a white-road routing segment.",
+            }
+        )
+
+    return directed_edges, matches, excluded
+
+
+def build_white_road_edges_and_matches(
+    road_nodes: list[dict[str, Any]],
+    access_nodes: list[dict[str, Any]],
+    features: list[dict[str, Any]],
+    projection: LocalProjection,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    routable_nodes = road_nodes + access_nodes
+    best_edges: dict[tuple[str, str], dict[str, Any]] = {}
+    duplicate_candidate_count = 0
+    excluded: list[dict[str, Any]] = []
+    projected_node_count_by_feature: list[int] = []
+
+    for feature_index, feature in enumerate(features):
+        properties = feature.get("properties") or {}
+        osm_id = normalized_text(properties.get("osm_id"))
+        highway = normalized_text(properties.get("highway"))
+        coordinates = [
+            (float(lng), float(lat))
+            for lng, lat in (feature.get("geometry") or {}).get("coordinates", [])
+        ]
+        if len(coordinates) < 2:
+            continue
+
+        cumulative = polyline_cumulative_distances(projection, coordinates)
+        if cumulative[-1] <= 0:
+            continue
+
+        projected_by_node: dict[str, dict[str, Any]] = {}
+        for node in routable_nodes:
+            node_id = normalized_text(node.get("id"))
+            projection_result = project_point_to_polyline(
+                projection,
+                node_lng_lat(node),
+                coordinates,
+                cumulative,
+            )
+            if projection_result["distance_m"] > NODE_ON_LINE_TOLERANCE_M:
+                continue
+            projected_by_node[node_id] = {
+                "node": node,
+                **projection_result,
+            }
+
+        projected_nodes = sorted(
+            projected_by_node.values(),
+            key=lambda item: (
+                round(float(item["along_m"]), 3),
+                normalized_text(item["node"].get("id")),
+            ),
+        )
+        projected_node_count_by_feature.append(len(projected_nodes))
+
+        for left, right in zip(projected_nodes, projected_nodes[1:]):
+            source = normalized_text(left["node"].get("id"))
+            target = normalized_text(right["node"].get("id"))
+            if source == target:
+                excluded.append(
+                    {
+                        "kind": "white_road",
+                        "source_osm_id": osm_id,
+                        "reason": "same_node_after_projection",
+                    }
+                )
+                continue
+
+            geometry = slice_polyline_geometry(
+                projection,
+                coordinates,
+                cumulative,
+                float(left["along_m"]),
+                float(right["along_m"]),
+            )
+            if len(geometry) < 2:
+                excluded.append(
+                    {
+                        "kind": "white_road",
+                        "from": source,
+                        "to": target,
+                        "source_osm_id": osm_id,
+                        "reason": "insufficient_geometry",
+                    }
+                )
+                continue
+
+            distance = geometry_distance_m(projection, geometry)
+            pair_key = tuple(sorted((source, target)))
+            candidate = {
+                "from": source,
+                "to": target,
+                "source_osm_id": osm_id,
+                "source_highway": highway,
+                "feature_index": feature_index,
+                "distance_m": distance,
+                "geometry": geometry,
+            }
+            existing = best_edges.get(pair_key)
+            if existing is not None and existing["distance_m"] <= distance:
+                duplicate_candidate_count += 1
+                continue
+            if existing is not None:
+                duplicate_candidate_count += 1
+            best_edges[pair_key] = candidate
+
+    directed_edges: list[dict[str, Any]] = []
+    matches: list[dict[str, Any]] = []
+    for edge in sorted(best_edges.values(), key=lambda item: (item["from"], item["to"])):
+        source = edge["from"]
+        target = edge["to"]
+        osm_id = edge["source_osm_id"]
+        highway = edge["source_highway"]
+        geometry = edge["geometry"]
+        distance = edge["distance_m"]
+        name = f"白线道路 {source} 至 {target}"
+        description = "由本地 OSM 白线道路 LineString 相邻节点切片生成。"
+        directed_edges.append(
+            make_directed_edge(
+                source,
+                target,
+                name,
+                "white_road",
+                distance,
+                geometry,
+                description,
+            )
+        )
+        directed_edges.append(
+            make_directed_edge(
+                target,
+                source,
+                name,
+                "white_road",
+                distance,
+                reversed_geometry(geometry),
+                description,
+            )
+        )
+        matches.append(
+            {
+                "edge_key": f"{source}->{target}",
+                "from": source,
+                "to": target,
+                "geometry_source": "osm_matched",
+                "white_road_source": "adjacent_osm_linestring_slice",
+                "source_osm_id": osm_id,
+                "source_highway": highway,
+                "osm_way_ids": [osm_id] if osm_id else [],
+                "distance_m": round(distance, 2),
+                "confidence": 1.0,
+                "geometry": geometry,
+                "coverage": {
+                    "line_slice_distance_m": round(distance, 2),
+                    "node_projection_tolerance_m": NODE_ON_LINE_TOLERANCE_M,
+                    "feature_index": edge["feature_index"],
+                },
+                "notes": "Connected only to the adjacent projected node on this local white-road LineString.",
+            }
+        )
+
+    feature_projection_counts = [
+        count for count in projected_node_count_by_feature if count > 0
+    ]
+    stats = {
+        "undirected_white_road_edge_count": len(best_edges),
+        "directed_white_road_edge_count": len(directed_edges),
+        "duplicate_candidate_count": duplicate_candidate_count,
+        "excluded_candidates": excluded[:50],
+        "excluded_candidate_count": len(excluded),
+        "features_with_projected_nodes": len(feature_projection_counts),
+        "max_projected_nodes_on_feature": max(feature_projection_counts)
+        if feature_projection_counts
+        else 0,
+    }
+    return directed_edges, matches, stats
+
+
+def build_route_edges_and_matches(
+    poi_nodes: list[dict[str, Any]],
+    road_nodes: list[dict[str, Any]],
+    access_nodes: list[dict[str, Any]],
+    features: list[dict[str, Any]],
+    projection: LocalProjection,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    node_index = {node["id"]: node for node in poi_nodes + road_nodes + access_nodes}
+    white_edges, white_matches, white_stats = build_white_road_edges_and_matches(
+        road_nodes,
+        access_nodes,
+        features,
+        projection,
+    )
+    access_edges, access_matches, access_excluded = build_access_edges_and_matches(
+        poi_nodes,
+        node_index,
+        projection,
+    )
+    all_edges = white_edges + access_edges
+    all_matches = white_matches + access_matches
+    geometry_edge_count = sum(1 for edge in all_edges if edge.get("geometry"))
+    fallback_edge_count = len(all_edges) - geometry_edge_count
+    stats = {
+        **white_stats,
+        "undirected_poi_access_edge_count": len(access_matches),
+        "directed_poi_access_edge_count": len(access_edges),
+        "directed_edge_count": len(all_edges),
+        "match_count": len(all_matches),
+        "geometry_edge_count": geometry_edge_count,
+        "fallback_edge_count": fallback_edge_count,
+        "geometry_coverage_ratio": round(geometry_edge_count / len(all_edges), 4)
+        if all_edges
+        else 0.0,
+        "excluded_access_candidates": access_excluded,
+        "excluded_access_candidate_count": len(access_excluded),
+    }
+    return all_edges, all_matches, stats
 
 
 def bbox_density_stats(
@@ -734,7 +1182,7 @@ def build_review_payload(
         "checks": checks,
         "notes": [
             "White-road candidate nodes are deduplicated by true projected distance across neighboring quantization buckets.",
-            "Outdoor edges remain empty for this stage; M14/M15 can build and validate edges after this reviewed skeleton.",
+            "M14 route edges connect only adjacent projected nodes on local white-road LineStrings.",
         ],
     }
 
@@ -774,26 +1222,41 @@ def rebuild(repo_root: Path, site_id: str) -> dict[str, Any]:
     road_nodes = build_road_nodes(candidates)
     access_nodes, poi_projection_audit = build_access_nodes(poi_nodes, projection, segments)
     rebuilt_nodes = poi_nodes + road_nodes + access_nodes
+    route_edges, edge_matches, edge_stats = build_route_edges_and_matches(
+        poi_nodes,
+        road_nodes,
+        access_nodes,
+        filtered_features,
+        projection,
+    )
 
     outdoor["nodes"] = rebuilt_nodes
-    outdoor["edges"] = []
+    outdoor["edges"] = route_edges
 
     match_payload = {
         "metadata": {
             "site_id": site_id,
-            "stage": "M13A_white_road_empty_skeleton",
+            "stage": "M14_white_road_adjacent_edges",
             "source": "local_osm_roads_white_line_proxy",
             "source_file": "osm_roads_simplified.geojson",
             "created_at": "2026-05-13",
-            "description": "White-road inspection skeleton: outdoor route edges are intentionally empty while road nodes and POI access projections are reviewed.",
-            "geometry_priority": ["white_road", "manual", "fallback_line"],
+            "description": "White-road routing graph: adjacent nodes are connected only along local OSM white-road LineString slices; POIs connect through short access edges.",
+            "geometry_priority": ["white_road", "poi_access_projection", "fallback_line"],
             "runtime_policy": {
                 "web_ui_calls_overpass": False,
                 "web_ui_calls_osmnx": False,
                 "routing_authority": "course_graph",
             },
+            "coverage_statistics": {
+                "white_road_edge_count": edge_stats["undirected_white_road_edge_count"],
+                "poi_access_edge_count": edge_stats["undirected_poi_access_edge_count"],
+                "directed_edge_count": edge_stats["directed_edge_count"],
+                "geometry_edge_count": edge_stats["geometry_edge_count"],
+                "fallback_edge_count": edge_stats["fallback_edge_count"],
+                "geometry_coverage_ratio": edge_stats["geometry_coverage_ratio"],
+            },
         },
-        "matches": [],
+        "matches": edge_matches,
     }
 
     role_counts = Counter(node.get("network_role") for node in road_nodes + access_nodes)
@@ -810,11 +1273,11 @@ def rebuild(repo_root: Path, site_id: str) -> dict[str, Any]:
     audit_payload = {
         "metadata": {
             "site_id": site_id,
-            "stage": "M13A_white_road_empty_skeleton",
+            "stage": "M14_white_road_adjacent_edges",
             "created_at": "2026-05-13",
             "white_road_source": "data/sites/PKU/geo/osm_roads_simplified.geojson",
             "implementation": "pure_python_geometry_no_shapely",
-            "stage_boundary": "outdoor_edges_intentionally_empty",
+            "stage_boundary": "white_road_adjacent_edges_only",
         },
         "rules": {
             "included_highways": sorted(WALKABLE_HIGHWAYS),
@@ -844,13 +1307,19 @@ def rebuild(repo_root: Path, site_id: str) -> dict[str, Any]:
             "generated_white_road_node_count": len(road_nodes),
             "generated_access_node_count": len(access_nodes),
             "generated_node_count_total": len(rebuilt_nodes),
-            "outdoor_edge_count": 0,
-            "match_count": 0,
+            "outdoor_edge_count": len(route_edges),
+            "white_road_edge_count": edge_stats["directed_white_road_edge_count"],
+            "poi_access_edge_count": edge_stats["directed_poi_access_edge_count"],
+            "geometry_edge_count": edge_stats["geometry_edge_count"],
+            "fallback_edge_count": edge_stats["fallback_edge_count"],
+            "geometry_coverage_ratio": edge_stats["geometry_coverage_ratio"],
+            "match_count": len(edge_matches),
             "poi_projection_needs_review_count": sum(
                 1 for item in poi_projection_audit if item["needs_review"]
             ),
         },
         "candidate_stats": candidate_stats,
+        "edge_construction": edge_stats,
         "generated_role_counts": dict(sorted(role_counts.items())),
         "filtered_highway_counts": dict(sorted(highway_counts.items())),
         "poi_projections": poi_projection_audit,
@@ -867,12 +1336,15 @@ def rebuild(repo_root: Path, site_id: str) -> dict[str, Any]:
                 for node in rebuilt_nodes
                 if normalized_text(node.get("category")) == "road"
             ),
-            "outdoor_edges_empty": True,
-            "matches_empty": True,
+            "outdoor_edges_have_geometry": edge_stats["fallback_edge_count"] == 0,
+            "matches_record_edges": len(edge_matches) > 0,
             "all_pois_have_route_anchor": all(
                 normalized_text(node.get("route_anchor_node_id")) for node in poi_nodes
             ),
             "m13b_review_passed": review_payload["status"] == "reviewed_pass",
+            "white_road_edges_exist": edge_stats["directed_white_road_edge_count"] > 0,
+            "poi_access_edges_exist": edge_stats["directed_poi_access_edge_count"]
+            == len(access_nodes) * 2,
         },
     }
 
@@ -894,7 +1366,8 @@ def main() -> None:
         f"nodes={summary['generated_node_count_total']} "
         f"white_road_nodes={summary['generated_white_road_node_count']} "
         f"access_nodes={summary['generated_access_node_count']} "
-        f"edges={summary['outdoor_edge_count']}"
+        f"edges={summary['outdoor_edge_count']} "
+        f"fallback_edges={summary['fallback_edge_count']}"
     )
 
 

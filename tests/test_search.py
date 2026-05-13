@@ -240,11 +240,11 @@ def test_cli_wrapper_distance_response_and_print():
 
     assert response["success"] is True
     assert response["metadata"]["ranking"]["sort_field"] == "distance_m"
-    assert response["data"][0]["distance_status"] == "unreachable"
-    assert response["data"][0]["distance_m"] is None
+    assert response["data"][0]["distance_status"] == "available"
+    assert response["data"][0]["distance_m"] > 0
     assert "Unified Response" in output
     assert "metadata:" in output
-    assert "distance=unreachable" in output
+    assert "distance=" in output
     print("test_cli_wrapper_distance_response_and_print passed.")
 
 
@@ -289,8 +289,8 @@ def test_search_places_distance_sort():
     assert all(item["category"] == "restroom" for item in response["data"])
     available_distances = [item["distance_m"] for item in response["data"] if item.get("distance_status") == "available"]
     assert available_distances == sorted(available_distances)
-    assert response["metadata"]["distance"]["available_count"] == 0
-    assert response["data"][0]["distance_status"] == "unreachable"
+    assert response["metadata"]["distance"]["available_count"] == 3
+    assert response["data"][0]["distance_status"] == "available"
     print("test_search_places_distance_sort passed.")
 
 
@@ -313,7 +313,7 @@ def test_distance_adapter_uses_member_a_router():
     provider = build_distance_provider()
     distance = provider("gate_north", "library", "shortest_distance")
 
-    assert distance == float("inf")
+    assert distance > 0
     print("test_distance_adapter_uses_member_a_router passed.")
 
 
@@ -341,16 +341,16 @@ def test_search_service_distance_integration():
     )
 
     assert response["success"] is True
-    assert response["data"][0]["distance_status"] == "unreachable"
-    assert response["data"][0]["distance_m"] is None
+    assert response["data"][0]["distance_status"] == "available"
+    assert response["data"][0]["distance_m"] > 0
     assert response["data"][0]["target_node_id"] == "library"
     assert response["metadata"]["ranking"]["sort_field"] == "distance_m"
     assert response["metadata"]["ranking"]["distance_used_for_ranking"] is True
     assert response["metadata"]["distance"]["requested"] is True
     assert response["metadata"]["distance"]["provider_active"] is True
     assert response["metadata"]["distance"]["unit"] == "meter"
-    assert response["metadata"]["distance"]["available_count"] == 0
-    assert response["metadata"]["distance"]["status_counts"]["unreachable"] == 1
+    assert response["metadata"]["distance"]["available_count"] == 1
+    assert response["metadata"]["distance"]["status_counts"]["available"] == 1
     print("test_search_service_distance_integration passed.")
 
 
@@ -399,7 +399,7 @@ def test_member_c_real_data_missing_node_id_metadata():
     print("test_member_c_real_data_missing_node_id_metadata passed.")
 
 
-def test_member_c_real_data_pku_distance_unreachable_in_empty_skeleton():
+def test_member_c_real_data_pku_distance_available_in_m14_graph():
     response = search_and_recommend(
         keyword="图书馆",
         category="校园建筑",
@@ -413,10 +413,10 @@ def test_member_c_real_data_pku_distance_unreachable_in_empty_skeleton():
     assert response["total"] == 1
     assert response["data"][0]["id"] == "pku_001"
     assert response["data"][0]["map_node_id"] == "library"
-    assert response["data"][0]["distance_status"] == "unreachable"
-    assert response["data"][0]["distance_m"] is None
-    assert response["metadata"]["distance"]["status_counts"]["unreachable"] == 1
-    print("test_member_c_real_data_pku_distance_unreachable_in_empty_skeleton passed.")
+    assert response["data"][0]["distance_status"] == "available"
+    assert response["data"][0]["distance_m"] > 0
+    assert response["metadata"]["distance"]["status_counts"]["available"] == 1
+    print("test_member_c_real_data_pku_distance_available_in_m14_graph passed.")
 
 
 def test_distance_provider_disabled_status():
@@ -548,7 +548,7 @@ def run_all_tests():
     test_search_service_distance_integration()
     test_missing_node_id_distance_status()
     test_member_c_real_data_missing_node_id_metadata()
-    test_member_c_real_data_pku_distance_unreachable_in_empty_skeleton()
+    test_member_c_real_data_pku_distance_available_in_m14_graph()
     test_distance_provider_disabled_status()
     test_unreachable_distance_status()
     test_distance_provider_error_status()

@@ -1,11 +1,11 @@
 {
   "metadata": {
     "site_id": "PKU",
-    "stage": "M13A_white_road_empty_skeleton",
+    "stage": "M14_white_road_adjacent_edges",
     "created_at": "2026-05-13",
     "white_road_source": "data/sites/PKU/geo/osm_roads_simplified.geojson",
     "implementation": "pure_python_geometry_no_shapely",
-    "stage_boundary": "outdoor_edges_intentionally_empty"
+    "stage_boundary": "white_road_adjacent_edges_only"
   },
   "rules": {
     "included_highways": [
@@ -45,8 +45,13 @@
     "generated_white_road_node_count": 648,
     "generated_access_node_count": 14,
     "generated_node_count_total": 676,
-    "outdoor_edge_count": 0,
-    "match_count": 0,
+    "outdoor_edge_count": 1616,
+    "white_road_edge_count": 1588,
+    "poi_access_edge_count": 28,
+    "geometry_edge_count": 1616,
+    "fallback_edge_count": 0,
+    "geometry_coverage_ratio": 1.0,
+    "match_count": 808,
     "poi_projection_needs_review_count": 0
   },
   "candidate_stats": {
@@ -54,6 +59,24 @@
     "raw_bend_count": 181,
     "raw_shared_junction_count": 89,
     "raw_crossing_junction_count": 146
+  },
+  "edge_construction": {
+    "undirected_white_road_edge_count": 794,
+    "directed_white_road_edge_count": 1588,
+    "duplicate_candidate_count": 48,
+    "excluded_candidates": [],
+    "excluded_candidate_count": 0,
+    "features_with_projected_nodes": 343,
+    "max_projected_nodes_on_feature": 22,
+    "undirected_poi_access_edge_count": 14,
+    "directed_poi_access_edge_count": 28,
+    "directed_edge_count": 1616,
+    "match_count": 808,
+    "geometry_edge_count": 1616,
+    "fallback_edge_count": 0,
+    "geometry_coverage_ratio": 1.0,
+    "excluded_access_candidates": [],
+    "excluded_access_candidate_count": 0
   },
   "generated_role_counts": {
     "bend": 138,
@@ -355,14 +378,16 @@
     },
     "notes": [
       "White-road candidate nodes are deduplicated by true projected distance across neighboring quantization buckets.",
-      "Outdoor edges remain empty for this stage; M14/M15 can build and validate edges after this reviewed skeleton."
+      "M14 route edges connect only adjacent projected nodes on local white-road LineStrings."
     ]
   },
   "checks": {
     "old_road_nodes_removed": true,
-    "outdoor_edges_empty": true,
-    "matches_empty": true,
+    "outdoor_edges_have_geometry": true,
+    "matches_record_edges": true,
     "all_pois_have_route_anchor": true,
-    "m13b_review_passed": true
+    "m13b_review_passed": true,
+    "white_road_edges_exist": true,
+    "poi_access_edges_exist": true
   }
 }
