@@ -1036,6 +1036,34 @@ select[multiple] {
   background: rgba(96, 111, 106, 0.42);
 }
 
+.legend-swatch-white-road {
+  width: 28px;
+}
+
+.legend-swatch-white-road::before {
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  background: #0f766e;
+  box-shadow: 12px 0 0 #2563eb;
+}
+
+.legend-swatch-poi-access {
+  width: 22px;
+}
+
+.legend-swatch-poi-access::before {
+  left: 4px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.94);
+  border-radius: 999px;
+  background: #d98214;
+  box-shadow: 0 0 0 2px rgba(217, 130, 20, 0.24);
+}
+
 .legend-swatch-fallback::before {
   height: 0;
   border-top: 3px dashed rgba(111, 127, 120, 0.58);

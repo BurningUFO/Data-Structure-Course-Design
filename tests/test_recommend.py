@@ -121,8 +121,15 @@ def test_recommend_catering_distance_sort():
     )
 
     assert response["success"] is True
-    distances = [item["distance_m"] for item in response["data"]]
+    distances = [
+        item["distance_m"]
+        for item in response["data"]
+        if item.get("distance_status") == "available"
+    ]
     assert distances == sorted(distances)
+    assert response["metadata"]["distance"]["available_count"] == 0
+    assert response["metadata"]["distance"]["status_counts"]["unreachable"] == 2
+    assert all(item["distance_status"] == "unreachable" for item in response["data"])
     assert response["data"][0]["target_node_id"] == "lib_cafe"
     print("test_recommend_catering_distance_sort passed.")
 

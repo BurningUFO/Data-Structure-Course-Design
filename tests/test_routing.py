@@ -284,45 +284,15 @@ class TestRouting(unittest.TestCase):
         scoped_distance = router.query_distance("gate_north", "library", site_id="PKU")
         route = router.query_routing("gate_north", "library", site_id="PKU")
 
-        self.assertEqual(default_distance, 576)
-        self.assertEqual(scoped_distance, 576)
-        self.assertTrue(route["success"])
-        self.assertEqual(route["site_id"], "PKU")
-        self.assertEqual(
-            route["path"],
-            [
-                "gate_north",
-                "road_west_gate_inner",
-                "road_lake_southeast_footway",
-                "road_lake_southeast",
-                "road_library_south",
-                "library",
-            ],
-        )
-        self.assertEqual(route["weight_unit"], "meter")
-        self.assertEqual(route["total_distance_m"], 576)
-        self.assertAlmostEqual(
-            route["estimated_time_s"],
-            sum(step["estimated_time_s"] for step in route["path_steps"]),
-        )
-        self.assertEqual(route["segments"][0]["layer"], "outdoor")
-        self.assertEqual(route["start_node_name"], "北京大学西门")
-        self.assertEqual(route["target_node_name"], "图书馆")
-        self.assertEqual(route["path_node_names"][0], "北京大学西门")
-        self.assertEqual(route["path_node_names"][-1], "图书馆")
-        self.assertEqual(route["layer_sequence"], ["outdoor"])
-        self.assertEqual(route["route_overview"]["segment_count"], 1)
-        self.assertFalse(route["route_overview"]["cross_layer"])
-        self.assertEqual(route["route_overview"]["node_count"], 6)
-        self.assertEqual(route["path_steps"][0]["edge_name"], "北京大学西门至西门内侧步道口")
-        self.assertEqual(route["path_steps"][-1]["edge_name"], "图书馆南侧步道口至图书馆")
-        self.assertIn("图书馆南侧步道口至图书馆", route["segments"][0]["edge_names"])
-        self.assertEqual(route["segments"][0]["target_node_name"], "图书馆")
+        self.assertEqual(default_distance, float("inf"))
+        self.assertEqual(scoped_distance, float("inf"))
+        self.assertFalse(route["success"])
+        self.assertEqual(route["message"], "无法从起点到达终点。")
 
     def test_standard_site_single_route_frozen_display_fields(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
         route = router.query_routing(
-            "gate_north",
+            "library",
             "lib_reading_room_1",
             strategy="shortest_time",
             transport_mode="walk",
@@ -355,6 +325,8 @@ class TestRouting(unittest.TestCase):
         self.assertTrue(route["success"])
         self.assertTrue(required_top_level_fields.issubset(route.keys()))
         self.assertEqual(route["site_id"], "PKU")
+        self.assertEqual(route["start_node_id"], "library")
+        self.assertEqual(route["path"], ["library", "lib_entrance", "lib_reading_room_1"])
         self.assertEqual(route["strategy"], "shortest_time")
         self.assertEqual(route["transport_mode"], "walk")
         self.assertEqual(route["weight_unit"], "second")
@@ -366,7 +338,8 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(route["route_overview"]["transport_mode"], "walk")
         self.assertTrue(route["route_overview"]["cross_layer"])
         self.assertGreaterEqual(len(route["path_steps"]), 1)
-        self.assertGreaterEqual(len(route["segments"]), 2)
+        self.assertGreaterEqual(len(route["segments"]), 1)
+        self.assertEqual(route["segments"][0]["layer"], "indoor_LIB")
         self.assertIn("from_node_name", route["path_steps"][0])
         self.assertIn("to_node_name", route["path_steps"][0])
         self.assertIn("distance_m", route["path_steps"][0])
@@ -382,74 +355,69 @@ class TestRouting(unittest.TestCase):
     def test_shortest_time_uses_seconds_and_supports_cross_layer_path(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
         route = router.query_routing(
-            "gate_north",
+            "library",
             "lib_reading_room_1",
             strategy="shortest_time",
             site_id="PKU",
         )
 
         self.assertTrue(route["success"])
-        self.assertEqual(route["path"][0], "gate_north")
-        self.assertIn("library", route["path"])
+        self.assertEqual(route["path"][0], "library")
         self.assertEqual(route["path"][-2:], ["lib_entrance", "lib_reading_room_1"])
         self.assertEqual(route["weight_unit"], "second")
-        self.assertEqual(route["total_distance_m"], 601)
+        self.assertEqual(route["total_distance_m"], 25)
         self.assertAlmostEqual(route["total_weight"], route["estimated_time_s"])
-        self.assertEqual([segment["layer"] for segment in route["segments"]], ["outdoor", "indoor_LIB"])
-        self.assertEqual(route["path_node_names"][0], "北京大学西门")
+        self.assertEqual([segment["layer"] for segment in route["segments"]], ["indoor_LIB"])
+        self.assertEqual(route["path_node_names"][0], "图书馆")
         self.assertEqual(route["path_node_names"][-1], "中文社科阅览室")
         self.assertTrue(route["route_overview"]["cross_layer"])
         self.assertEqual(route["route_overview"]["cross_layer_step_count"], 1)
-        self.assertEqual(route["route_overview"]["layer_sequence"], ["outdoor", "indoor_LIB"])
+        self.assertEqual(route["route_overview"]["layer_sequence"], ["indoor_LIB"])
         gate_step = next(step for step in route["path_steps"] if step["edge_type"] == "gate_link")
         self.assertTrue(gate_step["is_gate_transition"])
         self.assertEqual(gate_step["transition_kind"], "cross_layer")
-        self.assertEqual(route["segments"][1]["start_node_name"], "图书馆")
-        self.assertEqual(route["segments"][1]["target_node_name"], "中文社科阅览室")
-        self.assertIn("gate_link", route["segments"][1]["edge_types"])
+        self.assertEqual(route["segments"][0]["start_node_name"], "图书馆")
+        self.assertEqual(route["segments"][0]["target_node_name"], "中文社科阅览室")
+        self.assertIn("gate_link", route["segments"][0]["edge_types"])
 
-    def test_m11_removed_direct_edges_route_via_real_waypoints(self):
+    def test_m13a_empty_outdoor_skeleton_has_no_route_edges(self):
         graph = GraphLoader.load_site_graph("PKU")
         router = Router(graph)
-        removed_direct_edges = {
-            ("gate_south", "road_nongyuan_west_south"),
-            ("road_cross", "road_lijiao_west"),
-            ("road_second_teaching_west", "canteen"),
-            ("road_nongyuan_north_west", "canteen"),
+        outdoor_node_ids = {
+            node_id
+            for node_id, attrs in graph.nodes.items()
+            if attrs.get("source_sub_graph_id") == "outdoor"
         }
+        outdoor_edges = [
+            (source_id, edge["to"])
+            for source_id, edges in graph.adj.items()
+            for edge in edges
+            if source_id in outdoor_node_ids
+            and edge["to"] in outdoor_node_ids
+            and edge.get("type") != "gate_link"
+        ]
 
-        for source_id, target_id in removed_direct_edges:
-            self.assertFalse(any(edge["to"] == target_id for edge in graph.adj.get(source_id, [])))
-            self.assertFalse(any(edge["to"] == source_id for edge in graph.adj.get(target_id, [])))
-
-        south_route = router.query_routing("gate_south", "teaching_building_1", site_id="PKU")
-        canteen_route = router.query_routing("gate_north", "canteen", site_id="PKU")
-
-        self.assertTrue(south_route["success"])
-        self.assertIn("road_south_gate_inner", south_route["path"])
-        self.assertIn("road_nongyuan_north_west", south_route["path"])
-        self.assertNotIn("road_nongyuan_west_south", south_route["path"][:3])
-
-        self.assertTrue(canteen_route["success"])
-        self.assertIn("road_nongyuan_south_east", canteen_route["path"])
-        self.assertIn("road_nongyuan_south_west", canteen_route["path"])
-        self.assertLess(
-            canteen_route["path"].index("road_nongyuan_south_east"),
-            canteen_route["path"].index("canteen"),
-        )
+        self.assertEqual(outdoor_edges, [])
+        self.assertIn("road_access_gate_north", graph.nodes)
+        self.assertEqual(graph.nodes["gate_north"]["route_anchor_node_id"], "road_access_gate_north")
+        for start_node_id, target_node_id in (
+            ("gate_south", "teaching_building_1"),
+            ("gate_north", "canteen"),
+        ):
+            route = router.query_routing(start_node_id, target_node_id, site_id="PKU")
+            self.assertFalse(route["success"])
+            self.assertEqual(route["message"], "无法从起点到达终点。")
 
     def test_standard_site_strategy_comparison_uses_real_graph(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
-        distance_route = router.query_routing("gate_north", "lib_reception", strategy="shortest_distance")
-        time_route = router.query_routing("gate_north", "lib_reception", strategy="shortest_time")
+        distance_route = router.query_routing("library", "lib_reception", strategy="shortest_distance")
+        time_route = router.query_routing("library", "lib_reception", strategy="shortest_time")
 
         self.assertTrue(distance_route["success"])
         self.assertTrue(time_route["success"])
-        self.assertEqual(distance_route["path"][0], "gate_north")
-        self.assertIn("library", distance_route["path"])
+        self.assertEqual(distance_route["path"][0], "library")
         self.assertEqual(distance_route["path"][-2:], ["lib_entrance", "lib_reception"])
-        self.assertEqual(time_route["path"][0], "gate_north")
-        self.assertIn("library", time_route["path"])
+        self.assertEqual(time_route["path"][0], "library")
         self.assertEqual(time_route["path"][-3:], ["lib_entrance", "lib_self_serve", "lib_reception"])
         self.assertEqual(distance_route["weight_unit"], "meter")
         self.assertEqual(time_route["weight_unit"], "second")
@@ -467,12 +435,12 @@ class TestRouting(unittest.TestCase):
 
         self.assertFalse(walk_to_parking["success"])
         self.assertFalse(car_to_library["success"])
-        self.assertTrue(car_to_parking["success"])
-        self.assertEqual(car_to_parking["path"], ["gate_east", "parking_lot"])
-        self.assertEqual(car_to_parking["path_steps"][0]["vehicle_access"], "vehicle_only")
-        self.assertEqual(car_to_parking["route_overview"]["transport_mode"], "car")
+        self.assertFalse(car_to_parking["success"])
+        self.assertEqual(walk_to_parking["message"], "无法从起点到达终点。")
+        self.assertEqual(car_to_library["message"], "无法从起点到达终点。")
+        self.assertEqual(car_to_parking["message"], "无法从起点到达终点。")
 
-    def test_standard_site_multi_target_frozen_display_fields(self):
+    def test_standard_site_multi_target_is_unreachable_in_empty_skeleton(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
         route = router.query_multi_target(
             "gate_north",
@@ -483,60 +451,10 @@ class TestRouting(unittest.TestCase):
             site_id="PKU",
         )
 
-        required_top_level_fields = {
-            "success",
-            "site_id",
-            "path",
-            "path_node_names",
-            "visit_order",
-            "visit_order_names",
-            "target_node_ids",
-            "total_weight",
-            "weight_unit",
-            "total_distance_m",
-            "estimated_time_s",
-            "total_distance",
-            "estimated_time",
-            "strategy",
-            "transport_mode",
-            "return_to_start",
-            "segments",
-            "leg_results",
-        }
+        self.assertFalse(route["success"])
+        self.assertEqual(route["message"], "无法找到覆盖所有目标点的可行路径。")
 
-        self.assertTrue(route["success"])
-        self.assertTrue(required_top_level_fields.issubset(route.keys()))
-        self.assertEqual(route["site_id"], "PKU")
-        self.assertEqual(route["strategy"], "shortest_distance")
-        self.assertEqual(route["transport_mode"], "walk")
-        self.assertTrue(route["return_to_start"])
-        self.assertEqual(route["weight_unit"], "meter")
-        self.assertEqual(route["visit_order"][0], "gate_north")
-        self.assertEqual(route["visit_order"][-1], "gate_north")
-        self.assertEqual(len(route["visit_order"]), len(route["visit_order_names"]))
-        self.assertEqual(len(route["path"]), len(route["path_node_names"]))
-        self.assertEqual(route["target_node_ids"], ["library", "canteen", "convenience_store"])
-        self.assertEqual(len(route["leg_results"]), 4)
-        self.assertEqual(route["total_distance"], route["total_distance_m"])
-        self.assertEqual(route["estimated_time"], route["estimated_time_s"])
-        self.assertAlmostEqual(
-            route["total_distance_m"],
-            sum(leg["total_distance_m"] for leg in route["leg_results"]),
-        )
-        self.assertAlmostEqual(
-            route["estimated_time_s"],
-            sum(leg["estimated_time_s"] for leg in route["leg_results"]),
-        )
-
-        first_leg = route["leg_results"][0]
-        self.assertIn("path_node_names", first_leg)
-        self.assertIn("path_steps", first_leg)
-        self.assertIn("route_overview", first_leg)
-        self.assertIn("segments", first_leg)
-        self.assertEqual(first_leg["start_node_name"], "北京大学西门")
-        self.assertEqual(first_leg["route_overview"]["start_node_id"], first_leg["start_node_id"])
-
-    def test_diary_destination_node_can_route_with_summary_fields(self):
+    def test_diary_destination_node_reports_unreachable_in_empty_skeleton(self):
         diary_path = Path(__file__).resolve().parents[1] / "data" / "diary_data.json"
         with diary_path.open("r", encoding="utf-8") as f:
             diaries = json.load(f)
@@ -545,12 +463,8 @@ class TestRouting(unittest.TestCase):
         router = Router(GraphLoader.load_site_graph("PKU"))
         route = router.query_routing("gate_north", diary["destination_node_id"])
 
-        self.assertTrue(route["success"])
-        self.assertEqual(route["target_node_id"], "canteen")
-        self.assertEqual(route["target_node_name"], "农园食堂")
-        self.assertEqual(route["route_overview"]["target_node_name"], "农园食堂")
-        self.assertEqual(route["path"][-1], diary["destination_node_id"])
-        self.assertEqual(route["path_node_names"][-1], "农园食堂")
+        self.assertFalse(route["success"])
+        self.assertEqual(route["message"], "无法从起点到达终点。")
 
 if __name__ == '__main__':
     unittest.main()

@@ -173,7 +173,7 @@ FEATURE_NAVIGATION = [
 ]
 
 HELP_CONTENT = {
-    "stage": "正式产品演示版 · 地图方案 B M12",
+    "stage": "正式产品演示版 · 地图方案 B M13A",
     "launch_command": "py -B -m src.ui.demo_server",
     "fallback_launch_command": "python -B -m src.ui.demo_server",
     "browser_url": "http://127.0.0.1:8765",
@@ -196,8 +196,8 @@ HELP_CONTENT = {
         "Leaflet GeoJSON 层默认展示真实瓦片底图、POI、弱化路网点、道路和路线；SVG 简图作为现场可切换 fallback。",
         "底图可在真实瓦片和无底图之间切换，弱网时本地 GeoJSON 图层仍可展示。",
         "地图数据由课程图节点和边转换为 GeoJSON，坐标顺序统一为 [lng, lat]。",
-        "M12 在 M11 真实绕行基础上精修 POI、弱化路网点显示，并保持核心路线无 fallback。",
-        "route_geojson 优先使用 osm_matched geometry，其次 manual geometry，缺失 geometry 的边继续用直线段兜底。",
+        "M13A 清空室外边，按本地 OSM 白线道路代理自动生成交叉口、硬拐点和 POI 接驳点，供人工检查。",
+        "本阶段室外路线暂时不可达；后续阶段只沿白线道路相邻节点建立边。",
     ],
 }
 
@@ -425,6 +425,7 @@ class DemoUIService:
                         "label_priority": node["label_priority"],
                         "show_label": node["show_label"],
                         "is_searchable": node["is_searchable"],
+                        **self._build_node_extra_properties(node),
                     },
                 }
             )
@@ -1168,6 +1169,7 @@ class DemoUIService:
                     "lat": float(lat),
                     "lng": float(lng),
                     "is_gate": bool(node.get("is_gate", False)),
+                    **self._extract_node_extra_fields(node),
                 }
             )
 
@@ -1193,6 +1195,31 @@ class DemoUIService:
     @staticmethod
     def _is_waypoint_category(category: str, node_type: Any = "") -> bool:
         return category == "road" or normalize_text(node_type).casefold() == "waypoint"
+
+    @staticmethod
+    def _extract_node_extra_fields(node: dict[str, Any]) -> dict[str, Any]:
+        extra_keys = (
+            "network_role",
+            "source",
+            "source_osm_id",
+            "source_osm_ids",
+            "source_highway",
+            "source_highways",
+            "anchor_for",
+            "anchor_for_name",
+            "projection_distance_m",
+            "projection_source",
+            "needs_review",
+            "route_anchor_node_id",
+            "route_anchor_distance_m",
+            "route_anchor_source",
+            "route_anchor_needs_review",
+        )
+        return {key: node[key] for key in extra_keys if key in node}
+
+    @staticmethod
+    def _build_node_extra_properties(node: dict[str, Any]) -> dict[str, Any]:
+        return DemoUIService._extract_node_extra_fields(node)
 
     @classmethod
     def _filter_searchable_site_records(cls, records: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1603,6 +1630,7 @@ class DemoUIService:
                     "has_map_location": has_location,
                     "lat": float(location.get("lat")) if location.get("lat") is not None else None,
                     "lng": float(location.get("lng")) if location.get("lng") is not None else None,
+                    **self._extract_node_extra_fields(node_data),
                 }
             )
 

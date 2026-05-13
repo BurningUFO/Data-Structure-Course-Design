@@ -2284,10 +2284,17 @@ function bindLeafletFeaturePopup(feature, layer) {
   if (properties.kind === "node") {
     const isWaypoint = Boolean(properties.is_waypoint || properties.display_role === "waypoint");
     if (isWaypoint) {
+      const roleLabel = whiteRoadRoleLabel(properties.network_role);
+      const anchorText = properties.anchor_for_name
+        ? `<br><span>锚定：${escapeHtml(properties.anchor_for_name)}</span>`
+        : "";
+      const projectionText = properties.projection_distance_m !== undefined
+        ? `<br><span>投影距离：${escapeHtml(String(properties.projection_distance_m))} m</span>`
+        : "";
       layer.bindPopup(`
         <strong>${escapeHtml(properties.name || "道路接驳点")}</strong><br>
-        <span>道路接驳点</span><br>
-        <span>用于路线贴合真实步道，默认不作为搜索目的地展示。</span>
+        <span>${escapeHtml(roleLabel)}</span>${anchorText}${projectionText}<br>
+        <span>用于检查白线道路骨架，默认不作为搜索目的地展示。</span>
       `);
       layer.on("click", () => {
         state.focusedNodeId = properties.id || "";
@@ -2359,21 +2366,45 @@ function edgeGeometrySourceLabel(source) {
   return source ? `线形来源：${source}` : "线形来源：未知";
 }
 
+function whiteRoadRoleLabel(role) {
+  if (role === "junction") {
+    return "白线道路交叉口";
+  }
+  if (role === "bend") {
+    return "白线道路硬拐点";
+  }
+  if (role === "endpoint") {
+    return "白线道路端点";
+  }
+  if (role === "poi_access") {
+    return "POI 道路接驳点";
+  }
+  return "道路接驳点";
+}
+
 function leafletNodeStyle(feature) {
   const category = feature.properties?.category || "";
+  const networkRole = feature.properties?.network_role || "";
   const isHighlighted = getMapHighlightNodeIds().has(feature.properties?.id || "");
   const isWaypoint = Boolean(
     feature.properties?.is_waypoint
     || feature.properties?.display_role === "waypoint"
     || category === "road",
   );
+  const roleFillColor = {
+    junction: "#0f766e",
+    bend: "#2563eb",
+    endpoint: "#64748b",
+    poi_access: "#d98214",
+  }[networkRole];
+  const waypointRadius = networkRole === "poi_access" ? 4.8 : networkRole === "junction" ? 3.2 : 2.5;
   return {
-    radius: isHighlighted ? 9 : isWaypoint ? 2.5 : 5.8,
+    radius: isHighlighted ? 9 : isWaypoint ? waypointRadius : 5.8,
     color: "#ffffff",
     weight: isHighlighted ? 3 : isWaypoint ? 1 : 1.5,
-    fillColor: colorForCategory(category),
-    opacity: isWaypoint && !isHighlighted ? 0.42 : 1,
-    fillOpacity: isHighlighted ? 0.96 : isWaypoint ? 0.28 : 0.8,
+    fillColor: roleFillColor || colorForCategory(category),
+    opacity: isWaypoint && !isHighlighted ? 0.72 : 1,
+    fillOpacity: isHighlighted ? 0.96 : isWaypoint ? 0.5 : 0.8,
   };
 }
 

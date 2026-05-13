@@ -3,7 +3,7 @@
 
 本脚本采用课程硬指标强断言：
 - 10+ 用户、10+ 日记作者、必要文档、AIGC / 媒体占位样例。
-- 200+ 扩展推荐 / 查询对象、50+ 服务设施、200+ 道路边。
+- 200+ 扩展推荐 / 查询对象、50+ 服务设施、M13A 白线道路骨架节点。
 
 使用说明：
   python -B tests/test_course_requirements.py
@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import json
+from collections import Counter
 from pathlib import Path
 
 
@@ -136,8 +137,11 @@ def test_required_course_documents_exist():
     print(f"test_required_course_documents_exist passed: docs={len(REQUIRED_DOC_PATHS)}")
 
 
-def test_current_scale_snapshot_for_week12_gap_tracking():
+def test_current_scale_snapshot_for_m13a_white_road_gap_tracking():
     nodes, edges = collect_pku_nodes_and_edges()
+    outdoor_payload = load_json(PKU_SITE_DIR / "outdoor.json")
+    outdoor_nodes = outdoor_payload.get("nodes", [])
+    outdoor_edges = outdoor_payload.get("edges", [])
     node_ids = [str(node.get("id", "")).strip() for node in nodes]
     edge_endpoint_ids = {
         str(edge.get(endpoint, "")).strip()
@@ -161,11 +165,32 @@ def test_current_scale_snapshot_for_week12_gap_tracking():
     ]
     osm_roads = load_json(PKU_SITE_DIR / "geo" / "osm_roads_simplified.geojson")
     osm_road_features = osm_roads.get("features", [])
+    role_counts = Counter(
+        str(node.get("network_role", "")).strip()
+        for node in outdoor_nodes
+        if str(node.get("network_role", "")).strip()
+    )
+    white_road_nodes = [
+        node
+        for node in outdoor_nodes
+        if str(node.get("id", "")).startswith("road_white_")
+    ]
+    poi_access_nodes = [
+        node
+        for node in outdoor_nodes
+        if str(node.get("network_role", "")).strip() == "poi_access"
+    ]
 
-    assert len(nodes) >= 50
+    assert len(nodes) >= 700
     assert len(categories) >= 10
     assert len(facility_like_nodes) >= 50
-    assert len(edges) >= 120
+    assert len(edges) >= 38
+    assert outdoor_edges == []
+    assert len(white_road_nodes) >= 600
+    assert len(poi_access_nodes) == 14
+    assert role_counts["junction"] >= 200
+    assert role_counts["bend"] >= 100
+    assert role_counts["endpoint"] >= 250
     assert len(osm_road_features) >= 200
     assert len(node_ids) == len(set(node_ids))
     assert edge_endpoint_ids.issubset(set(node_ids))
@@ -178,9 +203,11 @@ def test_current_scale_snapshot_for_week12_gap_tracking():
         assert isinstance(record.get("tags", []), list)
         assert isinstance(record.get("keywords", []), list)
 
-    print("test_current_scale_snapshot_for_week12_gap_tracking passed:")
+    print("test_current_scale_snapshot_for_m13a_white_road_gap_tracking passed:")
     print(f"  pku_nodes={len(nodes)}")
     print(f"  pku_edges={len(edges)}")
+    print(f"  white_road_nodes={len(white_road_nodes)}")
+    print(f"  poi_access_nodes={len(poi_access_nodes)}")
     print(f"  local_osm_road_features={len(osm_road_features)}")
     print(f"  pku_categories={len(categories)}")
     print(f"  facility_like_nodes={len(facility_like_nodes)}")
@@ -193,7 +220,7 @@ def run_all_tests():
     test_user_samples_reach_course_minimum()
     test_aigc_and_media_placeholders_ready()
     test_required_course_documents_exist()
-    test_current_scale_snapshot_for_week12_gap_tracking()
+    test_current_scale_snapshot_for_m13a_white_road_gap_tracking()
     print("All course requirement checks passed.")
 
 

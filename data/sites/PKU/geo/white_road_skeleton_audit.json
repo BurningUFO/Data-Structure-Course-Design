@@ -1,0 +1,333 @@
+{
+  "metadata": {
+    "site_id": "PKU",
+    "stage": "M13A_white_road_empty_skeleton",
+    "created_at": "2026-05-13",
+    "white_road_source": "data/sites/PKU/geo/osm_roads_simplified.geojson",
+    "implementation": "pure_python_geometry_no_shapely",
+    "stage_boundary": "outdoor_edges_intentionally_empty"
+  },
+  "rules": {
+    "included_highways": [
+      "footway",
+      "path",
+      "pedestrian",
+      "residential",
+      "service",
+      "steps",
+      "unclassified"
+    ],
+    "excluded_highways": [
+      "cycleway",
+      "primary",
+      "primary_link",
+      "secondary",
+      "tertiary"
+    ],
+    "work_bounds_padding_m": 120.0,
+    "dedup_tolerance_m": 2.0,
+    "hard_bend_degrees": 30.0,
+    "access_review_distance_m": 80.0
+  },
+  "bounds": {
+    "south": 39.984192,
+    "west": 116.301643,
+    "north": 39.993997,
+    "east": 116.3149957
+  },
+  "summary": {
+    "input_outdoor_node_count": 42,
+    "poi_node_count": 14,
+    "old_road_node_count_removed": 28,
+    "road_feature_count_total": 505,
+    "road_feature_count_filtered": 350,
+    "road_segment_count_filtered": 634,
+    "generated_white_road_node_count": 667,
+    "generated_access_node_count": 14,
+    "generated_node_count_total": 695,
+    "outdoor_edge_count": 0,
+    "match_count": 0,
+    "poi_projection_needs_review_count": 0
+  },
+  "candidate_stats": {
+    "raw_endpoint_count": 664,
+    "raw_bend_count": 181,
+    "raw_shared_junction_count": 89,
+    "raw_crossing_junction_count": 146
+  },
+  "generated_role_counts": {
+    "bend": 139,
+    "endpoint": 295,
+    "junction": 233,
+    "poi_access": 14
+  },
+  "filtered_highway_counts": {
+    "footway": 191,
+    "path": 9,
+    "pedestrian": 1,
+    "residential": 31,
+    "service": 76,
+    "steps": 40,
+    "unclassified": 2
+  },
+  "poi_projections": [
+    {
+      "poi_id": "gate_north",
+      "poi_name": "北京大学西门",
+      "category": "entrance",
+      "original_location": {
+        "lat": 39.9929,
+        "lng": 116.3055
+      },
+      "anchor_node_id": "road_access_gate_north",
+      "anchor_location": {
+        "lat": 39.9928864,
+        "lng": 116.3054193
+      },
+      "projection_distance_m": 7.05,
+      "source_osm_id": "33457266",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "gate_east",
+      "poi_name": "北京大学东门",
+      "category": "entrance",
+      "original_location": {
+        "lat": 39.992919,
+        "lng": 116.3095453
+      },
+      "anchor_node_id": "road_access_gate_east",
+      "anchor_location": {
+        "lat": 39.9928933,
+        "lng": 116.3089311
+      },
+      "projection_distance_m": 52.46,
+      "source_osm_id": "638620293",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "gate_south",
+      "poi_name": "北京大学南门",
+      "category": "entrance",
+      "original_location": {
+        "lat": 39.98527,
+        "lng": 116.3054565
+      },
+      "anchor_node_id": "road_access_gate_south",
+      "anchor_location": {
+        "lat": 39.98527,
+        "lng": 116.3054565
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "33455720",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "library",
+      "poi_name": "图书馆",
+      "category": "education",
+      "original_location": {
+        "lat": 39.991735,
+        "lng": 116.30305
+      },
+      "anchor_node_id": "road_access_library",
+      "anchor_location": {
+        "lat": 39.9917484,
+        "lng": 116.3030496
+      },
+      "projection_distance_m": 1.5,
+      "source_osm_id": "272355333",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "teaching_building_1",
+      "poi_name": "第一教学楼",
+      "category": "education",
+      "original_location": {
+        "lat": 39.9914609,
+        "lng": 116.304341
+      },
+      "anchor_node_id": "road_access_teaching_building_1",
+      "anchor_location": {
+        "lat": 39.9914609,
+        "lng": 116.304341
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "1151227555",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "teaching_building_2",
+      "poi_name": "第二教学楼",
+      "category": "education",
+      "original_location": {
+        "lat": 39.9881439,
+        "lng": 116.3065508
+      },
+      "anchor_node_id": "road_access_teaching_building_2",
+      "anchor_location": {
+        "lat": 39.9881439,
+        "lng": 116.3065508
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "970687417",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "dormitory_1",
+      "poi_name": "学生宿舍31楼",
+      "category": "dormitory",
+      "original_location": {
+        "lat": 39.9875503,
+        "lng": 116.3041
+      },
+      "anchor_node_id": "road_access_dormitory_1",
+      "anchor_location": {
+        "lat": 39.9875444,
+        "lng": 116.3041003
+      },
+      "projection_distance_m": 0.66,
+      "source_osm_id": "240825533",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "canteen",
+      "poi_name": "农园食堂",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9875162,
+        "lng": 116.3058135
+      },
+      "anchor_node_id": "road_access_canteen",
+      "anchor_location": {
+        "lat": 39.9875162,
+        "lng": 116.3058135
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "595764178",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "convenience_store",
+      "poi_name": "中关新园超市",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9888829,
+        "lng": 116.3135887
+      },
+      "anchor_node_id": "road_access_convenience_store",
+      "anchor_location": {
+        "lat": 39.9888625,
+        "lng": 116.3135894
+      },
+      "projection_distance_m": 2.27,
+      "source_osm_id": "264247413",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "sports_ground",
+      "poi_name": "五四体育场",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.9912889,
+        "lng": 116.3047501
+      },
+      "anchor_node_id": "road_access_sports_ground",
+      "anchor_location": {
+        "lat": 39.9912889,
+        "lng": 116.3047501
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "128753742",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "square_center",
+      "poi_name": "百周年纪念讲堂南广场",
+      "category": "landmark",
+      "original_location": {
+        "lat": 39.9880767,
+        "lng": 116.3045067
+      },
+      "anchor_node_id": "road_access_square_center",
+      "anchor_location": {
+        "lat": 39.9880767,
+        "lng": 116.3045067
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "33278378",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "parking_lot",
+      "poi_name": "东门停车场",
+      "category": "parking",
+      "original_location": {
+        "lat": 39.9928559,
+        "lng": 116.3089338
+      },
+      "anchor_node_id": "road_access_parking_lot",
+      "anchor_location": {
+        "lat": 39.9928559,
+        "lng": 116.3089338
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "638620293",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "toilet_lib_area",
+      "poi_name": "图书馆区洗手间",
+      "category": "restroom",
+      "original_location": {
+        "lat": 39.9915897,
+        "lng": 116.3048394
+      },
+      "anchor_node_id": "road_access_toilet_lib_area",
+      "anchor_location": {
+        "lat": 39.9915897,
+        "lng": 116.3048394
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "628032102",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "toilet_sports_area",
+      "poi_name": "五四体育场洗手间",
+      "category": "restroom",
+      "original_location": {
+        "lat": 39.9914007,
+        "lng": 116.3048939
+      },
+      "anchor_node_id": "road_access_toilet_sports_area",
+      "anchor_location": {
+        "lat": 39.9914007,
+        "lng": 116.3048939
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "1101010405",
+      "source_highway": "footway",
+      "needs_review": false
+    }
+  ],
+  "checks": {
+    "old_road_nodes_removed": true,
+    "outdoor_edges_empty": true,
+    "matches_empty": true,
+    "all_pois_have_route_anchor": true
+  }
+}
