@@ -35,6 +35,11 @@ PLACE_CATEGORY_SET = {
     "shopping",
     "parking",
     "education",
+    "building",
+    "building_entrance",
+    "sports",
+    "service",
+    "landmark",
 }
 SUPPORTED_BUSINESS_SORT_FIELDS = {"heat", "rating", "distance_m"}
 

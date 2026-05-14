@@ -50,6 +50,8 @@ SERVICE_CATEGORY_SET = {
     "education",
     "landmark",
     "entrance",
+    "building",
+    "building_entrance",
     # Map Plan B M10/M11 replaces the old virtual service grid with real
     # road/footway waypoints, so these remain part of the course-scale service surface.
     "road",
@@ -181,15 +183,15 @@ def test_current_scale_snapshot_for_m14_white_road_audit_tracking():
         if str(node.get("network_role", "")).strip() == "poi_access"
     ]
 
-    assert len(nodes) >= 690
-    assert len(categories) >= 10
+    assert len(nodes) >= 1100
+    assert len(categories) >= 12
     assert len(facility_like_nodes) >= 50
     assert len(edges) >= 38
     assert len(outdoor_edges) > 0
     assert all(edge.get("geometry") for edge in outdoor_edges)
     assert {edge.get("type") for edge in outdoor_edges} <= {"white_road", "poi_access"}
     assert len(white_road_nodes) >= 600
-    assert len(poi_access_nodes) == 14
+    assert len(poi_access_nodes) >= 90
     assert role_counts["junction"] >= 200
     assert role_counts["bend"] >= 100
     assert role_counts["endpoint"] >= 250

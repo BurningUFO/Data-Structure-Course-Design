@@ -30,85 +30,121 @@
     "access_review_distance_m": 80.0
   },
   "bounds": {
-    "south": 39.984192,
-    "west": 116.301643,
-    "north": 39.993997,
-    "east": 116.3149957
+    "south": 39.9838468,
+    "west": 116.2996041,
+    "north": 39.9958353,
+    "east": 116.3162574
   },
   "summary": {
-    "input_outdoor_node_count": 676,
-    "poi_node_count": 14,
-    "old_road_node_count_removed": 662,
+    "input_outdoor_node_count": 111,
+    "poi_node_count": 111,
+    "old_road_node_count_removed": 0,
     "road_feature_count_total": 505,
-    "road_feature_count_filtered": 350,
-    "road_segment_count_filtered": 634,
-    "generated_white_road_node_count": 648,
-    "generated_access_node_count": 14,
-    "generated_node_count_total": 676,
-    "outdoor_edge_count": 1616,
-    "white_road_edge_count": 1588,
-    "poi_access_edge_count": 28,
-    "geometry_edge_count": 1616,
+    "road_feature_count_filtered": 454,
+    "road_segment_count_filtered": 899,
+    "generated_white_road_node_count": 868,
+    "generated_access_node_count": 111,
+    "generated_node_count_total": 1090,
+    "outdoor_edge_count": 2548,
+    "white_road_edge_count": 2326,
+    "poi_access_edge_count": 222,
+    "geometry_edge_count": 2548,
     "fallback_edge_count": 0,
     "geometry_coverage_ratio": 1.0,
-    "match_count": 808,
+    "match_count": 1274,
     "poi_projection_needs_review_count": 0
   },
   "candidate_stats": {
-    "raw_endpoint_count": 664,
-    "raw_bend_count": 181,
-    "raw_shared_junction_count": 89,
-    "raw_crossing_junction_count": 146
+    "raw_endpoint_count": 876,
+    "raw_bend_count": 263,
+    "raw_shared_junction_count": 133,
+    "raw_crossing_junction_count": 184
   },
   "edge_construction": {
-    "undirected_white_road_edge_count": 794,
-    "directed_white_road_edge_count": 1588,
-    "duplicate_candidate_count": 48,
+    "undirected_white_road_edge_count": 1163,
+    "directed_white_road_edge_count": 2326,
+    "duplicate_candidate_count": 60,
     "excluded_candidates": [],
     "excluded_candidate_count": 0,
-    "features_with_projected_nodes": 343,
+    "features_with_projected_nodes": 450,
     "max_projected_nodes_on_feature": 22,
-    "undirected_poi_access_edge_count": 14,
-    "directed_poi_access_edge_count": 28,
-    "directed_edge_count": 1616,
-    "match_count": 808,
-    "geometry_edge_count": 1616,
+    "undirected_poi_access_edge_count": 111,
+    "directed_poi_access_edge_count": 222,
+    "directed_edge_count": 2548,
+    "match_count": 1274,
+    "geometry_edge_count": 2548,
     "fallback_edge_count": 0,
     "geometry_coverage_ratio": 1.0,
     "excluded_access_candidates": [],
     "excluded_access_candidate_count": 0
   },
   "generated_role_counts": {
-    "bend": 138,
-    "endpoint": 277,
-    "junction": 233,
-    "poi_access": 14
+    "bend": 203,
+    "endpoint": 351,
+    "junction": 314,
+    "poi_access": 111
   },
   "filtered_highway_counts": {
-    "footway": 191,
-    "path": 9,
+    "footway": 248,
+    "path": 15,
     "pedestrian": 1,
-    "residential": 31,
-    "service": 76,
-    "steps": 40,
-    "unclassified": 2
+    "residential": 40,
+    "service": 105,
+    "steps": 42,
+    "unclassified": 3
   },
   "poi_projections": [
     {
-      "poi_id": "gate_north",
-      "poi_name": "北京大学西门",
-      "category": "entrance",
+      "poi_id": "canteen",
+      "poi_name": "农园食堂",
+      "category": "catering",
       "original_location": {
-        "lat": 39.9929,
-        "lng": 116.3055
+        "lat": 39.9875162,
+        "lng": 116.3058135
       },
-      "anchor_node_id": "road_access_gate_north",
+      "anchor_node_id": "road_access_canteen",
       "anchor_location": {
-        "lat": 39.9928864,
-        "lng": 116.3054193
+        "lat": 39.9875162,
+        "lng": 116.3058135
       },
-      "projection_distance_m": 7.05,
-      "source_osm_id": "33457266",
+      "projection_distance_m": 0.0,
+      "source_osm_id": "595764178",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "convenience_store",
+      "poi_name": "中关新园超市",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9888829,
+        "lng": 116.3135887
+      },
+      "anchor_node_id": "road_access_convenience_store",
+      "anchor_location": {
+        "lat": 39.9888625,
+        "lng": 116.3135894
+      },
+      "projection_distance_m": 2.27,
+      "source_osm_id": "264247413",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "dormitory_1",
+      "poi_name": "学生宿舍31楼",
+      "category": "dormitory",
+      "original_location": {
+        "lat": 39.9875503,
+        "lng": 116.3041
+      },
+      "anchor_node_id": "road_access_dormitory_1",
+      "anchor_location": {
+        "lat": 39.9875444,
+        "lng": 116.3041003
+      },
+      "projection_distance_m": 0.66,
+      "source_osm_id": "240825533",
       "source_highway": "service",
       "needs_review": false
     },
@@ -127,6 +163,24 @@
       },
       "projection_distance_m": 52.46,
       "source_osm_id": "638620293",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "gate_north",
+      "poi_name": "北京大学西门",
+      "category": "entrance",
+      "original_location": {
+        "lat": 39.9929,
+        "lng": 116.3055
+      },
+      "anchor_node_id": "road_access_gate_north",
+      "anchor_location": {
+        "lat": 39.9928864,
+        "lng": 116.3054193
+      },
+      "projection_distance_m": 7.05,
+      "source_osm_id": "33457266",
       "source_highway": "service",
       "needs_review": false
     },
@@ -167,93 +221,21 @@
       "needs_review": false
     },
     {
-      "poi_id": "teaching_building_1",
-      "poi_name": "第一教学楼",
-      "category": "education",
+      "poi_id": "parking_lot",
+      "poi_name": "东门停车场",
+      "category": "parking",
       "original_location": {
-        "lat": 39.9914609,
-        "lng": 116.304341
+        "lat": 39.9928559,
+        "lng": 116.3089338
       },
-      "anchor_node_id": "road_access_teaching_building_1",
+      "anchor_node_id": "road_access_parking_lot",
       "anchor_location": {
-        "lat": 39.9914609,
-        "lng": 116.304341
+        "lat": 39.9928559,
+        "lng": 116.3089338
       },
       "projection_distance_m": 0.0,
-      "source_osm_id": "1151227555",
-      "source_highway": "footway",
-      "needs_review": false
-    },
-    {
-      "poi_id": "teaching_building_2",
-      "poi_name": "第二教学楼",
-      "category": "education",
-      "original_location": {
-        "lat": 39.9881439,
-        "lng": 116.3065508
-      },
-      "anchor_node_id": "road_access_teaching_building_2",
-      "anchor_location": {
-        "lat": 39.9881439,
-        "lng": 116.3065508
-      },
-      "projection_distance_m": 0.0,
-      "source_osm_id": "970687417",
-      "source_highway": "footway",
-      "needs_review": false
-    },
-    {
-      "poi_id": "dormitory_1",
-      "poi_name": "学生宿舍31楼",
-      "category": "dormitory",
-      "original_location": {
-        "lat": 39.9875503,
-        "lng": 116.3041
-      },
-      "anchor_node_id": "road_access_dormitory_1",
-      "anchor_location": {
-        "lat": 39.9875444,
-        "lng": 116.3041003
-      },
-      "projection_distance_m": 0.66,
-      "source_osm_id": "240825533",
+      "source_osm_id": "638620293",
       "source_highway": "service",
-      "needs_review": false
-    },
-    {
-      "poi_id": "canteen",
-      "poi_name": "农园食堂",
-      "category": "catering",
-      "original_location": {
-        "lat": 39.9875162,
-        "lng": 116.3058135
-      },
-      "anchor_node_id": "road_access_canteen",
-      "anchor_location": {
-        "lat": 39.9875162,
-        "lng": 116.3058135
-      },
-      "projection_distance_m": 0.0,
-      "source_osm_id": "595764178",
-      "source_highway": "service",
-      "needs_review": false
-    },
-    {
-      "poi_id": "convenience_store",
-      "poi_name": "中关新园超市",
-      "category": "shopping",
-      "original_location": {
-        "lat": 39.9888829,
-        "lng": 116.3135887
-      },
-      "anchor_node_id": "road_access_convenience_store",
-      "anchor_location": {
-        "lat": 39.9888625,
-        "lng": 116.3135894
-      },
-      "projection_distance_m": 2.27,
-      "source_osm_id": "264247413",
-      "source_highway": "footway",
       "needs_review": false
     },
     {
@@ -293,20 +275,38 @@
       "needs_review": false
     },
     {
-      "poi_id": "parking_lot",
-      "poi_name": "东门停车场",
-      "category": "parking",
+      "poi_id": "teaching_building_1",
+      "poi_name": "第一教学楼",
+      "category": "education",
       "original_location": {
-        "lat": 39.9928559,
-        "lng": 116.3089338
+        "lat": 39.9914609,
+        "lng": 116.304341
       },
-      "anchor_node_id": "road_access_parking_lot",
+      "anchor_node_id": "road_access_teaching_building_1",
       "anchor_location": {
-        "lat": 39.9928559,
-        "lng": 116.3089338
+        "lat": 39.9914609,
+        "lng": 116.304341
       },
       "projection_distance_m": 0.0,
-      "source_osm_id": "638620293",
+      "source_osm_id": "1151227555",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "teaching_building_2",
+      "poi_name": "第二教学楼",
+      "category": "education",
+      "original_location": {
+        "lat": 39.9881439,
+        "lng": 116.3065508
+      },
+      "anchor_node_id": "road_access_teaching_building_2",
+      "anchor_location": {
+        "lat": 39.9881439,
+        "lng": 116.3065508
+      },
+      "projection_distance_m": 0.0,
+      "source_osm_id": "240825552",
       "source_highway": "service",
       "needs_review": false
     },
@@ -345,29 +345,1783 @@
       "source_osm_id": "1101010405",
       "source_highway": "footway",
       "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_4457550089",
+      "poi_name": "BYY Internet Cafe",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9851242,
+        "lng": 116.3050789
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_4457550089",
+      "anchor_location": {
+        "lat": 39.98527,
+        "lng": 116.3054565
+      },
+      "projection_distance_m": 36.06,
+      "source_osm_id": "33455720",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_10146479023",
+      "poi_name": "一体小卖部",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9942895,
+        "lng": 116.3053174
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_10146479023",
+      "anchor_location": {
+        "lat": 39.9943515,
+        "lng": 116.3052994
+      },
+      "projection_distance_m": 7.07,
+      "source_osm_id": "595764186",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_5938457341",
+      "poi_name": "全家",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9874406,
+        "lng": 116.3030315
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_5938457341",
+      "anchor_location": {
+        "lat": 39.987477,
+        "lng": 116.3030297
+      },
+      "projection_distance_m": 4.06,
+      "source_osm_id": "1161063866",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_11066581271",
+      "poi_name": "北大纪念品店",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9875229,
+        "lng": 116.3049491
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_11066581271",
+      "anchor_location": {
+        "lat": 39.9875985,
+        "lng": 116.3049434
+      },
+      "projection_distance_m": 8.43,
+      "source_osm_id": "1119535553",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_1817782006",
+      "poi_name": "快客",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9862094,
+        "lng": 116.3104148
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_1817782006",
+      "anchor_location": {
+        "lat": 39.9865072,
+        "lng": 116.310381
+      },
+      "projection_distance_m": 33.28,
+      "source_osm_id": "628042949",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_10765492935",
+      "poi_name": "物美超市",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9869183,
+        "lng": 116.3062371
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_10765492935",
+      "anchor_location": {
+        "lat": 39.9869879,
+        "lng": 116.306233
+      },
+      "projection_distance_m": 7.75,
+      "source_osm_id": "595764176",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_13006577029",
+      "poi_name": "理科一号楼1127室",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9897657,
+        "lng": 116.3070452
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_13006577029",
+      "anchor_location": {
+        "lat": 39.9895823,
+        "lng": 116.306732
+      },
+      "projection_distance_m": 33.62,
+      "source_osm_id": "993418137",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_10779602552",
+      "poi_name": "百讲售票处",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.988919,
+        "lng": 116.3050337
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_10779602552",
+      "anchor_location": {
+        "lat": 39.9889187,
+        "lng": 116.3050252
+      },
+      "projection_distance_m": 0.72,
+      "source_osm_id": "1159153751",
+      "source_highway": "steps",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_4459827994",
+      "poi_name": "选择重塑",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9849248,
+        "lng": 116.3047559
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_4459827994",
+      "anchor_location": {
+        "lat": 39.98527,
+        "lng": 116.3054565
+      },
+      "projection_distance_m": 71.04,
+      "source_osm_id": "33455720",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_shopping_node_13049621901",
+      "poi_name": "麦叔的铺子",
+      "category": "shopping",
+      "original_location": {
+        "lat": 39.9885146,
+        "lng": 116.3070771
+      },
+      "anchor_node_id": "road_access_poi_osm_shopping_node_13049621901",
+      "anchor_location": {
+        "lat": 39.9885922,
+        "lng": 116.3072732
+      },
+      "projection_distance_m": 18.82,
+      "source_osm_id": "1160812173",
+      "source_highway": "steps",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_node_10187868925",
+      "poi_name": "3W咖啡餐吧（北京大学店）",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9883858,
+        "lng": 116.3076058
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_node_10187868925",
+      "anchor_location": {
+        "lat": 39.9886196,
+        "lng": 116.3077809
+      },
+      "projection_distance_m": 30.01,
+      "source_osm_id": "1160812171",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_node_3731346199",
+      "poi_name": "Sunrise Restaurant",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.988778,
+        "lng": 116.3143088
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_node_3731346199",
+      "anchor_location": {
+        "lat": 39.9887246,
+        "lng": 116.3143109
+      },
+      "projection_distance_m": 5.95,
+      "source_osm_id": "1206332686",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_way_876428130",
+      "poi_name": "中关园食堂",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9906482,
+        "lng": 116.3144674
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_way_876428130",
+      "anchor_location": {
+        "lat": 39.990771,
+        "lng": 116.3145777
+      },
+      "projection_distance_m": 16.59,
+      "source_osm_id": "991043601",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_way_240832248",
+      "poi_name": "农园餐厅",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9875268,
+        "lng": 116.3060962
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_way_240832248",
+      "anchor_location": {
+        "lat": 39.9875162,
+        "lng": 116.3058135
+      },
+      "projection_distance_m": 24.14,
+      "source_osm_id": "595764178",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_way_392552191",
+      "poi_name": "北大青鸟总部食堂",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9918289,
+        "lng": 116.3127398
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_way_392552191",
+      "anchor_location": {
+        "lat": 39.9917974,
+        "lng": 116.3122138
+      },
+      "projection_distance_m": 45.0,
+      "source_osm_id": "33457660",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_way_372945805",
+      "poi_name": "学一食堂",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9862579,
+        "lng": 116.3016966
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_way_372945805",
+      "anchor_location": {
+        "lat": 39.9862442,
+        "lng": 116.3011604
+      },
+      "projection_distance_m": 45.76,
+      "source_osm_id": "240825524",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_node_10289167329",
+      "poi_name": "松林包子铺",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9864582,
+        "lng": 116.3020065
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_node_10289167329",
+      "anchor_location": {
+        "lat": 39.986469,
+        "lng": 116.3023861
+      },
+      "projection_distance_m": 32.4,
+      "source_osm_id": "240825526",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_node_1993343157",
+      "poi_name": "泊星地咖啡馆",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.986699,
+        "lng": 116.3018627
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_node_1993343157",
+      "anchor_location": {
+        "lat": 39.9867136,
+        "lng": 116.3023742
+      },
+      "projection_distance_m": 43.66,
+      "source_osm_id": "240825526",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_way_446944417",
+      "poi_name": "燕南食堂",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9892547,
+        "lng": 116.3041105
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_way_446944417",
+      "anchor_location": {
+        "lat": 39.9893195,
+        "lng": 116.3040563
+      },
+      "projection_distance_m": 8.57,
+      "source_osm_id": "1192032389",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_node_10709405918",
+      "poi_name": "瑞幸咖啡",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9910999,
+        "lng": 116.3066749
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_node_10709405918",
+      "anchor_location": {
+        "lat": 39.9911048,
+        "lng": 116.3066532
+      },
+      "projection_distance_m": 1.93,
+      "source_osm_id": "1159305380",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_catering_way_444894329",
+      "poi_name": "餐饮综合楼（家园食堂）",
+      "category": "catering",
+      "original_location": {
+        "lat": 39.9870349,
+        "lng": 116.3017807
+      },
+      "anchor_node_id": "road_access_poi_osm_catering_way_444894329",
+      "anchor_location": {
+        "lat": 39.9870423,
+        "lng": 116.3022069
+      },
+      "projection_distance_m": 36.36,
+      "source_osm_id": "1159305396",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_way_226702532",
+      "poi_name": "东操场",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.9939531,
+        "lng": 116.3061065
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_way_226702532",
+      "anchor_location": {
+        "lat": 39.9938594,
+        "lng": 116.305626
+      },
+      "projection_distance_m": 42.29,
+      "source_osm_id": "595764186",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_node_8948382430",
+      "poi_name": "中关新园康乐中心",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.9884973,
+        "lng": 116.3125107
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_node_8948382430",
+      "anchor_location": {
+        "lat": 39.9883547,
+        "lng": 116.3125766
+      },
+      "projection_distance_m": 16.84,
+      "source_osm_id": "1206332687",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_way_226703020",
+      "poi_name": "二体篮球场",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.9894668,
+        "lng": 116.3028851
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_way_226703020",
+      "anchor_location": {
+        "lat": 39.9896401,
+        "lng": 116.3028814
+      },
+      "projection_distance_m": 19.29,
+      "source_osm_id": "240825522",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_way_226702940",
+      "poi_name": "二体网球场",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.9894666,
+        "lng": 116.3010111
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_way_226702940",
+      "anchor_location": {
+        "lat": 39.9896168,
+        "lng": 116.3010079
+      },
+      "projection_distance_m": 16.73,
+      "source_osm_id": "240825522",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_way_240832253",
+      "poi_name": "五四体育中心",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.9862333,
+        "lng": 116.3062126
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_way_240832253",
+      "anchor_location": {
+        "lat": 39.9862069,
+        "lng": 116.3053832
+      },
+      "projection_distance_m": 70.8,
+      "source_osm_id": "33455720",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_node_4388876493",
+      "poi_name": "北大怡园",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.98867,
+        "lng": 116.311943
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_node_4388876493",
+      "anchor_location": {
+        "lat": 39.9886218,
+        "lng": 116.3119464
+      },
+      "projection_distance_m": 5.38,
+      "source_osm_id": "1206332676",
+      "source_highway": "unclassified",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_node_8948382429",
+      "poi_name": "康美乐体育健身会(北京大学店)",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.989218,
+        "lng": 116.306944
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_node_8948382429",
+      "anchor_location": {
+        "lat": 39.9892103,
+        "lng": 116.306738
+      },
+      "projection_distance_m": 17.59,
+      "source_osm_id": "993418137",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_way_880624094",
+      "poi_name": "篮球场",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.9873663,
+        "lng": 116.3072948
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_way_880624094",
+      "anchor_location": {
+        "lat": 39.9875267,
+        "lng": 116.3072827
+      },
+      "projection_distance_m": 17.89,
+      "source_osm_id": "240825560",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_sports_way_33457546",
+      "poi_name": "邱德拔体育馆",
+      "category": "sports",
+      "original_location": {
+        "lat": 39.9873434,
+        "lng": 116.3089475
+      },
+      "anchor_node_id": "road_access_poi_osm_sports_way_33457546",
+      "anchor_location": {
+        "lat": 39.9873351,
+        "lng": 116.3086501
+      },
+      "projection_distance_m": 25.38,
+      "source_osm_id": "1149802303",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_service_node_4454758189",
+      "poi_name": "中国民生银行",
+      "category": "service",
+      "original_location": {
+        "lat": 39.9898344,
+        "lng": 116.3103647
+      },
+      "anchor_node_id": "road_access_poi_osm_service_node_4454758189",
+      "anchor_location": {
+        "lat": 39.9898443,
+        "lng": 116.3106156
+      },
+      "projection_distance_m": 21.43,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_service_node_2753179491",
+      "poi_name": "中国银行",
+      "category": "service",
+      "original_location": {
+        "lat": 39.987426,
+        "lng": 116.310306
+      },
+      "anchor_node_id": "road_access_poi_osm_service_node_2753179491",
+      "anchor_location": {
+        "lat": 39.9874211,
+        "lng": 116.3101947
+      },
+      "projection_distance_m": 9.51,
+      "source_osm_id": "1251476911",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_service_node_4454751690",
+      "poi_name": "北京银行",
+      "category": "service",
+      "original_location": {
+        "lat": 39.9903465,
+        "lng": 116.3103974
+      },
+      "anchor_node_id": "road_access_poi_osm_service_node_4454751690",
+      "anchor_location": {
+        "lat": 39.9903758,
+        "lng": 116.3107764
+      },
+      "projection_distance_m": 32.48,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_service_node_4462933789",
+      "poi_name": "北京银行",
+      "category": "service",
+      "original_location": {
+        "lat": 39.9883095,
+        "lng": 116.3116075
+      },
+      "anchor_node_id": "road_access_poi_osm_service_node_4462933789",
+      "anchor_location": {
+        "lat": 39.9883433,
+        "lng": 116.3116791
+      },
+      "projection_distance_m": 7.17,
+      "source_osm_id": "1216377971",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_service_node_10983578005",
+      "poi_name": "微型消防站",
+      "category": "service",
+      "original_location": {
+        "lat": 39.9869263,
+        "lng": 116.3032728
+      },
+      "anchor_node_id": "road_access_poi_osm_service_node_10983578005",
+      "anchor_location": {
+        "lat": 39.9869412,
+        "lng": 116.303272
+      },
+      "projection_distance_m": 1.66,
+      "source_osm_id": "1182823481",
+      "source_highway": "path",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_service_node_11270757354",
+      "poi_name": "燕园派出所",
+      "category": "service",
+      "original_location": {
+        "lat": 39.986597,
+        "lng": 116.3092299
+      },
+      "anchor_node_id": "road_access_poi_osm_service_node_11270757354",
+      "anchor_location": {
+        "lat": 39.9865571,
+        "lng": 116.3084555
+      },
+      "projection_distance_m": 66.2,
+      "source_osm_id": "595592769",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_parking_node_10076448906",
+      "poi_name": "成府园东停车场",
+      "category": "parking",
+      "original_location": {
+        "lat": 39.9934573,
+        "lng": 116.3092092
+      },
+      "anchor_node_id": "road_access_poi_osm_parking_node_10076448906",
+      "anchor_location": {
+        "lat": 39.993444,
+        "lng": 116.3088919
+      },
+      "projection_distance_m": 27.1,
+      "source_osm_id": "638620293",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_education_way_1330709889",
+      "poi_name": "北京大学",
+      "category": "education",
+      "original_location": {
+        "lat": 39.9919847,
+        "lng": 116.3049198
+      },
+      "anchor_node_id": "road_access_poi_osm_education_way_1330709889",
+      "anchor_location": {
+        "lat": 39.9920819,
+        "lng": 116.3049189
+      },
+      "projection_distance_m": 10.82,
+      "source_osm_id": "595764185",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_education_way_866277614",
+      "poi_name": "北京大学工学院",
+      "category": "education",
+      "original_location": {
+        "lat": 39.9930158,
+        "lng": 116.3121598
+      },
+      "anchor_node_id": "road_access_poi_osm_education_way_866277614",
+      "anchor_location": {
+        "lat": 39.9930144,
+        "lng": 116.3121245
+      },
+      "projection_distance_m": 3.02,
+      "source_osm_id": "33457660",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_education_node_11135733624",
+      "poi_name": "数学科学学院",
+      "category": "education",
+      "original_location": {
+        "lat": 39.9885822,
+        "lng": 116.306011
+      },
+      "anchor_node_id": "road_access_poi_osm_education_node_11135733624",
+      "anchor_location": {
+        "lat": 39.9889498,
+        "lng": 116.305989
+      },
+      "projection_distance_m": 40.96,
+      "source_osm_id": "993416318",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_education_way_628042951",
+      "poi_name": "海淀区中关村第二小学",
+      "category": "education",
+      "original_location": {
+        "lat": 39.9861013,
+        "lng": 116.3110954
+      },
+      "anchor_node_id": "road_access_poi_osm_education_way_628042951",
+      "anchor_location": {
+        "lat": 39.9865514,
+        "lng": 116.3110444
+      },
+      "projection_distance_m": 50.29,
+      "source_osm_id": "628042949",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_education_way_628032101",
+      "poi_name": "阿卜杜勒·阿齐兹国王公共图书馆北京大学分馆（古籍图书馆）",
+      "category": "education",
+      "original_location": {
+        "lat": 39.9915228,
+        "lng": 116.3033211
+      },
+      "anchor_node_id": "road_access_poi_osm_education_way_628032101",
+      "anchor_location": {
+        "lat": 39.9914128,
+        "lng": 116.3033687
+      },
+      "projection_distance_m": 12.9,
+      "source_osm_id": "1165051997",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_landmark_node_9137846356",
+      "poi_name": "三角地",
+      "category": "landmark",
+      "original_location": {
+        "lat": 39.9880065,
+        "lng": 116.3043421
+      },
+      "anchor_node_id": "road_access_poi_osm_landmark_node_9137846356",
+      "anchor_location": {
+        "lat": 39.9879724,
+        "lng": 116.3043977
+      },
+      "projection_distance_m": 6.08,
+      "source_osm_id": "1100979408",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_landmark_node_10076216706",
+      "poi_name": "喷泉",
+      "category": "landmark",
+      "original_location": {
+        "lat": 39.9875779,
+        "lng": 116.3015014
+      },
+      "anchor_node_id": "road_access_poi_osm_landmark_node_10076216706",
+      "anchor_location": {
+        "lat": 39.9875529,
+        "lng": 116.3014271
+      },
+      "projection_distance_m": 6.92,
+      "source_osm_id": "993418139",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_landmark_way_531129099",
+      "poi_name": "燕南园",
+      "category": "landmark",
+      "original_location": {
+        "lat": 39.9883418,
+        "lng": 116.3023961
+      },
+      "anchor_node_id": "road_access_poi_osm_landmark_way_531129099",
+      "anchor_location": {
+        "lat": 39.9883423,
+        "lng": 116.3024552
+      },
+      "projection_distance_m": 5.04,
+      "source_osm_id": "866277592",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_392552195",
+      "poi_name": "北京大学-加速器楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9915709,
+        "lng": 116.314408
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_392552195",
+      "anchor_location": {
+        "lat": 39.991261,
+        "lng": 116.3146292
+      },
+      "projection_distance_m": 39.32,
+      "source_osm_id": "991043600",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_392563326",
+      "poi_name": "北京大学-战略研究所",
+      "category": "building",
+      "original_location": {
+        "lat": 39.994147,
+        "lng": 116.3103754
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_392563326",
+      "anchor_location": {
+        "lat": 39.9941179,
+        "lng": 116.3105383
+      },
+      "projection_distance_m": 14.27,
+      "source_osm_id": "392563331",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_392563329",
+      "poi_name": "北京大学-燕东园小楼31号楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9940924,
+        "lng": 116.3111041
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_392563329",
+      "anchor_location": {
+        "lat": 39.9939247,
+        "lng": 116.311123
+      },
+      "projection_distance_m": 18.74,
+      "source_osm_id": "392563333",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_392563327",
+      "poi_name": "北京大学-燕东园小楼32号楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9941505,
+        "lng": 116.3107742
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_392563327",
+      "anchor_location": {
+        "lat": 39.9943004,
+        "lng": 116.3107965
+      },
+      "projection_distance_m": 16.8,
+      "source_osm_id": "392563339",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_392552189",
+      "poi_name": "北京大学出版社",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9913243,
+        "lng": 116.3127286
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_392552189",
+      "anchor_location": {
+        "lat": 39.9912965,
+        "lng": 116.3122649
+      },
+      "projection_distance_m": 39.67,
+      "source_osm_id": "33457660",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_295071478",
+      "poi_name": "北京大学化学学院A区",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9894625,
+        "lng": 116.3115917
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_295071478",
+      "anchor_location": {
+        "lat": 39.9897093,
+        "lng": 116.3115763
+      },
+      "projection_distance_m": 27.51,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_295071692",
+      "poi_name": "北京大学化学学院B区",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9898464,
+        "lng": 116.3111871
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_295071692",
+      "anchor_location": {
+        "lat": 39.9896954,
+        "lng": 116.3111965
+      },
+      "projection_distance_m": 16.83,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_295072178",
+      "poi_name": "北京大学化学学院C区",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9901844,
+        "lng": 116.311677
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_295072178",
+      "anchor_location": {
+        "lat": 39.9901941,
+        "lng": 116.3120444
+      },
+      "projection_distance_m": 31.35,
+      "source_osm_id": "1206332672",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_295073722",
+      "poi_name": "北京大学化学学院D区",
+      "category": "building",
+      "original_location": {
+        "lat": 39.990464,
+        "lng": 116.3113378
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_295073722",
+      "anchor_location": {
+        "lat": 39.9906213,
+        "lng": 116.3113268
+      },
+      "projection_distance_m": 17.53,
+      "source_osm_id": "628038933",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_866277616",
+      "poi_name": "北京大学城市与环境学院",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9947573,
+        "lng": 116.3099179
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_866277616",
+      "anchor_location": {
+        "lat": 39.9945897,
+        "lng": 116.3095968
+      },
+      "projection_distance_m": 33.14,
+      "source_osm_id": "128624230",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240832247",
+      "poi_name": "28楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.987134,
+        "lng": 116.3040596
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240832247",
+      "anchor_location": {
+        "lat": 39.9870771,
+        "lng": 116.3042328
+      },
+      "projection_distance_m": 16.07,
+      "source_osm_id": "1192032409",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240832245",
+      "poi_name": "29楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9873461,
+        "lng": 116.3032225
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240832245",
+      "anchor_location": {
+        "lat": 39.9872589,
+        "lng": 116.303241
+      },
+      "projection_distance_m": 9.83,
+      "source_osm_id": "1090663942",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240832246",
+      "poi_name": "30楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9868475,
+        "lng": 116.3032514
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240832246",
+      "anchor_location": {
+        "lat": 39.9869412,
+        "lng": 116.303272
+      },
+      "projection_distance_m": 10.58,
+      "source_osm_id": "1182823481",
+      "source_highway": "path",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240832244",
+      "poi_name": "31楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9870896,
+        "lng": 116.3025686
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240832244",
+      "anchor_location": {
+        "lat": 39.987072,
+        "lng": 116.3026384
+      },
+      "projection_distance_m": 6.27,
+      "source_osm_id": "1192032400",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240825546",
+      "poi_name": "32楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9864414,
+        "lng": 116.303831
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240825546",
+      "anchor_location": {
+        "lat": 39.9866235,
+        "lng": 116.3037726
+      },
+      "projection_distance_m": 20.87,
+      "source_osm_id": "595592767",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240825544",
+      "poi_name": "34A、34B楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9857484,
+        "lng": 116.3039654
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240825544",
+      "anchor_location": {
+        "lat": 39.9861106,
+        "lng": 116.3043961
+      },
+      "projection_distance_m": 54.54,
+      "source_osm_id": "240825488",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240825545",
+      "poi_name": "35楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9864165,
+        "lng": 116.3028735
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240825545",
+      "anchor_location": {
+        "lat": 39.9865915,
+        "lng": 116.3028499
+      },
+      "projection_distance_m": 19.58,
+      "source_osm_id": "595592766",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240825543",
+      "poi_name": "36、37楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9856299,
+        "lng": 116.3028604
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240825543",
+      "anchor_location": {
+        "lat": 39.9860568,
+        "lng": 116.3024061
+      },
+      "projection_distance_m": 61.32,
+      "source_osm_id": "240825526",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240825539",
+      "poi_name": "38、39楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9856055,
+        "lng": 116.3021495
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240825539",
+      "anchor_location": {
+        "lat": 39.9860568,
+        "lng": 116.3024061
+      },
+      "projection_distance_m": 54.8,
+      "source_osm_id": "240825526",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_osm_building_way_240825542",
+      "poi_name": "40、41、42楼",
+      "category": "building",
+      "original_location": {
+        "lat": 39.9855944,
+        "lng": 116.3010438
+      },
+      "anchor_node_id": "road_access_poi_osm_building_way_240825542",
+      "anchor_location": {
+        "lat": 39.9860252,
+        "lng": 116.3011699
+      },
+      "projection_distance_m": 49.15,
+      "source_osm_id": "240825524",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392552195_north",
+      "poi_name": "北京大学-加速器楼北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9919027,
+        "lng": 116.3144822
+      },
+      "anchor_node_id": "road_access_poi_door_way_392552195_north",
+      "anchor_location": {
+        "lat": 39.9920613,
+        "lng": 116.3149054
+      },
+      "projection_distance_m": 40.18,
+      "source_osm_id": "409380281",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392552195_east",
+      "poi_name": "北京大学-加速器楼东门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.991318,
+        "lng": 116.3148504
+      },
+      "anchor_node_id": "road_access_poi_door_way_392552195_east",
+      "anchor_location": {
+        "lat": 39.9912635,
+        "lng": 116.3148514
+      },
+      "projection_distance_m": 6.07,
+      "source_osm_id": "991043600",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392552195_south",
+      "poi_name": "北京大学-加速器楼南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9912923,
+        "lng": 116.3142422
+      },
+      "anchor_node_id": "road_access_poi_door_way_392552195_south",
+      "anchor_location": {
+        "lat": 39.9911848,
+        "lng": 116.3142491
+      },
+      "projection_distance_m": 11.98,
+      "source_osm_id": "991043600",
+      "source_highway": "footway",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392552195_west",
+      "poi_name": "北京大学-加速器楼西门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9918851,
+        "lng": 116.3140691
+      },
+      "anchor_node_id": "road_access_poi_door_way_392552195_west",
+      "anchor_location": {
+        "lat": 39.9918707,
+        "lng": 116.3136481
+      },
+      "projection_distance_m": 35.94,
+      "source_osm_id": "392552185",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563326_north",
+      "poi_name": "北京大学-战略研究所北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9941979,
+        "lng": 116.3105071
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563326_north",
+      "anchor_location": {
+        "lat": 39.9941885,
+        "lng": 116.3105598
+      },
+      "projection_distance_m": 4.62,
+      "source_osm_id": "392563331",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563326_east",
+      "poi_name": "北京大学-战略研究所东门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9941004,
+        "lng": 116.3105298
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563326_east",
+      "anchor_location": {
+        "lat": 39.9940999,
+        "lng": 116.3105328
+      },
+      "projection_distance_m": 0.27,
+      "source_osm_id": "392563331",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563326_south",
+      "poi_name": "北京大学-战略研究所南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9940969,
+        "lng": 116.3102891
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563326_south",
+      "anchor_location": {
+        "lat": 39.9940558,
+        "lng": 116.3105194
+      },
+      "projection_distance_m": 20.17,
+      "source_osm_id": "392563331",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563326_west",
+      "poi_name": "北京大学-战略研究所西门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.99417,
+        "lng": 116.3102755
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563326_west",
+      "anchor_location": {
+        "lat": 39.9941228,
+        "lng": 116.3105398
+      },
+      "projection_distance_m": 23.15,
+      "source_osm_id": "392563331",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563329_north",
+      "poi_name": "北京大学-燕东园小楼31号楼北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9941561,
+        "lng": 116.311034
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563329_north",
+      "anchor_location": {
+        "lat": 39.9942781,
+        "lng": 116.3110522
+      },
+      "projection_distance_m": 13.67,
+      "source_osm_id": "392563339",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563329_east",
+      "poi_name": "北京大学-燕东园小楼31号楼东门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9941004,
+        "lng": 116.3112066
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563329_east",
+      "anchor_location": {
+        "lat": 39.9941137,
+        "lng": 116.3113901
+      },
+      "projection_distance_m": 15.72,
+      "source_osm_id": "392563333",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563329_south",
+      "poi_name": "北京大学-燕东园小楼31号楼南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9940447,
+        "lng": 116.311025
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563329_south",
+      "anchor_location": {
+        "lat": 39.9939192,
+        "lng": 116.3110392
+      },
+      "projection_distance_m": 14.03,
+      "source_osm_id": "392563333",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563327_north",
+      "poi_name": "北京大学-燕东园小楼32号楼北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9942013,
+        "lng": 116.3108433
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563327_north",
+      "anchor_location": {
+        "lat": 39.9942951,
+        "lng": 116.3108573
+      },
+      "projection_distance_m": 10.51,
+      "source_osm_id": "392563339",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563327_east",
+      "poi_name": "北京大学-燕东园小楼32号楼东门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9940865,
+        "lng": 116.3108569
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563327_east",
+      "anchor_location": {
+        "lat": 39.9939084,
+        "lng": 116.310877
+      },
+      "projection_distance_m": 19.9,
+      "source_osm_id": "392563333",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392563327_south",
+      "poi_name": "北京大学-燕东园小楼32号楼南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9940761,
+        "lng": 116.3107206
+      },
+      "anchor_node_id": "road_access_poi_door_way_392563327_south",
+      "anchor_location": {
+        "lat": 39.9941091,
+        "lng": 116.3105357
+      },
+      "projection_distance_m": 16.2,
+      "source_osm_id": "392563331",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392552189_north",
+      "poi_name": "北京大学出版社北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9914019,
+        "lng": 116.3133113
+      },
+      "anchor_node_id": "road_access_poi_door_way_392552189_north",
+      "anchor_location": {
+        "lat": 39.9914143,
+        "lng": 116.3136746
+      },
+      "projection_distance_m": 31.02,
+      "source_osm_id": "392552185",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392552189_east",
+      "poi_name": "北京大学出版社东门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9912532,
+        "lng": 116.3133192
+      },
+      "anchor_node_id": "road_access_poi_door_way_392552189_east",
+      "anchor_location": {
+        "lat": 39.9912656,
+        "lng": 116.3136833
+      },
+      "projection_distance_m": 31.08,
+      "source_osm_id": "392552185",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392552189_south",
+      "poi_name": "北京大学出版社南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.991223,
+        "lng": 116.3123427
+      },
+      "anchor_node_id": "road_access_poi_door_way_392552189_south",
+      "anchor_location": {
+        "lat": 39.9912188,
+        "lng": 116.3122729
+      },
+      "projection_distance_m": 5.98,
+      "source_osm_id": "33457660",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_392552189_west",
+      "poi_name": "北京大学出版社西门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9913716,
+        "lng": 116.3123348
+      },
+      "anchor_node_id": "road_access_poi_door_way_392552189_west",
+      "anchor_location": {
+        "lat": 39.991367,
+        "lng": 116.3122577
+      },
+      "projection_distance_m": 6.59,
+      "source_osm_id": "33457660",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295071478_north",
+      "poi_name": "北京大学化学学院A区北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9896994,
+        "lng": 116.3118777
+      },
+      "anchor_node_id": "road_access_poi_door_way_295071478_north",
+      "anchor_location": {
+        "lat": 39.9897203,
+        "lng": 116.3118764
+      },
+      "projection_distance_m": 2.33,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295071478_east",
+      "poi_name": "北京大学化学学院A区东门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.989205,
+        "lng": 116.3119149
+      },
+      "anchor_node_id": "road_access_poi_door_way_295071478_east",
+      "anchor_location": {
+        "lat": 39.9892096,
+        "lng": 116.3120885
+      },
+      "projection_distance_m": 14.82,
+      "source_osm_id": "1206332672",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295071478_south",
+      "poi_name": "北京大学化学学院A区南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9891759,
+        "lng": 116.3112544
+      },
+      "anchor_node_id": "road_access_poi_door_way_295071478_south",
+      "anchor_location": {
+        "lat": 39.9892323,
+        "lng": 116.3111816
+      },
+      "projection_distance_m": 8.83,
+      "source_osm_id": "628038932",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295071478_west",
+      "poi_name": "北京大学化学学院A区西门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9893822,
+        "lng": 116.3112389
+      },
+      "anchor_node_id": "road_access_poi_door_way_295071478_west",
+      "anchor_location": {
+        "lat": 39.9893801,
+        "lng": 116.3111737
+      },
+      "projection_distance_m": 5.57,
+      "source_osm_id": "628038932",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295071692_north",
+      "poi_name": "北京大学化学学院B区北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9899623,
+        "lng": 116.3119821
+      },
+      "anchor_node_id": "road_access_poi_door_way_295071692_north",
+      "anchor_location": {
+        "lat": 39.9899642,
+        "lng": 116.3120547
+      },
+      "projection_distance_m": 6.2,
+      "source_osm_id": "1206332672",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295071692_east",
+      "poi_name": "北京大学化学学院B区东门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.989765,
+        "lng": 116.3120089
+      },
+      "anchor_node_id": "road_access_poi_door_way_295071692_east",
+      "anchor_location": {
+        "lat": 39.9897664,
+        "lng": 116.3120636
+      },
+      "projection_distance_m": 4.67,
+      "source_osm_id": "1206332672",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295071692_south",
+      "poi_name": "北京大学化学学院B区南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9896869,
+        "lng": 116.3106517
+      },
+      "anchor_node_id": "road_access_poi_door_way_295071692_south",
+      "anchor_location": {
+        "lat": 39.9896754,
+        "lng": 116.3106524
+      },
+      "projection_distance_m": 1.28,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295071692_west",
+      "poi_name": "北京大学化学学院B区西门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9899089,
+        "lng": 116.3106464
+      },
+      "anchor_node_id": "road_access_poi_door_way_295071692_west",
+      "anchor_location": {
+        "lat": 39.9899075,
+        "lng": 116.3106114
+      },
+      "projection_distance_m": 2.99,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295072178_north",
+      "poi_name": "北京大学化学学院C区北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.99033,
+        "lng": 116.3118668
+      },
+      "anchor_node_id": "road_access_poi_door_way_295072178_north",
+      "anchor_location": {
+        "lat": 39.9903345,
+        "lng": 116.3120381
+      },
+      "projection_distance_m": 14.62,
+      "source_osm_id": "1206332672",
+      "source_highway": "residential",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295072178_south",
+      "poi_name": "北京大学化学学院C区南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9899713,
+        "lng": 116.3115561
+      },
+      "anchor_node_id": "road_access_poi_door_way_295072178_south",
+      "anchor_location": {
+        "lat": 39.9897092,
+        "lng": 116.3115725
+      },
+      "projection_distance_m": 29.21,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295072178_west",
+      "poi_name": "北京大学化学学院C区西门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9903201,
+        "lng": 116.3115318
+      },
+      "anchor_node_id": "road_access_poi_door_way_295072178_west",
+      "anchor_location": {
+        "lat": 39.9906288,
+        "lng": 116.3115101
+      },
+      "projection_distance_m": 34.42,
+      "source_osm_id": "628038933",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295073722_north",
+      "poi_name": "北京大学化学学院D区北门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9905479,
+        "lng": 116.3118527
+      },
+      "anchor_node_id": "road_access_poi_door_way_295073722_north",
+      "anchor_location": {
+        "lat": 39.9906427,
+        "lng": 116.311846
+      },
+      "projection_distance_m": 10.57,
+      "source_osm_id": "628038933",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295073722_south",
+      "poi_name": "北京大学化学学院D区南门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9903465,
+        "lng": 116.3109998
+      },
+      "anchor_node_id": "road_access_poi_door_way_295073722_south",
+      "anchor_location": {
+        "lat": 39.9903297,
+        "lng": 116.3107824
+      },
+      "projection_distance_m": 18.64,
+      "source_osm_id": "628038930",
+      "source_highway": "service",
+      "needs_review": false
+    },
+    {
+      "poi_id": "poi_door_way_295073722_west",
+      "poi_name": "北京大学化学学院D区西门",
+      "category": "building_entrance",
+      "original_location": {
+        "lat": 39.9905252,
+        "lng": 116.3109864
+      },
+      "anchor_node_id": "road_access_poi_door_way_295073722_west",
+      "anchor_location": {
+        "lat": 39.990607,
+        "lng": 116.3109807
+      },
+      "projection_distance_m": 9.12,
+      "source_osm_id": "628038933",
+      "source_highway": "service",
+      "needs_review": false
     }
   ],
   "review": {
     "status": "reviewed_pass",
     "reviewed_at": "2026-05-13",
     "density": {
-      "bbox_width_m": 1125.41,
-      "bbox_height_m": 976.32,
-      "bbox_area_km2": 1.0988,
-      "nodes_per_km2": 589.75
+      "bbox_width_m": 1389.99,
+      "bbox_height_m": 1248.9,
+      "bbox_area_km2": 1.736,
+      "nodes_per_km2": 500.01
     },
     "near_duplicate_review": {
       "threshold_m": 2.0,
       "pair_count": 0,
       "sample_pairs": [],
-      "nearest_min_m": 2.05,
-      "nearest_median_m": 10.43
+      "ignored_shared_source_pair_count": 1,
+      "ignored_shared_source_sample_pairs": [
+        {
+          "from": "road_white_junction_0070",
+          "to": "road_white_endpoint_0106",
+          "distance_m": 1.784
+        }
+      ],
+      "nearest_min_m": 1.78,
+      "nearest_median_m": 11.24
     },
     "poi_projection_review": {
-      "max_distance_m": 52.46,
-      "average_distance_m": 4.57,
+      "max_distance_m": 71.04,
+      "average_distance_m": 19.26,
       "needs_review_count": 0,
-      "access_nodes_colocated_with_white_road_nodes": 6,
+      "access_nodes_colocated_with_white_road_nodes": 31,
       "note": "Access nodes may intentionally share coordinates with existing white-road nodes because each POI still needs its own route anchor."
     },
     "checks": {

@@ -268,7 +268,7 @@ def test_default_site_data_query_flow():
 
     assert response["success"] is True
     assert response["query_type"] == "scenic_search"
-    assert response["total"] == 1
+    assert response["total"] >= 1
     assert response["data"][0]["name"] == "图书馆"
     assert response["data"][0]["node_id"] == "library"
     print("test_default_site_data_query_flow passed.")

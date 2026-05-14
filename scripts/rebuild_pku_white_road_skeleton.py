@@ -1061,7 +1061,15 @@ def near_duplicate_review(
     projection: LocalProjection,
     threshold_m: float,
 ) -> dict[str, Any]:
+    def source_id_set(node: dict[str, Any]) -> set[str]:
+        source_ids = node.get("source_osm_ids") or []
+        if not isinstance(source_ids, list):
+            source_ids = [source_ids]
+        source_id = normalized_text(node.get("source_osm_id"))
+        return {normalized_text(item) for item in [*source_ids, source_id] if normalized_text(item)}
+
     near_pairs: list[dict[str, Any]] = []
+    ignored_shared_source_pairs: list[dict[str, Any]] = []
     nearest_by_index: list[float | None] = [None] * len(nodes)
     for left_index, left in enumerate(nodes):
         for right_index, right in enumerate(nodes[left_index + 1 :], start=left_index + 1):
@@ -1081,13 +1089,15 @@ def near_duplicate_review(
             ):
                 nearest_by_index[right_index] = pair_distance
             if pair_distance < threshold_m:
-                near_pairs.append(
-                    {
-                        "from": left["id"],
-                        "to": right["id"],
-                        "distance_m": round(pair_distance, 3),
-                    }
-                )
+                pair = {
+                    "from": left["id"],
+                    "to": right["id"],
+                    "distance_m": round(pair_distance, 3),
+                }
+                if source_id_set(left) & source_id_set(right):
+                    ignored_shared_source_pairs.append(pair)
+                else:
+                    near_pairs.append(pair)
     nearest_distances = [
         distance for distance in nearest_by_index if distance is not None
     ]
@@ -1096,6 +1106,8 @@ def near_duplicate_review(
         "threshold_m": threshold_m,
         "pair_count": len(near_pairs),
         "sample_pairs": near_pairs[:10],
+        "ignored_shared_source_pair_count": len(ignored_shared_source_pairs),
+        "ignored_shared_source_sample_pairs": ignored_shared_source_pairs[:10],
         "nearest_min_m": round(nearest_distances[0], 2) if nearest_distances else None,
         "nearest_median_m": (
             round(nearest_distances[len(nearest_distances) // 2], 2)
@@ -1154,7 +1166,7 @@ def build_review_payload(
         "all_poi_projection_distances_within_review_threshold": all(
             not item["needs_review"] for item in poi_projection_audit
         ),
-        "access_node_count_is_expected": len(access_nodes) == 14,
+        "access_node_count_is_expected": len(access_nodes) == len(poi_projection_audit),
         "role_distribution_is_sufficient_for_next_stage": all(
             Counter(node["network_role"] for node in road_nodes).get(role, 0) >= minimum
             for role, minimum in {

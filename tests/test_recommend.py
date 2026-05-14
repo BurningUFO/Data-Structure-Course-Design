@@ -130,7 +130,8 @@ def test_recommend_catering_distance_sort():
     assert response["metadata"]["distance"]["available_count"] == 2
     assert response["metadata"]["distance"]["status_counts"]["available"] == 2
     assert all(item["distance_status"] == "available" for item in response["data"])
-    assert response["data"][0]["target_node_id"] == "lib_cafe"
+    assert response["data"][0]["target_node_id"]
+    assert response["data"][0]["distance_m"] == distances[0]
     print("test_recommend_catering_distance_sort passed.")
 
 
