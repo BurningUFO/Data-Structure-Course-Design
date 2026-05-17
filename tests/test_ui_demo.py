@@ -1425,6 +1425,33 @@ def test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks():
     print("test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks passed.")
 
 
+def test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert 'id="indoor-quickstart"' in html
+    assert 'id="indoor-quick-actions"' in html
+    assert 'id="indoor-supported-buildings-details"' in html
+    assert 'id="indoor-supported-buildings"' in html
+    assert "室内导航最快入口" in html
+    assert "高级路线选项" in html
+    assert "多目标路线（高级）" in html
+    assert "高级地图调试选项" in html
+    assert "补充图例" in html
+    assert "renderIndoorQuickStart" in script
+    assert 'data-show-supported-indoor' in script
+    assert 'switchTab("route")' in script
+    assert 'activeTab: "route"' in script
+    assert "routeTargetLabel" in script
+    print("test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly passed.")
+
+
 def test_demo_aigc_preview_returns_template_storyboard():
     service = DemoUIService("PKU")
     response = service.aigc_preview(
@@ -1553,6 +1580,7 @@ def run_all_tests():
     test_demo_static_diary_center_contains_management_controls()
     test_demo_static_leaflet_renderer_contains_local_assets_and_fallback()
     test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks()
+    test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly()
     test_demo_aigc_preview_returns_template_storyboard()
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()

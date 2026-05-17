@@ -36,7 +36,7 @@ function createDefaultIndoorState() {
 const state = {
   bootstrap: null,
   activePage: "home",
-  activeTab: "scenic",
+  activeTab: "route",
   expandedPanel: "",
   expandedPanelElement: null,
   expandedPanelPlaceholder: null,
@@ -109,9 +109,10 @@ async function init() {
 
   try {
     await loadSiteBootstrap("");
+    switchTab("route");
     setStatus(
-      `系统就绪，默认起点为 ${getNodeName(state.currentStartNodeId)}。`,
-      "success",
+      "先在地图上点击图书馆、教学楼、宿舍等建筑，再点击“进入室内导航”；也可以直接使用左侧快捷入口。",
+      "info",
     );
   } catch (error) {
     setStatus(`初始化失败：${error.message}`, "error");
@@ -424,7 +425,7 @@ function bindForms() {
     setStatus(feedback("site_switching", "正在切换站点并重置页面状态..."), "loading");
     try {
       const bootstrap = await loadSiteBootstrap(selectedSiteId);
-      switchTab("scenic");
+      switchTab("route");
       setStatus(
         `${feedback("site_switched", "站点已切换，页面状态已重置。")} 当前站点：${bootstrap.site.name}。`,
         "success",
@@ -525,6 +526,21 @@ function bindForms() {
       state.focusedNodeId = focusEntryButton.dataset.indoorEntryFocus || "";
       renderMap();
       setStatus(`已在室外地图中定位 ${getNodeName(state.focusedNodeId)}。`, "info");
+      return;
+    }
+
+    const supportedIndoorButton = event.target.closest("[data-show-supported-indoor]");
+    if (supportedIndoorButton) {
+      switchTab("route");
+      const details = document.querySelector("#indoor-supported-buildings-details");
+      if (details) {
+        details.open = true;
+        details.scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
+        });
+      }
+      setStatus("已展开支持室内导航的建筑列表。", "info");
     }
   });
 }
@@ -859,7 +875,7 @@ function hydrateBootstrap(bootstrap) {
     document.querySelector("#route-target"),
     bootstrap.route_targets.map((item) => ({
       value: item.id,
-      label: `${item.name} · ${item.category_label} · ${item.graph_type}`,
+      label: routeTargetLabel(item),
     })),
     "library",
   );
@@ -868,7 +884,7 @@ function hydrateBootstrap(bootstrap) {
     document.querySelector("#multi-route-targets"),
     bootstrap.route_targets.map((item) => ({
       value: item.id,
-      label: `${item.name} · ${item.category_label} · ${item.graph_type}`,
+      label: routeTargetLabel(item),
     })),
     "",
   );
@@ -876,7 +892,7 @@ function hydrateBootstrap(bootstrap) {
   const diaryDestinationOptions = [{ value: "", label: "不绑定路线目标" }].concat(
     bootstrap.route_targets.map((item) => ({
       value: item.id,
-      label: `${item.name} · ${item.category_label} · ${item.graph_type}`,
+      label: routeTargetLabel(item),
     })),
   );
   populateSelect(document.querySelector("#diary-destination-node"), diaryDestinationOptions, "");
@@ -948,11 +964,26 @@ function hydrateBootstrap(bootstrap) {
   renderPresetButtons("#aigc-presets", bootstrap.presets.aigc, handleAigcPreset);
   renderPresetButtons("#route-presets", bootstrap.presets.route, handleRoutePreset);
   renderPresetButtons("#multi-route-presets", bootstrap.presets.multi_route, handleMultiRoutePreset);
+  renderIndoorQuickStart();
   fillAigcFormFromSample(defaultAigcSampleId());
   renderFeatureGrid(bootstrap.navigation);
   renderHelpPanel(bootstrap.help);
   updateActiveFeatureCaption();
   updateWorkspaceHeading();
+}
+
+function routeTargetLabel(item) {
+  const pieces = [
+    item.name || item.id || "未命名目标",
+    item.category_label || item.category || "",
+  ];
+  if (item.building_name && item.building_name !== item.name) {
+    pieces.push(item.building_name);
+  }
+  if (item.floor_label) {
+    pieces.push(item.floor_label);
+  }
+  return pieces.filter(Boolean).join(" · ");
 }
 
 function hydrateIndoorBootstrap(bootstrap) {
@@ -1150,6 +1181,7 @@ async function enterIndoorNavigation(buildingId, options = {}) {
     return null;
   }
 
+  switchTab("route");
   const requestedFloorId = options.floorId
     || state.indoor.activeFloorId
     || building.default_floor_id
@@ -1344,15 +1376,18 @@ function updateWorkspaceHeading() {
   }
 
   const feature = state.bootstrap.navigation.find((item) => item.id === state.activeTab);
+  const customDescription = state.activeTab === "route"
+    ? "先点建筑进入室内导航，再选楼层、功能区并规划路线。高级路线和多目标选项已折叠。"
+    : "";
   const title = document.querySelector("#workspace-title");
   const description = document.querySelector("#workspace-description");
   if (title) {
     title.textContent = feature ? feature.label : "工作区";
   }
   if (description) {
-    description.textContent = feature
+    description.textContent = customDescription || (feature
       ? feature.description
-      : "完成查询、推荐、路径和日记演示。";
+      : "完成查询、推荐、路径和日记演示。");
   }
 }
 
@@ -2327,6 +2362,7 @@ function renderIndoorPanel() {
   if (!meta || !body) {
     return;
   }
+  renderIndoorQuickStart();
 
   const supportedBuildings = state.indoor.buildings || [];
   if (!supportedBuildings.length) {
@@ -2412,7 +2448,12 @@ function renderIndoorEmptyState(buildings, errorMessage = "") {
   return `
     <div class="indoor-state-card">
       <strong>从支持建筑进入室内导航</strong>
-      <p>${escapeHtml(errorMessage || "可先在地图上点击建筑 popup 中的“进入室内导航”，也可以直接使用下方快捷入口。")}</p>
+      <p>${escapeHtml(errorMessage || "先点建筑，再进室内、选楼层、选功能区并规划路线。可先在地图上点击建筑 popup，也可以直接用下方快捷入口。")}</p>
+      <ol class="quickstart-list">
+        <li>点击图书馆、教学楼、宿舍等支持建筑。</li>
+        <li>进入室内导航后先确认楼层，再选功能区。</li>
+        <li>选中目标点后点击“规划路线”，再按需切换室内 / 室外路线视图。</li>
+      </ol>
       <div class="indoor-building-chips">
         ${featured
           .map((item) => `
@@ -2421,9 +2462,79 @@ function renderIndoorEmptyState(buildings, errorMessage = "") {
             </button>
           `)
           .join("")}
+        <button class="ghost-button" type="button" data-show-supported-indoor="true">
+          查看支持室内导航的建筑
+        </button>
       </div>
     </div>
   `;
+}
+
+function renderIndoorQuickStart() {
+  const status = document.querySelector("#indoor-quickstart-status");
+  const actions = document.querySelector("#indoor-quick-actions");
+  const supported = document.querySelector("#indoor-supported-buildings");
+  if (!status || !actions || !supported) {
+    return;
+  }
+
+  const buildings = state.indoor.buildings || [];
+  const preferredIds = ["library", "teaching_building_1", "dormitory_1"];
+  const preferredBuildings = preferredIds
+    .map((buildingId) => indoorBuildingRecord(buildingId))
+    .filter(Boolean);
+  const featuredBuildings = preferredBuildings.length
+    ? preferredBuildings
+    : buildings.slice(0, 3);
+  const selectedZone = (state.indoor.activePayload?.zones || []).find(
+    (item) => item.id === state.indoor.selectedZoneNodeId,
+  );
+  if (state.indoor.activeBuildingId && state.indoor.activePayload) {
+    status.textContent = selectedZone
+      ? `当前已进入 ${indoorBuildingRecord(state.indoor.activeBuildingId)?.building_name || getNodeName(state.indoor.activeBuildingId)} ${indoorPayloadFloorLabel(state.indoor.activePayload)}，可直接规划到 ${selectedZone.name}。`
+      : `当前已进入 ${indoorBuildingRecord(state.indoor.activeBuildingId)?.building_name || getNodeName(state.indoor.activeBuildingId)} ${indoorPayloadFloorLabel(state.indoor.activePayload)}，请先选择功能区。`;
+  } else {
+    status.textContent = "先点建筑进入室内导航，或直接使用下方快捷入口。";
+  }
+
+  actions.innerHTML = featuredBuildings
+    .map((building) => {
+      let label = `进入 ${building.building_name}`;
+      if (building.building_id === "library") {
+        label = "进入图书馆室内导航";
+      } else if (building.building_id === "teaching_building_1") {
+        label = "去教学楼找教室";
+      } else if (building.building_id === "dormitory_1") {
+        label = "去宿舍找房间";
+      }
+      return `
+        <button
+          class="quick-chip"
+          type="button"
+          data-enter-indoor="${escapeHtml(building.building_id)}"
+          data-indoor-floor="${escapeHtml(building.default_floor_id || "")}"
+        >
+          ${escapeHtml(label)}
+        </button>
+      `;
+    })
+    .concat([
+      `<button class="ghost-button" type="button" data-show-supported-indoor="true">查看支持室内导航的建筑</button>`,
+    ])
+    .join("");
+
+  supported.innerHTML = buildings
+    .map((building) => `
+      <button
+        class="ghost-button indoor-supported-building"
+        type="button"
+        data-enter-indoor="${escapeHtml(building.building_id)}"
+        data-indoor-floor="${escapeHtml(building.default_floor_id || "")}"
+      >
+        ${escapeHtml(building.building_name)} · ${escapeHtml((building.floor_ids || []).join(" / "))}
+      </button>
+    `)
+    .join("");
 }
 
 function renderIndoorRouteViewToggle(route, currentViewId) {

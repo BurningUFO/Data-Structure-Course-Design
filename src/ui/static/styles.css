@@ -835,6 +835,39 @@ select[multiple] {
   gap: 12px;
 }
 
+.indoor-quickstart-card {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(15, 122, 112, 0.16);
+  background: linear-gradient(180deg, rgba(239, 248, 244, 0.92), rgba(255, 255, 255, 0.92));
+}
+
+.quickstart-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.indoor-quick-actions,
+.indoor-supported-buildings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.indoor-supported-buildings {
+  padding: 12px;
+}
+
+.indoor-supported-building {
+  text-align: left;
+}
+
 .separated-form {
   margin-top: 22px;
   padding-top: 20px;

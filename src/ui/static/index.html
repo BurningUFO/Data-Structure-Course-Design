@@ -308,10 +308,26 @@
                 </section>
 
                 <section class="tab-panel" data-panel="route">
+                  <section id="indoor-quickstart" class="indoor-quickstart-card">
+                    <div class="form-section-heading">
+                      <h3>室内导航最快入口</h3>
+                      <span id="indoor-quickstart-status">先点建筑进入室内导航，或直接使用快捷入口。</span>
+                    </div>
+                    <ol class="quickstart-list">
+                      <li>点击支持建筑，进入室内导航。</li>
+                      <li>切换楼层并选择功能区。</li>
+                      <li>点击规划路线，再按需切换室内 / 室外路线视图。</li>
+                    </ol>
+                    <div id="indoor-quick-actions" class="quick-row indoor-quick-actions"></div>
+                    <details id="indoor-supported-buildings-details" class="form-advanced">
+                      <summary>查看支持室内导航的建筑</summary>
+                      <div id="indoor-supported-buildings" class="indoor-supported-buildings"></div>
+                    </details>
+                  </section>
                   <form id="route-form" class="stack-form">
                     <div class="form-section-heading">
                       <h3>单目标路径</h3>
-                      <span>从当前起点到一个目标点</span>
+                      <span>不想点地图时，可直接用这里作为备用入口</span>
                     </div>
                     <label class="field">
                       <span class="field-label">目标点</span>
@@ -320,7 +336,7 @@
                     <button class="primary-button form-primary-action" type="submit">规划路线</button>
                     <div class="quick-row compact-presets" id="route-presets"></div>
                     <details class="form-advanced">
-                      <summary>策略和交通方式</summary>
+                      <summary>高级路线选项</summary>
                       <div class="form-advanced-grid">
                         <label class="field">
                           <span class="field-label">策略</span>
@@ -334,7 +350,7 @@
                     </details>
                   </form>
                   <details class="form-advanced separated-form management-details">
-                    <summary>多目标路径</summary>
+                    <summary>多目标路线（高级）</summary>
                     <form id="multi-route-form" class="stack-form nested-form">
                       <div class="form-section-heading">
                         <h3>多目标路径</h3>
@@ -443,7 +459,7 @@
                     </div>
                   </div>
                   <details class="map-debug-panel" id="map-debug-panel">
-                    <summary>地图调试 / 验收</summary>
+                    <summary>高级地图调试选项</summary>
                     <div class="map-debug-content">
                       <div class="map-debug-status">
                         <span id="map-renderer-status" class="status-pill">渲染器加载中</span>
@@ -518,7 +534,7 @@
                     </span>
                   </div>
                   <details class="map-debug-legend">
-                    <summary>更多图例</summary>
+                    <summary>补充图例</summary>
                     <div class="map-legend map-legend-secondary" aria-label="地图调试图例">
                       <span class="map-legend-item">
                         <span class="legend-swatch legend-swatch-waypoint"></span>
