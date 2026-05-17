@@ -22,7 +22,7 @@
         </div>
 
         <nav class="side-menu" aria-label="功能导航">
-          <span class="menu-section">功能选项</span>
+          <span class="menu-section">功能</span>
           <button class="side-link active" type="button" data-tab="scenic">
             <span class="side-icon">01</span>
             <span class="side-label">综合查询</span>
@@ -67,7 +67,7 @@
           </div>
           <nav class="page-switcher" aria-label="页面切换">
             <button class="page-tab active" type="button" data-page="home">首页</button>
-            <button class="page-tab" type="button" data-page="app">主要网站</button>
+            <button class="page-tab" type="button" data-page="app">工作区</button>
           </nav>
         </header>
 
@@ -134,9 +134,9 @@
           <section class="page-view" data-page-panel="app" aria-label="主要网站">
             <section class="app-toolbar panel">
               <div>
-                <p class="eyebrow">Main Workspace</p>
-                <h1>主要网站</h1>
-                <p>在这里完成查询、推荐、路线规划、日记管理和 AIGC 轻量演示。</p>
+                <p class="eyebrow">当前功能</p>
+                <h1 id="workspace-title">综合查询</h1>
+                <p id="workspace-description">搜索地点后可直接定位或规划路线。</p>
               </div>
               <div class="site-actions">
                 <label class="field site-switcher">
@@ -154,7 +154,7 @@
               <aside class="panel control-panel" data-expandable-panel="control">
                 <div class="panel-title-row">
                   <div>
-                    <h2>功能表单</h2>
+                    <h2>操作</h2>
                     <span id="active-feature-caption" class="panel-subtitle">当前起点统一生效</span>
                   </div>
                   <button class="panel-expand-button" type="button" data-expand-panel="control" aria-label="放大功能表单">
@@ -168,16 +168,21 @@
                       <span class="field-label">关键字</span>
                       <input id="scenic-keyword" type="text" placeholder="例如：图书馆 / 宿舍 / 广场" />
                     </label>
-                    <label class="field">
-                      <span class="field-label">类别</span>
-                      <select id="scenic-category"></select>
-                    </label>
-                    <label class="field">
-                      <span class="field-label">排序</span>
-                      <select id="scenic-sort"></select>
-                    </label>
-                    <div class="quick-row" id="scenic-presets"></div>
-                    <button class="primary-button" type="submit">执行综合查询</button>
+                    <button class="primary-button form-primary-action" type="submit">查询地点</button>
+                    <div class="quick-row compact-presets" id="scenic-presets"></div>
+                    <details class="form-advanced">
+                      <summary>筛选和排序</summary>
+                      <div class="form-advanced-grid">
+                        <label class="field">
+                          <span class="field-label">类别</span>
+                          <select id="scenic-category"></select>
+                        </label>
+                        <label class="field">
+                          <span class="field-label">排序</span>
+                          <select id="scenic-sort"></select>
+                        </label>
+                      </div>
+                    </details>
                   </form>
                 </section>
 
@@ -187,16 +192,21 @@
                       <span class="field-label">关键字</span>
                       <input id="place-keyword" type="text" placeholder="例如：洗手间 / 便利店 / 教学楼" />
                     </label>
-                    <label class="field">
-                      <span class="field-label">场所类别</span>
-                      <select id="place-category"></select>
-                    </label>
-                    <label class="field">
-                      <span class="field-label">排序</span>
-                      <select id="place-sort"></select>
-                    </label>
-                    <div class="quick-row" id="place-presets"></div>
-                    <button class="primary-button" type="submit">执行场所查询</button>
+                    <button class="primary-button form-primary-action" type="submit">查询场所</button>
+                    <div class="quick-row compact-presets" id="place-presets"></div>
+                    <details class="form-advanced">
+                      <summary>筛选和排序</summary>
+                      <div class="form-advanced-grid">
+                        <label class="field">
+                          <span class="field-label">场所类别</span>
+                          <select id="place-category"></select>
+                        </label>
+                        <label class="field">
+                          <span class="field-label">排序</span>
+                          <select id="place-sort"></select>
+                        </label>
+                      </div>
+                    </details>
                   </form>
                 </section>
 
@@ -206,16 +216,21 @@
                       <span class="field-label">关键字</span>
                       <input id="catering-keyword" type="text" placeholder="例如：食堂 / 咖啡 / 餐厅" />
                     </label>
-                    <label class="field">
-                      <span class="field-label">菜系 / 筛选词</span>
-                      <input id="catering-cuisine" type="text" placeholder="例如：咖啡 / 轻食 / 清真" />
-                    </label>
-                    <label class="field">
-                      <span class="field-label">排序</span>
-                      <select id="catering-sort"></select>
-                    </label>
-                    <div class="quick-row" id="catering-presets"></div>
-                    <button class="primary-button" type="submit">执行美食推荐</button>
+                    <button class="primary-button form-primary-action" type="submit">推荐美食</button>
+                    <div class="quick-row compact-presets" id="catering-presets"></div>
+                    <details class="form-advanced">
+                      <summary>筛选和排序</summary>
+                      <div class="form-advanced-grid">
+                        <label class="field">
+                          <span class="field-label">菜系 / 筛选词</span>
+                          <input id="catering-cuisine" type="text" placeholder="例如：咖啡 / 轻食 / 清真" />
+                        </label>
+                        <label class="field">
+                          <span class="field-label">排序</span>
+                          <select id="catering-sort"></select>
+                        </label>
+                      </div>
+                    </details>
                   </form>
                 </section>
 
@@ -229,57 +244,67 @@
                       <span class="field-label">全文检索词</span>
                       <input id="diary-query" type="text" placeholder="例如：图书馆 自习 / 食堂 美食" />
                     </label>
-                    <div class="quick-row" id="diary-presets"></div>
-                    <button class="primary-button" type="submit">执行全文检索</button>
+                    <button class="primary-button form-primary-action" type="submit">检索日记</button>
+                    <div class="quick-row compact-presets" id="diary-presets"></div>
                   </form>
-                  <form id="diary-create-form" class="stack-form separated-form">
-                    <div class="form-section-heading">
-                      <h3>日记管理</h3>
-                      <span id="diary-selected-label">当前为新建模式</span>
-                    </div>
-                    <input id="diary-edit-id" type="hidden" />
-                    <label class="field">
-                      <span class="field-label">标题</span>
-                      <input id="diary-title" type="text" placeholder="例如：图书馆自习复盘" />
-                    </label>
-                    <label class="field">
-                      <span class="field-label">正文</span>
-                      <textarea id="diary-content" rows="4" placeholder="填写本次游览、学习或用餐体验。"></textarea>
-                    </label>
-                    <label class="field">
-                      <span class="field-label">目的地名称</span>
-                      <input id="diary-destination" type="text" placeholder="例如：北京大学图书馆" />
-                    </label>
-                    <label class="field">
-                      <span class="field-label">绑定路线目标</span>
-                      <select id="diary-destination-node"></select>
-                    </label>
-                    <label class="field">
-                      <span class="field-label">评分</span>
-                      <input id="diary-rating" type="number" min="0" max="5" step="0.1" placeholder="0 到 5" />
-                    </label>
-                    <label class="field">
-                      <span class="field-label">标签</span>
-                      <input id="diary-tags" type="text" placeholder="多个标签用逗号分隔，例如：学习, 图书馆" />
-                    </label>
-                    <label class="field">
-                      <span class="field-label">图片占位</span>
-                      <input id="diary-images" type="text" placeholder="多个图片路径用逗号分隔" />
-                    </label>
-                    <label class="field">
-                      <span class="field-label">视频占位</span>
-                      <input id="diary-videos" type="text" placeholder="多个视频路径用逗号分隔" />
-                    </label>
-                    <div class="form-actions">
-                      <button class="primary-button" type="submit">创建日记</button>
-                      <button id="diary-update-button" class="secondary-button compact-button" type="button">更新所选日记</button>
-                      <button id="diary-rate-button" class="ghost-button compact-button" type="button">仅更新评分</button>
-                      <button id="diary-clear-button" class="ghost-button compact-button" type="button">清空表单</button>
-                    </div>
-                    <p class="form-hint">
-                      当前为内存态演示，不会写回标准样例数据；刷新页面后新增或编辑结果会重置。
-                    </p>
-                  </form>
+                  <details class="form-advanced separated-form management-details">
+                    <summary>写日记 / 编辑日记</summary>
+                    <form id="diary-create-form" class="stack-form nested-form">
+                      <div class="form-section-heading">
+                        <h3>日记管理</h3>
+                        <span id="diary-selected-label">当前为新建模式</span>
+                      </div>
+                      <input id="diary-edit-id" type="hidden" />
+                      <label class="field">
+                        <span class="field-label">标题</span>
+                        <input id="diary-title" type="text" placeholder="例如：图书馆自习复盘" />
+                      </label>
+                      <label class="field">
+                        <span class="field-label">正文</span>
+                        <textarea id="diary-content" rows="4" placeholder="填写本次游览、学习或用餐体验。"></textarea>
+                      </label>
+                      <div class="form-advanced-grid">
+                        <label class="field">
+                          <span class="field-label">目的地名称</span>
+                          <input id="diary-destination" type="text" placeholder="例如：北京大学图书馆" />
+                        </label>
+                        <label class="field">
+                          <span class="field-label">绑定路线目标</span>
+                          <select id="diary-destination-node"></select>
+                        </label>
+                      </div>
+                      <details class="form-advanced inner-advanced">
+                        <summary>评分、标签和媒体占位</summary>
+                        <div class="form-advanced-grid">
+                          <label class="field">
+                            <span class="field-label">评分</span>
+                            <input id="diary-rating" type="number" min="0" max="5" step="0.1" placeholder="0 到 5" />
+                          </label>
+                          <label class="field">
+                            <span class="field-label">标签</span>
+                            <input id="diary-tags" type="text" placeholder="多个标签用逗号分隔，例如：学习, 图书馆" />
+                          </label>
+                          <label class="field">
+                            <span class="field-label">图片占位</span>
+                            <input id="diary-images" type="text" placeholder="多个图片路径用逗号分隔" />
+                          </label>
+                          <label class="field">
+                            <span class="field-label">视频占位</span>
+                            <input id="diary-videos" type="text" placeholder="多个视频路径用逗号分隔" />
+                          </label>
+                        </div>
+                      </details>
+                      <div class="form-actions">
+                        <button class="primary-button" type="submit">创建日记</button>
+                        <button id="diary-update-button" class="secondary-button compact-button" type="button">更新所选</button>
+                        <button id="diary-rate-button" class="ghost-button compact-button" type="button">仅评分</button>
+                        <button id="diary-clear-button" class="ghost-button compact-button" type="button">清空</button>
+                      </div>
+                      <p class="form-hint">
+                        当前为内存态演示，不会写回标准样例数据；刷新页面后新增或编辑结果会重置。
+                      </p>
+                    </form>
+                  </details>
                 </section>
 
                 <section class="tab-panel" data-panel="route">
@@ -292,33 +317,41 @@
                       <span class="field-label">目标点</span>
                       <select id="route-target"></select>
                     </label>
-                    <label class="field">
-                      <span class="field-label">策略</span>
-                      <select id="route-strategy"></select>
-                    </label>
-                    <label class="field">
-                      <span class="field-label">交通方式</span>
-                      <select id="route-transport"></select>
-                    </label>
-                    <div class="quick-row" id="route-presets"></div>
-                    <button class="primary-button" type="submit">规划路线</button>
+                    <button class="primary-button form-primary-action" type="submit">规划路线</button>
+                    <div class="quick-row compact-presets" id="route-presets"></div>
+                    <details class="form-advanced">
+                      <summary>策略和交通方式</summary>
+                      <div class="form-advanced-grid">
+                        <label class="field">
+                          <span class="field-label">策略</span>
+                          <select id="route-strategy"></select>
+                        </label>
+                        <label class="field">
+                          <span class="field-label">交通方式</span>
+                          <select id="route-transport"></select>
+                        </label>
+                      </div>
+                    </details>
                   </form>
-                  <form id="multi-route-form" class="stack-form separated-form">
-                    <div class="form-section-heading">
-                      <h3>多目标路径</h3>
-                      <span>自动计算访问顺序和总路线</span>
-                    </div>
-                    <label class="field">
-                      <span class="field-label">多个目标点</span>
-                      <select id="multi-route-targets" multiple size="6"></select>
-                    </label>
-                    <label class="check-field">
-                      <input id="multi-route-return" type="checkbox" checked />
-                      <span>访问完成后返回起点</span>
-                    </label>
-                    <div class="quick-row" id="multi-route-presets"></div>
-                    <button class="primary-button" type="submit">规划多目标路线</button>
-                  </form>
+                  <details class="form-advanced separated-form management-details">
+                    <summary>多目标路径</summary>
+                    <form id="multi-route-form" class="stack-form nested-form">
+                      <div class="form-section-heading">
+                        <h3>多目标路径</h3>
+                        <span>自动计算访问顺序和总路线</span>
+                      </div>
+                      <label class="field">
+                        <span class="field-label">多个目标点</span>
+                        <select id="multi-route-targets" multiple size="6"></select>
+                      </label>
+                      <label class="check-field">
+                        <input id="multi-route-return" type="checkbox" checked />
+                        <span>访问完成后返回起点</span>
+                      </label>
+                      <div class="quick-row compact-presets" id="multi-route-presets"></div>
+                      <button class="primary-button form-primary-action" type="submit">规划多目标路线</button>
+                    </form>
+                  </details>
                 </section>
 
                 <section class="tab-panel" data-panel="aigc">
@@ -332,23 +365,28 @@
                       <select id="aigc-sample"></select>
                     </label>
                     <label class="field">
-                      <span class="field-label">图片占位</span>
-                      <input id="aigc-image" type="text" placeholder="选择样例后自动填充，可手动修改" />
-                    </label>
-                    <label class="field">
                       <span class="field-label">文字描述</span>
                       <textarea id="aigc-prompt" rows="4" placeholder="描述希望生成的校园导览动画内容。"></textarea>
                     </label>
-                    <label class="field">
-                      <span class="field-label">风格模板</span>
-                      <select id="aigc-style"></select>
-                    </label>
-                    <label class="field">
-                      <span class="field-label">预览时长（秒）</span>
-                      <input id="aigc-duration" type="number" min="3" max="15" step="1" value="8" />
-                    </label>
-                    <div class="quick-row" id="aigc-presets"></div>
-                    <button class="primary-button" type="submit">生成轻量预览</button>
+                    <button class="primary-button form-primary-action" type="submit">生成轻量预览</button>
+                    <div class="quick-row compact-presets" id="aigc-presets"></div>
+                    <details class="form-advanced">
+                      <summary>预览参数</summary>
+                      <div class="form-advanced-grid">
+                        <label class="field">
+                          <span class="field-label">图片占位</span>
+                          <input id="aigc-image" type="text" placeholder="选择样例后自动填充，可手动修改" />
+                        </label>
+                        <label class="field">
+                          <span class="field-label">风格模板</span>
+                          <select id="aigc-style"></select>
+                        </label>
+                        <label class="field">
+                          <span class="field-label">预览时长（秒）</span>
+                          <input id="aigc-duration" type="number" min="3" max="15" step="1" value="8" />
+                        </label>
+                      </div>
+                    </details>
                     <p class="form-hint">
                       当前只返回模板化预览结构，不调用真实生成模型；第十二周可在此基础上继续增强。
                     </p>
@@ -374,76 +412,89 @@
                   <div class="panel-title-row">
                     <div>
                       <h2>校园真实地图</h2>
-                      <span id="map-renderer-subtitle" class="panel-subtitle">真实底图、本地 OSM 图层与 SVG fallback 可切换</span>
+                      <span id="map-renderer-subtitle" class="panel-subtitle">路线、地点和校园道路在这里统一展示</span>
                     </div>
                     <div class="panel-actions">
-                      <div id="map-renderer-controls" class="renderer-toggle" role="group" aria-label="地图渲染器切换">
+                      <div id="map-renderer-controls" class="renderer-toggle map-mode-toggle" role="group" aria-label="地图模式">
                         <button class="renderer-toggle-button" type="button" data-map-renderer="leaflet_geo">
-                          Leaflet
+                          真实地图
                         </button>
                         <button class="renderer-toggle-button" type="button" data-map-renderer="simple_svg">
-                          SVG
+                          简图
                         </button>
                       </div>
                       <button class="panel-reset-button" id="map-reset-view" type="button">
-                        视图复位
+                        重置视图
                       </button>
                       <button class="panel-expand-button" type="button" data-expand-panel="map" aria-label="放大校园简图">
                         放大
                       </button>
                     </div>
                   </div>
-                  <div class="map-demo-toolbar" aria-label="地图演示控制台">
+                  <div class="map-demo-toolbar" aria-label="地图快捷操作">
                     <div class="map-demo-status">
-                      <span id="map-renderer-status" class="status-pill">渲染器加载中</span>
-                      <span id="map-basemap-status" class="status-pill">底图待加载</span>
                       <span id="map-data-status" class="status-pill">GeoJSON 待加载</span>
-                      <span id="map-osm-status" class="status-pill">本地 OSM 待加载</span>
                       <span id="map-route-status" class="status-pill">路线未规划</span>
                     </div>
                     <div class="map-demo-actions">
-                      <div id="map-basemap-controls" class="renderer-toggle compact-toggle" role="group" aria-label="Leaflet 底图模式切换">
-                        <button class="renderer-toggle-button" type="button" data-map-basemap="real_map">
-                          真实底图
-                        </button>
-                        <button class="renderer-toggle-button" type="button" data-map-basemap="none">
-                          无底图
-                        </button>
-                      </div>
-                      <div id="map-osm-layer-controls" class="renderer-toggle compact-toggle" role="group" aria-label="本地 OSM 图层切换">
-                        <button class="renderer-toggle-button" type="button" data-osm-layer="roads">
-                          OSM 道路
-                        </button>
-                        <button class="renderer-toggle-button" type="button" data-osm-layer="buildings">
-                          建筑
-                        </button>
-                        <button class="renderer-toggle-button" type="button" data-osm-layer="water_landuse">
-                          水域/绿地
-                        </button>
-                      </div>
-                      <div id="white-road-role-controls" class="inspection-toggle" role="group" aria-label="白线节点角色筛选">
-                        <button class="inspection-toggle-button" type="button" data-white-road-role="junction">
-                          junction
-                        </button>
-                        <button class="inspection-toggle-button" type="button" data-white-road-role="bend">
-                          bend
-                        </button>
-                        <button class="inspection-toggle-button" type="button" data-white-road-role="endpoint">
-                          endpoint
-                        </button>
-                        <button class="inspection-toggle-button" type="button" data-white-road-role="poi_access">
-                          poi_access
-                        </button>
-                      </div>
-                      <label class="inspection-check">
-                        <input id="white-road-edge-toggle" type="checkbox" checked />
-                        <span>白线边</span>
-                      </label>
-                      <button class="ghost-button" type="button" data-demo-action="single-route">演示单目标</button>
-                      <button class="ghost-button" type="button" data-demo-action="multi-route">演示多目标</button>
-                      <button class="ghost-button" type="button" data-demo-action="clear-route">清空路线</button>
+                      <button class="route-button" type="button" data-demo-action="single-route">去图书馆</button>
+                      <button class="ghost-button" type="button" data-demo-action="multi-route">图书馆 + 食堂</button>
+                      <button class="ghost-button" type="button" data-demo-action="clear-route">清空</button>
                     </div>
                   </div>
+                  <details class="map-debug-panel" id="map-debug-panel">
+                    <summary>地图调试 / 验收</summary>
+                    <div class="map-debug-content">
+                      <div class="map-debug-status">
+                        <span id="map-renderer-status" class="status-pill">渲染器加载中</span>
+                        <span id="map-basemap-status" class="status-pill">底图待加载</span>
+                        <span id="map-osm-status" class="status-pill">本地 OSM 待加载</span>
+                      </div>
+                      <div class="map-debug-controls">
+                        <div id="map-basemap-controls" class="renderer-toggle compact-toggle" role="group" aria-label="Leaflet 底图模式切换">
+                          <button class="renderer-toggle-button" type="button" data-map-basemap="real_map">
+                            真实底图
+                          </button>
+                          <button class="renderer-toggle-button" type="button" data-map-basemap="none">
+                            无底图
+                          </button>
+                        </div>
+                        <div id="map-osm-layer-controls" class="renderer-toggle compact-toggle" role="group" aria-label="本地 OSM 图层切换">
+                          <button class="renderer-toggle-button" type="button" data-osm-layer="roads">
+                            OSM 道路
+                          </button>
+                          <button class="renderer-toggle-button" type="button" data-osm-layer="buildings">
+                            建筑
+                          </button>
+                          <button class="renderer-toggle-button" type="button" data-osm-layer="water_landuse">
+                            水域/绿地
+                          </button>
+                        </div>
+                        <div id="white-road-role-controls" class="inspection-toggle" role="group" aria-label="白线节点角色筛选">
+                          <button class="inspection-toggle-button" type="button" data-white-road-role="junction">
+                            junction
+                          </button>
+                          <button class="inspection-toggle-button" type="button" data-white-road-role="bend">
+                            bend
+                          </button>
+                          <button class="inspection-toggle-button" type="button" data-white-road-role="endpoint">
+                            endpoint
+                          </button>
+                          <button class="inspection-toggle-button" type="button" data-white-road-role="poi_access">
+                            poi_access
+                          </button>
+                        </div>
+                        <label class="inspection-check">
+                          <input id="path-node-toggle" type="checkbox" />
+                          <span>显示路径节点</span>
+                        </label>
+                        <label class="inspection-check">
+                          <input id="white-road-edge-toggle" type="checkbox" checked />
+                          <span>白线边</span>
+                        </label>
+                      </div>
+                    </div>
+                  </details>
                   <div class="map-stage">
                     <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
                     <div id="leaflet-map" class="leaflet-map" aria-label="Leaflet GeoJSON 校园地图" hidden></div>
@@ -465,35 +516,40 @@
                       <span class="legend-swatch legend-swatch-node"></span>
                       POI 标记
                     </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-waypoint"></span>
-                      弱化路网点
-                    </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-white-road"></span>
-                      白线骨架点
-                    </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-poi-access"></span>
-                      POI 接驳点
-                    </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-fallback"></span>
-                      fallback 直线段
-                    </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-osm-road"></span>
-                      OSM 道路
-                    </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-osm-building"></span>
-                      建筑
-                    </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-osm-landuse"></span>
-                      水域 / 绿地
-                    </span>
                   </div>
+                  <details class="map-debug-legend">
+                    <summary>更多图例</summary>
+                    <div class="map-legend map-legend-secondary" aria-label="地图调试图例">
+                      <span class="map-legend-item">
+                        <span class="legend-swatch legend-swatch-waypoint"></span>
+                        弱化路网点
+                      </span>
+                      <span class="map-legend-item">
+                        <span class="legend-swatch legend-swatch-white-road"></span>
+                        白线骨架点
+                      </span>
+                      <span class="map-legend-item">
+                        <span class="legend-swatch legend-swatch-poi-access"></span>
+                        POI 接驳点
+                      </span>
+                      <span class="map-legend-item">
+                        <span class="legend-swatch legend-swatch-fallback"></span>
+                        fallback 直线段
+                      </span>
+                      <span class="map-legend-item">
+                        <span class="legend-swatch legend-swatch-osm-road"></span>
+                        OSM 道路
+                      </span>
+                      <span class="map-legend-item">
+                        <span class="legend-swatch legend-swatch-osm-building"></span>
+                        建筑
+                      </span>
+                      <span class="map-legend-item">
+                        <span class="legend-swatch legend-swatch-osm-landuse"></span>
+                        水域 / 绿地
+                      </span>
+                    </div>
+                  </details>
                   <p id="map-caption" class="map-caption">
                     地图加载完成后会在这里显示高亮说明。
                   </p>
@@ -514,7 +570,7 @@
                 <div class="panel-title-row">
                   <div>
                     <h2>结果与步骤</h2>
-                    <span class="panel-subtitle">点击卡片即可定位或规划路线</span>
+                    <span class="panel-subtitle">优先使用规划路线和定位按钮，管理操作已收起</span>
                   </div>
                   <button class="panel-expand-button" type="button" data-expand-panel="result" aria-label="放大结果与步骤">
                     放大
@@ -537,7 +593,7 @@
                 <section class="result-section">
                   <div class="section-heading">
                     <h3>路径步骤</h3>
-                    <span class="meta-text">室内段主要在这里查看</span>
+                    <span class="meta-text">展开后查看逐步说明</span>
                   </div>
                   <div id="route-steps" class="step-list empty-state">
                     暂无步骤

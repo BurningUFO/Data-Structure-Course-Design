@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "stage": "M17_pku_poi_enrichment",
+    "site_id": "PKU",
+    "data_source": "data/sites/PKU/outdoor.json",
+    "runtime_ui_calls_overpass": false,
+    "runtime_ui_calls_osmnx": false,
+    "note": "Audit summary reconstructed from the committed PKU outdoor POI enrichment fields."
+  },
+  "summary": {
+    "new_poi_count": 97,
+    "final_poi_count": 111,
+    "generated_access_node_count": 111,
+    "fallback_edge_count": 0,
+    "poi_projection_needs_review_count": 0
+  },
+  "source_counts": {
+    "overpass_poi": 45,
+    "overpass_named_building": 20,
+    "generated_building_directional_entrance": 32
+  },
+  "category_counts": {
+    "building": 20,
+    "building_entrance": 32,
+    "catering": 11,
+    "education": 5,
+    "landmark": 3,
+    "parking": 1,
+    "service": 6,
+    "shopping": 10,
+    "sports": 9
+  },
+  "checks": {
+    "all_poi_nodes_have_access_anchor": true,
+    "all_generated_access_nodes_exist": true,
+    "all_virtual_doors_have_direction_and_parent_building": true,
+    "no_runtime_network_dependency": true
+  }
+}

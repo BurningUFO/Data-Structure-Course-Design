@@ -1156,6 +1156,7 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'id="map-basemap-status"' in html
     assert 'id="white-road-role-controls"' in html
     assert 'id="white-road-edge-toggle"' in html
+    assert 'id="path-node-toggle"' in html
     assert 'data-map-renderer="leaflet_geo"' in html
     assert 'data-map-renderer="simple_svg"' in html
     assert 'data-map-basemap="real_map"' in html
@@ -1192,8 +1193,12 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "syncLeafletBasemapLayer" in script
     assert "switchBasemapMode" in script
     assert "toggleWhiteRoadRole" in script
+    assert "togglePathNodeVisibility" in script
     assert "refreshLeafletInspectionLayers" in script
     assert "shouldRenderWhiteRoadNode" in script
+    assert "isPathNodeData" in script
+    assert "isPathNodeFeature" in script
+    assert "pathNodesVisible: false" in script
     assert "shouldRenderWhiteRoadEdge" in script
     assert 'edgeType === "white_road" || edgeType === "poi_access"' in script
     assert "syncLeafletRouteLayer" in script
