@@ -1,8 +1,16 @@
 {
   "graph_id": "PKU_indoor_LIB",
   "graph_type": "indoor",
+  "building_id": "library",
   "building_name": "图书馆",
+  "template_id": "library_service_v1",
   "floor": "1F",
+  "default_floor_id": "F1",
+  "floor_ids": [
+    "F1",
+    "F2",
+    "F3"
+  ],
   "nodes": [
     {
       "id": "lib_entrance",
@@ -10,11 +18,28 @@
       "type": "hall",
       "is_gate": true,
       "sub_graph_id": null,
-      "tags": ["大厅", "入口"],
+      "tags": [
+        "图书馆",
+        "大厅",
+        "入口"
+      ],
       "description": "图书馆主入口大厅，连接室外广场。",
       "category": "hall",
-      "facilities": ["咨询台", "公告栏", "雨伞架"],
-      "location": {"lat": 39.9915, "lng": 116.3070}
+      "facilities": [
+        "咨询台",
+        "公告栏",
+        "雨伞架"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 56,
+        "y": 240
+      },
+      "location": {
+        "lat": 39.991735,
+        "lng": 116.30305
+      }
     },
     {
       "id": "lib_reception",
@@ -22,11 +47,22 @@
       "type": "service",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["服务台", "借还书"],
+      "tags": [
+        "服务台",
+        "借还书"
+      ],
       "description": "图书馆总服务台，提供借还书和咨询服务。",
       "category": "service",
-      "facilities": ["借还书终端", "咨询服务"],
-      "open_hours": "08:00-22:00"
+      "facilities": [
+        "借还书终端",
+        "咨询服务"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 132,
+        "y": 160
+      }
     },
     {
       "id": "lib_reading_room_1",
@@ -34,35 +70,49 @@
       "type": "reading_room",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["阅览室", "社会科学", "中文"],
+      "tags": [
+        "阅览室",
+        "社会科学",
+        "中文"
+      ],
       "description": "中文社会科学类图书阅览室。",
       "category": "reading_room",
-      "facilities": ["阅览座位", "电源插座", "WiFi"],
-      "capacity": 200
-    },
-    {
-      "id": "lib_reading_room_2",
-      "name": "自然科学阅览室",
-      "type": "reading_room",
-      "is_gate": false,
-      "sub_graph_id": null,
-      "tags": ["阅览室", "自然科学", "理工"],
-      "description": "自然科学类图书阅览室。",
-      "category": "reading_room",
-      "facilities": ["阅览座位", "电源插座", "WiFi"],
-      "capacity": 180
+      "facilities": [
+        "阅览座位",
+        "电源插座",
+        "WiFi"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 132,
+        "y": 320
+      }
     },
     {
       "id": "lib_cafe",
       "name": "图书馆咖啡厅",
-      "type": "facility",
+      "type": "service",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["咖啡", "休息", "轻食"],
+      "tags": [
+        "咖啡",
+        "休息",
+        "轻食"
+      ],
       "description": "图书馆内咖啡厅，提供咖啡和轻食。",
       "category": "catering",
-      "facilities": ["吧台", "座位", "充电座"],
-      "open_hours": "08:00-21:00"
+      "facilities": [
+        "吧台",
+        "座位",
+        "充电座"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 244,
+        "y": 320
+      }
     },
     {
       "id": "lib_toilet_1f",
@@ -70,10 +120,21 @@
       "type": "facility",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["洗手间", "卫生间"],
+      "tags": [
+        "洗手间"
+      ],
       "description": "图书馆一楼公共洗手间。",
       "category": "restroom",
-      "facilities": ["洗手间", "无障碍卫生间"],
+      "facilities": [
+        "洗手间",
+        "无障碍卫生间"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 332,
+        "y": 304
+      },
       "is_indoor": true,
       "indoor_building": "图书馆"
     },
@@ -83,10 +144,20 @@
       "type": "staircase",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["楼梯", "上下楼"],
+      "tags": [
+        "楼梯"
+      ],
       "description": "图书馆主楼梯，连接各楼层。",
       "category": "passage",
-      "facilities": ["楼梯扶手"]
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 332,
+        "y": 96
+      }
     },
     {
       "id": "lib_elevator",
@@ -94,10 +165,22 @@
       "type": "elevator",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["电梯", "无障碍"],
+      "tags": [
+        "电梯",
+        "无障碍"
+      ],
       "description": "图书馆电梯，可达各楼层。",
       "category": "passage",
-      "facilities": ["电梯", "盲文按钮"]
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 332,
+        "y": 176
+      }
     },
     {
       "id": "lib_self_serve",
@@ -105,32 +188,857 @@
       "type": "service",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["自助", "借还书"],
+      "tags": [
+        "自助",
+        "借还书"
+      ],
       "description": "自助借还书区域，可用校园卡自助操作。",
       "category": "service",
-      "facilities": ["自助借还机", "查询终端"]
+      "facilities": [
+        "自助借还机",
+        "查询终端"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 244,
+        "y": 160
+      }
+    },
+    {
+      "id": "lib_staircase_f2",
+      "name": "二楼楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "楼梯"
+      ],
+      "description": "图书馆二楼楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 332,
+        "y": 96
+      }
+    },
+    {
+      "id": "lib_elevator_f2",
+      "name": "二楼电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "电梯"
+      ],
+      "description": "图书馆二楼电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 332,
+        "y": 176
+      }
+    },
+    {
+      "id": "lib_reading_room_2",
+      "name": "自然科学阅览室",
+      "type": "reading_room",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "阅览室",
+        "自然科学"
+      ],
+      "description": "自然科学类图书阅览室。",
+      "category": "reading_room",
+      "facilities": [
+        "阅览座位",
+        "WiFi"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 132,
+        "y": 96
+      }
+    },
+    {
+      "id": "lib_digital_room_2f",
+      "name": "数字阅览区",
+      "type": "reading_room",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "数字阅览"
+      ],
+      "description": "数字资源与数据库阅览区。",
+      "category": "reading_room",
+      "facilities": [
+        "终端",
+        "WiFi"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 132,
+        "y": 176
+      }
+    },
+    {
+      "id": "lib_group_room_2f",
+      "name": "小组研讨室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "研讨"
+      ],
+      "description": "适合小组学习与汇报的研讨室。",
+      "category": "education",
+      "facilities": [
+        "白板",
+        "投影"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 132,
+        "y": 304
+      }
+    },
+    {
+      "id": "lib_toilet_2f",
+      "name": "二楼洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "洗手间"
+      ],
+      "description": "图书馆二楼公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 244,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "图书馆"
+    },
+    {
+      "id": "lib_consult_room_2f",
+      "name": "咨询服务室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "咨询"
+      ],
+      "description": "二楼咨询与借阅辅助服务。",
+      "category": "service",
+      "facilities": [
+        "服务台"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    },
+    {
+      "id": "lib_staircase_f3",
+      "name": "三楼楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "楼梯"
+      ],
+      "description": "图书馆三楼楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 332,
+        "y": 96
+      }
+    },
+    {
+      "id": "lib_elevator_f3",
+      "name": "三楼电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "电梯"
+      ],
+      "description": "图书馆三楼电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 332,
+        "y": 176
+      }
+    },
+    {
+      "id": "lib_archive_room_3f",
+      "name": "馆藏资料室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "资料室"
+      ],
+      "description": "馆藏资料与专题书库。",
+      "category": "service",
+      "facilities": [
+        "档案柜"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 132,
+        "y": 96
+      }
+    },
+    {
+      "id": "lib_quiet_room_3f",
+      "name": "安静自习区",
+      "type": "reading_room",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "自习"
+      ],
+      "description": "三楼安静自习区。",
+      "category": "reading_room",
+      "facilities": [
+        "阅览座位",
+        "插座"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 132,
+        "y": 176
+      }
+    },
+    {
+      "id": "lib_reference_room_3f",
+      "name": "参考咨询区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "咨询"
+      ],
+      "description": "参考咨询与检索辅导区域。",
+      "category": "service",
+      "facilities": [
+        "咨询台"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 132,
+        "y": 304
+      }
+    },
+    {
+      "id": "lib_toilet_3f",
+      "name": "三楼洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "洗手间"
+      ],
+      "description": "图书馆三楼公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 244,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "图书馆"
+    },
+    {
+      "id": "lib_rest_area_3f",
+      "name": "休息区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "休息"
+      ],
+      "description": "馆内休息区。",
+      "category": "service",
+      "facilities": [
+        "座椅"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
     }
   ],
   "edges": [
-    {"from": "lib_entrance", "to": "lib_reception", "distance": 10, "type": "indoor_path", "congestion": 0.3, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_reception", "to": "lib_entrance", "distance": 10, "type": "indoor_path", "congestion": 0.3, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_entrance", "to": "lib_reading_room_1", "distance": 25, "type": "indoor_path", "congestion": 0.4, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_reading_room_1", "to": "lib_entrance", "distance": 25, "type": "indoor_path", "congestion": 0.4, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_entrance", "to": "lib_reading_room_2", "distance": 30, "type": "indoor_path", "congestion": 0.4, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_reading_room_2", "to": "lib_entrance", "distance": 30, "type": "indoor_path", "congestion": 0.4, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_entrance", "to": "lib_cafe", "distance": 15, "type": "indoor_path", "congestion": 0.5, "ideal_speed": 1.2, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_cafe", "to": "lib_entrance", "distance": 15, "type": "indoor_path", "congestion": 0.5, "ideal_speed": 1.2, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_entrance", "to": "lib_toilet_1f", "distance": 20, "type": "indoor_path", "congestion": 0.2, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_toilet_1f", "to": "lib_entrance", "distance": 20, "type": "indoor_path", "congestion": 0.2, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_entrance", "to": "lib_staircase", "distance": 12, "type": "indoor_path", "congestion": 0.3, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_staircase", "to": "lib_entrance", "distance": 12, "type": "indoor_path", "congestion": 0.3, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_entrance", "to": "lib_elevator", "distance": 18, "type": "indoor_path", "congestion": 0.3, "ideal_speed": 1.5, "vehicle_access": "all"},
-    {"from": "lib_elevator", "to": "lib_entrance", "distance": 18, "type": "indoor_path", "congestion": 0.3, "ideal_speed": 1.5, "vehicle_access": "all"},
-    {"from": "lib_entrance", "to": "lib_self_serve", "distance": 8, "type": "indoor_path", "congestion": 0.5, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_self_serve", "to": "lib_entrance", "distance": 8, "type": "indoor_path", "congestion": 0.5, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only"},
-    {"from": "lib_reception", "to": "lib_self_serve", "distance": 5, "type": "indoor_path", "congestion": 0.6, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only", "description": "服务台旁的自助区"},
-    {"from": "lib_self_serve", "to": "lib_reception", "distance": 5, "type": "indoor_path", "congestion": 0.6, "ideal_speed": 1.5, "vehicle_access": "pedestrian_only", "description": "服务台旁的自助区"},
-    {"from": "lib_staircase", "to": "lib_elevator", "distance": 6, "type": "indoor_path", "congestion": 0.2, "ideal_speed": 2.0, "vehicle_access": "all"},
-    {"from": "lib_elevator", "to": "lib_staircase", "distance": 6, "type": "indoor_path", "congestion": 0.2, "ideal_speed": 2.0, "vehicle_access": "all"}
+    {
+      "from": "lib_entrance",
+      "to": "lib_reception",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 0.3,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 总服务台",
+      "description": ""
+    },
+    {
+      "from": "lib_reception",
+      "to": "lib_entrance",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 0.3,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 总服务台",
+      "description": ""
+    },
+    {
+      "from": "lib_entrance",
+      "to": "lib_reading_room_1",
+      "distance": 25,
+      "type": "indoor_path",
+      "congestion": 0.4,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 中文社科阅览室",
+      "description": ""
+    },
+    {
+      "from": "lib_reading_room_1",
+      "to": "lib_entrance",
+      "distance": 25,
+      "type": "indoor_path",
+      "congestion": 0.4,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 中文社科阅览室",
+      "description": ""
+    },
+    {
+      "from": "lib_entrance",
+      "to": "lib_cafe",
+      "distance": 15,
+      "type": "indoor_path",
+      "congestion": 0.5,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 图书馆咖啡厅",
+      "description": ""
+    },
+    {
+      "from": "lib_cafe",
+      "to": "lib_entrance",
+      "distance": 15,
+      "type": "indoor_path",
+      "congestion": 0.5,
+      "ideal_speed": 1.2,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 图书馆咖啡厅",
+      "description": ""
+    },
+    {
+      "from": "lib_entrance",
+      "to": "lib_toilet_1f",
+      "distance": 20,
+      "type": "indoor_path",
+      "congestion": 0.2,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 一楼洗手间",
+      "description": ""
+    },
+    {
+      "from": "lib_toilet_1f",
+      "to": "lib_entrance",
+      "distance": 20,
+      "type": "indoor_path",
+      "congestion": 0.2,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 一楼洗手间",
+      "description": ""
+    },
+    {
+      "from": "lib_entrance",
+      "to": "lib_staircase",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 0.3,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase",
+      "to": "lib_entrance",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 0.3,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "lib_entrance",
+      "to": "lib_elevator",
+      "distance": 18,
+      "type": "indoor_path",
+      "congestion": 0.3,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "入口 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator",
+      "to": "lib_entrance",
+      "distance": 18,
+      "type": "indoor_path",
+      "congestion": 0.3,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "入口 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_entrance",
+      "to": "lib_self_serve",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 0.5,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 自助借还区",
+      "description": ""
+    },
+    {
+      "from": "lib_self_serve",
+      "to": "lib_entrance",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 0.5,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 自助借还区",
+      "description": ""
+    },
+    {
+      "from": "lib_reception",
+      "to": "lib_self_serve",
+      "distance": 5,
+      "type": "indoor_path",
+      "congestion": 0.6,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "",
+      "description": "服务台旁的自助区"
+    },
+    {
+      "from": "lib_self_serve",
+      "to": "lib_reception",
+      "distance": 5,
+      "type": "indoor_path",
+      "congestion": 0.6,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "",
+      "description": "服务台旁的自助区"
+    },
+    {
+      "from": "lib_staircase",
+      "to": "lib_elevator",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 0.2,
+      "ideal_speed": 2.0,
+      "vehicle_access": "all",
+      "name": "楼梯间 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator",
+      "to": "lib_staircase",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 0.2,
+      "ideal_speed": 2.0,
+      "vehicle_access": "all",
+      "name": "楼梯间 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase_f2",
+      "to": "lib_elevator_f2",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 0.2,
+      "ideal_speed": 2.0,
+      "vehicle_access": "all",
+      "name": "二楼楼梯间 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f2",
+      "to": "lib_staircase_f2",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 0.2,
+      "ideal_speed": 2.0,
+      "vehicle_access": "all",
+      "name": "二楼楼梯间 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase_f2",
+      "to": "lib_reading_room_2",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼楼梯间 -> 自然科学阅览室",
+      "description": ""
+    },
+    {
+      "from": "lib_reading_room_2",
+      "to": "lib_staircase_f2",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼楼梯间 -> 自然科学阅览室",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f2",
+      "to": "lib_digital_room_2f",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼电梯 -> 数字阅览区",
+      "description": ""
+    },
+    {
+      "from": "lib_digital_room_2f",
+      "to": "lib_elevator_f2",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼电梯 -> 数字阅览区",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f2",
+      "to": "lib_group_room_2f",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼电梯 -> 小组研讨室",
+      "description": ""
+    },
+    {
+      "from": "lib_group_room_2f",
+      "to": "lib_elevator_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼电梯 -> 小组研讨室",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f2",
+      "to": "lib_toilet_2f",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼电梯 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "lib_toilet_2f",
+      "to": "lib_elevator_f2",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼电梯 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase_f2",
+      "to": "lib_consult_room_2f",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼楼梯间 -> 咨询服务室",
+      "description": ""
+    },
+    {
+      "from": "lib_consult_room_2f",
+      "to": "lib_staircase_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼楼梯间 -> 咨询服务室",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase_f3",
+      "to": "lib_archive_room_3f",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼楼梯间 -> 馆藏资料室",
+      "description": ""
+    },
+    {
+      "from": "lib_archive_room_3f",
+      "to": "lib_staircase_f3",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼楼梯间 -> 馆藏资料室",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase_f3",
+      "to": "lib_quiet_room_3f",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼楼梯间 -> 安静自习区",
+      "description": ""
+    },
+    {
+      "from": "lib_quiet_room_3f",
+      "to": "lib_staircase_f3",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼楼梯间 -> 安静自习区",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f3",
+      "to": "lib_reference_room_3f",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼电梯 -> 参考咨询区",
+      "description": ""
+    },
+    {
+      "from": "lib_reference_room_3f",
+      "to": "lib_elevator_f3",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼电梯 -> 参考咨询区",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f3",
+      "to": "lib_toilet_3f",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼电梯 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "lib_toilet_3f",
+      "to": "lib_elevator_f3",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼电梯 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f3",
+      "to": "lib_rest_area_3f",
+      "distance": 7,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼电梯 -> 休息区",
+      "description": ""
+    },
+    {
+      "from": "lib_rest_area_3f",
+      "to": "lib_elevator_f3",
+      "distance": 7,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼电梯 -> 休息区",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase",
+      "to": "lib_staircase_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase_f2",
+      "to": "lib_staircase",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase_f2",
+      "to": "lib_staircase_f3",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F2 -> F3 楼梯",
+      "description": ""
+    },
+    {
+      "from": "lib_staircase_f3",
+      "to": "lib_staircase_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F2 -> F3 楼梯",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator",
+      "to": "lib_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f2",
+      "to": "lib_elevator",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f2",
+      "to": "lib_elevator_f3",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F2 -> F3 电梯",
+      "description": ""
+    },
+    {
+      "from": "lib_elevator_f3",
+      "to": "lib_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F2 -> F3 电梯",
+      "description": ""
+    }
   ]
 }

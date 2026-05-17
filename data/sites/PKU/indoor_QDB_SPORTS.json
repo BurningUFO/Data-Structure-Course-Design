@@ -1,0 +1,1175 @@
+{
+  "graph_id": "PKU_indoor_QDB_SPORTS",
+  "graph_type": "indoor",
+  "building_id": "poi_osm_sports_way_33457546",
+  "building_name": "邱德拔体育馆",
+  "template_id": "sports_public_v1",
+  "floor": "1F",
+  "default_floor_id": "F1",
+  "floor_ids": [
+    "F1",
+    "F2",
+    "F3"
+  ],
+  "nodes": [
+    {
+      "id": "qdb_sports_entrance",
+      "name": "邱德拔体育馆门厅",
+      "type": "hall",
+      "is_gate": true,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "入口",
+        "1F"
+      ],
+      "description": "邱德拔体育馆 的主入口大厅，连接室外主门。",
+      "category": "hall",
+      "facilities": [
+        "导览牌"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 56,
+        "y": 240
+      },
+      "location": {
+        "lat": 39.9873434,
+        "lng": 116.3089475
+      }
+    },
+    {
+      "id": "qdb_sports_corridor_f1",
+      "name": "1F公共连廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "1F",
+        "公共连廊"
+      ],
+      "description": "邱德拔体育馆1F 的主通行走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "qdb_sports_stairs_f1",
+      "name": "1F楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "1F",
+        "楼梯"
+      ],
+      "description": "邱德拔体育馆1F 楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 96
+      }
+    },
+    {
+      "id": "qdb_sports_elevator_f1",
+      "name": "1F电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "1F",
+        "电梯"
+      ],
+      "description": "邱德拔体育馆1F 电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 176
+      }
+    },
+    {
+      "id": "qdb_sports_restroom_f1",
+      "name": "1F洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "1F",
+        "洗手间"
+      ],
+      "description": "邱德拔体育馆1F 公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "邱德拔体育馆"
+    },
+    {
+      "id": "qdb_sports_ticket_desk_1f",
+      "name": "邱德拔体育馆票务服务台",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "1F",
+        "票务服务台"
+      ],
+      "description": "邱德拔体育馆1F 的票务服务台。",
+      "category": "service",
+      "facilities": [
+        "票务服务台"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "qdb_sports_locker_room_1f",
+      "name": "邱德拔体育馆更衣室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "1F",
+        "更衣室"
+      ],
+      "description": "邱德拔体育馆1F 的更衣室。",
+      "category": "sports",
+      "facilities": [
+        "更衣室"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "qdb_sports_first_aid_1f",
+      "name": "邱德拔体育馆医务室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "1F",
+        "医务室"
+      ],
+      "description": "邱德拔体育馆1F 的医务室。",
+      "category": "service",
+      "facilities": [
+        "医务室"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "qdb_sports_waiting_area_1f",
+      "name": "邱德拔体育馆等候区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "1F",
+        "等候区"
+      ],
+      "description": "邱德拔体育馆1F 的等候区。",
+      "category": "service",
+      "facilities": [
+        "等候区"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    },
+    {
+      "id": "qdb_sports_corridor_f2",
+      "name": "2F公共连廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "2F",
+        "公共连廊"
+      ],
+      "description": "邱德拔体育馆2F 的主通行走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "qdb_sports_stairs_f2",
+      "name": "2F楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "2F",
+        "楼梯"
+      ],
+      "description": "邱德拔体育馆2F 楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 96
+      }
+    },
+    {
+      "id": "qdb_sports_elevator_f2",
+      "name": "2F电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "2F",
+        "电梯"
+      ],
+      "description": "邱德拔体育馆2F 电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 176
+      }
+    },
+    {
+      "id": "qdb_sports_restroom_f2",
+      "name": "2F洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "2F",
+        "洗手间"
+      ],
+      "description": "邱德拔体育馆2F 公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "邱德拔体育馆"
+    },
+    {
+      "id": "qdb_sports_court_2f",
+      "name": "邱德拔体育馆活动场地",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "2F",
+        "活动场地"
+      ],
+      "description": "邱德拔体育馆2F 的活动场地。",
+      "category": "sports",
+      "facilities": [
+        "活动场地"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "qdb_sports_spectator_area_2f",
+      "name": "邱德拔体育馆观赛区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "2F",
+        "观赛区"
+      ],
+      "description": "邱德拔体育馆2F 的观赛区。",
+      "category": "sports",
+      "facilities": [
+        "观赛区"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "qdb_sports_training_room_2f",
+      "name": "邱德拔体育馆训练室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "2F",
+        "训练室"
+      ],
+      "description": "邱德拔体育馆2F 的训练室。",
+      "category": "sports",
+      "facilities": [
+        "训练室"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "qdb_sports_service_room_2f",
+      "name": "邱德拔体育馆器材服务室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "2F",
+        "器材服务室"
+      ],
+      "description": "邱德拔体育馆2F 的器材服务室。",
+      "category": "service",
+      "facilities": [
+        "器材服务室"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    },
+    {
+      "id": "qdb_sports_corridor_f3",
+      "name": "3F公共连廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "3F",
+        "公共连廊"
+      ],
+      "description": "邱德拔体育馆3F 的主通行走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "qdb_sports_stairs_f3",
+      "name": "3F楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "3F",
+        "楼梯"
+      ],
+      "description": "邱德拔体育馆3F 楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 330,
+        "y": 96
+      }
+    },
+    {
+      "id": "qdb_sports_elevator_f3",
+      "name": "3F电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "3F",
+        "电梯"
+      ],
+      "description": "邱德拔体育馆3F 电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 330,
+        "y": 176
+      }
+    },
+    {
+      "id": "qdb_sports_restroom_f3",
+      "name": "3F洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "3F",
+        "洗手间"
+      ],
+      "description": "邱德拔体育馆3F 公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 330,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "邱德拔体育馆"
+    },
+    {
+      "id": "qdb_sports_fitness_room_3f",
+      "name": "邱德拔体育馆健身房",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "3F",
+        "健身房"
+      ],
+      "description": "邱德拔体育馆3F 的健身房。",
+      "category": "sports",
+      "facilities": [
+        "健身房"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "qdb_sports_studio_3f",
+      "name": "邱德拔体育馆多功能教室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "3F",
+        "多功能教室"
+      ],
+      "description": "邱德拔体育馆3F 的多功能教室。",
+      "category": "sports",
+      "facilities": [
+        "多功能教室"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "qdb_sports_office_3f",
+      "name": "邱德拔体育馆运营办公室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "3F",
+        "运营办公室"
+      ],
+      "description": "邱德拔体育馆3F 的运营办公室。",
+      "category": "service",
+      "facilities": [
+        "运营办公室"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "qdb_sports_rest_area_3f",
+      "name": "邱德拔体育馆休息区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "邱德拔体育馆",
+        "3F",
+        "休息区"
+      ],
+      "description": "邱德拔体育馆3F 的休息区。",
+      "category": "service",
+      "facilities": [
+        "休息区"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "qdb_sports_entrance",
+      "to": "qdb_sports_corridor_f1",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "邱德拔体育馆1F 主走廊",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f1",
+      "to": "qdb_sports_entrance",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "邱德拔体育馆1F 主走廊",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f1",
+      "to": "qdb_sports_stairs_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_stairs_f1",
+      "to": "qdb_sports_corridor_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f1",
+      "to": "qdb_sports_elevator_f1",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "1F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_elevator_f1",
+      "to": "qdb_sports_corridor_f1",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "1F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f1",
+      "to": "qdb_sports_restroom_f1",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_restroom_f1",
+      "to": "qdb_sports_corridor_f1",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f1",
+      "to": "qdb_sports_ticket_desk_1f",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 票务服务台",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_ticket_desk_1f",
+      "to": "qdb_sports_corridor_f1",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 票务服务台",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f1",
+      "to": "qdb_sports_locker_room_1f",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 更衣室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_locker_room_1f",
+      "to": "qdb_sports_corridor_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 更衣室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f1",
+      "to": "qdb_sports_first_aid_1f",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 医务室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_first_aid_1f",
+      "to": "qdb_sports_corridor_f1",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 医务室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f1",
+      "to": "qdb_sports_waiting_area_1f",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 等候区",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_waiting_area_1f",
+      "to": "qdb_sports_corridor_f1",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 等候区",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f2",
+      "to": "qdb_sports_stairs_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_stairs_f2",
+      "to": "qdb_sports_corridor_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f2",
+      "to": "qdb_sports_elevator_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "2F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_elevator_f2",
+      "to": "qdb_sports_corridor_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "2F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f2",
+      "to": "qdb_sports_restroom_f2",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_restroom_f2",
+      "to": "qdb_sports_corridor_f2",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f2",
+      "to": "qdb_sports_court_2f",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 活动场地",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_court_2f",
+      "to": "qdb_sports_corridor_f2",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 活动场地",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f2",
+      "to": "qdb_sports_spectator_area_2f",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 观赛区",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_spectator_area_2f",
+      "to": "qdb_sports_corridor_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 观赛区",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f2",
+      "to": "qdb_sports_training_room_2f",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 训练室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_training_room_2f",
+      "to": "qdb_sports_corridor_f2",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 训练室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f2",
+      "to": "qdb_sports_service_room_2f",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 器材服务室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_service_room_2f",
+      "to": "qdb_sports_corridor_f2",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 器材服务室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f3",
+      "to": "qdb_sports_stairs_f3",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_stairs_f3",
+      "to": "qdb_sports_corridor_f3",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f3",
+      "to": "qdb_sports_elevator_f3",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "3F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_elevator_f3",
+      "to": "qdb_sports_corridor_f3",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "3F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f3",
+      "to": "qdb_sports_restroom_f3",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_restroom_f3",
+      "to": "qdb_sports_corridor_f3",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f3",
+      "to": "qdb_sports_fitness_room_3f",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 健身房",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_fitness_room_3f",
+      "to": "qdb_sports_corridor_f3",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 健身房",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f3",
+      "to": "qdb_sports_studio_3f",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 多功能教室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_studio_3f",
+      "to": "qdb_sports_corridor_f3",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 多功能教室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f3",
+      "to": "qdb_sports_office_3f",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 运营办公室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_office_3f",
+      "to": "qdb_sports_corridor_f3",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 运营办公室",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_corridor_f3",
+      "to": "qdb_sports_rest_area_3f",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 休息区",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_rest_area_3f",
+      "to": "qdb_sports_corridor_f3",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 休息区",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_stairs_f1",
+      "to": "qdb_sports_stairs_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_stairs_f2",
+      "to": "qdb_sports_stairs_f1",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_elevator_f1",
+      "to": "qdb_sports_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_elevator_f2",
+      "to": "qdb_sports_elevator_f1",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_stairs_f2",
+      "to": "qdb_sports_stairs_f3",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F2 -> F3 楼梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_stairs_f3",
+      "to": "qdb_sports_stairs_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F2 -> F3 楼梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_elevator_f2",
+      "to": "qdb_sports_elevator_f3",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F2 -> F3 电梯",
+      "description": ""
+    },
+    {
+      "from": "qdb_sports_elevator_f3",
+      "to": "qdb_sports_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F2 -> F3 电梯",
+      "description": ""
+    }
+  ]
+}

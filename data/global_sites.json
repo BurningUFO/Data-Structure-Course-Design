@@ -5,7 +5,29 @@
       "name": "北京大学",
       "description": "北京大学校园，包含教学楼、图书馆、宿舍、食堂等主要建筑。",
       "location": "北京市海淀区颐和园路5号",
-      "sub_graphs": ["outdoor", "indoor_LIB", "indoor_DORM1"]
+      "sub_graphs": [
+        "outdoor",
+        "indoor_LIB",
+        "indoor_TB1",
+        "indoor_TB2",
+        "indoor_DORM1",
+        "indoor_CHEM_A",
+        "indoor_CHEM_B",
+        "indoor_CHEM_C",
+        "indoor_CHEM_D",
+        "indoor_ACCEL",
+        "indoor_YDY31",
+        "indoor_YDY32",
+        "indoor_ENGINEERING",
+        "indoor_URBAN_ENV",
+        "indoor_MATH",
+        "indoor_ANCIENT_LIB",
+        "indoor_QDB_SPORTS",
+        "indoor_WUSI_SPORTS",
+        "indoor_CANTEEN_JIAYUAN",
+        "indoor_CANTEEN_XUEYI",
+        "indoor_CANTEEN_YANNAN"
+      ]
     }
   ]
 }

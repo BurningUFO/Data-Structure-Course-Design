@@ -143,6 +143,48 @@ class Router:
         graph_layer = str(getattr(self.graph, "layer_id", "")).strip()
         return graph_layer or "default"
 
+    def _resolve_node_floor_id(self, node_id):
+        """返回节点所在楼层 ID；缺失时返回空字符串。"""
+        node_data = self.graph.nodes.get(node_id, {})
+        return str(node_data.get("floor_id", "")).strip()
+
+    def _resolve_node_floor_label(self, node_id):
+        """返回节点所在楼层展示名；缺失时回退到 floor_id。"""
+        node_data = self.graph.nodes.get(node_id, {})
+        floor_label = str(node_data.get("floor_label", "")).strip()
+        if floor_label:
+            return floor_label
+        return self._resolve_node_floor_id(node_id)
+
+    def _resolve_node_display_layer(self, node_id):
+        """
+        返回面向 UI 的层级展示文本。
+
+        室内多层节点优先展示楼层标签，保持稳定的 source_sub_graph_id
+        仍通过 from_layer / to_layer 单独透传。
+        """
+        floor_label = self._resolve_node_floor_label(node_id)
+        if floor_label:
+            return floor_label
+        return self._resolve_node_layer(node_id)
+
+    def _is_cross_layer_transition(self, start_node_id, end_node_id):
+        """
+        判断一步路径是否发生了跨层切换。
+
+        兼容两种情况：
+        - 室外 / 室内子图切换
+        - 同一 indoor_*.json 内不同 floor_id 的跨楼层切换
+        """
+        start_layer = self._resolve_node_layer(start_node_id)
+        end_layer = self._resolve_node_layer(end_node_id)
+        if start_layer != end_layer:
+            return True
+
+        start_floor_id = self._resolve_node_floor_id(start_node_id)
+        end_floor_id = self._resolve_node_floor_id(end_node_id)
+        return bool(start_floor_id and end_floor_id and start_floor_id != end_floor_id)
+
     def _get_node_name(self, node_id):
         """返回节点展示名称；缺失时退回到节点 ID。"""
         node_data = self.graph.nodes.get(node_id, {})
@@ -160,6 +202,13 @@ class Router:
             end_node_id = path[index + 1]
             start_layer = self._resolve_node_layer(start_node_id)
             end_layer = self._resolve_node_layer(end_node_id)
+            start_floor_id = self._resolve_node_floor_id(start_node_id)
+            end_floor_id = self._resolve_node_floor_id(end_node_id)
+            start_floor_label = self._resolve_node_floor_label(start_node_id)
+            end_floor_label = self._resolve_node_floor_label(end_node_id)
+            start_display_layer = self._resolve_node_display_layer(start_node_id)
+            end_display_layer = self._resolve_node_display_layer(end_node_id)
+            is_cross_layer = self._is_cross_layer_transition(start_node_id, end_node_id)
             edge_type = str(edge.get("type", "")).strip()
             edge_name = str(edge.get("name", "")).strip()
             edge_time = self._get_travel_time_seconds(edge)
@@ -173,14 +222,21 @@ class Router:
                     "to_node_name": self._get_node_name(end_node_id),
                     "from_layer": start_layer,
                     "to_layer": end_layer,
-                    "display_layer": end_layer if start_layer != end_layer else start_layer,
-                    "transition_kind": "cross_layer" if start_layer != end_layer else "same_layer",
+                    "from_floor_id": start_floor_id,
+                    "to_floor_id": end_floor_id,
+                    "from_floor_label": start_floor_label,
+                    "to_floor_label": end_floor_label,
+                    "display_layer": end_display_layer if start_display_layer != end_display_layer else start_display_layer,
+                    "transition_kind": "cross_layer" if is_cross_layer else "same_layer",
                     "edge_type": edge_type,
                     "edge_name": edge_name,
                     "description": str(edge.get("description", "")).strip(),
                     "distance_m": float(edge.get("distance", 0)),
                     "estimated_time_s": None if edge_time == float('inf') else edge_time,
                     "vehicle_access": str(edge.get("vehicle_access", "all")).strip() or "all",
+                    "is_cross_floor_transition": bool(
+                        start_floor_id and end_floor_id and start_floor_id != end_floor_id
+                    ),
                     "is_gate_transition": edge_type == "gate_link",
                 }
             )
@@ -221,17 +277,24 @@ class Router:
         segments = []
 
         for step in path_steps:
-            segment_layer = step["display_layer"]
+            segment_layer = step["to_layer"] or step["from_layer"]
+            segment_floor_id = step["to_floor_id"] or step["from_floor_id"]
+            segment_floor_label = step["to_floor_label"] or step["from_floor_label"]
             edge_distance = step["distance_m"]
             edge_time_s = step["estimated_time_s"]
 
-            if segments and segments[-1]["layer"] == segment_layer:
+            if (
+                segments
+                and segments[-1]["layer"] == segment_layer
+                and segments[-1].get("floor_id", "") == segment_floor_id
+            ):
                 segment = segments[-1]
                 if segment["path"][-1] != step["from_node_id"]:
                     segment["path"].append(step["from_node_id"])
                 segment["path"].append(step["to_node_id"])
                 segment["target_node_id"] = step["to_node_id"]
                 segment["target_node_name"] = step["to_node_name"]
+                segment["display_layer"] = step["display_layer"]
                 segment["node_count"] = len(segment["path"])
                 segment["edge_count"] += 1
                 if step["edge_name"]:
@@ -250,6 +313,9 @@ class Router:
                 {
                     "segment_index": len(segments) + 1,
                     "layer": segment_layer,
+                    "floor_id": segment_floor_id,
+                    "floor_label": segment_floor_label,
+                    "display_layer": step["display_layer"],
                     "path": [step["from_node_id"], step["to_node_id"]],
                     "start_node_id": step["from_node_id"],
                     "target_node_id": step["to_node_id"],
@@ -281,8 +347,10 @@ class Router:
                 "edge_count": 0,
                 "segment_count": 0,
                 "layer_sequence": [],
+                "floor_sequence": [],
                 "cross_layer": False,
                 "cross_layer_step_count": 0,
+                "cross_floor_step_count": 0,
                 "strategy": strategy,
                 "weight_unit": "meter" if strategy == "shortest_distance" else "second",
                 "transport_mode": transport_mode,
@@ -291,7 +359,14 @@ class Router:
         cross_layer_step_count = sum(
             1 for step in path_steps if step.get("transition_kind") == "cross_layer"
         )
+        cross_floor_step_count = sum(
+            1 for step in path_steps if step.get("is_cross_floor_transition")
+        )
         layer_sequence = [segment["layer"] for segment in segments] or [self._resolve_node_layer(path[0])]
+        floor_sequence = [
+            segment.get("floor_label") or segment.get("floor_id") or segment["layer"]
+            for segment in segments
+        ] or [self._resolve_node_display_layer(path[0])]
 
         return {
             "start_node_id": path[0],
@@ -302,8 +377,10 @@ class Router:
             "edge_count": len(path_steps),
             "segment_count": len(segments),
             "layer_sequence": layer_sequence,
+            "floor_sequence": floor_sequence,
             "cross_layer": cross_layer_step_count > 0,
             "cross_layer_step_count": cross_layer_step_count,
+            "cross_floor_step_count": cross_floor_step_count,
             "strategy": strategy,
             "weight_unit": "meter" if strategy == "shortest_distance" else "second",
             "transport_mode": transport_mode,

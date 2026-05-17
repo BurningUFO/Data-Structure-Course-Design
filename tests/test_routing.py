@@ -381,6 +381,83 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(route["segments"][0]["target_node_name"], "中文社科阅览室")
         self.assertIn("gate_link", route["segments"][0]["edge_types"])
 
+    def test_same_indoor_graph_cross_floor_uses_floor_metadata(self):
+        graph = Graph(layer_id="PKU")
+        graph.add_node("building_entry", name="测试教学楼", source_sub_graph_id="outdoor")
+        graph.add_node(
+            "indoor_gate_f1",
+            name="教学楼入口",
+            source_sub_graph_id="indoor_TEST",
+            floor_id="F1",
+            floor_label="1F",
+        )
+        graph.add_node(
+            "stairs_f1",
+            name="一层楼梯间",
+            source_sub_graph_id="indoor_TEST",
+            floor_id="F1",
+            floor_label="1F",
+        )
+        graph.add_node(
+            "stairs_f2",
+            name="二层楼梯间",
+            source_sub_graph_id="indoor_TEST",
+            floor_id="F2",
+            floor_label="2F",
+        )
+        graph.add_node(
+            "classroom_f2",
+            name="201 教室",
+            source_sub_graph_id="indoor_TEST",
+            floor_id="F2",
+            floor_label="2F",
+        )
+
+        directed_edges = [
+            ("building_entry", "indoor_gate_f1", 0, "gate_link"),
+            ("indoor_gate_f1", "building_entry", 0, "gate_link"),
+            ("indoor_gate_f1", "stairs_f1", 8, "indoor_path"),
+            ("stairs_f1", "indoor_gate_f1", 8, "indoor_path"),
+            ("stairs_f1", "stairs_f2", 6, "stairs"),
+            ("stairs_f2", "stairs_f1", 6, "stairs"),
+            ("stairs_f2", "classroom_f2", 10, "indoor_path"),
+            ("classroom_f2", "stairs_f2", 10, "indoor_path"),
+        ]
+        for source_id, target_id, distance, edge_type in directed_edges:
+            graph.add_edge(
+                source_id,
+                target_id,
+                distance=distance,
+                congestion=1.0,
+                ideal_speed=1.0,
+                type=edge_type,
+            )
+
+        router = Router(graph)
+        route = router.query_routing("building_entry", "classroom_f2")
+
+        self.assertTrue(route["success"])
+        self.assertEqual(
+            route["path"],
+            ["building_entry", "indoor_gate_f1", "stairs_f1", "stairs_f2", "classroom_f2"],
+        )
+        self.assertTrue(route["route_overview"]["cross_layer"])
+        self.assertEqual(route["route_overview"]["cross_floor_step_count"], 1)
+        self.assertEqual(route["route_overview"]["layer_sequence"], ["indoor_TEST", "indoor_TEST"])
+        self.assertEqual(route["route_overview"]["floor_sequence"], ["1F", "2F"])
+        self.assertEqual(
+            [segment["floor_id"] for segment in route["segments"]],
+            ["F1", "F2"],
+        )
+        stairs_step = next(step for step in route["path_steps"] if step["edge_type"] == "stairs")
+        self.assertEqual(stairs_step["from_layer"], "indoor_TEST")
+        self.assertEqual(stairs_step["to_layer"], "indoor_TEST")
+        self.assertEqual(stairs_step["from_floor_id"], "F1")
+        self.assertEqual(stairs_step["to_floor_id"], "F2")
+        self.assertEqual(stairs_step["display_layer"], "2F")
+        self.assertTrue(stairs_step["is_cross_floor_transition"])
+        self.assertEqual(stairs_step["transition_kind"], "cross_layer")
+
     def test_m14_white_road_outdoor_graph_has_route_edges(self):
         graph = GraphLoader.load_site_graph("PKU")
         router = Router(graph)

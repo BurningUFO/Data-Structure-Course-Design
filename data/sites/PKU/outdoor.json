@@ -83,7 +83,10 @@
       "route_anchor_node_id": "road_access_dormitory_1",
       "route_anchor_distance_m": 0.66,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_DORM1",
+      "indoor_entry_node_id": "dormitory_1"
     },
     {
       "id": "gate_east",
@@ -188,7 +191,10 @@
       "route_anchor_node_id": "road_access_library",
       "route_anchor_distance_m": 1.5,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_LIB",
+      "indoor_entry_node_id": "library"
     },
     {
       "id": "parking_lot",
@@ -272,7 +278,7 @@
       "name": "第一教学楼",
       "type": "building",
       "is_gate": true,
-      "sub_graph_id": null,
+      "sub_graph_id": "indoor_TB1",
       "tags": [
         "上课",
         "教室",
@@ -293,14 +299,17 @@
       "route_anchor_node_id": "road_access_teaching_building_1",
       "route_anchor_distance_m": 0.0,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_TB1",
+      "indoor_entry_node_id": "teaching_building_1"
     },
     {
       "id": "teaching_building_2",
       "name": "第二教学楼",
       "type": "building",
       "is_gate": true,
-      "sub_graph_id": null,
+      "sub_graph_id": "indoor_TB2",
       "tags": [
         "上课",
         "教室",
@@ -321,7 +330,10 @@
       "route_anchor_node_id": "road_access_teaching_building_2",
       "route_anchor_distance_m": 0.0,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_TB2",
+      "indoor_entry_node_id": "teaching_building_2"
     },
     {
       "id": "toilet_lib_area",
@@ -981,8 +993,8 @@
       "id": "poi_osm_catering_way_372945805",
       "name": "学一食堂",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CANTEEN_XUEYI",
       "tags": [
         "amenity:restaurant",
         "学一食堂",
@@ -1015,7 +1027,10 @@
       "route_anchor_node_id": "road_access_poi_osm_catering_way_372945805",
       "route_anchor_distance_m": 45.76,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CANTEEN_XUEYI",
+      "indoor_entry_node_id": "poi_osm_catering_way_372945805"
     },
     {
       "id": "poi_osm_catering_node_10289167329",
@@ -1101,8 +1116,8 @@
       "id": "poi_osm_catering_way_446944417",
       "name": "燕南食堂",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CANTEEN_YANNAN",
       "tags": [
         "amenity:restaurant",
         "燕南食堂",
@@ -1135,7 +1150,10 @@
       "route_anchor_node_id": "road_access_poi_osm_catering_way_446944417",
       "route_anchor_distance_m": 8.57,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CANTEEN_YANNAN",
+      "indoor_entry_node_id": "poi_osm_catering_way_446944417"
     },
     {
       "id": "poi_osm_catering_node_10709405918",
@@ -1181,8 +1199,8 @@
       "id": "poi_osm_catering_way_444894329",
       "name": "餐饮综合楼（家园食堂）",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CANTEEN_JIAYUAN",
       "tags": [
         "amenity:restaurant",
         "餐饮",
@@ -1215,7 +1233,10 @@
       "route_anchor_node_id": "road_access_poi_osm_catering_way_444894329",
       "route_anchor_distance_m": 36.36,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CANTEEN_JIAYUAN",
+      "indoor_entry_node_id": "poi_osm_catering_way_444894329"
     },
     {
       "id": "poi_osm_sports_way_226702532",
@@ -1387,8 +1408,8 @@
       "id": "poi_osm_sports_way_240832253",
       "name": "五四体育中心",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_WUSI_SPORTS",
       "tags": [
         "leisure:sports_centre",
         "五四体育中心",
@@ -1421,7 +1442,10 @@
       "route_anchor_node_id": "road_access_poi_osm_sports_way_240832253",
       "route_anchor_distance_m": 70.8,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_WUSI_SPORTS",
+      "indoor_entry_node_id": "poi_osm_sports_way_240832253"
     },
     {
       "id": "poi_osm_sports_node_4388876493",
@@ -1549,8 +1573,8 @@
       "id": "poi_osm_sports_way_33457546",
       "name": "邱德拔体育馆",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_QDB_SPORTS",
       "tags": [
         "leisure:sports_centre",
         "运动",
@@ -1583,7 +1607,10 @@
       "route_anchor_node_id": "road_access_poi_osm_sports_way_33457546",
       "route_anchor_distance_m": 25.38,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_QDB_SPORTS",
+      "indoor_entry_node_id": "poi_osm_sports_way_33457546"
     },
     {
       "id": "poi_osm_service_node_4454758189",
@@ -1909,8 +1936,8 @@
       "id": "poi_osm_education_way_866277614",
       "name": "北京大学工学院",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_ENGINEERING",
       "tags": [
         "amenity:university",
         "北京大学工学院",
@@ -1943,14 +1970,17 @@
       "route_anchor_node_id": "road_access_poi_osm_education_way_866277614",
       "route_anchor_distance_m": 3.02,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_ENGINEERING",
+      "indoor_entry_node_id": "poi_osm_education_way_866277614"
     },
     {
       "id": "poi_osm_education_node_11135733624",
       "name": "数学科学学院",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_MATH",
       "tags": [
         "amenity:college",
         "教学",
@@ -1983,7 +2013,10 @@
       "route_anchor_node_id": "road_access_poi_osm_education_node_11135733624",
       "route_anchor_distance_m": 40.96,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_MATH",
+      "indoor_entry_node_id": "poi_osm_education_node_11135733624"
     },
     {
       "id": "poi_osm_education_way_628042951",
@@ -2029,8 +2062,8 @@
       "id": "poi_osm_education_way_628032101",
       "name": "阿卜杜勒·阿齐兹国王公共图书馆北京大学分馆（古籍图书馆）",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_ANCIENT_LIB",
       "tags": [
         "amenity:library",
         "教学",
@@ -2063,7 +2096,10 @@
       "route_anchor_node_id": "road_access_poi_osm_education_way_628032101",
       "route_anchor_distance_m": 12.9,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_ANCIENT_LIB",
+      "indoor_entry_node_id": "poi_osm_education_way_628032101"
     },
     {
       "id": "poi_osm_landmark_node_9137846356",
@@ -2223,7 +2259,10 @@
       "route_anchor_node_id": "road_access_poi_osm_building_way_392552195",
       "route_anchor_distance_m": 39.32,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_ACCEL",
+      "indoor_entry_node_id": "poi_door_way_392552195_east"
     },
     {
       "id": "poi_osm_building_way_392563326",
@@ -2303,7 +2342,10 @@
       "route_anchor_node_id": "road_access_poi_osm_building_way_392563329",
       "route_anchor_distance_m": 18.74,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_YDY31",
+      "indoor_entry_node_id": "poi_door_way_392563329_north"
     },
     {
       "id": "poi_osm_building_way_392563327",
@@ -2343,7 +2385,10 @@
       "route_anchor_node_id": "road_access_poi_osm_building_way_392563327",
       "route_anchor_distance_m": 16.8,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_YDY32",
+      "indoor_entry_node_id": "poi_door_way_392563327_north"
     },
     {
       "id": "poi_osm_building_way_392552189",
@@ -2423,7 +2468,10 @@
       "route_anchor_node_id": "road_access_poi_osm_building_way_295071478",
       "route_anchor_distance_m": 27.51,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CHEM_A",
+      "indoor_entry_node_id": "poi_door_way_295071478_north"
     },
     {
       "id": "poi_osm_building_way_295071692",
@@ -2463,7 +2511,10 @@
       "route_anchor_node_id": "road_access_poi_osm_building_way_295071692",
       "route_anchor_distance_m": 16.83,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CHEM_B",
+      "indoor_entry_node_id": "poi_door_way_295071692_south"
     },
     {
       "id": "poi_osm_building_way_295072178",
@@ -2503,7 +2554,10 @@
       "route_anchor_node_id": "road_access_poi_osm_building_way_295072178",
       "route_anchor_distance_m": 31.35,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CHEM_C",
+      "indoor_entry_node_id": "poi_door_way_295072178_north"
     },
     {
       "id": "poi_osm_building_way_295073722",
@@ -2543,14 +2597,17 @@
       "route_anchor_node_id": "road_access_poi_osm_building_way_295073722",
       "route_anchor_distance_m": 17.53,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CHEM_D",
+      "indoor_entry_node_id": "poi_door_way_295073722_west"
     },
     {
       "id": "poi_osm_building_way_866277616",
       "name": "北京大学城市与环境学院",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_URBAN_ENV",
       "tags": [
         "building:university",
         "北京大学城市与环境学院",
@@ -2583,7 +2640,10 @@
       "route_anchor_node_id": "road_access_poi_osm_building_way_866277616",
       "route_anchor_distance_m": 33.14,
       "route_anchor_source": "white_road_projection",
-      "route_anchor_needs_review": false
+      "route_anchor_needs_review": false,
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_URBAN_ENV",
+      "indoor_entry_node_id": "poi_osm_building_way_866277616"
     },
     {
       "id": "poi_osm_building_way_240832247",
@@ -3035,8 +3095,8 @@
       "id": "poi_door_way_392552195_east",
       "name": "北京大学-加速器楼东门",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_ACCEL",
       "tags": [
         "东门",
         "北京大学-加速器楼",
@@ -3357,8 +3417,8 @@
       "id": "poi_door_way_392563329_north",
       "name": "北京大学-燕东园小楼31号楼北门",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_YDY31",
       "tags": [
         "北京大学-燕东园小楼31号楼",
         "北门",
@@ -3495,8 +3555,8 @@
       "id": "poi_door_way_392563327_north",
       "name": "北京大学-燕东园小楼32号楼北门",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_YDY32",
       "tags": [
         "北京大学-燕东园小楼32号楼",
         "北门",
@@ -3817,8 +3877,8 @@
       "id": "poi_door_way_295071478_north",
       "name": "北京大学化学学院A区北门",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CHEM_A",
       "tags": [
         "北京大学化学学院A区",
         "北门",
@@ -4093,8 +4153,8 @@
       "id": "poi_door_way_295071692_south",
       "name": "北京大学化学学院B区南门",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CHEM_B",
       "tags": [
         "北京大学化学学院B区",
         "南门",
@@ -4185,8 +4245,8 @@
       "id": "poi_door_way_295072178_north",
       "name": "北京大学化学学院C区北门",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CHEM_C",
       "tags": [
         "北京大学化学学院C区",
         "北门",
@@ -4415,8 +4475,8 @@
       "id": "poi_door_way_295073722_west",
       "name": "北京大学化学学院D区西门",
       "type": "poi",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CHEM_D",
       "tags": [
         "北京大学化学学院D区",
         "楼门",

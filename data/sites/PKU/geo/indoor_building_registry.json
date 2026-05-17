@@ -1,0 +1,281 @@
+{
+  "buildings": [
+    {
+      "building_id": "library",
+      "building_name": "图书馆",
+      "entry_node_id": "library",
+      "indoor_graph_id": "indoor_LIB",
+      "template_id": "library_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "复用现有 is_gate=true 建筑节点作为唯一室内外入口。"
+    },
+    {
+      "building_id": "teaching_building_1",
+      "building_name": "第一教学楼",
+      "entry_node_id": "teaching_building_1",
+      "indoor_graph_id": "indoor_TB1",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "复用现有 is_gate=true 建筑节点作为唯一室内外入口。"
+    },
+    {
+      "building_id": "teaching_building_2",
+      "building_name": "第二教学楼",
+      "entry_node_id": "teaching_building_2",
+      "indoor_graph_id": "indoor_TB2",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "复用现有 is_gate=true 建筑节点作为唯一室内外入口。"
+    },
+    {
+      "building_id": "dormitory_1",
+      "building_name": "学生宿舍31楼",
+      "entry_node_id": "dormitory_1",
+      "indoor_graph_id": "indoor_DORM1",
+      "template_id": "dormitory_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "复用现有 is_gate=true 建筑节点作为唯一室内外入口。"
+    },
+    {
+      "building_id": "poi_osm_building_way_295071478",
+      "building_name": "北京大学化学学院A区",
+      "entry_node_id": "poi_door_way_295071478_north",
+      "indoor_graph_id": "indoor_CHEM_A",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "优先复用 poi_door 节点中的北门作为唯一室内外入口。"
+    },
+    {
+      "building_id": "poi_osm_building_way_295071692",
+      "building_name": "北京大学化学学院B区",
+      "entry_node_id": "poi_door_way_295071692_south",
+      "indoor_graph_id": "indoor_CHEM_B",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "优先复用 poi_door 节点中的南门作为唯一室内外入口。"
+    },
+    {
+      "building_id": "poi_osm_building_way_295072178",
+      "building_name": "北京大学化学学院C区",
+      "entry_node_id": "poi_door_way_295072178_north",
+      "indoor_graph_id": "indoor_CHEM_C",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "优先复用 poi_door 节点中的北门作为唯一室内外入口。"
+    },
+    {
+      "building_id": "poi_osm_building_way_295073722",
+      "building_name": "北京大学化学学院D区",
+      "entry_node_id": "poi_door_way_295073722_west",
+      "indoor_graph_id": "indoor_CHEM_D",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "优先复用 poi_door 节点中的西门作为唯一室内外入口。"
+    },
+    {
+      "building_id": "poi_osm_building_way_392552195",
+      "building_name": "北京大学-加速器楼",
+      "entry_node_id": "poi_door_way_392552195_east",
+      "indoor_graph_id": "indoor_ACCEL",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "优先复用 poi_door 节点中的东门作为唯一室内外入口。"
+    },
+    {
+      "building_id": "poi_osm_building_way_392563329",
+      "building_name": "北京大学-燕东园小楼31号楼",
+      "entry_node_id": "poi_door_way_392563329_north",
+      "indoor_graph_id": "indoor_YDY31",
+      "template_id": "dormitory_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "优先复用 poi_door 节点中的北门作为唯一室内外入口。"
+    },
+    {
+      "building_id": "poi_osm_building_way_392563327",
+      "building_name": "北京大学-燕东园小楼32号楼",
+      "entry_node_id": "poi_door_way_392563327_north",
+      "indoor_graph_id": "indoor_YDY32",
+      "template_id": "dormitory_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "优先复用 poi_door 节点中的北门作为唯一室内外入口。"
+    },
+    {
+      "building_id": "poi_osm_education_way_866277614",
+      "building_name": "北京大学工学院",
+      "entry_node_id": "poi_osm_education_way_866277614",
+      "indoor_graph_id": "indoor_ENGINEERING",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少可用 poi_door 节点，回退复用建筑节点作为唯一入口。"
+    },
+    {
+      "building_id": "poi_osm_building_way_866277616",
+      "building_name": "北京大学城市与环境学院",
+      "entry_node_id": "poi_osm_building_way_866277616",
+      "indoor_graph_id": "indoor_URBAN_ENV",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少可稳定绑定的本楼门节点，回退复用建筑节点作为唯一入口。"
+    },
+    {
+      "building_id": "poi_osm_education_node_11135733624",
+      "building_name": "数学科学学院",
+      "entry_node_id": "poi_osm_education_node_11135733624",
+      "indoor_graph_id": "indoor_MATH",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少独立门节点，回退复用建筑节点作为唯一入口。"
+    },
+    {
+      "building_id": "poi_osm_education_way_628032101",
+      "building_name": "阿卜杜勒·阿齐兹国王公共图书馆北京大学分馆（古籍图书馆）",
+      "entry_node_id": "poi_osm_education_way_628032101",
+      "indoor_graph_id": "indoor_ANCIENT_LIB",
+      "template_id": "library_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少独立门节点，回退复用建筑节点作为唯一入口。"
+    },
+    {
+      "building_id": "poi_osm_sports_way_33457546",
+      "building_name": "邱德拔体育馆",
+      "entry_node_id": "poi_osm_sports_way_33457546",
+      "indoor_graph_id": "indoor_QDB_SPORTS",
+      "template_id": "sports_public_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少独立门节点，回退复用建筑节点作为唯一入口。"
+    },
+    {
+      "building_id": "poi_osm_sports_way_240832253",
+      "building_name": "五四体育中心",
+      "entry_node_id": "poi_osm_sports_way_240832253",
+      "indoor_graph_id": "indoor_WUSI_SPORTS",
+      "template_id": "sports_public_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少独立门节点，回退复用建筑节点作为唯一入口。"
+    },
+    {
+      "building_id": "poi_osm_catering_way_444894329",
+      "building_name": "餐饮综合楼（家园食堂）",
+      "entry_node_id": "poi_osm_catering_way_444894329",
+      "indoor_graph_id": "indoor_CANTEEN_JIAYUAN",
+      "template_id": "canteen_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少独立门节点，回退复用建筑节点作为唯一入口。"
+    },
+    {
+      "building_id": "poi_osm_catering_way_372945805",
+      "building_name": "学一食堂",
+      "entry_node_id": "poi_osm_catering_way_372945805",
+      "indoor_graph_id": "indoor_CANTEEN_XUEYI",
+      "template_id": "canteen_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少独立门节点，回退复用建筑节点作为唯一入口。"
+    },
+    {
+      "building_id": "poi_osm_catering_way_446944417",
+      "building_name": "燕南食堂",
+      "entry_node_id": "poi_osm_catering_way_446944417",
+      "indoor_graph_id": "indoor_CANTEEN_YANNAN",
+      "template_id": "canteen_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "缺少独立门节点，回退复用建筑节点作为唯一入口。"
+    }
+  ]
+}
