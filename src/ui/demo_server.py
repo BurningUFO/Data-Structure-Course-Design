@@ -94,6 +94,36 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
                 self._write_json(selected_service.get_osm_layers_payload())
                 return
 
+            if path == "/api/map/indoor":
+                query = parse_qs(parsed.query)
+                site_id = (query.get("site_id") or query.get("site") or [None])[0]
+                building_id = (query.get("building_id") or [None])[0]
+                floor_id = (query.get("floor") or query.get("floor_id") or [None])[0]
+                if not str(building_id or "").strip():
+                    self._write_json(
+                        {
+                            "success": False,
+                            "message": "building_id is required",
+                        },
+                        status=HTTPStatus.BAD_REQUEST,
+                    )
+                    return
+                try:
+                    selected_service = resolve_service(site_id)
+                except Exception as error:
+                    self._write_json(
+                        {
+                            "success": False,
+                            "message": f"{type(error).__name__}: {error}",
+                        },
+                        status=HTTPStatus.BAD_REQUEST,
+                    )
+                    return
+                response = selected_service.get_indoor_map_payload(str(building_id or ""), floor_id)
+                status = HTTPStatus.OK if response.get("success") else HTTPStatus.BAD_REQUEST
+                self._write_json(response, status=status)
+                return
+
             if path == "/api/health":
                 query = parse_qs(parsed.query)
                 site_id = (query.get("site_id") or query.get("site") or [None])[0]

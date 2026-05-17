@@ -330,6 +330,24 @@ class DemoUIService:
         self.osm_edge_match_lookup = self._build_osm_edge_match_lookup(self.osm_edge_matches)
         self.map_edges = self._build_map_edges(self.outdoor_graph_source)
         self.map_edge_lookup = self._build_map_edge_lookup(self.map_edges)
+        self.indoor_template_catalog = self._load_indoor_template_catalog()
+        self.indoor_template_lookup = {
+            normalize_text(item.get("template_id")): item
+            for item in self.indoor_template_catalog
+            if normalize_text(item.get("template_id"))
+        }
+        self.indoor_building_registry = self._load_indoor_building_registry()
+        self.indoor_building_lookup = {
+            normalize_text(item.get("building_id")): item
+            for item in self.indoor_building_registry
+            if normalize_text(item.get("building_id"))
+        }
+        self.indoor_graph_lookup = {
+            normalize_text(item.get("indoor_graph_id")): item
+            for item in self.indoor_building_registry
+            if normalize_text(item.get("indoor_graph_id"))
+        }
+        self.indoor_graph_sources = self._load_indoor_graph_sources()
         self.start_nodes = self._build_start_nodes()
         self.default_start_node = self._resolve_default_start_node()
         self.route_targets = self._build_route_targets()
@@ -339,6 +357,13 @@ class DemoUIService:
     def get_bootstrap_payload(self) -> dict[str, Any]:
         """Return all static data needed by the one-page UI."""
         map_geometry_stats = self._build_map_geometry_stats()
+        map_capabilities = json.loads(json.dumps(MAP_CAPABILITIES, ensure_ascii=False))
+        indoor_buildings = self._build_indoor_building_summaries()
+        map_capabilities["indoor_map_endpoint"] = "/api/map/indoor"
+        map_capabilities["indoor_navigation"] = bool(self.indoor_building_registry)
+        map_capabilities["indoor_buildings"] = indoor_buildings
+        map_capabilities["indoor_supported_buildings"] = indoor_buildings
+        map_capabilities["indoor_supported_building_count"] = len(indoor_buildings)
         return {
             "product": {
                 "name": "智能校园导览系统",
@@ -380,7 +405,8 @@ class DemoUIService:
             "aigc_samples": self._build_aigc_sample_options(),
             "presets": DEFAULT_PRESETS,
             "map_renderer": MAP_CAPABILITIES["default_renderer"],
-            "map_capabilities": json.loads(json.dumps(MAP_CAPABILITIES, ensure_ascii=False)),
+            "map_capabilities": map_capabilities,
+            "indoor_buildings": indoor_buildings,
             "map": {
                 "nodes": self.map_nodes,
                 "edges": self.map_edges,
@@ -405,6 +431,7 @@ class DemoUIService:
                 "indoor_target_count": sum(
                     1 for item in self.route_targets if item["graph_type"] == "indoor"
                 ),
+                "indoor_building_count": len(self.indoor_building_registry),
             },
         }
 
@@ -567,6 +594,132 @@ class DemoUIService:
                 "missing_file_count": len(missing_files),
             },
             "warnings": warnings,
+        }
+
+    def get_indoor_map_payload(
+        self,
+        building_id: str,
+        floor_id: str | None = None,
+    ) -> dict[str, Any]:
+        normalized_building_id = normalize_text(building_id)
+        building_entry = self.indoor_building_lookup.get(normalized_building_id)
+        if building_entry is None:
+            return {
+                "success": False,
+                "site_id": self.site_id,
+                "message": f"building not found or indoor navigation unsupported: {normalized_building_id}",
+            }
+
+        indoor_graph_id = normalize_text(building_entry.get("indoor_graph_id"))
+        graph_data = self.indoor_graph_sources.get(indoor_graph_id)
+        if graph_data is None:
+            return {
+                "success": False,
+                "site_id": self.site_id,
+                "message": f"indoor graph missing: {indoor_graph_id}",
+            }
+
+        default_floor_id = normalize_text(building_entry.get("default_floor_id")) or "F1"
+        available_floors = self._build_available_floor_summaries(
+            graph_data,
+            default_floor_id=default_floor_id,
+        )
+        available_floor_ids = {item["floor_id"] for item in available_floors}
+        requested_floor_id = normalize_text(floor_id)
+        if requested_floor_id and requested_floor_id not in available_floor_ids:
+            return {
+                "success": False,
+                "site_id": self.site_id,
+                "building_id": normalized_building_id,
+                "message": f"floor not found for building {normalized_building_id}: {requested_floor_id}",
+            }
+
+        current_floor_id = requested_floor_id or default_floor_id
+        if current_floor_id not in available_floor_ids and available_floors:
+            current_floor_id = available_floors[0]["floor_id"]
+
+        current_floor = {
+            "id": current_floor_id,
+            "label": self._floor_label_for_id(current_floor_id),
+        }
+
+        current_nodes = [
+            {
+                "id": normalize_text(node.get("id")),
+                "name": normalize_text(node.get("name")),
+                "type": normalize_text(node.get("type")),
+                "category": normalize_text(node.get("category")),
+                "category_label": CATEGORY_LABELS.get(
+                    normalize_text(node.get("category")),
+                    normalize_text(node.get("category")),
+                ),
+                "floor_id": normalize_text(node.get("floor_id")),
+                "floor_label": normalize_text(node.get("floor_label")) or current_floor["label"],
+                "layout": node.get("layout", {}),
+                "is_gate": bool(node.get("is_gate", False)),
+                "description": normalize_text(node.get("description")),
+                "facilities": list(node.get("facilities", [])),
+                "tags": node.get("tags", []),
+            }
+            for node in graph_data.get("nodes", [])
+            if normalize_text(node.get("floor_id")) == current_floor_id
+        ]
+        current_node_ids = {node["id"] for node in current_nodes}
+        current_edges = [
+            {
+                "from": normalize_text(edge.get("from")),
+                "to": normalize_text(edge.get("to")),
+                "distance_m": float(edge.get("distance", 0)),
+                "edge_type": normalize_text(edge.get("type")) or "indoor_path",
+                "name": normalize_text(edge.get("name")),
+                "description": normalize_text(edge.get("description")),
+                "vehicle_access": normalize_text(edge.get("vehicle_access")) or "pedestrian_only",
+                "from_floor_id": current_floor_id,
+                "to_floor_id": current_floor_id,
+                "from_floor_label": current_floor["label"],
+                "to_floor_label": current_floor["label"],
+                "is_cross_floor_transition": False,
+            }
+            for edge in graph_data.get("edges", [])
+            if normalize_text(edge.get("from")) in current_node_ids
+            and normalize_text(edge.get("to")) in current_node_ids
+        ]
+        zones = [
+            node
+            for node in current_nodes
+            if node["category"] not in {"passage", "hall"}
+        ]
+
+        return {
+            "success": True,
+            "site_id": self.site_id,
+            "building_id": normalized_building_id,
+            "building_name": normalize_text(building_entry.get("building_name")) or normalized_building_id,
+            "entry_node_id": normalize_text(building_entry.get("entry_node_id")),
+            "indoor_graph_id": indoor_graph_id,
+            "template_id": normalize_text(building_entry.get("template_id")),
+            "template_name": normalize_text(
+                self.indoor_template_lookup.get(normalize_text(building_entry.get("template_id")), {}).get("template_name")
+            ),
+            "available_floors": [
+                {
+                    **item,
+                    "id": item["floor_id"],
+                    "label": item["floor_label"],
+                }
+                for item in available_floors
+            ],
+            "current_floor": current_floor,
+            "current_floor_id": current_floor["id"],
+            "nodes": current_nodes,
+            "edges": current_edges,
+            "zones": zones,
+            "stats": {
+                "node_count": len(current_nodes),
+                "edge_count": len(current_edges),
+                "zone_count": len(zones),
+                "floor_count": len(available_floors),
+            },
         }
 
     def _build_site_options(self) -> list[dict[str, Any]]:
@@ -811,6 +964,195 @@ class DemoUIService:
 
     def _osm_geo_dir(self) -> Path:
         return Path(__file__).resolve().parents[2] / "data" / "sites" / self.site_id / "geo"
+
+    def _indoor_registry_path(self) -> Path:
+        return self._osm_geo_dir() / "indoor_building_registry.json"
+
+    def _indoor_template_catalog_path(self) -> Path:
+        return self._osm_geo_dir() / "indoor_template_catalog.json"
+
+    def _load_indoor_building_registry(self) -> list[dict[str, Any]]:
+        path = self._indoor_registry_path()
+        if not path.exists():
+            return []
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+        records = loaded.get("buildings", []) if isinstance(loaded, dict) else []
+        return [item for item in records if isinstance(item, dict)]
+
+    def _load_indoor_template_catalog(self) -> list[dict[str, Any]]:
+        path = self._indoor_template_catalog_path()
+        if not path.exists():
+            return []
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+        records = loaded.get("templates", []) if isinstance(loaded, dict) else []
+        return [item for item in records if isinstance(item, dict)]
+
+    def _indoor_graph_path(self, indoor_graph_id: str) -> Path:
+        return Path(__file__).resolve().parents[2] / "data" / "sites" / self.site_id / f"{indoor_graph_id}.json"
+
+    def _load_indoor_graph_sources(self) -> dict[str, dict[str, Any]]:
+        graph_sources: dict[str, dict[str, Any]] = {}
+        for item in self.indoor_building_registry:
+            indoor_graph_id = normalize_text(item.get("indoor_graph_id"))
+            if not indoor_graph_id or indoor_graph_id in graph_sources:
+                continue
+            path = self._indoor_graph_path(indoor_graph_id)
+            if not path.exists():
+                continue
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                graph_sources[indoor_graph_id] = loaded
+        return graph_sources
+
+    def _build_indoor_building_summaries(self) -> list[dict[str, Any]]:
+        summaries: list[dict[str, Any]] = []
+        for item in self.indoor_building_registry:
+            building_id = normalize_text(item.get("building_id"))
+            outdoor_node = self.graph.nodes.get(building_id, {})
+            template_id = normalize_text(item.get("template_id"))
+            summaries.append(
+                {
+                    "building_id": building_id,
+                    "building_name": normalize_text(item.get("building_name")) or building_id,
+                    "entry_node_id": normalize_text(item.get("entry_node_id")),
+                    "entry_node_name": self._resolve_node_name(normalize_text(item.get("entry_node_id"))),
+                    "indoor_graph_id": normalize_text(item.get("indoor_graph_id")),
+                    "template_id": template_id,
+                    "template_name": normalize_text(
+                        self.indoor_template_lookup.get(template_id, {}).get("template_name")
+                    ),
+                    "floor_ids": list(item.get("floor_ids", [])),
+                    "default_floor_id": normalize_text(item.get("default_floor_id")) or "F1",
+                    "building_category": normalize_text(outdoor_node.get("category")),
+                    "entry_mapping_reason": normalize_text(item.get("entry_mapping_reason")),
+                }
+            )
+        return summaries
+
+    def _resolve_indoor_building_entry(
+        self,
+        node_id: str,
+        node_data: dict[str, Any],
+    ) -> dict[str, Any] | None:
+        if node_id in self.indoor_building_lookup:
+            return self.indoor_building_lookup[node_id]
+
+        explicit_building_id = normalize_text(node_data.get("building_id"))
+        if explicit_building_id and explicit_building_id in self.indoor_building_lookup:
+            return self.indoor_building_lookup[explicit_building_id]
+
+        indoor_graph_id = (
+            normalize_text(node_data.get("indoor_graph_id"))
+            or normalize_text(node_data.get("source_sub_graph_id"))
+            or normalize_text(node_data.get("sub_graph_id"))
+        )
+        if indoor_graph_id and indoor_graph_id in self.indoor_graph_lookup:
+            return self.indoor_graph_lookup[indoor_graph_id]
+        return None
+
+    def _build_indoor_node_context(
+        self,
+        node_id: str,
+        node_data: dict[str, Any],
+    ) -> dict[str, Any]:
+        context: dict[str, Any] = {}
+        building_entry = self._resolve_indoor_building_entry(node_id, node_data)
+        indoor_graph_id = normalize_text(node_data.get("indoor_graph_id"))
+        if building_entry is not None:
+            context["building_id"] = normalize_text(building_entry.get("building_id")) or node_id
+            context["building_name"] = (
+                normalize_text(building_entry.get("building_name"))
+                or self._resolve_node_name(context["building_id"])
+                or context["building_id"]
+            )
+            context["entry_node_id"] = normalize_text(building_entry.get("entry_node_id"))
+            context["entry_node_name"] = self._resolve_node_name(context["entry_node_id"])
+            context["indoor_graph_id"] = normalize_text(building_entry.get("indoor_graph_id"))
+            context["indoor_entry_node_id"] = normalize_text(building_entry.get("entry_node_id"))
+            context["default_floor_id"] = normalize_text(building_entry.get("default_floor_id")) or "F1"
+            context["template_id"] = normalize_text(building_entry.get("template_id"))
+            context["indoor_supported"] = True
+        elif indoor_graph_id:
+            context["indoor_graph_id"] = indoor_graph_id
+            context["indoor_supported"] = bool(node_data.get("indoor_supported"))
+            context["indoor_entry_node_id"] = normalize_text(node_data.get("indoor_entry_node_id"))
+
+        source_sub_graph_id = normalize_text(
+            node_data.get("source_sub_graph_id") or node_data.get("sub_graph_id")
+        )
+        if source_sub_graph_id:
+            context["source_sub_graph_id"] = source_sub_graph_id
+
+        floor_id = normalize_text(node_data.get("floor_id"))
+        if floor_id:
+            context["floor_id"] = floor_id
+            context["floor_label"] = (
+                normalize_text(node_data.get("floor_label"))
+                or self._floor_label_for_id(floor_id)
+            )
+
+        layout = node_data.get("layout")
+        if isinstance(layout, dict) and layout:
+            context["layout"] = layout
+
+        description = normalize_text(node_data.get("description"))
+        if description:
+            context["description"] = description
+
+        facilities = node_data.get("facilities")
+        if isinstance(facilities, list) and facilities:
+            context["facilities"] = facilities
+
+        tags = node_data.get("tags")
+        if isinstance(tags, list) and tags:
+            context["tags"] = tags
+
+        if "is_gate" in node_data:
+            context["is_gate"] = bool(node_data.get("is_gate"))
+
+        return context
+
+    @staticmethod
+    def _floor_label_for_id(floor_id: str) -> str:
+        normalized = normalize_text(floor_id)
+        if normalized.startswith("F") and normalized[1:].isdigit():
+            return f"{normalized[1:]}F"
+        return normalized
+
+    def _build_available_floor_summaries(
+        self,
+        graph_data: dict[str, Any],
+        *,
+        default_floor_id: str,
+    ) -> list[dict[str, Any]]:
+        floor_ids = graph_data.get("floor_ids", [])
+        if not isinstance(floor_ids, list):
+            floor_ids = []
+
+        floor_nodes: dict[str, list[dict[str, Any]]] = {}
+        for node in graph_data.get("nodes", []):
+            floor_id = normalize_text(node.get("floor_id"))
+            if not floor_id:
+                continue
+            floor_nodes.setdefault(floor_id, []).append(node)
+
+        summaries = []
+        for floor_id in floor_ids or sorted(floor_nodes):
+            nodes = floor_nodes.get(floor_id, [])
+            zone_count = sum(
+                1
+                for node in nodes
+                if normalize_text(node.get("category")) not in {"passage", "hall"}
+            )
+            summaries.append(
+                {
+                    "floor_id": floor_id,
+                    "floor_label": self._floor_label_for_id(floor_id),
+                    "zone_count": zone_count,
+                    "is_default": floor_id == default_floor_id,
+                }
+            )
+        return summaries
 
     def _load_osm_metadata(self) -> tuple[dict[str, Any], str]:
         metadata_path = self._osm_geo_dir() / OSM_METADATA_FILE
@@ -1224,12 +1566,26 @@ class DemoUIService:
             "route_anchor_distance_m",
             "route_anchor_source",
             "route_anchor_needs_review",
+            "indoor_supported",
+            "indoor_graph_id",
+            "indoor_entry_node_id",
+            "source_sub_graph_id",
+            "floor_id",
+            "floor_label",
+            "layout",
+            "description",
+            "facilities",
+            "tags",
+            "is_gate",
         )
         return {key: node[key] for key in extra_keys if key in node}
 
-    @staticmethod
-    def _build_node_extra_properties(node: dict[str, Any]) -> dict[str, Any]:
-        return DemoUIService._extract_node_extra_fields(node)
+    def _build_node_extra_properties(self, node: dict[str, Any]) -> dict[str, Any]:
+        node_id = normalize_text(node.get("id"))
+        return {
+            **self._extract_node_extra_fields(node),
+            **self._build_indoor_node_context(node_id, node),
+        }
 
     @classmethod
     def _filter_searchable_site_records(cls, records: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1686,6 +2042,7 @@ class DemoUIService:
                     "lat": float(location.get("lat")) if location.get("lat") is not None else None,
                     "lng": float(location.get("lng")) if location.get("lng") is not None else None,
                     **self._extract_node_extra_fields(node_data),
+                    **self._build_indoor_node_context(node_id, node_data),
                 }
             )
 
@@ -1901,6 +2258,175 @@ class DemoUIService:
         node_data = self.graph.nodes.get(node_id, {})
         return normalize_text(node_data.get("name")) or node_id
 
+    @staticmethod
+    def _indoor_view_id(building_id: str, floor_id: str) -> str:
+        return f"indoor:{building_id}:{floor_id}"
+
+    def _build_indoor_route_views(self, route: dict[str, Any]) -> list[dict[str, Any]]:
+        building_views: dict[str, dict[str, Any]] = {}
+        path = route.get("path", [])
+
+        for node_id in path:
+            node_data = self.graph.nodes.get(node_id, {})
+            indoor_graph_id = normalize_text(node_data.get("source_sub_graph_id"))
+            floor_id = normalize_text(node_data.get("floor_id"))
+            if not indoor_graph_id.startswith("indoor_") or not floor_id:
+                continue
+
+            building_entry = self.indoor_graph_lookup.get(indoor_graph_id)
+            if building_entry is None:
+                continue
+
+            building_id = normalize_text(building_entry.get("building_id"))
+            available_floors = self._build_available_floor_summaries(
+                self.indoor_graph_sources.get(indoor_graph_id, {}),
+                default_floor_id=normalize_text(building_entry.get("default_floor_id")) or "F1",
+            )
+            building_view = building_views.setdefault(
+                building_id,
+                {
+                    "building_id": building_id,
+                    "building_name": normalize_text(building_entry.get("building_name")) or building_id,
+                    "indoor_graph_id": indoor_graph_id,
+                    "entry_node_id": normalize_text(building_entry.get("entry_node_id")),
+                    "default_floor_id": normalize_text(building_entry.get("default_floor_id")) or "F1",
+                    "available_floors": available_floors,
+                    "floors": {},
+                },
+            )
+            floor_view = building_view["floors"].setdefault(
+                floor_id,
+                {
+                    "view_id": self._indoor_view_id(building_id, floor_id),
+                    "floor_id": floor_id,
+                    "floor_label": normalize_text(node_data.get("floor_label")) or self._floor_label_for_id(floor_id),
+                    "path_node_ids": [],
+                    "route_node_ids": [],
+                    "highlight_node_ids": [],
+                    "path_segments": [],
+                    "path_step_indices": [],
+                    "route_step_indices": [],
+                    "contains_entry": False,
+                    "contains_target": False,
+                },
+            )
+            if not floor_view["path_node_ids"] or floor_view["path_node_ids"][-1] != node_id:
+                floor_view["path_node_ids"].append(node_id)
+            if not floor_view["route_node_ids"] or floor_view["route_node_ids"][-1] != node_id:
+                floor_view["route_node_ids"].append(node_id)
+            if node_id not in floor_view["highlight_node_ids"]:
+                floor_view["highlight_node_ids"].append(node_id)
+            if node_data.get("is_gate"):
+                floor_view["contains_entry"] = True
+            if node_id == route.get("target_node_id"):
+                floor_view["contains_target"] = True
+
+        for step in route.get("path_steps", []):
+            start_data = self.graph.nodes.get(normalize_text(step.get("from_node_id")), {})
+            end_data = self.graph.nodes.get(normalize_text(step.get("to_node_id")), {})
+            related_floors = []
+
+            for node_data in (start_data, end_data):
+                graph_id = normalize_text(node_data.get("source_sub_graph_id"))
+                floor_id = normalize_text(node_data.get("floor_id"))
+                if not graph_id.startswith("indoor_") or not floor_id:
+                    continue
+                building_entry = self.indoor_graph_lookup.get(graph_id)
+                if building_entry is None:
+                    continue
+                building_id = normalize_text(building_entry.get("building_id"))
+                related_floors.append((building_id, floor_id))
+
+            for building_id, floor_id in dict.fromkeys(related_floors):
+                building_view = building_views.get(building_id)
+                if building_view is None:
+                    continue
+                floor_view = building_view["floors"].get(floor_id)
+                if floor_view is None:
+                    continue
+                floor_view["path_step_indices"].append(step.get("step_index"))
+                floor_view["route_step_indices"].append(step.get("step_index"))
+
+            same_indoor_floor = (
+                normalize_text(start_data.get("source_sub_graph_id")).startswith("indoor_")
+                and normalize_text(start_data.get("source_sub_graph_id")) == normalize_text(end_data.get("source_sub_graph_id"))
+                and normalize_text(start_data.get("floor_id")) == normalize_text(end_data.get("floor_id"))
+                and normalize_text(start_data.get("floor_id"))
+            )
+            if not same_indoor_floor:
+                continue
+
+            building_entry = self.indoor_graph_lookup.get(normalize_text(start_data.get("source_sub_graph_id")))
+            if building_entry is None:
+                continue
+            building_id = normalize_text(building_entry.get("building_id"))
+            floor_id = normalize_text(start_data.get("floor_id"))
+            floor_view = building_views.get(building_id, {}).get("floors", {}).get(floor_id)
+            if floor_view is None:
+                continue
+            floor_view["path_segments"].append(
+                {
+                    "from": normalize_text(step.get("from_node_id")),
+                    "to": normalize_text(step.get("to_node_id")),
+                    "edge_type": normalize_text(step.get("edge_type")),
+                }
+            )
+
+        result = []
+        for building_view in building_views.values():
+            ordered_floors = []
+            for floor_meta in building_view["available_floors"]:
+                floor_view = building_view["floors"].get(floor_meta["floor_id"])
+                if floor_view is not None:
+                    ordered_floors.append(floor_view)
+            if not ordered_floors:
+                continue
+            result.append({**building_view, "floors": ordered_floors})
+        return result
+
+    @staticmethod
+    def _build_available_route_views(
+        indoor_route_views: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        views = [
+            {
+                "id": "outdoor",
+                "label": "查看室外路线",
+                "kind": "outdoor",
+            }
+        ]
+        for building_view in indoor_route_views:
+            for floor_view in building_view.get("floors", []):
+                views.append(
+                    {
+                        "id": floor_view["view_id"],
+                        "label": f"查看{building_view['building_name']}{floor_view['floor_label']}路线",
+                        "kind": "indoor",
+                        "building_id": building_view["building_id"],
+                        "building_name": building_view["building_name"],
+                        "floor_id": floor_view["floor_id"],
+                        "floor_label": floor_view["floor_label"],
+                    }
+                )
+        return views
+
+    @staticmethod
+    def _resolve_default_route_view(
+        indoor_route_views: list[dict[str, Any]],
+        route_geometry_stats: dict[str, int],
+    ) -> str:
+        has_outdoor_route = (route_geometry_stats or {}).get("route_segment_count", 0) > 0
+        if has_outdoor_route or not indoor_route_views:
+            return "outdoor"
+
+        for building_view in indoor_route_views:
+            for floor_view in building_view.get("floors", []):
+                if floor_view.get("contains_target"):
+                    return floor_view["view_id"]
+
+        first_building = indoor_route_views[0]
+        return first_building["floors"][0]["view_id"]
+
     def _build_route_overlay(self, route: dict[str, Any]) -> dict[str, Any]:
         path = route.get("path", [])
         mappable_path_node_ids = [node_id for node_id in path if node_id in self.map_node_index]
@@ -1909,6 +2435,8 @@ class DemoUIService:
             route,
             route_type="single_target",
         )
+        indoor_route_views = self._build_indoor_route_views(route)
+        available_route_views = self._build_available_route_views(indoor_route_views)
         return {
             "mappable_path_node_ids": mappable_path_node_ids,
             "mappable_path_nodes": [
@@ -1924,6 +2452,12 @@ class DemoUIService:
             "route_geojson": route_geojson,
             "route_line_coordinates": route_line_coordinates,
             "route_geometry_stats": route_geometry_stats,
+            "indoor_route_views": indoor_route_views,
+            "available_route_views": available_route_views,
+            "default_route_view": self._resolve_default_route_view(
+                indoor_route_views,
+                route_geometry_stats,
+            ),
             "stats": {
                 "route_geometry": route_geometry_stats,
             },
@@ -1958,6 +2492,8 @@ class DemoUIService:
                 display_steps.append(copied_step)
 
         route_geojson, route_line_coordinates, route_geometry_stats = self._build_multi_route_geojson(route)
+        indoor_route_views = self._build_indoor_route_views(route)
+        available_route_views = self._build_available_route_views(indoor_route_views)
         return {
             "mappable_path_node_ids": mappable_path_node_ids,
             "mappable_path_nodes": [
@@ -1972,6 +2508,12 @@ class DemoUIService:
             "route_geojson": route_geojson,
             "route_line_coordinates": route_line_coordinates,
             "route_geometry_stats": route_geometry_stats,
+            "indoor_route_views": indoor_route_views,
+            "available_route_views": available_route_views,
+            "default_route_view": self._resolve_default_route_view(
+                indoor_route_views,
+                route_geometry_stats,
+            ),
             "stats": {
                 "route_geometry": route_geometry_stats,
             },

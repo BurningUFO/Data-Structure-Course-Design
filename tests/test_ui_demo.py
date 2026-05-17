@@ -69,6 +69,14 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["map_capabilities"]["fallback_renderer"] == "simple_svg"
     assert payload["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
     assert payload["map_capabilities"]["osm_layers_endpoint"] == "/api/map/osm-layers"
+    assert payload["map_capabilities"]["indoor_map_endpoint"] == "/api/map/indoor"
+    assert payload["map_capabilities"]["indoor_navigation"] is True
+    assert payload["map_capabilities"]["indoor_supported_building_count"] >= 20
+    assert payload["map_capabilities"]["indoor_buildings"] == payload["indoor_buildings"]
+    assert payload["map_capabilities"]["indoor_supported_buildings"] == payload["indoor_buildings"]
+    assert any(item["building_id"] == "library" for item in payload["indoor_buildings"])
+    assert any(item["building_id"] == "teaching_building_1" for item in payload["indoor_buildings"])
+    assert any(item["building_id"] == "dormitory_1" for item in payload["indoor_buildings"])
     osm_layers = payload["map_capabilities"]["osm_layers"]
     assert [item["id"] for item in osm_layers["layers"]] == ["roads", "buildings", "water_landuse"]
     assert osm_layers["default_visible"]["roads"] is True
@@ -83,6 +91,7 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert basemaps["modes"][0]["network_required"] is True
     assert basemaps["modes"][1]["network_required"] is False
     assert payload["stats"]["route_target_count"] >= 10
+    assert payload["stats"]["indoor_building_count"] >= 20
     assert payload["stats"]["site_count"] >= 1
     assert payload["stats"]["aigc_sample_count"] == 3
     assert len(payload["aigc_samples"]) == 3
@@ -109,6 +118,23 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert any(item["value"] == "building" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["place_categories"])
+    library_target = next(item for item in payload["route_targets"] if item["id"] == "library")
+    room_target = next(item for item in payload["route_targets"] if item["id"] == "lib_reading_room_1")
+    dorm_target = next(item for item in payload["route_targets"] if item["id"] == "dorm1_room_101")
+    assert library_target["indoor_supported"] is True
+    assert library_target["indoor_graph_id"] == "indoor_LIB"
+    assert library_target["indoor_entry_node_id"] == "library"
+    assert library_target["building_id"] == "library"
+    assert library_target["building_name"] == "图书馆"
+    assert room_target["building_id"] == "library"
+    assert room_target["building_name"] == "图书馆"
+    assert room_target["floor_id"] == "F1"
+    assert room_target["floor_label"] == "1F"
+    assert room_target["source_sub_graph_id"] == "indoor_LIB"
+    assert room_target["layout"]["x"] == 132
+    assert room_target["layout"]["y"] == 320
+    assert dorm_target["building_id"] == "dormitory_1"
+    assert dorm_target["floor_id"] == "F1"
     print("test_demo_bootstrap_contains_map_and_controls passed.")
 
 
@@ -478,6 +504,84 @@ def test_demo_server_osm_layers_endpoint_returns_payload():
     assert payload["layers"]["roads"]["type"] == "FeatureCollection"
     assert payload["stats"]["roads_feature_count"] > 0
     print("test_demo_server_osm_layers_endpoint_returns_payload passed.")
+
+
+def test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata():
+    service = DemoUIService("PKU")
+    payload = service.get_indoor_map_payload("library", "F1")
+
+    assert payload["success"] is True
+    assert payload["site_id"] == "PKU"
+    assert payload["building_id"] == "library"
+    assert payload["building_name"] == "图书馆"
+    assert payload["entry_node_id"] == "library"
+    assert payload["indoor_graph_id"] == "indoor_LIB"
+    assert payload["template_id"] == "library_service_v1"
+    assert payload["template_name"]
+    assert payload["current_floor"]["id"] == "F1"
+    assert payload["current_floor"]["label"] == "1F"
+    assert payload["current_floor_id"] == "F1"
+    assert payload["stats"]["floor_count"] == 3
+    assert payload["stats"]["node_count"] == len(payload["nodes"])
+    assert payload["stats"]["edge_count"] == len(payload["edges"])
+    assert payload["stats"]["zone_count"] == len(payload["zones"])
+    assert all("id" in item and "label" in item for item in payload["available_floors"])
+
+    entrance = next(item for item in payload["nodes"] if item["id"] == "lib_entrance")
+    reading_room = next(item for item in payload["nodes"] if item["id"] == "lib_reading_room_1")
+    route_edge = next(
+        item
+        for item in payload["edges"]
+        if item["from"] == "lib_entrance" and item["to"] == "lib_reading_room_1"
+    )
+
+    assert entrance["is_gate"] is True
+    assert is_number(entrance["layout"]["x"])
+    assert is_number(entrance["layout"]["y"])
+    assert reading_room["floor_id"] == "F1"
+    assert reading_room["floor_label"] == "1F"
+    assert reading_room["description"]
+    assert reading_room["facilities"]
+    assert route_edge["from_floor_id"] == "F1"
+    assert route_edge["to_floor_id"] == "F1"
+    assert route_edge["is_cross_floor_transition"] is False
+    zone_ids = {item["id"] for item in payload["zones"]}
+    assert "lib_reading_room_1" in zone_ids
+    assert "lib_staircase" not in zone_ids
+
+    second_floor = service.get_indoor_map_payload("library", "F2")
+    assert second_floor["success"] is True
+    second_floor_node_ids = {item["id"] for item in second_floor["nodes"]}
+    assert "lib_reading_room_2" in second_floor_node_ids
+    assert "lib_reading_room_1" not in second_floor_node_ids
+
+    invalid_floor = service.get_indoor_map_payload("library", "B9")
+    assert invalid_floor["success"] is False
+    print("test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata passed.")
+
+
+def test_demo_server_indoor_map_endpoint_returns_payload():
+    service = DemoUIService("PKU")
+    server = ThreadingHTTPServer(("127.0.0.1", 0), build_handler(service))
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        port = server.server_address[1]
+        with urllib.request.urlopen(
+            f"http://127.0.0.1:{port}/api/map/indoor?site_id=PKU&building_id=library&floor=F1",
+            timeout=5,
+        ) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+        server.server_close()
+
+    assert payload["success"] is True
+    assert payload["building_id"] == "library"
+    assert payload["current_floor"]["id"] == "F1"
+    assert any(item["id"] == "lib_reading_room_1" for item in payload["nodes"])
+    print("test_demo_server_indoor_map_endpoint_returns_payload passed.")
 
 
 def test_demo_white_road_skeleton_quality_and_geojson_coordinate_order():
@@ -870,6 +974,68 @@ def test_demo_m15_indoor_and_multi_target_routes_keep_expected_geometry_boundari
     print("test_demo_m15_indoor_and_multi_target_routes_keep_expected_geometry_boundaries passed.")
 
 
+def test_demo_indoor_route_ui_views_cover_single_outdoor_to_indoor_and_multi_cases():
+    service = DemoUIService("PKU")
+    indoor_response = service.plan_route(
+        {
+            "start_node_id": "library",
+            "target_node_id": "lib_reading_room_1",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+
+    assert indoor_response["success"] is True
+    assert indoor_response["ui"]["default_route_view"] == "indoor:library:F1"
+    assert any(view["id"] == "outdoor" for view in indoor_response["ui"]["available_route_views"])
+    assert any(view["id"] == "indoor:library:F1" for view in indoor_response["ui"]["available_route_views"])
+    assert indoor_response["ui"]["indoor_route_views"][0]["building_id"] == "library"
+    floor_view = indoor_response["ui"]["indoor_route_views"][0]["floors"][0]
+    assert floor_view["floor_id"] == "F1"
+    assert floor_view["route_node_ids"] == ["lib_entrance", "lib_reading_room_1"]
+    assert floor_view["path_step_indices"] == [1, 2]
+    assert floor_view["route_step_indices"] == [1, 2]
+    assert floor_view["contains_target"] is True
+
+    mixed_response = service.plan_route(
+        {
+            "start_node_id": "gate_north",
+            "target_node_id": "lib_reading_room_2",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+
+    assert mixed_response["success"] is True
+    assert mixed_response["ui"]["default_route_view"] == "outdoor"
+    assert mixed_response["ui"]["route_geojson"] is not None
+    assert mixed_response["ui"]["indoor_route_views"]
+    mixed_floors = {
+        floor["floor_id"]
+        for building in mixed_response["ui"]["indoor_route_views"]
+        for floor in building["floors"]
+    }
+    assert "F2" in mixed_floors
+    assert any(view["kind"] == "indoor" for view in mixed_response["ui"]["available_route_views"])
+
+    multi_response = service.plan_multi_route(
+        {
+            "start_node_id": "gate_north",
+            "target_node_ids": ["dorm1_room_101"],
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+            "return_to_start": False,
+        }
+    )
+
+    assert multi_response["success"] is True
+    assert multi_response["route_type"] == "multi_target"
+    assert multi_response["ui"]["indoor_route_views"]
+    assert multi_response["ui"]["indoor_route_views"][0]["building_id"] == "dormitory_1"
+    assert any(view["kind"] == "indoor" for view in multi_response["ui"]["available_route_views"])
+    print("test_demo_indoor_route_ui_views_cover_single_outdoor_to_indoor_and_multi_cases passed.")
+
+
 def test_demo_waypoints_are_not_regular_route_targets_or_search_results():
     service = DemoUIService("PKU")
     bootstrap = service.get_bootstrap_payload()
@@ -1231,6 +1397,34 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     print("test_demo_static_leaflet_renderer_contains_local_assets_and_fallback passed.")
 
 
+def test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert 'id="indoor-panel"' in html
+    assert 'id="indoor-panel-meta"' in html
+    assert 'id="indoor-panel-body"' in html
+    assert "室内导航" in html
+    assert "/api/map/indoor?" in script
+    assert "进入室内导航" in script
+    assert "createDefaultIndoorState" in script
+    assert "renderIndoorPanel" in script
+    assert "renderIndoorFloorplan" in script
+    assert "hydrateIndoorBootstrap" in script
+    assert "syncIndoorStateFromRoute" in script
+    assert "data-enter-indoor" in script
+    assert "data-route-view" in script
+    assert "data-indoor-floor" in script
+    assert "data-indoor-zone" in script
+    print("test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks passed.")
+
+
 def test_demo_aigc_preview_returns_template_storyboard():
     service = DemoUIService("PKU")
     response = service.aigc_preview(
@@ -1337,6 +1531,8 @@ def run_all_tests():
     test_demo_osm_layers_geojson_uses_lng_lat_coordinate_order()
     test_demo_osm_layers_missing_file_keeps_core_map_available()
     test_demo_server_osm_layers_endpoint_returns_payload()
+    test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata()
+    test_demo_server_indoor_map_endpoint_returns_payload()
     test_demo_white_road_skeleton_quality_and_geojson_coordinate_order()
     test_demo_m14_core_outdoor_route_is_reachable_without_fallback()
     test_demo_indoor_route_still_links_from_poi_gate()
@@ -1347,6 +1543,7 @@ def run_all_tests():
     test_demo_priority_outdoor_routes_are_reachable_without_fallback()
     test_demo_m15_core_white_road_routes_have_auditable_geometry_stats()
     test_demo_m15_indoor_and_multi_target_routes_keep_expected_geometry_boundaries()
+    test_demo_indoor_route_ui_views_cover_single_outdoor_to_indoor_and_multi_cases()
     test_demo_waypoints_are_not_regular_route_targets_or_search_results()
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()
@@ -1355,6 +1552,7 @@ def run_all_tests():
     test_demo_diary_management_flow_links_to_route()
     test_demo_static_diary_center_contains_management_controls()
     test_demo_static_leaflet_renderer_contains_local_assets_and_fallback()
+    test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks()
     test_demo_aigc_preview_returns_template_storyboard()
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()

@@ -17,6 +17,22 @@ const DEMO_ROUTE_SCENARIOS = {
   },
 };
 
+function createDefaultIndoorState() {
+  return {
+    buildings: [],
+    buildingLookup: {},
+    graphLookup: {},
+    cache: {},
+    activeBuildingId: "",
+    activeFloorId: "",
+    activePayload: null,
+    selectedZoneNodeId: "",
+    currentRouteViewId: "",
+    loading: null,
+    error: "",
+  };
+}
+
 const state = {
   bootstrap: null,
   activePage: "home",
@@ -56,6 +72,7 @@ const state = {
   },
   whiteRoadEdgesVisible: true,
   pathNodesVisible: false,
+  indoor: createDefaultIndoorState(),
   mapView: {
     scale: 1,
     translateX: 0,
@@ -122,6 +139,7 @@ async function loadSiteBootstrap(siteId) {
   state.whiteRoadRoleVisibility = defaultWhiteRoadRoleVisibility();
   state.whiteRoadEdgesVisible = true;
   state.pathNodesVisible = false;
+  state.indoor = createDefaultIndoorState();
   clearLeafletLayers();
   state.currentStartNodeId = bootstrap.default_start_node;
   hydrateBootstrap(bootstrap);
@@ -452,6 +470,63 @@ function bindForms() {
       await planRoute(routeButton.dataset.routeTarget);
     }
   });
+
+  document.addEventListener("click", async (event) => {
+    const enterIndoorButton = event.target.closest("[data-enter-indoor]");
+    if (enterIndoorButton) {
+      const buildingId = enterIndoorButton.dataset.enterIndoor || "";
+      const floorId = enterIndoorButton.dataset.indoorFloor || "";
+      const targetNodeId = enterIndoorButton.dataset.indoorZoneTarget || "";
+      if (buildingId) {
+        await enterIndoorNavigation(buildingId, {
+          floorId,
+          routeViewId: indoorRouteViewId(
+            buildingId,
+            floorId || indoorBuildingRecord(buildingId)?.default_floor_id || "",
+          ),
+          selectedZoneNodeId: targetNodeId,
+        });
+      }
+      return;
+    }
+
+    const routeViewButton = event.target.closest("[data-route-view]");
+    if (routeViewButton) {
+      await switchIndoorRouteView(routeViewButton.dataset.routeView || "");
+      return;
+    }
+
+    const floorButton = event.target.closest("[data-indoor-floor]");
+    if (floorButton) {
+      await switchIndoorFloor(floorButton.dataset.indoorFloor || "");
+      return;
+    }
+
+    const zoneRouteButton = event.target.closest("[data-indoor-route-target]");
+    if (zoneRouteButton) {
+      await planRouteFromIndoorZone(zoneRouteButton.dataset.indoorRouteTarget || "");
+      return;
+    }
+
+    const planSelectedButton = event.target.closest("[data-plan-indoor-route]");
+    if (planSelectedButton) {
+      await planSelectedIndoorRoute();
+      return;
+    }
+
+    const zoneButton = event.target.closest("[data-indoor-zone]");
+    if (zoneButton) {
+      selectIndoorZone(zoneButton.dataset.indoorZone || "");
+      return;
+    }
+
+    const focusEntryButton = event.target.closest("[data-indoor-entry-focus]");
+    if (focusEntryButton) {
+      state.focusedNodeId = focusEntryButton.dataset.indoorEntryFocus || "";
+      renderMap();
+      setStatus(`已在室外地图中定位 ${getNodeName(state.focusedNodeId)}。`, "info");
+    }
+  });
 }
 
 function bindMapInteractions() {
@@ -744,6 +819,7 @@ function selectedValues(selector) {
 }
 
 function hydrateBootstrap(bootstrap) {
+  hydrateIndoorBootstrap(bootstrap);
   document.querySelector("#product-title").textContent = bootstrap.product.name;
   document.querySelector("#product-stage").textContent = bootstrap.product.stage;
   document.querySelector("#hero-title").textContent = `${bootstrap.site.name} 导览演示台`;
@@ -877,6 +953,339 @@ function hydrateBootstrap(bootstrap) {
   renderHelpPanel(bootstrap.help);
   updateActiveFeatureCaption();
   updateWorkspaceHeading();
+}
+
+function hydrateIndoorBootstrap(bootstrap) {
+  const buildings = Array.isArray(bootstrap?.map_capabilities?.indoor_supported_buildings)
+    ? bootstrap.map_capabilities.indoor_supported_buildings
+    : Array.isArray(bootstrap?.indoor_buildings)
+      ? bootstrap.indoor_buildings
+      : [];
+  const buildingLookup = {};
+  const graphLookup = {};
+  buildings.forEach((item) => {
+    if (item?.building_id) {
+      buildingLookup[item.building_id] = item;
+    }
+    if (item?.indoor_graph_id) {
+      graphLookup[item.indoor_graph_id] = item;
+    }
+  });
+  state.indoor.buildings = buildings;
+  state.indoor.buildingLookup = buildingLookup;
+  state.indoor.graphLookup = graphLookup;
+}
+
+function indoorBuildingRecord(buildingId) {
+  return state.indoor.buildingLookup[buildingId] || null;
+}
+
+function indoorBuildingByGraph(indoorGraphId) {
+  return state.indoor.graphLookup[indoorGraphId] || null;
+}
+
+function routeTargetRecord(nodeId) {
+  return (state.bootstrap?.route_targets || []).find((item) => item.id === nodeId) || null;
+}
+
+function indoorRouteViewId(buildingId, floorId) {
+  return buildingId && floorId ? `indoor:${buildingId}:${floorId}` : "";
+}
+
+function parseIndoorRouteViewId(viewId) {
+  if (!viewId || !viewId.startsWith("indoor:")) {
+    return null;
+  }
+  const [, buildingId, floorId] = viewId.split(":");
+  if (!buildingId || !floorId) {
+    return null;
+  }
+  return { buildingId, floorId };
+}
+
+function floorLabelForId(floorId) {
+  if (typeof floorId !== "string") {
+    return "";
+  }
+  if (/^F\d+$/i.test(floorId)) {
+    return `${floorId.slice(1)}F`;
+  }
+  return floorId;
+}
+
+function indoorPayloadFloorId(payload) {
+  if (payload?.current_floor?.id) {
+    return payload.current_floor.id;
+  }
+  if (payload?.current_floor_id) {
+    return payload.current_floor_id;
+  }
+  if (typeof payload?.current_floor === "string") {
+    return payload.current_floor;
+  }
+  return "";
+}
+
+function indoorPayloadFloorLabel(payload) {
+  if (payload?.current_floor?.label) {
+    return payload.current_floor.label;
+  }
+  return floorLabelForId(indoorPayloadFloorId(payload));
+}
+
+function indoorPayloadCacheKey(buildingId, floorId) {
+  return `${buildingId}:${floorId || ""}`;
+}
+
+function isIndoorZoneNode(node) {
+  const category = node?.category || "";
+  return category !== "passage" && category !== "hall";
+}
+
+function findIndoorRouteView(route, buildingId, floorId) {
+  const views = route?.ui?.indoor_route_views || [];
+  for (const buildingView of views) {
+    if (buildingView.building_id !== buildingId) {
+      continue;
+    }
+    for (const floorView of buildingView.floors || []) {
+      if (floorView.floor_id === floorId) {
+        return { buildingView, floorView };
+      }
+    }
+  }
+  return null;
+}
+
+function findPrimaryIndoorRouteView(route = state.currentRoute) {
+  const views = route?.ui?.indoor_route_views || [];
+  for (const buildingView of views) {
+    for (const floorView of buildingView.floors || []) {
+      if (floorView.contains_target) {
+        return { buildingView, floorView };
+      }
+    }
+  }
+  if (views[0]?.floors?.[0]) {
+    return {
+      buildingView: views[0],
+      floorView: views[0].floors[0],
+    };
+  }
+  return null;
+}
+
+function resolveIndoorContextForTarget(targetNodeId) {
+  const target = routeTargetRecord(targetNodeId);
+  if (!target) {
+    return null;
+  }
+  const building = target.building_id
+    ? indoorBuildingRecord(target.building_id)
+    : target.indoor_graph_id
+      ? indoorBuildingByGraph(target.indoor_graph_id)
+      : target.indoor_supported
+        ? indoorBuildingRecord(target.id)
+        : null;
+  if (!building) {
+    return null;
+  }
+  return {
+    buildingId: building.building_id,
+    buildingName: target.building_name || building.building_name,
+    floorId: target.floor_id || building.default_floor_id || building.floor_ids?.[0] || "",
+    floorLabel: target.floor_label || floorLabelForId(target.floor_id || building.default_floor_id || ""),
+    targetNodeId,
+    targetName: target.name || getNodeName(targetNodeId),
+    indoorGraphId: target.indoor_graph_id || building.indoor_graph_id,
+    entryNodeId: target.entry_node_id || building.entry_node_id,
+  };
+}
+
+function resolveIndoorSelectedZoneId(payload, preferredNodeId = "") {
+  const zoneIds = new Set((payload?.zones || []).map((item) => item.id));
+  if (preferredNodeId && zoneIds.has(preferredNodeId)) {
+    return preferredNodeId;
+  }
+  if (state.currentRoute?.target_node_id && zoneIds.has(state.currentRoute.target_node_id)) {
+    return state.currentRoute.target_node_id;
+  }
+  if (state.indoor.selectedZoneNodeId && zoneIds.has(state.indoor.selectedZoneNodeId)) {
+    return state.indoor.selectedZoneNodeId;
+  }
+  return "";
+}
+
+async function loadIndoorPayload(buildingId, floorId) {
+  const cacheKey = indoorPayloadCacheKey(buildingId, floorId);
+  if (state.indoor.cache[cacheKey]) {
+    return state.indoor.cache[cacheKey];
+  }
+
+  const query = new URLSearchParams({
+    site_id: currentSiteId(),
+    building_id: buildingId,
+  });
+  if (floorId) {
+    query.set("floor", floorId);
+  }
+
+  const payload = await apiGet(`/api/map/indoor?${query.toString()}`);
+  state.indoor.cache[cacheKey] = payload;
+  const actualFloorId = indoorPayloadFloorId(payload);
+  if (actualFloorId) {
+    state.indoor.cache[indoorPayloadCacheKey(buildingId, actualFloorId)] = payload;
+  }
+  return payload;
+}
+
+async function enterIndoorNavigation(buildingId, options = {}) {
+  const building = indoorBuildingRecord(buildingId);
+  if (!building) {
+    state.indoor.error = "当前建筑暂不支持室内导航。";
+    renderIndoorPanel();
+    if (!options.silentStatus) {
+      setStatus("当前建筑暂不支持室内导航。", "error");
+    }
+    return null;
+  }
+
+  const requestedFloorId = options.floorId
+    || state.indoor.activeFloorId
+    || building.default_floor_id
+    || building.floor_ids?.[0]
+    || "";
+  state.indoor.activeBuildingId = buildingId;
+  state.indoor.loading = {
+    buildingId,
+    floorId: requestedFloorId,
+  };
+  state.indoor.error = "";
+  renderIndoorPanel();
+
+  try {
+    const payload = await loadIndoorPayload(buildingId, requestedFloorId);
+    const activeFloorId = indoorPayloadFloorId(payload) || requestedFloorId;
+    const nextRouteViewId = options.routeViewId
+      || indoorRouteViewId(buildingId, activeFloorId);
+    state.indoor.activeBuildingId = buildingId;
+    state.indoor.activeFloorId = activeFloorId;
+    state.indoor.activePayload = payload;
+    state.indoor.currentRouteViewId = nextRouteViewId;
+    state.indoor.error = "";
+    state.indoor.selectedZoneNodeId = resolveIndoorSelectedZoneId(
+      payload,
+      options.selectedZoneNodeId || "",
+    );
+    renderIndoorPanel();
+    if (!options.silentStatus) {
+      setStatus(
+        `已进入 ${building.building_name}${indoorPayloadFloorLabel(payload)} 室内导航。`,
+        "info",
+      );
+    }
+    return payload;
+  } catch (error) {
+    state.indoor.activePayload = null;
+    state.indoor.error = `室内地图加载失败：${error.message}`;
+    renderIndoorPanel();
+    if (!options.silentStatus) {
+      setStatus(`室内地图加载失败：${error.message}`, "error");
+    }
+    return null;
+  } finally {
+    state.indoor.loading = null;
+    renderIndoorPanel();
+  }
+}
+
+async function switchIndoorFloor(floorId) {
+  const buildingId = state.indoor.activeBuildingId;
+  if (!buildingId || !floorId) {
+    return;
+  }
+  const routeView = findIndoorRouteView(state.currentRoute, buildingId, floorId);
+  await enterIndoorNavigation(buildingId, {
+    floorId,
+    routeViewId: routeView?.floorView?.view_id || indoorRouteViewId(buildingId, floorId),
+    selectedZoneNodeId: "",
+    silentStatus: true,
+  });
+  setStatus(
+    `已切换到 ${indoorBuildingRecord(buildingId)?.building_name || getNodeName(buildingId)} ${floorLabelForId(floorId)}。`,
+    "info",
+  );
+}
+
+async function switchIndoorRouteView(viewId) {
+  if (!viewId) {
+    return;
+  }
+  state.indoor.currentRouteViewId = viewId;
+  if (viewId === "outdoor") {
+    renderIndoorPanel();
+    setStatus("当前优先查看室外路线，可切换到室内楼层查看楼内段。", "info");
+    return;
+  }
+
+  const parsed = parseIndoorRouteViewId(viewId);
+  if (!parsed) {
+    renderIndoorPanel();
+    return;
+  }
+
+  await enterIndoorNavigation(parsed.buildingId, {
+    floorId: parsed.floorId,
+    routeViewId: viewId,
+    selectedZoneNodeId: state.currentRoute?.target_node_id || "",
+    silentStatus: true,
+  });
+  setStatus(
+    `已切换到 ${indoorBuildingRecord(parsed.buildingId)?.building_name || getNodeName(parsed.buildingId)} ${floorLabelForId(parsed.floorId)} 室内路线视图。`,
+    "info",
+  );
+}
+
+function selectIndoorZone(nodeId) {
+  state.indoor.selectedZoneNodeId = nodeId || "";
+  if (state.indoor.selectedZoneNodeId) {
+    setSelectValue("#route-target", state.indoor.selectedZoneNodeId);
+  }
+  renderIndoorPanel();
+}
+
+async function planRouteFromIndoorZone(nodeId) {
+  if (!nodeId) {
+    return;
+  }
+  setSelectValue("#route-target", nodeId);
+  await planRoute(nodeId);
+}
+
+async function planSelectedIndoorRoute() {
+  if (!state.indoor.selectedZoneNodeId) {
+    setStatus("请先在室内平面图或功能区列表中选择一个目标点。", "error");
+    return;
+  }
+  await planRouteFromIndoorZone(state.indoor.selectedZoneNodeId);
+}
+
+async function syncIndoorStateFromRoute(route) {
+  const primaryView = findPrimaryIndoorRouteView(route);
+  if (!primaryView) {
+    renderIndoorPanel();
+    return;
+  }
+
+  const defaultRouteViewId = route?.ui?.default_route_view
+    || primaryView.floorView.view_id
+    || indoorRouteViewId(primaryView.buildingView.building_id, primaryView.floorView.floor_id);
+  await enterIndoorNavigation(primaryView.buildingView.building_id, {
+    floorId: primaryView.floorView.floor_id,
+    routeViewId: defaultRouteViewId,
+    selectedZoneNodeId: route?.target_node_id || "",
+    silentStatus: true,
+  });
 }
 
 function renderFeatureGrid(navigation) {
@@ -1538,6 +1947,7 @@ async function planRoute(targetNodeId) {
 
     state.currentRoute = response;
     state.focusedNodeId = response.target_node_id;
+    await syncIndoorStateFromRoute(response);
     renderRoute(response);
     renderMap();
     setStatus(
@@ -1583,6 +1993,7 @@ async function planMultiRoute(targetNodeIds) {
 
     state.currentRoute = response;
     state.focusedNodeId = "";
+    await syncIndoorStateFromRoute(response);
     renderRoute(response);
     renderMap();
     setStatus(
@@ -1648,6 +2059,7 @@ function renderResultCard(item, index, queryType = "") {
   const scoreText = item.score !== undefined ? `相关度 ${item.score}` : "";
   const routeTarget = item.route_target_node_id || "";
   const focusNode = item.route_target_node_id || "";
+  const indoorContext = routeTarget ? resolveIndoorContextForTarget(routeTarget) : null;
   const isDiary = isDiaryResult(item, queryType);
   const isAigc = isAigcResult(item, queryType);
   const diaryId = item.id || item.diary_id || "";
@@ -1676,6 +2088,9 @@ function renderResultCard(item, index, queryType = "") {
       : "",
     focusNode
       ? `<button class="ghost-button" type="button" data-focus-node="${escapeHtml(focusNode)}">定位</button>`
+      : "",
+    indoorContext
+      ? `<button class="ghost-button" type="button" data-enter-indoor="${escapeHtml(indoorContext.buildingId)}" data-indoor-floor="${escapeHtml(indoorContext.floorId || "")}" data-indoor-zone-target="${escapeHtml(indoorContext.targetNodeId)}">进入室内导航</button>`
       : "",
   ]
     .filter(Boolean)
@@ -1799,11 +2214,13 @@ function renderRoute(route, emptyMessage = "暂无路径") {
     stepsContainer.className = "step-list empty-state";
     stepsContainer.textContent = "规划路线后可在这里展开查看步骤。";
     routeMeta.textContent = "尚未规划路径";
+    renderIndoorPanel();
     return;
   }
 
   if (route.route_type === "multi_target") {
     renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta);
+    renderIndoorPanel();
     return;
   }
 
@@ -1835,6 +2252,7 @@ function renderRoute(route, emptyMessage = "暂无路径") {
     `${steps.length} 个详细步骤`,
     steps.map(renderSingleRouteStep).join(""),
   );
+  renderIndoorPanel();
 }
 
 function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
@@ -1901,6 +2319,325 @@ function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
     `${legSummaries.length} 段路线 · ${displaySteps.length} 个关键步骤`,
     `${legMarkup}${stepMarkup}${overflowText}`,
   );
+}
+
+function renderIndoorPanel() {
+  const meta = document.querySelector("#indoor-panel-meta");
+  const body = document.querySelector("#indoor-panel-body");
+  if (!meta || !body) {
+    return;
+  }
+
+  const supportedBuildings = state.indoor.buildings || [];
+  if (!supportedBuildings.length) {
+    meta.textContent = "当前站点未提供室内导航数据";
+    body.className = "indoor-panel-body empty-state";
+    body.textContent = "当前站点没有可用的室内模板图。";
+    return;
+  }
+
+  if (state.indoor.loading) {
+    const loadingBuilding = indoorBuildingRecord(state.indoor.loading.buildingId);
+    meta.textContent = `正在加载 ${loadingBuilding?.building_name || state.indoor.loading.buildingId}…`;
+    body.className = "indoor-panel-body";
+    body.innerHTML = `
+      <div class="indoor-state-card is-loading">
+        <strong>室内平面图加载中</strong>
+        <p>${escapeHtml(loadingBuilding?.building_name || state.indoor.loading.buildingId)} ${escapeHtml(floorLabelForId(state.indoor.loading.floorId || ""))} 正在准备。</p>
+      </div>
+    `;
+    return;
+  }
+
+  const activeBuilding = indoorBuildingRecord(state.indoor.activeBuildingId);
+  const payload = state.indoor.activePayload;
+  if (!activeBuilding || !payload || payload.building_id !== activeBuilding.building_id) {
+    meta.textContent = state.indoor.error || `支持 ${supportedBuildings.length} 栋建筑室内导航`;
+    body.className = "indoor-panel-body";
+    body.innerHTML = renderIndoorEmptyState(supportedBuildings, state.indoor.error);
+    return;
+  }
+
+  const activeFloorId = state.indoor.activeFloorId || indoorPayloadFloorId(payload);
+  const activeFloorLabel = indoorPayloadFloorLabel(payload);
+  const currentViewId = state.indoor.currentRouteViewId
+    || state.currentRoute?.ui?.default_route_view
+    || indoorRouteViewId(activeBuilding.building_id, activeFloorId);
+  const routeContext = findIndoorRouteView(state.currentRoute, activeBuilding.building_id, activeFloorId);
+  const selectedZone = (payload.zones || []).find((item) => item.id === state.indoor.selectedZoneNodeId) || null;
+  const currentRouteHasIndoor = Boolean((state.currentRoute?.ui?.indoor_route_views || []).length);
+  const routeNotice = currentRouteHasIndoor
+    ? currentViewId === "outdoor"
+      ? "当前路线默认查看室外段；切换到室内路线按钮可查看楼内路径。"
+      : routeContext?.floorView?.route_node_ids?.length
+        ? `当前楼层命中 ${routeContext.floorView.route_node_ids.length} 个室内路径点。`
+        : "当前路线未经过该楼层，可先浏览平面图或切换到其他楼层。"
+    : "先选择楼层和功能区，再点击规划路线。";
+  meta.textContent = `${activeBuilding.building_name} · ${activeFloorLabel} · ${(payload.zones || []).length} 个功能区`;
+  body.className = "indoor-panel-body";
+  body.innerHTML = `
+    <div class="indoor-panel-shell">
+      <div class="indoor-toolbar">
+        <div class="indoor-toolbar-copy">
+          <span class="summary-kicker">当前建筑</span>
+          <h4>${escapeHtml(activeBuilding.building_name)} · ${escapeHtml(activeFloorLabel)}</h4>
+          <p>入口：${escapeHtml(activeBuilding.entry_node_name || getNodeName(activeBuilding.entry_node_id))} · 默认楼层 ${escapeHtml(floorLabelForId(activeBuilding.default_floor_id || ""))}</p>
+        </div>
+        <div class="card-actions card-actions-secondary">
+          <button class="ghost-button" type="button" data-indoor-entry-focus="${escapeHtml(activeBuilding.entry_node_id || activeBuilding.building_id)}">定位建筑入口</button>
+        </div>
+      </div>
+      ${renderIndoorRouteViewToggle(state.currentRoute, currentViewId)}
+      ${renderIndoorFloorSwitcher(payload, activeFloorId)}
+      <div class="indoor-callout">${escapeHtml(routeNotice)}</div>
+      ${renderIndoorSelectedZone(selectedZone)}
+      <div class="indoor-floor-layout">
+        <div class="indoor-svg-shell">
+          ${renderIndoorFloorplan(payload, {
+            routeContext,
+            currentViewId,
+            selectedZoneNodeId: state.indoor.selectedZoneNodeId,
+          })}
+        </div>
+        <div class="indoor-zone-list">
+          ${renderIndoorZoneList(payload, routeContext, state.indoor.selectedZoneNodeId)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderIndoorEmptyState(buildings, errorMessage = "") {
+  const featured = buildings.slice(0, 6);
+  return `
+    <div class="indoor-state-card">
+      <strong>从支持建筑进入室内导航</strong>
+      <p>${escapeHtml(errorMessage || "可先在地图上点击建筑 popup 中的“进入室内导航”，也可以直接使用下方快捷入口。")}</p>
+      <div class="indoor-building-chips">
+        ${featured
+          .map((item) => `
+            <button class="ghost-button" type="button" data-enter-indoor="${escapeHtml(item.building_id)}" data-indoor-floor="${escapeHtml(item.default_floor_id || "")}">
+              进入 ${escapeHtml(item.building_name)}
+            </button>
+          `)
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderIndoorRouteViewToggle(route, currentViewId) {
+  const views = route?.ui?.available_route_views || [];
+  if (views.length <= 1) {
+    return "";
+  }
+  return `
+    <div class="indoor-route-view-switcher">
+      <span class="indoor-control-label">路线视图</span>
+      <div class="renderer-toggle compact-toggle">
+        ${views
+          .map((view) => `
+            <button
+              class="renderer-toggle-button${view.id === currentViewId ? " active" : ""}"
+              type="button"
+              data-route-view="${escapeHtml(view.id)}"
+              aria-pressed="${String(view.id === currentViewId)}"
+            >
+              ${escapeHtml(view.label)}
+            </button>
+          `)
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderIndoorFloorSwitcher(payload, activeFloorId) {
+  const floors = payload?.available_floors || [];
+  if (!floors.length) {
+    return "";
+  }
+  return `
+    <div class="indoor-floor-switcher">
+      <span class="indoor-control-label">楼层切换</span>
+      <div class="renderer-toggle compact-toggle">
+        ${floors
+          .map((floor) => `
+            <button
+              class="renderer-toggle-button${floor.floor_id === activeFloorId || floor.id === activeFloorId ? " active" : ""}"
+              type="button"
+              data-indoor-floor="${escapeHtml(floor.floor_id || floor.id || "")}"
+              aria-pressed="${String(floor.floor_id === activeFloorId || floor.id === activeFloorId)}"
+            >
+              ${escapeHtml(floor.floor_label || floor.label || floorLabelForId(floor.floor_id || floor.id || ""))}
+            </button>
+          `)
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderIndoorSelectedZone(selectedZone) {
+  if (!selectedZone) {
+    return `
+      <div class="indoor-selection-card is-empty">
+        <div>
+          <strong>尚未选择功能区</strong>
+          <p>点击平面图上的功能区点位，或在右侧列表中选择一个房间/服务区。</p>
+        </div>
+        <button class="route-button" type="button" data-plan-indoor-route disabled>
+          规划路线
+        </button>
+      </div>
+    `;
+  }
+
+  const facilities = Array.isArray(selectedZone.facilities) && selectedZone.facilities.length
+    ? selectedZone.facilities.join(" / ")
+    : "暂无设施标签";
+  return `
+    <div class="indoor-selection-card">
+      <div>
+        <strong>已选目标：${escapeHtml(selectedZone.name)}</strong>
+        <p>${escapeHtml(selectedZone.description || selectedZone.category_label || "可作为本次室内导航目标点。")}</p>
+        <span class="indoor-selection-meta">${escapeHtml(facilities)}</span>
+      </div>
+      <button class="route-button" type="button" data-plan-indoor-route>
+        规划路线
+      </button>
+    </div>
+  `;
+}
+
+function renderIndoorZoneList(payload, routeContext, selectedZoneNodeId) {
+  const zones = payload?.zones || [];
+  if (!zones.length) {
+    return `<div class="empty-state">当前楼层没有可选功能区。</div>`;
+  }
+  const routeNodeIds = new Set(routeContext?.floorView?.route_node_ids || []);
+  return zones
+    .map((zone, index) => {
+      const isSelected = zone.id === selectedZoneNodeId;
+      const isRoute = routeNodeIds.has(zone.id);
+      const facilities = Array.isArray(zone.facilities) && zone.facilities.length
+        ? zone.facilities.join(" / ")
+        : (zone.tags || []).join(" / ");
+      return `
+        <article class="indoor-zone-card${isSelected ? " active" : ""}${isRoute ? " is-route" : ""}" style="animation-delay: ${index * 0.03}s">
+          <button class="indoor-zone-select" type="button" data-indoor-zone="${escapeHtml(zone.id)}">
+            <span>${escapeHtml(zone.name)}</span>
+            <span class="metric-pill">${escapeHtml(zone.floor_label || "")}</span>
+          </button>
+          <p>${escapeHtml(zone.description || zone.category_label || "可作为目标点。")}</p>
+          ${facilities ? `<span class="indoor-zone-meta">${escapeHtml(facilities)}</span>` : ""}
+          <div class="card-actions card-actions-secondary">
+            <button class="ghost-button" type="button" data-indoor-zone="${escapeHtml(zone.id)}">选中</button>
+            <button class="route-button" type="button" data-indoor-route-target="${escapeHtml(zone.id)}">规划路线</button>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function indoorEdgeKey(fromNodeId, toNodeId) {
+  return [fromNodeId, toNodeId].sort().join("::");
+}
+
+function renderIndoorFloorplan(payload, options = {}) {
+  const nodes = Array.isArray(payload?.nodes) ? payload.nodes : [];
+  const edges = Array.isArray(payload?.edges) ? payload.edges : [];
+  const layoutNodes = nodes.filter((node) => Number.isFinite(node?.layout?.x) && Number.isFinite(node?.layout?.y));
+  if (!layoutNodes.length) {
+    return `<div class="indoor-floorplan-empty">当前楼层缺少可渲染的平面图坐标。</div>`;
+  }
+
+  const nodeLookup = {};
+  layoutNodes.forEach((node) => {
+    nodeLookup[node.id] = node;
+  });
+
+  const routeContext = options.routeContext?.floorView || null;
+  const shouldHighlightRoute = Boolean(routeContext) && options.currentViewId !== "outdoor";
+  const routeNodeIds = new Set(shouldHighlightRoute ? (routeContext.route_node_ids || []) : []);
+  const routeEdgeKeys = new Set(
+    shouldHighlightRoute
+      ? (routeContext.path_segments || []).map((segment) => indoorEdgeKey(segment.from, segment.to))
+      : [],
+  );
+  const selectedZoneNodeId = options.selectedZoneNodeId || "";
+  const padding = 48;
+  const xValues = layoutNodes.map((node) => Number(node.layout.x));
+  const yValues = layoutNodes.map((node) => Number(node.layout.y));
+  const minX = Math.min(...xValues) - padding;
+  const minY = Math.min(...yValues) - padding;
+  const width = Math.max(Math.max(...xValues) - Math.min(...xValues) + padding * 2, 320);
+  const height = Math.max(Math.max(...yValues) - Math.min(...yValues) + padding * 2, 240);
+
+  const edgeMarkup = edges
+    .map((edge) => {
+      const fromNode = nodeLookup[edge.from];
+      const toNode = nodeLookup[edge.to];
+      if (!fromNode || !toNode) {
+        return "";
+      }
+      const isRoute = routeEdgeKeys.has(indoorEdgeKey(edge.from, edge.to));
+      return `
+        <line
+          class="indoor-floor-edge${isRoute ? " is-route" : ""}"
+          x1="${Number(fromNode.layout.x)}"
+          y1="${Number(fromNode.layout.y)}"
+          x2="${Number(toNode.layout.x)}"
+          y2="${Number(toNode.layout.y)}"
+        ></line>
+      `;
+    })
+    .join("");
+
+  const nodeMarkup = layoutNodes
+    .map((node) => {
+      const x = Number(node.layout.x);
+      const y = Number(node.layout.y);
+      const isZone = isIndoorZoneNode(node);
+      const isSelected = node.id === selectedZoneNodeId;
+      const isRoute = routeNodeIds.has(node.id);
+      const className = [
+        "indoor-floor-node",
+        isZone ? "is-zone" : "is-passage",
+        isSelected ? "is-selected" : "",
+        isRoute ? "is-route" : "",
+        node.is_gate ? "is-gate" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      const marker = isZone
+        ? `<circle cx="${x}" cy="${y}" r="14"></circle>`
+        : `<rect x="${x - 10}" y="${y - 10}" width="20" height="20" rx="6" ry="6"></rect>`;
+      const labelText = node.name || node.id;
+      const labelY = isZone ? y + 28 : y + 24;
+      return `
+        <g class="${className}" ${isZone ? `data-indoor-zone="${escapeHtml(node.id)}"` : ""}>
+          ${marker}
+          <text x="${x}" y="${labelY}">${escapeHtml(labelText)}</text>
+        </g>
+      `;
+    })
+    .join("");
+
+  return `
+    <svg
+      class="indoor-floorplan"
+      viewBox="${minX} ${minY} ${width} ${height}"
+      role="img"
+      aria-label="${escapeHtml(payload.building_name || payload.building_id || "室内平面图")} ${escapeHtml(indoorPayloadFloorLabel(payload))}"
+    >
+      <g class="indoor-floor-grid">
+        ${edgeMarkup}
+        ${nodeMarkup}
+      </g>
+    </svg>
+  `;
 }
 
 function renderMetricPill(text, className = "") {
@@ -2593,12 +3330,25 @@ function bindLeafletFeaturePopup(feature, layer) {
       return;
     }
 
+    const indoorButton = properties.indoor_supported
+      ? `
+        <button
+          class="ghost-button leaflet-popup-button"
+          type="button"
+          data-enter-indoor="${escapeHtml(properties.building_id || properties.id || "")}"
+          data-indoor-floor="${escapeHtml(properties.default_floor_id || "")}"
+        >
+          进入室内导航
+        </button>
+      `
+      : "";
     layer.bindPopup(`
       <strong>${escapeHtml(properties.name || properties.id)}</strong><br>
       <span>${escapeHtml(properties.category_label || properties.category || "")}</span><br>
       <button class="route-button leaflet-popup-button" type="button" data-route-target="${escapeHtml(properties.id || "")}">
         从当前起点规划路线
       </button>
+      ${indoorButton}
     `);
     layer.bindTooltip(escapeHtml(properties.name || properties.id), {
       direction: "top",
