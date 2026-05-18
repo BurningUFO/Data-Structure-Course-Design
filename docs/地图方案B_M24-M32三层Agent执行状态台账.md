@@ -15,16 +15,16 @@
 - `current_manager`: `L2-02`
 - `last_completed_manager`: `L2-01`
 - `next_manager`: `L2-03`
-- `last_commit`: `8f63bab`
+- `last_commit`: `3dbdcaf`
 - `last_verification`: `py -m pytest -q`，144 passed
-- `last_update_note`: `M26C THU 前端站点切换与 Leaflet 展示完成`
+- `last_update_note`: `M26D THU 试点校回归与问题清单完成`
 
 ## 二级经理状态总表
 
 | Manager ID | 经理文档 | 状态 | 子任务完成数 | 最后 commit | 备注 |
 | --- | --- | --- | --- | --- | --- |
 | L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `completed` | `8/8` | `6eb6a48` | M24A-M25D 已完成 |
-| L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `in_progress` | `3/10` | `8f63bab` | 试点校 + 首批 5 校室外 |
+| L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `in_progress` | `4/10` | `3dbdcaf` | 试点校 + 首批 5 校室外 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室外 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `pending` | `0/6` | `none` | 首批 5 校室内 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室内 |
@@ -57,7 +57,7 @@
 - [x] `M26A THU`
 - [x] `M26B THU`
 - [x] `M26C THU`
-- [ ] `M26D THU`
+- [x] `M26D THU`
 - [ ] `M27X THU`
 - [ ] `M27X WHU`
 - [ ] `M27X XMU`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-18 19:34] manager=L2-02 child=M26D THU status=completed commit=3dbdcaf verify=`py -m pytest -q` 144 passed note=输出 THU 试点校 API/UI 回归、风险点和后续批量扩站复制注意事项
 - [2026-05-18 19:19] manager=L2-02 child=M26C THU status=completed commit=8f63bab verify=`py -m pytest -q` 144 passed note=前端允许 THU 试点切换，按当前 site_id 加载 Leaflet GeoJSON/OSM 图层并过滤路线快捷入口
 - [2026-05-18 19:03] manager=L2-02 child=M26B THU status=completed commit=4d1153a verify=`py -m pytest -q` 143 passed note=接通 THU 后端图加载、bootstrap、综合查询、场所查询、美食推荐、单目标和多目标路线，前端切换仍留给 M26C
 - [2026-05-18 18:53] manager=L2-02 child=M26A THU status=completed commit=83f0543 verify=`py -m pytest -q` 142 passed note=新增 THU `outdoor.json` 最小室外骨架，并显式保持 THU `scaffold_only`，避免 M26A 提前开放站点运行态
