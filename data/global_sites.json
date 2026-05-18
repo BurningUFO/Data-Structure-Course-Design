@@ -34,6 +34,8 @@
       "name": "清华大学",
       "description": "清华大学校园占位注册，后续阶段将补充室外图、室内图和查询推荐数据。",
       "location": "北京",
+      "is_available": false,
+      "data_status": "scaffold_only",
       "sub_graphs": [
         "outdoor"
       ]

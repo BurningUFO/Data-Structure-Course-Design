@@ -1288,7 +1288,17 @@ class DemoUIService:
         sites = []
         for site in load_global_sites():
             site_id = normalize_text(site.get("id"))
-            has_graph_data = bool(get_site_graph_paths(site_id))
+            explicit_data_status = normalize_text(site.get("data_status"))
+            explicit_is_available = site.get("is_available")
+            if isinstance(explicit_is_available, bool):
+                is_available = explicit_is_available
+                data_status = explicit_data_status or ("available" if is_available else "scaffold_only")
+            elif explicit_data_status == "scaffold_only":
+                is_available = False
+                data_status = explicit_data_status
+            else:
+                is_available = bool(get_site_graph_paths(site_id))
+                data_status = explicit_data_status or ("available" if is_available else "scaffold_only")
             sites.append(
                 {
                     "id": site_id,
@@ -1296,8 +1306,8 @@ class DemoUIService:
                     "description": normalize_text(site.get("description")),
                     "location": normalize_text(site.get("location")),
                     "is_current": site_id == self.site_id,
-                    "is_available": has_graph_data,
-                    "data_status": "available" if has_graph_data else "scaffold_only",
+                    "is_available": is_available,
+                    "data_status": data_status,
                     "sub_graphs": site.get("sub_graphs", []),
                 }
             )
