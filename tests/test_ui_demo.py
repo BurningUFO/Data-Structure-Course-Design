@@ -54,6 +54,53 @@ def iter_geojson_positions(geometry):
 CORE_PKU_POI_COUNT = 14
 ENRICHED_NEW_POI_MIN = 80
 ENRICHED_NEW_POI_MAX = 120
+M29Y_FIRST_BATCH_CASES = {
+    "THU": {
+        "buildings": {
+            "library": "indoor_LIB",
+            "teaching_building": "indoor_TB1",
+            "dormitory_1": "indoor_DORM1",
+            "canteen": "indoor_CANTEEN_TAOLI",
+            "main_building": "indoor_MAIN_BUILDING",
+        }
+    },
+    "WHU": {
+        "buildings": {
+            "library": "indoor_LIB",
+            "teaching_building": "indoor_TB1",
+            "dormitory_1": "indoor_DORM1",
+            "canteen": "indoor_CANTEEN_GUIYUAN",
+            "wanlin_museum": "indoor_WANLIN_MUSEUM",
+        }
+    },
+    "XMU": {
+        "buildings": {
+            "library": "indoor_LIB",
+            "teaching_building": "indoor_TB1",
+            "dormitory_1": "indoor_DORM1",
+            "canteen": "indoor_CANTEEN_FURONG",
+            "sports_ground": "indoor_SPORTS_GROUND",
+        }
+    },
+    "ZJU": {
+        "buildings": {
+            "library": "indoor_LIB",
+            "teaching_building": "indoor_TB1",
+            "dormitory_1": "indoor_DORM1",
+            "canteen": "indoor_CANTEEN_LINHU",
+            "sports_ground": "indoor_SPORTS_GROUND",
+        }
+    },
+    "NJU": {
+        "buildings": {
+            "library": "indoor_LIB",
+            "teaching_building": "indoor_TB1",
+            "dormitory_1": "indoor_DORM1",
+            "canteen": "indoor_CANTEEN_JIUSHI",
+            "sports_center": "indoor_SPORTS_CENTER",
+        }
+    },
+}
 
 
 def test_demo_bootstrap_contains_map_and_controls():
@@ -146,6 +193,7 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert basemaps["modes"][1]["network_required"] is False
     assert payload["stats"]["route_target_count"] >= 10
     assert payload["stats"]["indoor_building_count"] >= 20
+
     assert payload["stats"]["site_count"] >= 1
     assert payload["stats"]["user_count"] >= 10
     assert payload["stats"]["aigc_sample_count"] == 3
@@ -204,6 +252,116 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert dorm_target["building_id"] == "dormitory_1"
     assert dorm_target["floor_id"] == "F1"
     print("test_demo_bootstrap_contains_map_and_controls passed.")
+
+
+def test_m29y_first_batch_indoor_regression_preserves_outdoor_chain():
+    global_sites = json.loads(Path("data/global_sites.json").read_text(encoding="utf-8"))
+    site_by_id = {item["id"]: item for item in global_sites["sites"]}
+
+    for site_id, case in M29Y_FIRST_BATCH_CASES.items():
+        service = DemoUIService(site_id)
+        bootstrap = service.get_bootstrap_payload()
+        outdoor = json.loads(Path(f"data/sites/{site_id}/outdoor.json").read_text(encoding="utf-8"))
+        registry = json.loads(
+            Path(f"data/sites/{site_id}/geo/indoor_building_registry.json").read_text(encoding="utf-8")
+        )["buildings"]
+        outdoor_nodes = {node["id"]: node for node in outdoor["nodes"]}
+        registry_by_building = {item["building_id"]: item for item in registry}
+        expected_buildings = case["buildings"]
+
+        assert bootstrap["site"]["id"] == site_id
+        assert bootstrap["map_renderer"] == "leaflet_geo"
+        assert bootstrap["map_capabilities"]["indoor_navigation"] is True
+        assert bootstrap["map_capabilities"]["indoor_supported_building_count"] == 5
+        assert bootstrap["stats"]["indoor_building_count"] == 5
+        assert {item["building_id"] for item in bootstrap["indoor_buildings"]} == set(expected_buildings)
+        assert outdoor["metadata"]["indoor_stage"] == "M29X"
+        assert outdoor["metadata"]["indoor_site_id"] == site_id
+        assert site_by_id[site_id]["sub_graphs"] == ["outdoor", *expected_buildings.values()]
+
+        for building_id, indoor_graph_id in expected_buildings.items():
+            entry = registry_by_building[building_id]
+            outdoor_entry = outdoor_nodes[entry["entry_node_id"]]
+            graph = json.loads(Path(f"data/sites/{site_id}/{indoor_graph_id}.json").read_text(encoding="utf-8"))
+
+            assert entry["indoor_graph_id"] == indoor_graph_id
+            assert outdoor_entry["is_gate"] is True
+            assert outdoor_entry["indoor_supported"] is True
+            assert outdoor_entry["indoor_graph_id"] == indoor_graph_id
+            assert outdoor_entry["indoor_entry_node_id"] == entry["entry_node_id"]
+            assert graph["graph_type"] == "indoor"
+            assert graph["building_id"] == building_id
+            assert graph["building_name"] == entry["building_name"]
+            assert graph["floor_ids"] == entry["floor_ids"]
+
+            default_floor = service.get_indoor_map_payload(building_id)
+            assert default_floor["success"] is True
+            assert default_floor["site_id"] == site_id
+            assert default_floor["building_id"] == building_id
+            assert default_floor["indoor_graph_id"] == indoor_graph_id
+            assert default_floor["current_floor_id"] == entry["default_floor_id"]
+            assert default_floor["stats"]["node_count"] > 0
+            assert default_floor["stats"]["zone_count"] > 0
+            assert any(node["is_gate"] for node in default_floor["nodes"])
+
+            if len(entry["floor_ids"]) > 1:
+                next_floor_id = next(floor_id for floor_id in entry["floor_ids"] if floor_id != entry["default_floor_id"])
+                switched_floor = service.get_indoor_map_payload(building_id, next_floor_id)
+                assert switched_floor["success"] is True
+                assert switched_floor["current_floor_id"] == next_floor_id
+                assert all(node["floor_id"] == next_floor_id for node in switched_floor["nodes"])
+
+            invalid_floor = service.get_indoor_map_payload(building_id, "__missing_floor__")
+            assert invalid_floor["success"] is False
+
+        indoor_route = service.plan_route(
+            {
+                "start_node_id": "library",
+                "target_node_id": "lib_reading_room_1",
+                "strategy": "shortest_distance",
+                "transport_mode": "walk",
+            }
+        )
+        assert indoor_route["success"] is True
+        assert indoor_route["site_id"] == site_id
+        assert indoor_route["path"][0] == "library"
+        assert indoor_route["path"][-1] == "lib_reading_room_1"
+        assert indoor_route["ui"]["default_route_view"] == "indoor:library:F1"
+        assert {view["id"] for view in indoor_route["ui"]["available_route_views"]} >= {
+            "outdoor",
+            "indoor:library:F1",
+        }
+
+        outdoor_to_indoor_route = service.plan_route(
+            {
+                "start_node_id": "gate_west",
+                "target_node_id": "lib_reading_room_2",
+                "strategy": "shortest_distance",
+                "transport_mode": "walk",
+            }
+        )
+        assert outdoor_to_indoor_route["success"] is True
+        assert outdoor_to_indoor_route["site_id"] == site_id
+        assert outdoor_to_indoor_route["ui"]["default_route_view"] == "outdoor"
+        assert outdoor_to_indoor_route["ui"]["route_geojson"] is not None
+        assert {view["id"] for view in outdoor_to_indoor_route["ui"]["available_route_views"]} >= {
+            "outdoor",
+            "indoor:library:F2",
+        }
+
+        outdoor_route = service.plan_route(
+            {
+                "start_node_id": "gate_west",
+                "target_node_id": "canteen",
+                "strategy": "shortest_distance",
+                "transport_mode": "walk",
+            }
+        )
+        assert outdoor_route["success"] is True
+        assert outdoor_route["site_id"] == site_id
+        assert outdoor_route["ui"]["default_route_view"] == "outdoor"
+        assert outdoor_route["ui"]["route_geojson"] is not None
+        assert "canteen" in outdoor_route["ui"]["mappable_path_node_ids"]
 
 
 def test_m27x_thu_outdoor_main_chain_is_available_in_first_batch():
