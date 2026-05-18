@@ -208,8 +208,10 @@
     {
       "id": "SUDA",
       "name": "苏州大学",
-      "description": "苏州大学校园占位注册，后续阶段将补充室外图、室内图和查询推荐数据。",
-      "location": "苏州",
+      "description": "苏州大学 M28X 室外批次校园，已完成天赐庄校区室外图、核心 POI、综合查询、场所查询、美食推荐和路径规划接入。",
+      "location": "江苏省苏州市姑苏区干将东路333号",
+      "is_available": true,
+      "data_status": "available",
       "sub_graphs": [
         "outdoor"
       ]
