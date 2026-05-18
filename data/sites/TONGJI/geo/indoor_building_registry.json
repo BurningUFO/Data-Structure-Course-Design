@@ -1,0 +1,80 @@
+{
+  "buildings": [
+    {
+      "building_id": "library",
+      "building_name": "同济大学四平路校区图书馆",
+      "entry_node_id": "library",
+      "indoor_graph_id": "indoor_LIB",
+      "template_id": "library_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M30X TONGJI maps outdoor node library (同济大学四平路校区图书馆) as the indoor/outdoor entry."
+    },
+    {
+      "building_id": "teaching_building",
+      "building_name": "同济大学四平路校区教学楼",
+      "entry_node_id": "teaching_building",
+      "indoor_graph_id": "indoor_TB1",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M30X TONGJI maps outdoor node teaching_building (同济大学四平路校区教学楼) as the indoor/outdoor entry."
+    },
+    {
+      "building_id": "dormitory_1",
+      "building_name": "同济大学四平路校区西区学生宿舍",
+      "entry_node_id": "dormitory_1",
+      "indoor_graph_id": "indoor_DORM1",
+      "template_id": "dormitory_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M30X TONGJI maps outdoor node dormitory_1 (同济大学四平路校区西区学生宿舍) as the indoor/outdoor entry."
+    },
+    {
+      "building_id": "canteen",
+      "building_name": "同济大学学苑食堂",
+      "entry_node_id": "canteen",
+      "indoor_graph_id": "indoor_CANTEEN_XUEYUAN",
+      "template_id": "canteen_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M30X TONGJI maps outdoor node canteen (同济大学学苑食堂) as the indoor/outdoor entry."
+    },
+    {
+      "building_id": "gymnasium",
+      "building_name": "同济大学体育馆",
+      "entry_node_id": "gymnasium",
+      "indoor_graph_id": "indoor_GYMNASIUM",
+      "template_id": "sports_public_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M30X TONGJI maps outdoor node gymnasium (同济大学体育馆) as the indoor/outdoor entry."
+    }
+  ],
+  "metadata": {
+    "stage": "M30X",
+    "site_id": "TONGJI",
+    "site_name": "同济大学",
+    "source_template_site": "PKU",
+    "scope": "Single-campus representative indoor templates and entry mapping."
+  }
+}
