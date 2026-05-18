@@ -12,12 +12,12 @@
 ## 全局摘要
 
 - `top_manager_status`: `in_progress`
-- `current_manager`: `L2-03`
+- `current_manager`: `L2-04`
 - `last_completed_manager`: `L2-03`
-- `next_manager`: `L2-04`
-- `last_commit`: `fed3f4e`
-- `last_verification`: `py -m pytest -q`，182 passed；M28Y 20 校室外总回归通过，覆盖 global_sites 切换、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线、多目标路线和站点隔离
-- `last_update_note`: `L2-03 已完成 16/16，等待一级总管复核并进入 L2-04`
+- `next_manager`: `L2-05`
+- `last_commit`: `0447434`
+- `last_verification`: `py -m pytest -q`，182 passed；一级总管复核 L2-03 completed/16-16，暂存区为空
+- `last_update_note`: `准备进入 L2-04 首批 5 校室内扩展阶段`
 
 ## 二级经理状态总表
 
@@ -37,9 +37,9 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03`
-- `current_action`: `L2-03 已完成，等待一级总管复核`
-- `next_action`: `一级总管复核 L2-03 后调用 L2-04`
-- `notes`: `L2-03 已完成剩余 15 校室外接入与 20 校室外总回归；THU、WHU、XMU、ZJU、NJU、FDU、SJTU、TONGJI、SEU、SYSU、SCU、HNU、SDU、HUST、SCUT、OUC、SUDA、HIT、YNU、HZAU 室外主链路与站点隔离均通过。`
+- `current_action`: `调用 L2-04`
+- `next_action`: `等待 L2-04 完成后复核`
+- `notes`: `L2-03 已完成一级总管复核；THU、WHU、XMU、ZJU、NJU、FDU、SJTU、TONGJI、SEU、SYSU、SCU、HNU、SDU、HUST、SCUT、OUC、SUDA、HIT、YNU、HZAU 室外主链路与站点隔离均通过。`
 
 ## L2-01 基线模板经理子任务
 
