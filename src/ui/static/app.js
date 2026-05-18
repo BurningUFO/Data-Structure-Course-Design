@@ -2703,11 +2703,13 @@ function renderIndoorSvgFloorplan(payload, floorplan, options = {}) {
   const corridorMarkup = corridors
     .map((corridor) => {
       const isRoute = routeEdgeKeys.has(corridor.edge_key);
+      const corridorPath = indoorCorridorPath(corridor);
       return `
-        <polygon
+        <polyline
           class="indoor-floor-corridor${isRoute ? " is-route" : ""}"
-          points="${svgPoints(corridor.polygon)}"
-        ></polygon>
+          points="${svgPoints(corridorPath)}"
+          style="--corridor-width: ${svgNumber(corridor.width || 44)}"
+        ></polyline>
       `;
     })
     .join("");
@@ -2765,18 +2767,15 @@ function renderIndoorSvgFloorplan(payload, floorplan, options = {}) {
     ? (routeContext.path_segments || [])
         .map((segment) => {
           const corridor = corridorByEdgeKey[indoorEdgeKey(segment.from, segment.to)];
-          const points = corridor?.segment;
+          const points = indoorCorridorPath(corridor);
           if (!points?.[0] || !points?.[1]) {
             return "";
           }
           return `
-            <line
+            <polyline
               class="indoor-route-overlay"
-              x1="${svgNumber(points[0][0])}"
-              y1="${svgNumber(points[0][1])}"
-              x2="${svgNumber(points[1][0])}"
-              y2="${svgNumber(points[1][1])}"
-            ></line>
+              points="${svgPoints(points)}"
+            ></polyline>
           `;
         })
         .join("")
@@ -2919,6 +2918,16 @@ function renderIndoorNetworkFloorplan(payload, options = {}) {
       </g>
     </svg>
   `;
+}
+
+function indoorCorridorPath(corridor) {
+  if (Array.isArray(corridor?.path) && corridor.path.length >= 2) {
+    return corridor.path;
+  }
+  if (Array.isArray(corridor?.segment) && corridor.segment.length >= 2) {
+    return corridor.segment;
+  }
+  return [];
 }
 
 function renderIndoorFloorplanIcon(icon, stateFlags = {}) {

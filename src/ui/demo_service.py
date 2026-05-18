@@ -834,6 +834,7 @@ class DemoUIService:
             end = self._indoor_connect_point(room_rects.get(to_id), to_point, from_point)
             if self._indoor_points_equal(start, end):
                 continue
+            orthogonal_path = self._indoor_orthogonal_path(start, end)
 
             corridors.append(
                 {
@@ -845,6 +846,9 @@ class DemoUIService:
                     "edge_type": normalize_text(edge.get("edge_type")) or "indoor_path",
                     "width": corridor_width,
                     "segment": [self._round_point(start), self._round_point(end)],
+                    "path": [self._round_point(point) for point in orthogonal_path],
+                    "is_orthogonal": self._is_indoor_orthogonal_path(orthogonal_path),
+                    "turn_count": max(len(orthogonal_path) - 2, 0),
                     "polygon": self._indoor_band_polygon(start, end, corridor_width),
                 }
             )
@@ -978,7 +982,7 @@ class DemoUIService:
             "route_overlay": {
                 "source": "indoor_route_views.path_segments",
                 "edge_key_field": "edge_key",
-                "aligns_to": "corridors.segment",
+                "aligns_to": "corridors.path",
             },
             "stats": {
                 "room_count": len(rooms),
@@ -1109,6 +1113,40 @@ class DemoUIService:
         x = center[0] if dy == 0 else center[0] + dx * ((y - center[1]) / dy)
         x = min(max(x, float(rect["left"]) + 10), float(rect["right"]) - 10)
         return x, y
+
+    @classmethod
+    def _indoor_orthogonal_path(
+        cls,
+        start: tuple[float, float],
+        end: tuple[float, float],
+    ) -> list[tuple[float, float]]:
+        if cls._indoor_points_equal(start, end):
+            return [start]
+        if abs(start[0] - end[0]) < 0.001 or abs(start[1] - end[1]) < 0.001:
+            return [start, end]
+
+        if abs(end[0] - start[0]) >= abs(end[1] - start[1]):
+            bend = (end[0], start[1])
+        else:
+            bend = (start[0], end[1])
+
+        path = [start, bend, end]
+        compacted = [path[0]]
+        for point in path[1:]:
+            if not cls._indoor_points_equal(compacted[-1], point):
+                compacted.append(point)
+        return compacted
+
+    @classmethod
+    def _is_indoor_orthogonal_path(cls, path: list[tuple[float, float]]) -> bool:
+        if len(path) < 2:
+            return True
+        for start, end in zip(path, path[1:]):
+            if cls._indoor_points_equal(start, end):
+                continue
+            if abs(start[0] - end[0]) >= 0.001 and abs(start[1] - end[1]) >= 0.001:
+                return False
+        return True
 
     @staticmethod
     def _indoor_band_polygon(

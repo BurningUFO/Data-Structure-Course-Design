@@ -23,6 +23,18 @@ def is_number(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
+def is_orthogonal_polyline(points):
+    return all(
+        len(start) >= 2
+        and len(end) >= 2
+        and (
+            abs(float(start[0]) - float(end[0])) < 0.001
+            or abs(float(start[1]) - float(end[1])) < 0.001
+        )
+        for start, end in zip(points, points[1:])
+    )
+
+
 def iter_geojson_positions(geometry):
     geometry_type = geometry.get("type")
     coordinates = geometry.get("coordinates", [])
@@ -533,7 +545,7 @@ def test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata():
     assert payload["floorplan"]["stats"]["wall_count"] > payload["floorplan"]["stats"]["room_count"]
     assert payload["floorplan"]["stats"]["door_count"] >= 6
     assert payload["floorplan"]["stats"]["icon_count"] >= 4
-    assert payload["floorplan"]["route_overlay"]["aligns_to"] == "corridors.segment"
+    assert payload["floorplan"]["route_overlay"]["aligns_to"] == "corridors.path"
 
     entrance = next(item for item in payload["nodes"] if item["id"] == "lib_entrance")
     reading_room = next(item for item in payload["nodes"] if item["id"] == "lib_reading_room_1")
@@ -602,6 +614,10 @@ def test_demo_m20_indoor_floorplan_covers_realistic_scene_types():
         assert all(len(room["polygon"]) >= 4 for room in floorplan["rooms"])
         assert all(len(corridor["polygon"]) == 4 for corridor in corridor_segments)
         assert all(len(corridor["segment"]) == 2 for corridor in corridor_segments)
+        assert all(len(corridor["path"]) >= 2 for corridor in corridor_segments)
+        assert all(corridor["is_orthogonal"] is True for corridor in corridor_segments)
+        assert all(is_orthogonal_polyline(corridor["path"]) for corridor in corridor_segments)
+        assert any(corridor["turn_count"] >= 1 for corridor in corridor_segments)
         assert any(door["segment"] for door in floorplan["doors"])
 
     print("test_demo_m20_indoor_floorplan_covers_realistic_scene_types passed.")
@@ -1466,6 +1482,7 @@ def test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks():
     assert "renderIndoorSvgFloorplan" in script
     assert "renderIndoorNetworkFloorplan" in script
     assert "floorplan.corridors" in script
+    assert "indoorCorridorPath" in script
     assert "indoor-floor-room" in script
     assert "indoor-floor-corridor" in script
     assert "indoor-floor-door" in script

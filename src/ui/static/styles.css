@@ -1496,13 +1496,15 @@ select[multiple] {
 }
 
 .indoor-floor-corridor {
-  fill: #dbeafe;
-  stroke: #93a4b8;
-  stroke-width: 1.5;
+  fill: none;
+  stroke: #dbeafe;
+  stroke-width: var(--corridor-width, 44);
+  stroke-linecap: square;
+  stroke-linejoin: bevel;
 }
 
 .indoor-floor-corridor.is-route {
-  fill: #fde68a;
+  stroke: #fde68a;
 }
 
 .indoor-floor-room {
@@ -1585,9 +1587,11 @@ select[multiple] {
 }
 
 .indoor-route-overlay {
+  fill: none;
   stroke: #f97316;
   stroke-width: 12;
-  stroke-linecap: round;
+  stroke-linecap: square;
+  stroke-linejoin: bevel;
   filter: drop-shadow(0 2px 2px rgba(154, 52, 18, 0.28));
   pointer-events: none;
 }
