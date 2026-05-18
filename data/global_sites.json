@@ -43,8 +43,10 @@
     {
       "id": "WHU",
       "name": "武汉大学",
-      "description": "武汉大学校园占位注册，后续阶段将补充室外图、室内图和查询推荐数据。",
-      "location": "武汉",
+      "description": "武汉大学首批室外批次校园，已完成室外图、核心 POI、综合查询、场所查询、美食推荐和路径规划接入。",
+      "location": "湖北省武汉市武昌区珞珈山",
+      "is_available": true,
+      "data_status": "available",
       "sub_graphs": [
         "outdoor"
       ]
