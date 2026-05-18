@@ -41,6 +41,8 @@ const state = {
   expandedPanelElement: null,
   expandedPanelPlaceholder: null,
   currentStartNodeId: "",
+  currentUserId: "",
+  currentInterests: [],
   focusedNodeId: "",
   nearbyCenterNodeId: "",
   currentResults: [],
@@ -330,6 +332,7 @@ function bindForms() {
       sort_field: document.querySelector("#scenic-sort").value,
       start_node_id: state.currentStartNodeId,
       limit: 6,
+      ...buildInterestPayload(),
     });
   });
 
@@ -354,6 +357,15 @@ function bindForms() {
     await runQuery("/api/diaries/fulltext", {
       query: document.querySelector("#diary-query").value.trim(),
       limit: 6,
+    });
+  });
+
+  document.querySelector("#diary-list-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await runQuery("/api/diaries/list", {
+      sort_field: document.querySelector("#diary-list-sort").value,
+      limit: 6,
+      ...buildInterestPayload(),
     });
   });
 
@@ -406,6 +418,18 @@ function bindForms() {
       `当前起点已切换为 ${getNodeName(state.currentStartNodeId)}。`,
       "info",
     );
+  });
+
+  document.querySelector("#user-selector").addEventListener("change", (event) => {
+    applySelectedUser(event.target.value);
+    updateActiveFeatureCaption();
+    setStatus(currentInterestStatusText(), "info");
+  });
+
+  document.querySelector("#interest-tags").addEventListener("change", () => {
+    state.currentInterests = readInterestTags();
+    updateActiveFeatureCaption();
+    setStatus(currentInterestStatusText(), "info");
   });
 
   document.querySelector("#site-selector").addEventListener("change", async (event) => {
@@ -797,9 +821,10 @@ function clearUserInputs() {
   setSelectValue("#place-category", "");
   setSelectValue("#place-center-node", "");
   setSelectValue("#place-radius", "500");
-  setSelectValue("#scenic-sort", "heat");
+  setSelectValue("#scenic-sort", "interest");
   setSelectValue("#place-sort", "distance_m");
   setSelectValue("#catering-sort", "distance_m");
+  setSelectValue("#diary-list-sort", "interest");
   setSelectValue("#route-target", "library");
   setMultipleSelectValues("#multi-route-targets", []);
   setSelectValue("#route-strategy", "shortest_distance");
@@ -843,6 +868,51 @@ function selectedValues(selector) {
   return Array.from(element.selectedOptions).map((option) => option.value);
 }
 
+function readInterestTags() {
+  const element = document.querySelector("#interest-tags");
+  if (!element) {
+    return [];
+  }
+  return element.value
+    .replaceAll("，", ",")
+    .replaceAll("、", ",")
+    .replaceAll("；", ",")
+    .replaceAll(";", ",")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function buildInterestPayload() {
+  state.currentInterests = readInterestTags();
+  return {
+    user_id: state.currentUserId,
+    interests: state.currentInterests,
+  };
+}
+
+function findBootstrapUser(userId) {
+  return (state.bootstrap?.users || []).find((item) => item.id === userId) || null;
+}
+
+function applySelectedUser(userId) {
+  const user = findBootstrapUser(userId) || (state.bootstrap?.users || [])[0] || null;
+  state.currentUserId = user ? user.id : "";
+  state.currentInterests = user && Array.isArray(user.interests) ? user.interests.slice() : [];
+  setSelectValue("#user-selector", state.currentUserId);
+  const interestInput = document.querySelector("#interest-tags");
+  if (interestInput) {
+    interestInput.value = state.currentInterests.join(", ");
+  }
+}
+
+function currentInterestStatusText() {
+  const user = findBootstrapUser(state.currentUserId);
+  const userName = user ? user.name : "自定义";
+  const interests = state.currentInterests.length ? state.currentInterests.join("、") : "未选择";
+  return `当前用户：${userName}；当前兴趣偏好：${interests}。`;
+}
+
 function hydrateBootstrap(bootstrap) {
   hydrateIndoorBootstrap(bootstrap);
   document.querySelector("#product-title").textContent = bootstrap.product.name;
@@ -879,6 +949,16 @@ function hydrateBootstrap(bootstrap) {
     })),
     bootstrap.default_start_node,
   );
+
+  populateSelect(
+    document.querySelector("#user-selector"),
+    (bootstrap.users || []).map((item) => ({
+      value: item.id,
+      label: `${item.name} · ${item.interest_text || "无兴趣标签"}`,
+    })),
+    bootstrap.default_user_id || bootstrap.users?.[0]?.id || "",
+  );
+  applySelectedUser(bootstrap.default_user_id || bootstrap.users?.[0]?.id || "");
 
   populateSelect(
     document.querySelector("#route-target"),
@@ -979,9 +1059,22 @@ function hydrateBootstrap(bootstrap) {
     value: item.value,
     label: item.label,
   }));
-  populateSelect(document.querySelector("#scenic-sort"), sortOptions, "heat");
+  const scenicSortOptions = (bootstrap.controls.scenic_sort_options || bootstrap.controls.sort_options).map((item) => ({
+    value: item.value,
+    label: item.label,
+  }));
+  const diarySortOptions = (bootstrap.controls.diary_sort_options || [
+    { value: "interest", label: "按兴趣推荐" },
+    { value: "heat", label: "按热度" },
+    { value: "rating", label: "按评分" },
+  ]).map((item) => ({
+    value: item.value,
+    label: item.label,
+  }));
+  populateSelect(document.querySelector("#scenic-sort"), scenicSortOptions, "interest");
   populateSelect(document.querySelector("#place-sort"), sortOptions, "distance_m");
   populateSelect(document.querySelector("#catering-sort"), sortOptions, "distance_m");
+  populateSelect(document.querySelector("#diary-list-sort"), diarySortOptions, "interest");
 
   renderPresetButtons("#scenic-presets", bootstrap.presets.scenic, handleScenicPreset);
   renderPresetButtons("#place-presets", bootstrap.presets.place, handlePlacePreset);
@@ -1393,7 +1486,12 @@ function updateActiveFeatureCaption() {
   }
 
   const startName = getNodeName(state.currentStartNodeId);
-  caption.textContent = startName ? `当前起点：${startName}` : "当前起点统一生效";
+  const user = findBootstrapUser(state.currentUserId);
+  const interestText = state.currentInterests.length ? state.currentInterests.join("、") : "未选择兴趣";
+  const userText = user ? `当前用户：${user.name}` : "当前用户：自定义";
+  caption.textContent = startName
+    ? `当前起点：${startName}；${userText}；兴趣：${interestText}`
+    : `${userText}；兴趣：${interestText}`;
 }
 
 function updateWorkspaceHeading() {
@@ -1440,6 +1538,7 @@ function handleScenicPreset(preset) {
     sort_field: document.querySelector("#scenic-sort").value,
     start_node_id: state.currentStartNodeId,
     limit: 6,
+    ...buildInterestPayload(),
   });
 }
 
@@ -2169,8 +2268,13 @@ function renderResultCard(item, index, queryType = "") {
   const diaryId = item.id || item.diary_id || "";
   const mediaMarkup = renderMediaPlaceholders(item);
   const aigcMarkup = isAigc ? renderAigcPreview(item) : "";
+  const interestMarkup = item.interest_reason
+    ? `<p class="interest-reason">${escapeHtml(item.interest_reason)}</p>`
+    : "";
 
   const metrics = [
+    item.interest_match_score !== undefined ? `<span class="metric-pill metric-pill-strong">兴趣 ${Number(item.interest_match_score).toFixed(1)}</span>` : "",
+    item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
     distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
     item.nearby_reason ? `<span class="metric-pill">${escapeHtml(item.nearby_reason)}</span>` : "",
     item.category_label ? `<span class="metric-pill">${escapeHtml(item.category_label)}</span>` : "",
@@ -2235,6 +2339,7 @@ function renderResultCard(item, index, queryType = "") {
       <h4>${title}</h4>
       <div class="card-metrics">${metrics}</div>
       <p>${description}</p>
+      ${interestMarkup}
       ${mediaMarkup}
       ${aigcMarkup}
       ${primaryButtons ? `<div class="card-actions card-actions-primary">${primaryButtons}</div>` : ""}

@@ -17,6 +17,12 @@ from pathlib import Path
 from typing import Any
 
 from src.diary.fulltext_service import search_diary_fulltext_records
+from src.recommend.interest import (
+    interest_ranking_weights,
+    is_interest_sort_field,
+    normalize_interest_list,
+    rank_interest_aware_records,
+)
 from src.search.response import build_error_response, build_success_response
 
 
@@ -418,8 +424,11 @@ class DiaryService:
         sort_field: str = "heat",
         sort_order: str = "",
         limit: int = 10,
+        interests: list[str] | str | None = None,
     ) -> dict[str, Any]:
         """日记统一查询入口。"""
+        normalized_interests = normalize_interest_list(interests)
+        interest_ranking_active = bool(normalized_interests) and is_interest_sort_field(sort_field)
         if not keyword and not destination:
             matched_records = self.records[:]
         else:
@@ -441,13 +450,42 @@ class DiaryService:
                     if record["id"] in matched_ids
                 ]
 
-        ordered_records = self._sort_records(
-            matched_records,
-            sort_field=sort_field,
-            sort_order=sort_order,
-        )
         safe_limit = limit if limit > 0 else 10
+        if interest_ranking_active:
+            ordered_records = rank_interest_aware_records(
+                matched_records,
+                interests=normalized_interests,
+                include_distance=False,
+                limit=max(safe_limit, len(matched_records)),
+            )
+        else:
+            ordered_records = self._sort_records(
+                matched_records,
+                sort_field=sort_field,
+                sort_order=sort_order,
+            )
         top_records = ordered_records[:safe_limit]
+
+        result_fields = [
+            "id",
+            "title",
+            "destination",
+            "destination_node_id",
+            "heat",
+            "rating",
+            "author_name",
+            "tags",
+            "views",
+            "created_at",
+        ]
+        if normalized_interests:
+            result_fields.extend(
+                [
+                    "interest_match_score",
+                    "recommendation_score",
+                    "interest_reason",
+                ]
+            )
 
         metadata = {
             "total_matched": len(matched_records),
@@ -456,23 +494,21 @@ class DiaryService:
                 "sort_order": self._resolve_sort_order(sort_field, sort_order),
                 "limit": safe_limit,
                 "distance_used_for_ranking": False,
+                "interest_used_for_ranking": interest_ranking_active,
+            },
+            "interest": {
+                "requested": bool(normalized_interests),
+                "active_for_ranking": interest_ranking_active,
+                "interests": normalized_interests,
+                "score_field": "interest_match_score",
+                "recommendation_score_field": "recommendation_score",
+                "weights": interest_ranking_weights(include_distance=False),
             },
             "data_source": {
                 "path": str(self.data_path),
                 "legacy_compatible": self.data_path == get_legacy_diary_data_path(),
             },
-            "result_fields": [
-                "id",
-                "title",
-                "destination",
-                "destination_node_id",
-                "heat",
-                "rating",
-                "author_name",
-                "tags",
-                "views",
-                "created_at",
-            ],
+            "result_fields": result_fields,
         }
 
         return build_success_response(
@@ -486,6 +522,7 @@ class DiaryService:
                 "sort_field": sort_field,
                 "sort_order": sort_order,
                 "limit": safe_limit,
+                "interests": normalized_interests,
             },
             metadata=metadata,
         )
@@ -655,6 +692,7 @@ def search_diaries(
     sort_field: str = "heat",
     sort_order: str = "",
     limit: int = 10,
+    interests: list[str] | str | None = None,
     records: list[Record] | None = None,
     data_path: str | Path | None = None,
     prefer_legacy_data: bool = False,
@@ -672,6 +710,7 @@ def search_diaries(
         sort_field=sort_field,
         sort_order=sort_order,
         limit=limit,
+        interests=interests,
     )
 
 

@@ -123,6 +123,29 @@ def test_diary_response_shape():
     print("test_diary_response_shape passed.")
 
 
+def test_diary_interest_recommendation_changes_with_user_interests():
+    study_result = search_diaries(
+        sort_field="interest",
+        interests=["图书馆", "校园", "秋景"],
+        limit=3,
+    )
+    food_result = search_diaries(
+        sort_field="interest",
+        interests=["美食", "食堂", "校园生活"],
+        limit=3,
+    )
+
+    assert study_result["success"] is True
+    assert food_result["success"] is True
+    assert study_result["metadata"]["interest"]["active_for_ranking"] is True
+    assert food_result["metadata"]["interest"]["active_for_ranking"] is True
+    assert study_result["results"][0]["id"] in {"diary_001", "diary_003"}
+    assert food_result["results"][0]["id"] == "diary_002"
+    assert study_result["results"][0]["id"] != food_result["results"][0]["id"]
+    assert study_result["results"][0]["interest_reason"]
+    print("test_diary_interest_recommendation_changes_with_user_interests passed.")
+
+
 def test_diary_management_create_update_rate_delete_flow():
     service = DiaryService(records=[])
     created = service.create_diary(
@@ -251,6 +274,7 @@ def run_all_tests():
     test_search_no_match()
     test_search_legacy_dataset_support()
     test_diary_response_shape()
+    test_diary_interest_recommendation_changes_with_user_interests()
     test_diary_management_create_update_rate_delete_flow()
     test_diary_management_validation_errors()
     test_search_fulltext_single_keyword()

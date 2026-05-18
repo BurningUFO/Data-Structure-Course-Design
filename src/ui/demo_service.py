@@ -15,6 +15,15 @@ from typing import Any
 from src.diary.diary_service import DiaryService, load_diary_records
 from src.graph.loader import GraphLoader
 from src.recommend.catering_service import recommend_catering
+from src.recommend.interest import (
+    build_user_options,
+    collect_interest_options,
+    is_interest_sort_field,
+    load_users,
+    normalize_interest_list,
+    resolve_user_by_id,
+    resolve_user_interests,
+)
 from src.routing.router import Router
 from src.search.search_service import (
     PLACE_CATEGORY_SET,
@@ -186,7 +195,7 @@ FEATURE_NAVIGATION = [
     {
         "id": "diary",
         "label": "日记中心",
-        "description": "支持全文检索，并已补齐创建、编辑、删除和评分业务接口。",
+        "description": "支持浏览推荐、全文检索，并已补齐创建、编辑、删除和评分业务接口。",
         "status": "ready",
     },
     {
@@ -348,6 +357,7 @@ class DemoUIService:
         self.site_records = self._filter_searchable_site_records(load_site_records(self.site_id))
         self.diary_records = load_diary_records()
         self.diary_service = DiaryService(records=self.diary_records)
+        self.users = load_users(site_id=self.site_id)
         self.outdoor_graph_source = self._load_outdoor_graph_source(self.site_id)
         self.map_nodes = self._build_map_nodes(self.outdoor_graph_source)
         self.map_node_index = {node["id"]: node for node in self.map_nodes}
@@ -396,6 +406,8 @@ class DemoUIService:
             },
             "sites": self._build_site_options(),
             "site": self.site_meta,
+            "users": self._build_user_options(),
+            "default_user_id": self._resolve_default_user_id(),
             "navigation": FEATURE_NAVIGATION,
             "help": HELP_CONTENT,
             "state_policy": STATE_POLICY,
@@ -417,6 +429,20 @@ class DemoUIService:
                     {"value": "rating", "label": "按评分"},
                     {"value": "distance_m", "label": "按真实距离"},
                 ],
+                "scenic_sort_options": [
+                    {"value": "interest", "label": "按兴趣综合"},
+                    {"value": "heat", "label": "按热度"},
+                    {"value": "rating", "label": "按评分"},
+                    {"value": "distance_m", "label": "按真实距离"},
+                ],
+                "diary_sort_options": [
+                    {"value": "interest", "label": "按兴趣推荐"},
+                    {"value": "heat", "label": "按热度"},
+                    {"value": "rating", "label": "按评分"},
+                    {"value": "views", "label": "按浏览量"},
+                    {"value": "created_at", "label": "按发布时间"},
+                ],
+                "interest_options": collect_interest_options(self.users),
                 "nearby_radius_options": [
                     {"value": 200, "label": "200 m"},
                     {"value": 500, "label": "500 m"},
@@ -460,6 +486,7 @@ class DemoUIService:
                 "diary_count": len(self.diary_service.records),
                 "aigc_sample_count": len(self.aigc_samples),
                 "site_count": len(load_global_sites()),
+                "user_count": len(self.users),
                 "indoor_target_count": sum(
                     1 for item in self.route_targets if item["graph_type"] == "indoor"
                 ),
@@ -1272,20 +1299,81 @@ class DemoUIService:
             )
         return sites
 
+    def _build_user_options(self) -> list[dict[str, Any]]:
+        return build_user_options(self.users)
+
+    def _resolve_default_user_id(self) -> str:
+        options = self._build_user_options()
+        if not options:
+            return ""
+        for option in options:
+            if option.get("is_default"):
+                return normalize_text(option.get("id"))
+        return normalize_text(options[0].get("id"))
+
+    def _resolve_interest_context(self, request: dict[str, Any]) -> dict[str, Any]:
+        user_id = normalize_text(request.get("user_id") or request.get("current_user_id"))
+        requested_interests = normalize_interest_list(
+            request.get("interests")
+            or request.get("interest_tags")
+            or request.get("interest_text")
+        )
+        selected_user = resolve_user_by_id(self.users, user_id)
+        user_interests = resolve_user_interests(self.users, user_id)
+        interests = requested_interests or user_interests
+
+        return {
+            "user_id": user_id,
+            "user_name": normalize_text(selected_user.get("name")) if selected_user else "",
+            "role": normalize_text(selected_user.get("role")) if selected_user else "",
+            "interests": interests,
+            "source": "custom_interests" if requested_interests else ("user_profile" if user_interests else "none"),
+        }
+
+    @staticmethod
+    def _attach_interest_context(
+        response: dict[str, Any],
+        interest_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        if not interest_context.get("user_id") and not interest_context.get("interests"):
+            return response
+
+        decorated = response.copy()
+        filters = dict(decorated.get("filters") or {})
+        filters["user_id"] = interest_context.get("user_id", "")
+        filters["interests"] = list(interest_context.get("interests", []))
+        decorated["filters"] = filters
+
+        metadata = dict(decorated.get("metadata") or {})
+        metadata["user_interest_context"] = {
+            "user_id": interest_context.get("user_id", ""),
+            "user_name": interest_context.get("user_name", ""),
+            "role": interest_context.get("role", ""),
+            "interests": list(interest_context.get("interests", [])),
+            "source": interest_context.get("source", "none"),
+        }
+        decorated["metadata"] = metadata
+        return decorated
+
     def scenic_search(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         request = payload or {}
         start_node_id = self._normalize_start_node(request.get("start_node_id"))
+        interest_context = self._resolve_interest_context(request)
+        sort_field = normalize_text(request.get("sort_field")) or "heat"
         response = search_and_recommend(
             keyword=normalize_text(request.get("keyword")),
             category=normalize_text(request.get("category")),
             start_node_id=start_node_id,
             match_mode="fuzzy",
-            sort_field=normalize_text(request.get("sort_field")) or "heat",
+            sort_field=sort_field,
             limit=self._normalize_limit(request.get("limit"), default=6),
             records=self.site_records,
             distance_provider=self._distance_provider,
             use_default_distance_provider=False,
+            interests=interest_context["interests"],
+            allow_empty_query=is_interest_sort_field(sort_field),
         )
+        response = self._attach_interest_context(response, interest_context)
         return self._decorate_query_response(response, source="scenic_search")
 
     def place_search(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -1333,6 +1421,32 @@ class DemoUIService:
             use_default_distance_provider=False,
         )
         return self._decorate_query_response(response, source="catering_recommend")
+
+    def diary_list(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        request = payload or {}
+        interest_context = self._resolve_interest_context(request)
+        sort_field = normalize_text(request.get("sort_field")) or (
+            "interest" if interest_context["interests"] else "heat"
+        )
+        response = self.diary_service.search(
+            keyword=normalize_text(request.get("keyword")),
+            destination=normalize_text(request.get("destination")),
+            match_mode="fuzzy",
+            sort_field=sort_field,
+            sort_order=normalize_text(request.get("sort_order")),
+            limit=self._normalize_limit(request.get("limit"), default=6),
+            interests=interest_context["interests"],
+        )
+        response = response.copy()
+        response["query_type"] = "diary_list"
+        if response.get("success"):
+            response["message"] = (
+                "diary recommendation success"
+                if is_interest_sort_field(sort_field) and interest_context["interests"]
+                else "diary list success"
+            )
+        response = self._attach_interest_context(response, interest_context)
+        return self._decorate_query_response(response, source="diary_list")
 
     def diary_fulltext_search(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         request = payload or {}

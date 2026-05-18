@@ -105,7 +105,11 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["stats"]["route_target_count"] >= 10
     assert payload["stats"]["indoor_building_count"] >= 20
     assert payload["stats"]["site_count"] >= 1
+    assert payload["stats"]["user_count"] >= 10
     assert payload["stats"]["aigc_sample_count"] == 3
+    assert payload["default_user_id"] == "user_001"
+    assert len(payload["users"]) >= 10
+    assert payload["users"][0]["interests"]
     assert len(payload["aigc_samples"]) == 3
     assert payload["aigc_samples"][0]["sample_id"] == "aigc_sample_001"
     assert any(item["id"] == "aigc" for item in payload["navigation"])
@@ -130,6 +134,9 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert any(item["value"] == "building" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["place_categories"])
+    assert any(item["value"] == "interest" for item in payload["controls"]["scenic_sort_options"])
+    assert any(item["value"] == "interest" for item in payload["controls"]["diary_sort_options"])
+    assert any(item["value"] == "图书馆" for item in payload["controls"]["interest_options"])
     assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 500, 800, 1200]
     assert [item["value"] for item in payload["controls"]["transport_modes"]] == ["walk", "bike", "mixed"]
     assert [item["label"] for item in payload["controls"]["transport_modes"]] == [
@@ -1425,6 +1432,75 @@ def test_demo_diary_fulltext_search_links_to_route():
     print("test_demo_diary_fulltext_search_links_to_route passed.")
 
 
+def test_demo_m23_interest_user_switch_changes_scenic_recommendations():
+    service = DemoUIService("PKU")
+
+    study_response = service.scenic_search(
+        {
+            "user_id": "user_001",
+            "sort_field": "interest",
+            "start_node_id": "gate_north",
+            "limit": 5,
+        }
+    )
+    food_response = service.scenic_search(
+        {
+            "user_id": "user_002",
+            "sort_field": "interest",
+            "start_node_id": "gate_north",
+            "limit": 5,
+        }
+    )
+
+    assert study_response["success"] is True
+    assert food_response["success"] is True
+    assert study_response["metadata"]["interest"]["active_for_ranking"] is True
+    assert food_response["metadata"]["interest"]["active_for_ranking"] is True
+    assert study_response["metadata"]["user_interest_context"]["user_id"] == "user_001"
+    assert food_response["metadata"]["user_interest_context"]["user_id"] == "user_002"
+    assert study_response["results"][0]["route_target_node_id"] == "library"
+    assert food_response["results"][0]["route_target_node_id"] == "canteen"
+    assert study_response["results"][0]["interest_match_score"] > 0
+    assert food_response["results"][0]["interest_match_score"] > 0
+    assert "兴趣命中" in study_response["results"][0]["interest_reason"]
+    assert study_response["results"][0]["id"] != food_response["results"][0]["id"]
+    print("test_demo_m23_interest_user_switch_changes_scenic_recommendations passed.")
+
+
+def test_demo_m23_interest_user_switch_changes_diary_recommendations():
+    service = DemoUIService("PKU")
+
+    study_response = service.diary_list(
+        {
+            "user_id": "user_001",
+            "sort_field": "interest",
+            "limit": 5,
+        }
+    )
+    food_response = service.diary_list(
+        {
+            "user_id": "user_002",
+            "sort_field": "interest",
+            "limit": 5,
+        }
+    )
+    fulltext_response = service.diary_fulltext_search({"query": "图书馆 自习", "limit": 3})
+
+    assert study_response["success"] is True
+    assert food_response["success"] is True
+    assert fulltext_response["success"] is True
+    assert study_response["query_type"] == "diary_list"
+    assert food_response["query_type"] == "diary_list"
+    assert study_response["metadata"]["interest"]["active_for_ranking"] is True
+    assert food_response["metadata"]["interest"]["active_for_ranking"] is True
+    assert study_response["results"][0]["id"] in {"diary_001", "diary_003"}
+    assert food_response["results"][0]["id"] == "diary_002"
+    assert study_response["results"][0]["id"] != food_response["results"][0]["id"]
+    assert study_response["results"][0]["interest_reason"]
+    assert fulltext_response["query_type"] == "diary_fulltext_search"
+    print("test_demo_m23_interest_user_switch_changes_diary_recommendations passed.")
+
+
 def test_demo_diary_management_flow_links_to_route():
     service = DemoUIService("PKU")
     created = service.create_diary(
@@ -1489,6 +1565,8 @@ def test_demo_static_diary_center_contains_management_controls():
         script = file.read()
 
     assert 'id="diary-create-form"' in html
+    assert 'id="diary-list-form"' in html
+    assert 'id="diary-list-sort"' in html
     assert 'id="diary-destination-node"' in html
     assert 'id="diary-images"' in html
     assert 'id="diary-videos"' in html
@@ -1498,6 +1576,10 @@ def test_demo_static_diary_center_contains_management_controls():
     assert '"/api/diaries/update"' in script
     assert '"/api/diaries/rate"' in script
     assert '"/api/diaries/delete"' in script
+    assert '"/api/diaries/list"' in script
+    assert "buildInterestPayload" in script
+    assert 'id="user-selector"' in html
+    assert 'id="interest-tags"' in html
     print("test_demo_static_diary_center_contains_management_controls passed.")
 
 
@@ -1867,6 +1949,8 @@ def run_all_tests():
     test_demo_m22_fixed_nearby_facility_scenarios()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
+    test_demo_m23_interest_user_switch_changes_scenic_recommendations()
+    test_demo_m23_interest_user_switch_changes_diary_recommendations()
     test_demo_diary_management_flow_links_to_route()
     test_demo_static_diary_center_contains_management_controls()
     test_demo_static_leaflet_renderer_contains_local_assets_and_fallback()

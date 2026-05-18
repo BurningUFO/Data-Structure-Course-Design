@@ -147,6 +147,14 @@
                   <span class="field-label">当前起点</span>
                   <select id="global-start-node"></select>
                 </label>
+                <label class="field user-switcher">
+                  <span class="field-label">当前用户</span>
+                  <select id="user-selector"></select>
+                </label>
+                <label class="field interest-switcher">
+                  <span class="field-label">当前兴趣偏好</span>
+                  <input id="interest-tags" type="text" placeholder="例如：图书馆, 食堂, 运动" />
+                </label>
               </div>
             </section>
 
@@ -243,7 +251,18 @@
                 </section>
 
                 <section class="tab-panel" data-panel="diary">
-                  <form id="diary-form" class="stack-form">
+                  <form id="diary-list-form" class="stack-form">
+                    <div class="form-section-heading">
+                      <h3>浏览 / 推荐日记</h3>
+                      <span>按当前用户兴趣、热度和评分综合排序</span>
+                    </div>
+                    <label class="field">
+                      <span class="field-label">推荐排序</span>
+                      <select id="diary-list-sort"></select>
+                    </label>
+                    <button class="primary-button form-primary-action" type="submit">浏览推荐日记</button>
+                  </form>
+                  <form id="diary-form" class="stack-form separated-form">
                     <div class="form-section-heading">
                       <h3>全文检索</h3>
                       <span>从日记内容进入路线规划</span>

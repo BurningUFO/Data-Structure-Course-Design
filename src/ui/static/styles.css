@@ -550,9 +550,9 @@ button {
 
 .site-actions {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr);
+  grid-template-columns: repeat(4, minmax(170px, 1fr));
   gap: 10px;
-  min-width: min(520px, 100%);
+  min-width: min(920px, 100%);
 }
 
 .workspace {
@@ -1927,6 +1927,12 @@ select[multiple] {
   line-height: 1.65;
 }
 
+.result-card .interest-reason {
+  color: var(--primary-strong);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
 .compact-step {
   background: rgba(255, 255, 255, 0.64);
 }
@@ -2136,6 +2142,11 @@ select[multiple] {
 }
 
 @media (max-width: 1380px) {
+  .site-actions {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    min-width: min(520px, 100%);
+  }
+
   .workspace {
     grid-template-columns: minmax(280px, 330px) minmax(0, 1fr);
   }

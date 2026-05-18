@@ -20,6 +20,12 @@ import math
 from pathlib import Path
 from typing import Any
 
+from src.recommend.interest import (
+    interest_ranking_weights,
+    is_interest_sort_field,
+    normalize_interest_list,
+    rank_interest_aware_records,
+)
 from src.recommend.ranking import recommend_top_k
 from src.search.exact_search import canonicalize_category, filter_by_category, search_records
 from src.search.distance_adapter import DistanceProvider, build_distance_provider
@@ -41,7 +47,7 @@ PLACE_CATEGORY_SET = {
     "service",
     "landmark",
 }
-SUPPORTED_BUSINESS_SORT_FIELDS = {"heat", "rating", "distance_m"}
+SUPPORTED_BUSINESS_SORT_FIELDS = {"heat", "rating", "distance_m", "interest"}
 DEFAULT_NEARBY_RADIUS_M = 500.0
 MAX_NEARBY_RADIUS_M = 3000.0
 
@@ -369,6 +375,8 @@ def search_and_recommend(
     distance_provider: DistanceProvider | None = None,
     use_default_distance_provider: bool = True,
     distance_strategy: str = "shortest_distance",
+    interests: list[str] | str | None = None,
+    allow_empty_query: bool = False,
 ) -> dict[str, Any]:
     """
     查询推荐主入口。
@@ -384,6 +392,8 @@ def search_and_recommend(
       `sort_field="distance_m"`。
     - records/data_path: 允许测试或联调时注入数据。
     """
+    normalized_interests = normalize_interest_list(interests)
+    interest_ranking_active = bool(normalized_interests) and is_interest_sort_field(sort_field)
     filters = {
         "keyword": keyword,
         "category": category,
@@ -395,6 +405,7 @@ def search_and_recommend(
         "distance_strategy": distance_strategy,
         "prefer_member_c_data": prefer_member_c_data,
         "use_default_distance_provider": use_default_distance_provider,
+        "interests": normalized_interests,
     }
     base_metadata = build_response_metadata(
         records=[],
@@ -404,9 +415,11 @@ def search_and_recommend(
         start_node_id=start_node_id,
         distance_strategy=distance_strategy,
         distance_provider_active=False,
+        interests=normalized_interests,
+        interest_ranking_active=interest_ranking_active,
     )
 
-    if not keyword and not category:
+    if not keyword and not category and not allow_empty_query and not interest_ranking_active:
         return build_error_response(
             "keyword and category cannot both be empty",
             query_type="scenic_search",
@@ -447,12 +460,20 @@ def search_and_recommend(
         distance_provider=active_distance_provider,
         distance_strategy=distance_strategy,
     )
-    top_records = rank_records(
-        enriched_records,
-        sort_field=sort_field,
-        sort_order=filters["sort_order"],
-        limit=limit,
-    )
+    if interest_ranking_active:
+        top_records = rank_interest_aware_records(
+            enriched_records,
+            interests=normalized_interests,
+            include_distance=bool(start_node_id),
+            limit=limit,
+        )
+    else:
+        top_records = rank_records(
+            enriched_records,
+            sort_field=sort_field,
+            sort_order=filters["sort_order"],
+            limit=limit,
+        )
     metadata = build_response_metadata(
         records=top_records,
         sort_field=sort_field,
@@ -461,6 +482,8 @@ def search_and_recommend(
         start_node_id=start_node_id,
         distance_strategy=distance_strategy,
         distance_provider_active=active_distance_provider is not None,
+        interests=normalized_interests,
+        interest_ranking_active=interest_ranking_active,
     )
 
     return build_success_response(
@@ -873,15 +896,45 @@ def build_response_metadata(
     start_node_id: str,
     distance_strategy: str,
     distance_provider_active: bool,
+    interests: list[str] | None = None,
+    interest_ranking_active: bool = False,
 ) -> dict[str, Any]:
     """构造统一响应的业务元信息。"""
     status_counts = count_distance_status(records)
+    normalized_interests = normalize_interest_list(interests)
+    result_fields = [
+        "id",
+        "name",
+        "category",
+        "heat",
+        "rating",
+        "target_node_id",
+        "distance_m",
+        "distance_status",
+    ]
+    if normalized_interests:
+        result_fields.extend(
+            [
+                "interest_match_score",
+                "recommendation_score",
+                "interest_reason",
+            ]
+        )
     return {
         "ranking": {
             "sort_field": sort_field,
             "sort_order": sort_order,
             "limit": limit,
             "distance_used_for_ranking": sort_field == "distance_m",
+            "interest_used_for_ranking": interest_ranking_active,
+        },
+        "interest": {
+            "requested": bool(normalized_interests),
+            "active_for_ranking": interest_ranking_active,
+            "interests": normalized_interests,
+            "score_field": "interest_match_score",
+            "recommendation_score_field": "recommendation_score",
+            "weights": interest_ranking_weights(include_distance=bool(start_node_id)),
         },
         "distance": {
             "requested": bool(start_node_id),
@@ -897,16 +950,7 @@ def build_response_metadata(
                 if status != "available"
             ),
         },
-        "result_fields": [
-            "id",
-            "name",
-            "category",
-            "heat",
-            "rating",
-            "target_node_id",
-            "distance_m",
-            "distance_status",
-        ],
+        "result_fields": result_fields,
     }
 
 

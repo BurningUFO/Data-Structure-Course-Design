@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.recommend.ranking import recommend_top_k
 from src.recommend.catering_service import recommend_catering
+from src.recommend.interest import rank_interest_aware_records
 from src.recommend.sorter import sort_records
 from src.recommend.topk import top_k
 
@@ -174,6 +175,60 @@ def test_recommend_catering_optional_cuisine_filter():
     print("test_recommend_catering_optional_cuisine_filter passed.")
 
 
+def test_interest_aware_ranking_uses_interest_heat_rating_and_distance():
+    records = [
+        {
+            "id": "library",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 80,
+            "rating": 4.5,
+            "distance_m": 300,
+            "tags": ["图书馆", "自习"],
+            "description": "安静学习空间。",
+        },
+        {
+            "id": "canteen",
+            "name": "农园食堂",
+            "category": "catering",
+            "heat": 95,
+            "rating": 4.9,
+            "distance_m": 80,
+            "tags": ["食堂", "美食"],
+            "description": "校园餐饮。",
+        },
+        {
+            "id": "sports",
+            "name": "五四体育场",
+            "category": "sports",
+            "heat": 90,
+            "rating": 4.8,
+            "distance_m": 60,
+            "tags": ["运动", "跑步"],
+            "description": "适合锻炼。",
+        },
+    ]
+
+    study_result = rank_interest_aware_records(
+        records,
+        interests=["图书馆", "学习"],
+        limit=3,
+    )
+    food_result = rank_interest_aware_records(
+        records,
+        interests=["美食", "食堂"],
+        limit=3,
+    )
+
+    assert study_result[0]["id"] == "library"
+    assert food_result[0]["id"] == "canteen"
+    assert study_result[0]["interest_match_score"] > 0
+    assert food_result[0]["interest_match_score"] > 0
+    assert study_result[0]["recommendation_components"]["weights"]["distance_m"] == 0.1
+    assert "兴趣命中" in study_result[0]["interest_reason"]
+    print("test_interest_aware_ranking_uses_interest_heat_rating_and_distance passed.")
+
+
 def run_all_tests():
     print("Running recommend module tests...")
     test_sort_by_heat()
@@ -185,6 +240,7 @@ def run_all_tests():
     test_recommend_catering_top_k()
     test_recommend_catering_distance_sort()
     test_recommend_catering_optional_cuisine_filter()
+    test_interest_aware_ranking_uses_interest_heat_rating_and_distance()
     print("All recommend tests passed.")
 
 

@@ -195,6 +195,8 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
                 "/api/search/scenic": selected_service.scenic_search,
                 "/api/search/places": selected_service.place_search,
                 "/api/recommend/catering": selected_service.catering_search,
+                "/api/diaries/list": selected_service.diary_list,
+                "/api/diaries/recommend": selected_service.diary_list,
                 "/api/diaries/fulltext": selected_service.diary_fulltext_search,
                 "/api/diaries": selected_service.create_diary,
                 "/api/diaries/create": selected_service.create_diary,
