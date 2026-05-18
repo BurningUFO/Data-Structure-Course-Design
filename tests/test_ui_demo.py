@@ -526,6 +526,14 @@ def test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata():
     assert payload["stats"]["edge_count"] == len(payload["edges"])
     assert payload["stats"]["zone_count"] == len(payload["zones"])
     assert all("id" in item and "label" in item for item in payload["available_floors"])
+    assert payload["floorplan"]["renderer"] == "svg_floorplan"
+    assert payload["floorplan"]["version"] == "m20_realistic_floorplan_v1"
+    assert payload["floorplan"]["stats"]["room_count"] >= 6
+    assert payload["floorplan"]["stats"]["corridor_count"] >= 6
+    assert payload["floorplan"]["stats"]["wall_count"] > payload["floorplan"]["stats"]["room_count"]
+    assert payload["floorplan"]["stats"]["door_count"] >= 6
+    assert payload["floorplan"]["stats"]["icon_count"] >= 4
+    assert payload["floorplan"]["route_overlay"]["aligns_to"] == "corridors.segment"
 
     entrance = next(item for item in payload["nodes"] if item["id"] == "lib_entrance")
     reading_room = next(item for item in payload["nodes"] if item["id"] == "lib_reading_room_1")
@@ -538,13 +546,22 @@ def test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata():
     assert entrance["is_gate"] is True
     assert is_number(entrance["layout"]["x"])
     assert is_number(entrance["layout"]["y"])
+    assert entrance["zone_type"] == "lobby"
+    assert entrance["zone_shape"] == "polygon"
+    assert entrance["icon_type"] == "lobby"
+    assert len(entrance["polygon"]) >= 4
     assert reading_room["floor_id"] == "F1"
     assert reading_room["floor_label"] == "1F"
     assert reading_room["description"]
     assert reading_room["facilities"]
+    assert reading_room["zone_type"] == "reading_room"
+    assert reading_room["zone_shape"] == "polygon"
+    assert len(reading_room["door_positions"]) >= 1
     assert route_edge["from_floor_id"] == "F1"
     assert route_edge["to_floor_id"] == "F1"
     assert route_edge["is_cross_floor_transition"] is False
+    icon_types = {item["type"] for item in payload["floorplan"]["icons"]}
+    assert {"restroom", "elevator", "stairs", "lobby"} <= icon_types
     zone_ids = {item["id"] for item in payload["zones"]}
     assert "lib_reading_room_1" in zone_ids
     assert "lib_staircase" not in zone_ids
@@ -558,6 +575,36 @@ def test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata():
     invalid_floor = service.get_indoor_map_payload("library", "B9")
     assert invalid_floor["success"] is False
     print("test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata passed.")
+
+
+def test_demo_m20_indoor_floorplan_covers_realistic_scene_types():
+    service = DemoUIService("PKU")
+    scenarios = [
+        ("library", "F1", {"lobby", "reading_room", "restroom", "elevator", "stairs"}),
+        ("teaching_building_1", "F1", {"lobby", "education", "restroom", "elevator", "stairs"}),
+        ("dormitory_1", "F1", {"lobby", "dormitory", "restroom", "elevator", "stairs"}),
+        ("poi_osm_catering_way_444894329", "F1", {"lobby", "catering", "restroom", "elevator", "stairs"}),
+    ]
+
+    for building_id, floor_id, required_zone_types in scenarios:
+        payload = service.get_indoor_map_payload(building_id, floor_id)
+        floorplan = payload["floorplan"]
+        zone_types = {room["zone_type"] for room in floorplan["rooms"]}
+        corridor_segments = floorplan["corridors"]
+
+        assert payload["success"] is True
+        assert floorplan["renderer"] == "svg_floorplan"
+        assert required_zone_types <= zone_types
+        assert floorplan["stats"]["room_count"] == len(floorplan["rooms"])
+        assert floorplan["stats"]["corridor_count"] == len(corridor_segments)
+        assert floorplan["stats"]["door_count"] == len(floorplan["doors"])
+        assert floorplan["stats"]["icon_count"] == len(floorplan["icons"])
+        assert all(len(room["polygon"]) >= 4 for room in floorplan["rooms"])
+        assert all(len(corridor["polygon"]) == 4 for corridor in corridor_segments)
+        assert all(len(corridor["segment"]) == 2 for corridor in corridor_segments)
+        assert any(door["segment"] for door in floorplan["doors"])
+
+    print("test_demo_m20_indoor_floorplan_covers_realistic_scene_types passed.")
 
 
 def test_demo_server_indoor_map_endpoint_returns_payload():
@@ -1416,6 +1463,13 @@ def test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks():
     assert "createDefaultIndoorState" in script
     assert "renderIndoorPanel" in script
     assert "renderIndoorFloorplan" in script
+    assert "renderIndoorSvgFloorplan" in script
+    assert "renderIndoorNetworkFloorplan" in script
+    assert "floorplan.corridors" in script
+    assert "indoor-floor-room" in script
+    assert "indoor-floor-corridor" in script
+    assert "indoor-floor-door" in script
+    assert "indoor-route-overlay" in script
     assert "hydrateIndoorBootstrap" in script
     assert "syncIndoorStateFromRoute" in script
     assert "data-enter-indoor" in script
@@ -1559,6 +1613,7 @@ def run_all_tests():
     test_demo_osm_layers_missing_file_keeps_core_map_available()
     test_demo_server_osm_layers_endpoint_returns_payload()
     test_demo_indoor_map_payload_contains_floor_nodes_and_zone_metadata()
+    test_demo_m20_indoor_floorplan_covers_realistic_scene_types()
     test_demo_server_indoor_map_endpoint_returns_payload()
     test_demo_white_road_skeleton_quality_and_geojson_coordinate_order()
     test_demo_m14_core_outdoor_route_is_reachable_without_fallback()

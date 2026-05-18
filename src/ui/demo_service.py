@@ -95,6 +95,24 @@ LABEL_PRIORITY_BY_CATEGORY = {
     "road": 10,
 }
 
+INDOOR_FLOORPLAN_RENDERER = "svg_floorplan"
+INDOOR_FLOORPLAN_VERSION = "m20_realistic_floorplan_v1"
+INDOOR_FLOORPLAN_PASSAGE_CATEGORIES = {"passage"}
+INDOOR_FLOORPLAN_ROOM_DIMENSIONS = {
+    "lobby": (116, 80),
+    "corridor_node": (74, 48),
+    "restroom": (68, 56),
+    "elevator": (60, 54),
+    "stairs": (66, 58),
+    "reading_room": (118, 72),
+    "education": (108, 66),
+    "dormitory": (86, 58),
+    "catering": (112, 62),
+    "sports": (124, 76),
+    "service": (98, 58),
+    "generic": (92, 58),
+}
+
 DEFAULT_PRESETS = {
     "scenic": [
         {"label": "图书馆", "keyword": "图书馆", "category": "education"},
@@ -684,6 +702,17 @@ class DemoUIService:
             if normalize_text(edge.get("from")) in current_node_ids
             and normalize_text(edge.get("to")) in current_node_ids
         ]
+        floorplan, node_rendering = self._build_indoor_floorplan(
+            current_nodes,
+            current_edges,
+            current_floor,
+            building_entry,
+        )
+        for node in current_nodes:
+            render_fields = node_rendering.get(node["id"])
+            if render_fields:
+                node.update(render_fields)
+
         zones = [
             node
             for node in current_nodes
@@ -714,13 +743,462 @@ class DemoUIService:
             "nodes": current_nodes,
             "edges": current_edges,
             "zones": zones,
+            "floorplan": floorplan,
             "stats": {
                 "node_count": len(current_nodes),
                 "edge_count": len(current_edges),
                 "zone_count": len(zones),
                 "floor_count": len(available_floors),
+                "floorplan_room_count": floorplan["stats"]["room_count"],
+                "floorplan_corridor_count": floorplan["stats"]["corridor_count"],
+                "floorplan_icon_count": floorplan["stats"]["icon_count"],
             },
         }
+
+    def _build_indoor_floorplan(
+        self,
+        nodes: list[dict[str, Any]],
+        edges: list[dict[str, Any]],
+        current_floor: dict[str, str],
+        building_entry: dict[str, Any],
+    ) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+        node_points = {
+            normalize_text(node.get("id")): point
+            for node in nodes
+            if (point := self._indoor_layout_point(node)) is not None
+        }
+        node_lookup = {
+            normalize_text(node.get("id")): node
+            for node in nodes
+            if normalize_text(node.get("id"))
+        }
+        room_rects: dict[str, dict[str, Any]] = {}
+        node_rendering: dict[str, dict[str, Any]] = {}
+
+        for node_id, node in node_lookup.items():
+            point = node_points.get(node_id)
+            if point is None:
+                continue
+
+            zone_type = self._indoor_floorplan_zone_type(node)
+            icon_type = self._indoor_floorplan_icon_type(node)
+            label_anchor = {"x": point[0], "y": point[1] + 6}
+            render_fields = {
+                "zone_type": zone_type,
+                "zone_shape": "point",
+                "icon_type": icon_type,
+                "label_anchor": label_anchor,
+            }
+
+            if self._should_render_indoor_floorplan_room(node, zone_type):
+                width, height = self._indoor_floorplan_room_dimensions(zone_type)
+                rect = self._indoor_rect_from_center(point[0], point[1], width, height)
+                room_rects[node_id] = rect
+                render_fields.update(
+                    {
+                        "zone_shape": "polygon",
+                        "polygon": rect["polygon"],
+                        "label_anchor": {"x": point[0], "y": point[1] + height * 0.18},
+                    }
+                )
+            elif zone_type == "corridor":
+                render_fields["corridor_segment"] = {
+                    "x": point[0],
+                    "y": point[1],
+                    "width": 44,
+                }
+
+            node_rendering[node_id] = render_fields
+
+        corridors = []
+        doors_by_node: dict[str, list[dict[str, Any]]] = {}
+        seen_edge_keys: set[str] = set()
+
+        for edge in edges:
+            from_id = normalize_text(edge.get("from"))
+            to_id = normalize_text(edge.get("to"))
+            if not from_id or not to_id or from_id == to_id:
+                continue
+            from_point = node_points.get(from_id)
+            to_point = node_points.get(to_id)
+            if from_point is None or to_point is None:
+                continue
+
+            edge_key = "::".join(sorted((from_id, to_id)))
+            if edge_key in seen_edge_keys:
+                continue
+            seen_edge_keys.add(edge_key)
+
+            corridor_width = self._indoor_corridor_width(edge)
+            start = self._indoor_connect_point(room_rects.get(from_id), from_point, to_point)
+            end = self._indoor_connect_point(room_rects.get(to_id), to_point, from_point)
+            if self._indoor_points_equal(start, end):
+                continue
+
+            corridors.append(
+                {
+                    "id": f"corridor:{edge_key}",
+                    "edge_key": edge_key,
+                    "from": from_id,
+                    "to": to_id,
+                    "name": normalize_text(edge.get("name")),
+                    "edge_type": normalize_text(edge.get("edge_type")) or "indoor_path",
+                    "width": corridor_width,
+                    "segment": [self._round_point(start), self._round_point(end)],
+                    "polygon": self._indoor_band_polygon(start, end, corridor_width),
+                }
+            )
+
+            for node_id, point, other_point in (
+                (from_id, from_point, to_point),
+                (to_id, to_point, from_point),
+            ):
+                rect = room_rects.get(node_id)
+                if rect is None:
+                    continue
+                door = self._build_indoor_door(
+                    node_id=node_id,
+                    edge_key=edge_key,
+                    rect=rect,
+                    center=point,
+                    toward=other_point,
+                    edge_to=to_id if node_id == from_id else from_id,
+                )
+                doors_by_node.setdefault(node_id, []).append(door)
+
+        rooms = []
+        walls = []
+        icons = []
+        labels = []
+        all_points: list[tuple[float, float]] = []
+
+        for room in room_rects.values():
+            all_points.extend((float(x), float(y)) for x, y in room["polygon"])
+        for corridor in corridors:
+            all_points.extend((float(x), float(y)) for x, y in corridor["polygon"])
+        all_points.extend(node_points.values())
+
+        if all_points:
+            min_x = min(point[0] for point in all_points) - 42
+            min_y = min(point[1] for point in all_points) - 42
+            max_x = max(point[0] for point in all_points) + 42
+            max_y = max(point[1] for point in all_points) + 42
+        else:
+            min_x, min_y, max_x, max_y = 0.0, 0.0, 360.0, 260.0
+
+        view_box = {
+            "x": round(min_x, 2),
+            "y": round(min_y, 2),
+            "width": round(max(max_x - min_x, 320), 2),
+            "height": round(max(max_y - min_y, 240), 2),
+        }
+        outer_shell = self._indoor_rect_from_bounds(
+            view_box["x"] + 14,
+            view_box["y"] + 14,
+            view_box["x"] + view_box["width"] - 14,
+            view_box["y"] + view_box["height"] - 14,
+        )
+        walls.extend(self._indoor_wall_segments("outer", outer_shell["polygon"], "outer"))
+
+        for node_id, rect in room_rects.items():
+            node = node_lookup[node_id]
+            render_fields = node_rendering[node_id]
+            door_positions = doors_by_node.get(node_id, [])
+            render_fields["door_positions"] = [
+                {
+                    "x": door["x"],
+                    "y": door["y"],
+                    "edge_to": door["edge_to"],
+                    "side": door["side"],
+                }
+                for door in door_positions
+            ]
+            room = {
+                "id": f"room:{node_id}",
+                "node_id": node_id,
+                "name": normalize_text(node.get("name")) or node_id,
+                "category": normalize_text(node.get("category")),
+                "category_label": normalize_text(node.get("category_label"))
+                or CATEGORY_LABELS.get(normalize_text(node.get("category")), ""),
+                "zone_type": render_fields["zone_type"],
+                "zone_shape": "polygon",
+                "icon_type": render_fields["icon_type"],
+                "is_gate": bool(node.get("is_gate")),
+                "is_targetable": normalize_text(node.get("category")) not in INDOOR_FLOORPLAN_PASSAGE_CATEGORIES,
+                "polygon": rect["polygon"],
+                "label_anchor": render_fields["label_anchor"],
+                "door_positions": door_positions,
+            }
+            rooms.append(room)
+            walls.extend(self._indoor_wall_segments(node_id, rect["polygon"], "room"))
+            icons.append(
+                {
+                    "id": f"icon:{node_id}",
+                    "node_id": node_id,
+                    "type": render_fields["icon_type"],
+                    "x": round(float(rect["x"]), 2),
+                    "y": round(float(rect["y"]) - float(rect["height"]) * 0.18, 2),
+                }
+            )
+            labels.append(
+                {
+                    "id": f"label:{node_id}",
+                    "node_id": node_id,
+                    "text": normalize_text(node.get("name")) or node_id,
+                    "x": round(float(render_fields["label_anchor"]["x"]), 2),
+                    "y": round(float(render_fields["label_anchor"]["y"]), 2),
+                    "priority": LABEL_PRIORITY_BY_CATEGORY.get(normalize_text(node.get("category")), 20),
+                }
+            )
+
+        doors = [
+            door
+            for node_doors in doors_by_node.values()
+            for door in node_doors
+        ]
+
+        floorplan = {
+            "renderer": INDOOR_FLOORPLAN_RENDERER,
+            "version": INDOOR_FLOORPLAN_VERSION,
+            "units": "layout_px",
+            "building_id": normalize_text(building_entry.get("building_id")),
+            "building_name": normalize_text(building_entry.get("building_name")),
+            "floor_id": current_floor["id"],
+            "floor_label": current_floor["label"],
+            "view_box": view_box,
+            "outer_shell": {
+                "polygon": outer_shell["polygon"],
+            },
+            "rooms": rooms,
+            "corridors": corridors,
+            "walls": walls,
+            "doors": doors,
+            "icons": icons,
+            "labels": labels,
+            "route_overlay": {
+                "source": "indoor_route_views.path_segments",
+                "edge_key_field": "edge_key",
+                "aligns_to": "corridors.segment",
+            },
+            "stats": {
+                "room_count": len(rooms),
+                "corridor_count": len(corridors),
+                "wall_count": len(walls),
+                "door_count": len(doors),
+                "icon_count": len(icons),
+                "label_count": len(labels),
+            },
+        }
+        return floorplan, node_rendering
+
+    @staticmethod
+    def _indoor_layout_point(node: dict[str, Any]) -> tuple[float, float] | None:
+        layout = node.get("layout")
+        if not isinstance(layout, dict):
+            return None
+        try:
+            x = float(layout.get("x"))
+            y = float(layout.get("y"))
+        except (TypeError, ValueError):
+            return None
+        return x, y
+
+    @staticmethod
+    def _indoor_floorplan_zone_type(node: dict[str, Any]) -> str:
+        category = normalize_text(node.get("category"))
+        node_type = normalize_text(node.get("type"))
+        name = normalize_text(node.get("name"))
+        tags = " ".join(str(item) for item in (node.get("tags") or []))
+        facilities = " ".join(str(item) for item in (node.get("facilities") or []))
+        text = f"{name} {tags} {facilities}"
+
+        if bool(node.get("is_gate")) or category == "hall" or "入口" in text or "大厅" in text:
+            return "lobby"
+        if category == "restroom" or "洗手间" in text or "卫生间" in text:
+            return "restroom"
+        if node_type == "elevator" or "电梯" in text:
+            return "elevator"
+        if node_type == "staircase" or "楼梯" in text:
+            return "stairs"
+        if category == "passage" or "走廊" in text or "通道" in text:
+            return "corridor"
+        if category == "reading_room":
+            return "reading_room"
+        if category in {"education", "dormitory", "catering", "sports", "service"}:
+            return category
+        return "generic"
+
+    @staticmethod
+    def _indoor_floorplan_icon_type(node: dict[str, Any]) -> str:
+        zone_type = DemoUIService._indoor_floorplan_zone_type(node)
+        if zone_type in {"restroom", "elevator", "stairs", "lobby", "reading_room", "dormitory", "catering", "sports"}:
+            return zone_type
+        if zone_type == "education":
+            return "classroom"
+        if zone_type == "service":
+            return "service"
+        return "area"
+
+    @staticmethod
+    def _should_render_indoor_floorplan_room(node: dict[str, Any], zone_type: str) -> bool:
+        return zone_type != "corridor" or bool(node.get("is_gate"))
+
+    @staticmethod
+    def _indoor_floorplan_room_dimensions(zone_type: str) -> tuple[float, float]:
+        return INDOOR_FLOORPLAN_ROOM_DIMENSIONS.get(
+            zone_type,
+            INDOOR_FLOORPLAN_ROOM_DIMENSIONS["generic"],
+        )
+
+    @staticmethod
+    def _indoor_corridor_width(edge: dict[str, Any]) -> float:
+        edge_type = normalize_text(edge.get("edge_type"))
+        if edge_type in {"elevator", "stairs"}:
+            return 34.0
+        return 44.0
+
+    @staticmethod
+    def _indoor_rect_from_center(x: float, y: float, width: float, height: float) -> dict[str, Any]:
+        left = x - width / 2
+        top = y - height / 2
+        right = x + width / 2
+        bottom = y + height / 2
+        return DemoUIService._indoor_rect_from_bounds(left, top, right, bottom)
+
+    @staticmethod
+    def _indoor_rect_from_bounds(left: float, top: float, right: float, bottom: float) -> dict[str, Any]:
+        width = right - left
+        height = bottom - top
+        center_x = left + width / 2
+        center_y = top + height / 2
+        return {
+            "x": round(center_x, 2),
+            "y": round(center_y, 2),
+            "width": round(width, 2),
+            "height": round(height, 2),
+            "left": round(left, 2),
+            "right": round(right, 2),
+            "top": round(top, 2),
+            "bottom": round(bottom, 2),
+            "polygon": [
+                [round(left, 2), round(top, 2)],
+                [round(right, 2), round(top, 2)],
+                [round(right, 2), round(bottom, 2)],
+                [round(left, 2), round(bottom, 2)],
+            ],
+        }
+
+    @staticmethod
+    def _indoor_connect_point(
+        rect: dict[str, Any] | None,
+        center: tuple[float, float],
+        toward: tuple[float, float],
+    ) -> tuple[float, float]:
+        if rect is None:
+            return center
+
+        dx = toward[0] - center[0]
+        dy = toward[1] - center[1]
+        if abs(dx) >= abs(dy):
+            x = float(rect["right"] if dx >= 0 else rect["left"])
+            y = center[1] if dx == 0 else center[1] + dy * ((x - center[0]) / dx)
+            y = min(max(y, float(rect["top"]) + 10), float(rect["bottom"]) - 10)
+            return x, y
+
+        y = float(rect["bottom"] if dy >= 0 else rect["top"])
+        x = center[0] if dy == 0 else center[0] + dx * ((y - center[1]) / dy)
+        x = min(max(x, float(rect["left"]) + 10), float(rect["right"]) - 10)
+        return x, y
+
+    @staticmethod
+    def _indoor_band_polygon(
+        start: tuple[float, float],
+        end: tuple[float, float],
+        width: float,
+    ) -> list[list[float]]:
+        dx = end[0] - start[0]
+        dy = end[1] - start[1]
+        length = (dx * dx + dy * dy) ** 0.5
+        if length <= 0:
+            return []
+        nx = -dy / length * width / 2
+        ny = dx / length * width / 2
+        return [
+            [round(start[0] + nx, 2), round(start[1] + ny, 2)],
+            [round(end[0] + nx, 2), round(end[1] + ny, 2)],
+            [round(end[0] - nx, 2), round(end[1] - ny, 2)],
+            [round(start[0] - nx, 2), round(start[1] - ny, 2)],
+        ]
+
+    @staticmethod
+    def _build_indoor_door(
+        node_id: str,
+        edge_key: str,
+        rect: dict[str, Any],
+        center: tuple[float, float],
+        toward: tuple[float, float],
+        edge_to: str,
+    ) -> dict[str, Any]:
+        point = DemoUIService._indoor_connect_point(rect, center, toward)
+        left = abs(point[0] - float(rect["left"]))
+        right = abs(point[0] - float(rect["right"]))
+        top = abs(point[1] - float(rect["top"]))
+        bottom = abs(point[1] - float(rect["bottom"]))
+        side = min(
+            (("left", left), ("right", right), ("top", top), ("bottom", bottom)),
+            key=lambda item: item[1],
+        )[0]
+        half_width = 9.0
+        if side in {"left", "right"}:
+            segment = [
+                [round(point[0], 2), round(point[1] - half_width, 2)],
+                [round(point[0], 2), round(point[1] + half_width, 2)],
+            ]
+        else:
+            segment = [
+                [round(point[0] - half_width, 2), round(point[1], 2)],
+                [round(point[0] + half_width, 2), round(point[1], 2)],
+            ]
+        return {
+            "id": f"door:{node_id}:{edge_key}",
+            "node_id": node_id,
+            "edge_key": edge_key,
+            "edge_to": edge_to,
+            "kind": "room_door",
+            "side": side,
+            "x": round(point[0], 2),
+            "y": round(point[1], 2),
+            "segment": segment,
+        }
+
+    @staticmethod
+    def _indoor_wall_segments(
+        owner_id: str,
+        polygon: list[list[float]],
+        wall_type: str,
+    ) -> list[dict[str, Any]]:
+        segments = []
+        if len(polygon) < 2:
+            return segments
+        for index, point in enumerate(polygon):
+            next_point = polygon[(index + 1) % len(polygon)]
+            segments.append(
+                {
+                    "id": f"wall:{owner_id}:{index}",
+                    "owner_id": owner_id,
+                    "wall_type": wall_type,
+                    "points": [point, next_point],
+                }
+            )
+        return segments
+
+    @staticmethod
+    def _round_point(point: tuple[float, float]) -> list[float]:
+        return [round(point[0], 2), round(point[1], 2)]
+
+    @staticmethod
+    def _indoor_points_equal(left: tuple[float, float], right: tuple[float, float]) -> bool:
+        return abs(left[0] - right[0]) < 0.001 and abs(left[1] - right[1]) < 0.001
 
     def _build_site_options(self) -> list[dict[str, Any]]:
         sites = []

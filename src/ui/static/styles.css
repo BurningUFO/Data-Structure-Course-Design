@@ -1483,6 +1483,149 @@ select[multiple] {
   line-height: 240px;
 }
 
+.indoor-floorplan.is-realistic {
+  min-height: 320px;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.indoor-floor-shell {
+  fill: #f9fafb;
+  stroke: #334155;
+  stroke-width: 5;
+}
+
+.indoor-floor-corridor {
+  fill: #dbeafe;
+  stroke: #93a4b8;
+  stroke-width: 1.5;
+}
+
+.indoor-floor-corridor.is-route {
+  fill: #fde68a;
+}
+
+.indoor-floor-room {
+  cursor: default;
+}
+
+.indoor-floor-room.is-zone {
+  cursor: pointer;
+}
+
+.indoor-floor-room polygon {
+  fill: #eff6ff;
+  stroke: #475569;
+  stroke-width: 2.5;
+  transition: fill 0.16s ease, stroke 0.16s ease;
+}
+
+.indoor-floor-room.is-lobby polygon {
+  fill: #ecfdf5;
+}
+
+.indoor-floor-room.is-reading_room polygon,
+.indoor-floor-room.is-education polygon {
+  fill: #e0f2fe;
+}
+
+.indoor-floor-room.is-dormitory polygon {
+  fill: #f0fdf4;
+}
+
+.indoor-floor-room.is-catering polygon {
+  fill: #fff7ed;
+}
+
+.indoor-floor-room.is-restroom polygon {
+  fill: #eef2ff;
+}
+
+.indoor-floor-room.is-elevator polygon,
+.indoor-floor-room.is-stairs polygon {
+  fill: #e5e7eb;
+}
+
+.indoor-floor-room.is-service polygon {
+  fill: #fefce8;
+}
+
+.indoor-floor-room.is-sports polygon {
+  fill: #f5f3ff;
+}
+
+.indoor-floor-room.is-zone:hover polygon,
+.indoor-floor-room.is-selected polygon {
+  fill: #fef3c7;
+  stroke: #b45309;
+  stroke-width: 4;
+}
+
+.indoor-floor-room.is-route polygon {
+  stroke: #ea580c;
+  stroke-width: 4;
+}
+
+.indoor-floor-wall {
+  stroke: #1f2937;
+  stroke-width: 3;
+  stroke-linecap: square;
+  pointer-events: none;
+}
+
+.indoor-floor-wall.is-outer {
+  stroke-width: 5;
+}
+
+.indoor-floor-door {
+  stroke: #f8fafc;
+  stroke-width: 9;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.indoor-route-overlay {
+  stroke: #f97316;
+  stroke-width: 12;
+  stroke-linecap: round;
+  filter: drop-shadow(0 2px 2px rgba(154, 52, 18, 0.28));
+  pointer-events: none;
+}
+
+.indoor-floor-icon circle {
+  fill: #ffffff;
+  stroke: #334155;
+  stroke-width: 2;
+}
+
+.indoor-floor-icon text {
+  fill: #1f2937;
+  font-size: 9px;
+  font-weight: 900;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.indoor-floor-icon.is-route circle,
+.indoor-floor-icon.is-selected circle {
+  fill: #fffbeb;
+  stroke: #b45309;
+}
+
+.indoor-floor-label {
+  fill: #111827;
+  font-size: 13px;
+  font-weight: 800;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.indoor-floor-label.is-route,
+.indoor-floor-label.is-selected {
+  fill: #9a3412;
+  font-weight: 900;
+}
+
 .indoor-floor-edge {
   stroke: rgba(148, 163, 184, 0.9);
   stroke-width: 8;

@@ -2657,6 +2657,176 @@ function indoorEdgeKey(fromNodeId, toNodeId) {
 }
 
 function renderIndoorFloorplan(payload, options = {}) {
+  const floorplan = payload?.floorplan;
+  if (floorplan?.renderer === "svg_floorplan" && Array.isArray(floorplan.rooms)) {
+    return renderIndoorSvgFloorplan(payload, floorplan, options);
+  }
+  return renderIndoorNetworkFloorplan(payload, options);
+}
+
+function renderIndoorSvgFloorplan(payload, floorplan, options = {}) {
+  const nodes = Array.isArray(payload?.nodes) ? payload.nodes : [];
+  const routeContext = options.routeContext?.floorView || null;
+  const shouldHighlightRoute = Boolean(routeContext) && options.currentViewId !== "outdoor";
+  const routeNodeIds = new Set(shouldHighlightRoute ? (routeContext.route_node_ids || []) : []);
+  const routeEdgeKeys = new Set(
+    shouldHighlightRoute
+      ? (routeContext.path_segments || []).map((segment) => indoorEdgeKey(segment.from, segment.to))
+      : [],
+  );
+  const selectedZoneNodeId = options.selectedZoneNodeId || "";
+  const nodeLookup = {};
+  nodes.forEach((node) => {
+    nodeLookup[node.id] = node;
+  });
+
+  const viewBox = floorplan.view_box || { x: 0, y: 0, width: 360, height: 260 };
+  const viewBoxText = [
+    svgNumber(viewBox.x),
+    svgNumber(viewBox.y),
+    svgNumber(viewBox.width),
+    svgNumber(viewBox.height),
+  ].join(" ");
+
+  const corridors = Array.isArray(floorplan.corridors) ? floorplan.corridors : [];
+  const corridorByEdgeKey = {};
+  corridors.forEach((corridor) => {
+    if (corridor.edge_key) {
+      corridorByEdgeKey[corridor.edge_key] = corridor;
+    }
+  });
+
+  const shellMarkup = floorplan.outer_shell?.polygon
+    ? `<polygon class="indoor-floor-shell" points="${svgPoints(floorplan.outer_shell.polygon)}"></polygon>`
+    : "";
+
+  const corridorMarkup = corridors
+    .map((corridor) => {
+      const isRoute = routeEdgeKeys.has(corridor.edge_key);
+      return `
+        <polygon
+          class="indoor-floor-corridor${isRoute ? " is-route" : ""}"
+          points="${svgPoints(corridor.polygon)}"
+        ></polygon>
+      `;
+    })
+    .join("");
+
+  const roomMarkup = (floorplan.rooms || [])
+    .map((room) => {
+      const node = nodeLookup[room.node_id] || {};
+      const isZone = isIndoorZoneNode(node);
+      const isSelected = room.node_id === selectedZoneNodeId;
+      const isRoute = routeNodeIds.has(room.node_id);
+      const className = [
+        "indoor-floor-room",
+        room.zone_type ? `is-${room.zone_type}` : "",
+        isZone ? "is-zone" : "",
+        isSelected ? "is-selected" : "",
+        isRoute ? "is-route" : "",
+        room.is_gate ? "is-gate" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      return `
+        <g class="${escapeHtml(className)}" ${isZone ? `data-indoor-zone="${escapeHtml(room.node_id)}"` : ""}>
+          <polygon points="${svgPoints(room.polygon)}"></polygon>
+          <title>${escapeHtml(room.name || room.node_id)}</title>
+        </g>
+      `;
+    })
+    .join("");
+
+  const wallMarkup = (floorplan.walls || [])
+    .map((wall) => `
+      <line
+        class="indoor-floor-wall${wall.wall_type === "outer" ? " is-outer" : ""}"
+        x1="${svgNumber(wall.points?.[0]?.[0])}"
+        y1="${svgNumber(wall.points?.[0]?.[1])}"
+        x2="${svgNumber(wall.points?.[1]?.[0])}"
+        y2="${svgNumber(wall.points?.[1]?.[1])}"
+      ></line>
+    `)
+    .join("");
+
+  const doorMarkup = (floorplan.doors || [])
+    .map((door) => `
+      <line
+        class="indoor-floor-door"
+        x1="${svgNumber(door.segment?.[0]?.[0])}"
+        y1="${svgNumber(door.segment?.[0]?.[1])}"
+        x2="${svgNumber(door.segment?.[1]?.[0])}"
+        y2="${svgNumber(door.segment?.[1]?.[1])}"
+      ></line>
+    `)
+    .join("");
+
+  const routeMarkup = shouldHighlightRoute
+    ? (routeContext.path_segments || [])
+        .map((segment) => {
+          const corridor = corridorByEdgeKey[indoorEdgeKey(segment.from, segment.to)];
+          const points = corridor?.segment;
+          if (!points?.[0] || !points?.[1]) {
+            return "";
+          }
+          return `
+            <line
+              class="indoor-route-overlay"
+              x1="${svgNumber(points[0][0])}"
+              y1="${svgNumber(points[0][1])}"
+              x2="${svgNumber(points[1][0])}"
+              y2="${svgNumber(points[1][1])}"
+            ></line>
+          `;
+        })
+        .join("")
+    : "";
+
+  const iconMarkup = (floorplan.icons || [])
+    .map((icon) => renderIndoorFloorplanIcon(icon, {
+      isSelected: icon.node_id === selectedZoneNodeId,
+      isRoute: routeNodeIds.has(icon.node_id),
+    }))
+    .join("");
+
+  const labelMarkup = (floorplan.labels || [])
+    .map((label) => {
+      const isSelected = label.node_id === selectedZoneNodeId;
+      const isRoute = routeNodeIds.has(label.node_id);
+      return `
+        <text
+          class="indoor-floor-label${isSelected ? " is-selected" : ""}${isRoute ? " is-route" : ""}"
+          x="${svgNumber(label.x)}"
+          y="${svgNumber(label.y)}"
+        >
+          ${escapeHtml(indoorFloorplanLabel(label.text))}
+        </text>
+      `;
+    })
+    .join("");
+
+  return `
+    <svg
+      class="indoor-floorplan is-realistic"
+      viewBox="${viewBoxText}"
+      role="img"
+      aria-label="${escapeHtml(payload.building_name || payload.building_id || "室内平面图")} ${escapeHtml(indoorPayloadFloorLabel(payload))}"
+    >
+      <g class="indoor-floor-realistic">
+        ${shellMarkup}
+        <g class="indoor-floor-corridors">${corridorMarkup}</g>
+        <g class="indoor-floor-rooms">${roomMarkup}</g>
+        <g class="indoor-floor-walls">${wallMarkup}</g>
+        <g class="indoor-floor-doors">${doorMarkup}</g>
+        <g class="indoor-floor-route">${routeMarkup}</g>
+        <g class="indoor-floor-icons">${iconMarkup}</g>
+        <g class="indoor-floor-labels">${labelMarkup}</g>
+      </g>
+    </svg>
+  `;
+}
+
+function renderIndoorNetworkFloorplan(payload, options = {}) {
   const nodes = Array.isArray(payload?.nodes) ? payload.nodes : [];
   const edges = Array.isArray(payload?.edges) ? payload.edges : [];
   const layoutNodes = nodes.filter((node) => Number.isFinite(node?.layout?.x) && Number.isFinite(node?.layout?.y));
@@ -2749,6 +2919,62 @@ function renderIndoorFloorplan(payload, options = {}) {
       </g>
     </svg>
   `;
+}
+
+function renderIndoorFloorplanIcon(icon, stateFlags = {}) {
+  const iconType = icon?.type || "area";
+  const label = indoorFloorplanIconLabel(iconType);
+  const className = [
+    "indoor-floor-icon",
+    iconType ? `is-${iconType}` : "",
+    stateFlags.isSelected ? "is-selected" : "",
+    stateFlags.isRoute ? "is-route" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  return `
+    <g class="${escapeHtml(className)}" transform="translate(${svgNumber(icon?.x)}, ${svgNumber(icon?.y)})">
+      <circle cx="0" cy="0" r="12"></circle>
+      <text x="0" y="4">${escapeHtml(label)}</text>
+    </g>
+  `;
+}
+
+function indoorFloorplanIconLabel(iconType) {
+  const labels = {
+    restroom: "WC",
+    elevator: "EL",
+    stairs: "ST",
+    lobby: "IN",
+    reading_room: "阅",
+    classroom: "课",
+    dormitory: "寝",
+    catering: "餐",
+    sports: "体",
+    service: "i",
+    area: "·",
+  };
+  return labels[iconType] || labels.area;
+}
+
+function indoorFloorplanLabel(text) {
+  const value = String(text || "");
+  return value.length > 12 ? `${value.slice(0, 11)}...` : value;
+}
+
+function svgPoints(points) {
+  if (!Array.isArray(points)) {
+    return "";
+  }
+  return points.map((point) => `${svgNumber(point?.[0])},${svgNumber(point?.[1])}`).join(" ");
+}
+
+function svgNumber(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) {
+    return "0";
+  }
+  return String(Math.round(number * 100) / 100);
 }
 
 function renderMetricPill(text, className = "") {
