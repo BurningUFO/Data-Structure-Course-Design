@@ -32,10 +32,10 @@
     {
       "id": "THU",
       "name": "清华大学",
-      "description": "清华大学校园占位注册，后续阶段将补充室外图、室内图和查询推荐数据。",
-      "location": "北京",
+      "description": "清华大学试点校园，M26B 已接入后端图加载、bootstrap、查询推荐和路径规划，前端切换仍待 M26C。",
+      "location": "北京市海淀区清华园",
       "is_available": false,
-      "data_status": "scaffold_only",
+      "data_status": "backend_ready",
       "sub_graphs": [
         "outdoor"
       ]

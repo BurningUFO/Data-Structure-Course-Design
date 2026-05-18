@@ -1288,17 +1288,7 @@ class DemoUIService:
         sites = []
         for site in load_global_sites():
             site_id = normalize_text(site.get("id"))
-            explicit_data_status = normalize_text(site.get("data_status"))
-            explicit_is_available = site.get("is_available")
-            if isinstance(explicit_is_available, bool):
-                is_available = explicit_is_available
-                data_status = explicit_data_status or ("available" if is_available else "scaffold_only")
-            elif explicit_data_status == "scaffold_only":
-                is_available = False
-                data_status = explicit_data_status
-            else:
-                is_available = bool(get_site_graph_paths(site_id))
-                data_status = explicit_data_status or ("available" if is_available else "scaffold_only")
+            is_available, data_status = self._resolve_site_status(site)
             sites.append(
                 {
                     "id": site_id,
@@ -1312,6 +1302,22 @@ class DemoUIService:
                 }
             )
         return sites
+
+    @staticmethod
+    def _resolve_site_status(site: dict[str, Any]) -> tuple[bool, str]:
+        site_id = normalize_text(site.get("id"))
+        explicit_data_status = normalize_text(site.get("data_status"))
+        explicit_is_available = site.get("is_available")
+        if isinstance(explicit_is_available, bool):
+            is_available = explicit_is_available
+            data_status = explicit_data_status or ("available" if is_available else "scaffold_only")
+        elif explicit_data_status == "scaffold_only":
+            is_available = False
+            data_status = explicit_data_status
+        else:
+            is_available = bool(get_site_graph_paths(site_id))
+            data_status = explicit_data_status or ("available" if is_available else "scaffold_only")
+        return is_available, data_status
 
     def _build_user_options(self) -> list[dict[str, Any]]:
         return build_user_options(self.users)
@@ -1611,17 +1617,24 @@ class DemoUIService:
     def _load_site_meta(self, site_id: str) -> dict[str, Any]:
         for site in load_global_sites():
             if normalize_text(site.get("id")) == site_id:
+                is_available, data_status = self._resolve_site_status(site)
                 return {
                     "id": site_id,
                     "name": normalize_text(site.get("name")) or site_id,
                     "description": normalize_text(site.get("description")),
                     "location": normalize_text(site.get("location")),
+                    "is_available": is_available,
+                    "data_status": data_status,
+                    "sub_graphs": site.get("sub_graphs", []),
                 }
         return {
             "id": site_id,
             "name": site_id,
             "description": "",
             "location": "",
+            "is_available": bool(get_site_graph_paths(site_id)),
+            "data_status": "available" if get_site_graph_paths(site_id) else "scaffold_only",
+            "sub_graphs": [],
         }
 
     def _load_outdoor_graph_source(self, site_id: str) -> dict[str, Any]:
