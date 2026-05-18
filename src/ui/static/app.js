@@ -825,7 +825,7 @@ function clearUserInputs() {
   setSelectValue("#place-sort", "distance_m");
   setSelectValue("#catering-sort", "distance_m");
   setSelectValue("#diary-list-sort", "interest");
-  setSelectValue("#route-target", "library");
+  setSelectValue("#route-target", defaultRouteTargetId());
   setMultipleSelectValues("#multi-route-targets", []);
   setSelectValue("#route-strategy", "shortest_distance");
   setSelectValue("#route-transport", "mixed");
@@ -936,10 +936,8 @@ function hydrateBootstrap(bootstrap) {
     document.querySelector("#site-selector"),
     bootstrap.sites.map((item) => ({
       value: item.id,
-      label: `${item.name} · ${item.location || item.id}${
-        item.is_available === false ? " · 待接入" : ""
-      }`,
-      disabled: item.is_available === false && item.id !== bootstrap.site.id,
+      label: siteOptionLabel(item),
+      disabled: !isSiteFrontendSelectable(item),
     })),
     bootstrap.site.id,
   );
@@ -963,13 +961,14 @@ function hydrateBootstrap(bootstrap) {
   );
   applySelectedUser(bootstrap.default_user_id || bootstrap.users?.[0]?.id || "");
 
+  const defaultTargetId = defaultRouteTargetId(bootstrap);
   populateSelect(
     document.querySelector("#route-target"),
     bootstrap.route_targets.map((item) => ({
       value: item.id,
       label: routeTargetLabel(item),
     })),
-    "library",
+    defaultTargetId,
   );
 
   populateSelect(
@@ -1084,14 +1083,47 @@ function hydrateBootstrap(bootstrap) {
   renderPresetButtons("#catering-presets", bootstrap.presets.catering, handleCateringPreset);
   renderPresetButtons("#diary-presets", bootstrap.presets.diary, handleDiaryPreset);
   renderPresetButtons("#aigc-presets", bootstrap.presets.aigc, handleAigcPreset);
-  renderPresetButtons("#route-presets", bootstrap.presets.route, handleRoutePreset);
-  renderPresetButtons("#multi-route-presets", bootstrap.presets.multi_route, handleMultiRoutePreset);
+  renderPresetButtons("#route-presets", filterRoutePresetsForCurrentSite(bootstrap.presets.route), handleRoutePreset);
+  renderPresetButtons(
+    "#multi-route-presets",
+    filterMultiRoutePresetsForCurrentSite(bootstrap.presets.multi_route),
+    handleMultiRoutePreset,
+  );
   renderIndoorQuickStart();
   fillAigcFormFromSample(defaultAigcSampleId());
   renderFeatureGrid(bootstrap.navigation);
   renderHelpPanel(bootstrap.help);
   updateActiveFeatureCaption();
   updateWorkspaceHeading();
+}
+
+function siteOptionLabel(site) {
+  const pieces = [site.name || site.id, site.location || site.id];
+  const statusLabel = siteOptionStatusLabel(site);
+  if (statusLabel) {
+    pieces.push(statusLabel);
+  }
+  return pieces.filter(Boolean).join(" · ");
+}
+
+function siteOptionStatusLabel(site) {
+  if (site?.is_available === false && site?.data_status === "backend_ready") {
+    return "试点可演示";
+  }
+  if (site?.is_available === false) {
+    return "待接入";
+  }
+  return "";
+}
+
+function isSiteFrontendSelectable(site) {
+  if (!site) {
+    return false;
+  }
+  if (site.is_current || site.is_available !== false) {
+    return true;
+  }
+  return site.data_status === "backend_ready";
 }
 
 function routeTargetLabel(item) {
@@ -1139,6 +1171,39 @@ function indoorBuildingByGraph(indoorGraphId) {
 
 function routeTargetRecord(nodeId) {
   return (state.bootstrap?.route_targets || []).find((item) => item.id === nodeId) || null;
+}
+
+function routeTargetIdSet(bootstrap = state.bootstrap) {
+  return new Set((bootstrap?.route_targets || []).map((item) => item.id).filter(Boolean));
+}
+
+function startNodeIdSet(bootstrap = state.bootstrap) {
+  return new Set((bootstrap?.start_nodes || []).map((item) => item.id).filter(Boolean));
+}
+
+function defaultRouteTargetId(bootstrap = state.bootstrap) {
+  const targets = bootstrap?.route_targets || [];
+  const targetIds = routeTargetIdSet(bootstrap);
+  const preferredIds = ["library", "second_gate", "canteen"];
+  for (const targetId of preferredIds) {
+    if (targetIds.has(targetId)) {
+      return targetId;
+    }
+  }
+  return targets[0]?.id || "";
+}
+
+function filterRoutePresetsForCurrentSite(presets = []) {
+  const targetIds = routeTargetIdSet();
+  return (presets || []).filter((preset) => targetIds.has(preset.target_node_id));
+}
+
+function filterMultiRoutePresetsForCurrentSite(presets = []) {
+  const targetIds = routeTargetIdSet();
+  return (presets || []).filter((preset) => {
+    const presetTargetIds = preset.target_node_ids || [];
+    return presetTargetIds.length > 0 && presetTargetIds.every((targetId) => targetIds.has(targetId));
+  });
 }
 
 function indoorRouteViewId(buildingId, floorId) {
@@ -1520,9 +1585,12 @@ function updateWorkspaceHeading() {
 
 function renderPresetButtons(containerSelector, presets, onClick) {
   const container = document.querySelector(containerSelector);
+  if (!container) {
+    return;
+  }
   container.innerHTML = "";
 
-  presets.forEach((preset) => {
+  (presets || []).forEach((preset) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "quick-chip";
@@ -1900,12 +1968,21 @@ function syncDiaryStats(response) {
 }
 
 function handleRoutePreset(preset) {
-  document.querySelector("#route-target").value = preset.target_node_id;
-  void planRoute(preset.target_node_id);
+  const targetNodeId = preset.target_node_id || "";
+  if (!routeTargetRecord(targetNodeId)) {
+    setStatus("当前站点不支持该路线快捷入口。", "error");
+    return;
+  }
+  setSelectValue("#route-target", targetNodeId);
+  void planRoute(targetNodeId);
 }
 
 function handleMultiRoutePreset(preset) {
   const targetNodeIds = preset.target_node_ids || [];
+  if (!targetNodeIds.length || targetNodeIds.some((targetNodeId) => !routeTargetRecord(targetNodeId))) {
+    setStatus("当前站点不支持该多目标路线快捷入口。", "error");
+    return;
+  }
   setMultipleSelectValues("#multi-route-targets", targetNodeIds);
   void planMultiRoute(targetNodeIds);
 }
@@ -2025,7 +2102,11 @@ async function runMapDemoAction(action) {
   }
 
   if (action === "single-route") {
-    const scenario = DEMO_ROUTE_SCENARIOS.single;
+    const scenario = resolveDemoRouteScenario("single");
+    if (!scenario) {
+      setStatus("当前站点没有可用的单目标演示路线。", "error");
+      return;
+    }
     applyDemoStartNode(scenario.start_node_id);
     setSelectValue("#route-target", scenario.target_node_id);
     setSelectValue("#route-strategy", "shortest_time");
@@ -2036,7 +2117,11 @@ async function runMapDemoAction(action) {
   }
 
   if (action === "multi-route") {
-    const scenario = DEMO_ROUTE_SCENARIOS.multi;
+    const scenario = resolveDemoRouteScenario("multi");
+    if (!scenario) {
+      setStatus("当前站点没有可用的多目标演示路线。", "error");
+      return;
+    }
     applyDemoStartNode(scenario.start_node_id);
     setSelectValue("#route-strategy", "shortest_time");
     setSelectValue("#route-transport", "mixed");
@@ -2055,6 +2140,59 @@ async function runMapDemoAction(action) {
     clearRoute("演示路线已清空。");
     setStatus("演示路线已清空，地图保留当前渲染器。", "info");
   }
+}
+
+function resolveDemoRouteScenario(kind) {
+  const configured = DEMO_ROUTE_SCENARIOS[kind];
+  if (!configured) {
+    return null;
+  }
+
+  const startNodeId = resolveDemoStartNodeId(configured.start_node_id);
+  if (!startNodeId) {
+    return null;
+  }
+
+  if (kind === "single") {
+    const targetNodeId = firstExistingRouteTargetId([
+      configured.target_node_id,
+      "library",
+      "second_gate",
+      "canteen",
+    ]);
+    return targetNodeId
+      ? { ...configured, start_node_id: startNodeId, target_node_id: targetNodeId }
+      : null;
+  }
+
+  const configuredTargetIds = (configured.target_node_ids || []).filter((targetNodeId) => routeTargetRecord(targetNodeId));
+  const targetNodeIds = configuredTargetIds.length
+    ? configuredTargetIds
+    : (state.bootstrap?.route_targets || []).slice(0, 2).map((item) => item.id).filter(Boolean);
+  return targetNodeIds.length
+    ? { ...configured, start_node_id: startNodeId, target_node_ids: targetNodeIds }
+    : null;
+}
+
+function resolveDemoStartNodeId(preferredStartNodeId) {
+  const startIds = startNodeIdSet();
+  if (startIds.has(preferredStartNodeId)) {
+    return preferredStartNodeId;
+  }
+  const defaultStartNodeId = state.bootstrap?.default_start_node || "";
+  if (startIds.has(defaultStartNodeId)) {
+    return defaultStartNodeId;
+  }
+  return (state.bootstrap?.start_nodes || [])[0]?.id || "";
+}
+
+function firstExistingRouteTargetId(candidates = []) {
+  for (const targetNodeId of candidates) {
+    if (targetNodeId && routeTargetRecord(targetNodeId)) {
+      return targetNodeId;
+    }
+  }
+  return defaultRouteTargetId();
 }
 
 function applyDemoStartNode(nodeId) {
@@ -3585,19 +3723,24 @@ async function loadMapGeoJson() {
   const endpoint = state.bootstrap.map_capabilities?.geojson_endpoint || "/api/map/geojson";
   const separator = endpoint.includes("?") ? "&" : "?";
   const url = `${endpoint}${separator}site_id=${encodeURIComponent(siteId)}`;
-  state.mapGeoJsonLoading = apiGet(url)
+  const loading = apiGet(url)
     .then((payload) => {
       if (!payload.success || !payload.geojson || payload.geojson.type !== "FeatureCollection") {
         throw new Error(payload.message || "GeoJSON 响应格式无效");
       }
-      state.mapGeoJson = payload.geojson;
-      state.mapGeoJsonStats = payload.stats || {};
-      state.mapGeoJsonSiteId = siteId;
+      if (currentSiteId() === siteId) {
+        state.mapGeoJson = payload.geojson;
+        state.mapGeoJsonStats = payload.stats || {};
+        state.mapGeoJsonSiteId = siteId;
+      }
       return payload.geojson;
     })
     .finally(() => {
-      state.mapGeoJsonLoading = null;
-  });
+      if (state.mapGeoJsonLoading === loading) {
+        state.mapGeoJsonLoading = null;
+      }
+    });
+  state.mapGeoJsonLoading = loading;
   return state.mapGeoJsonLoading;
 }
 
@@ -3624,23 +3767,28 @@ async function loadOsmLayers() {
   const endpoint = state.bootstrap.map_capabilities?.osm_layers_endpoint || "/api/map/osm-layers";
   const separator = endpoint.includes("?") ? "&" : "?";
   const url = `${endpoint}${separator}site_id=${encodeURIComponent(siteId)}`;
-  state.osmLayersLoading = apiGet(url)
+  const loading = apiGet(url)
     .then((payload) => {
       if (!payload.success || !payload.layers || typeof payload.layers !== "object") {
         throw new Error(payload.message || "本地 OSM 图层响应格式无效");
       }
-      state.osmLayers = payload;
-      state.osmLayersStats = payload.stats || {};
-      state.osmLayersMetadata = payload.metadata || {};
-      state.osmLayersSiteId = siteId;
-      state.osmLayerError = Array.isArray(payload.warnings) && payload.warnings.length
-        ? `本地 OSM 图层有 ${payload.warnings.length} 条读取提示`
-        : "";
+      if (currentSiteId() === siteId) {
+        state.osmLayers = payload;
+        state.osmLayersStats = payload.stats || {};
+        state.osmLayersMetadata = payload.metadata || {};
+        state.osmLayersSiteId = siteId;
+        state.osmLayerError = Array.isArray(payload.warnings) && payload.warnings.length
+          ? `本地 OSM 图层有 ${payload.warnings.length} 条读取提示`
+          : "";
+      }
       return payload;
     })
     .finally(() => {
-      state.osmLayersLoading = null;
+      if (state.osmLayersLoading === loading) {
+        state.osmLayersLoading = null;
+      }
     });
+  state.osmLayersLoading = loading;
   return state.osmLayersLoading;
 }
 
@@ -4335,6 +4483,9 @@ function osmLayerCaptionText() {
 }
 
 function clearLeafletLayers() {
+  if (state.leaflet.map) {
+    state.leaflet.map.closePopup();
+  }
   removeLeafletLayer("tileLayer");
   removeLeafletLayer("osmWaterLanduseLayer");
   removeLeafletLayer("osmBuildingsLayer");

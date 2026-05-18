@@ -256,6 +256,58 @@ def test_m26b_thu_backend_main_chain_is_available_without_frontend_switch():
     assert multi_route["target_node_ids"] == ["library", "canteen"]
 
 
+def test_m26c_thu_frontend_switch_contract_and_leaflet_data():
+    service = DemoUIService("THU")
+    bootstrap = service.get_bootstrap_payload()
+    site_options = {item["id"]: item for item in bootstrap["sites"]}
+    geojson_payload = service.get_map_geojson_payload()
+
+    assert bootstrap["site"]["id"] == "THU"
+    assert bootstrap["site"]["is_available"] is False
+    assert bootstrap["site"]["data_status"] == "backend_ready"
+    assert site_options["THU"]["is_available"] is False
+    assert site_options["THU"]["data_status"] == "backend_ready"
+    assert bootstrap["map_renderer"] == "leaflet_geo"
+    assert bootstrap["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
+    assert geojson_payload["success"] is True
+    assert geojson_payload["site_id"] == "THU"
+    assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
+    assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
+    assert geojson_payload["stats"]["feature_count"] > 0
+
+    node_features = [
+        feature
+        for feature in geojson_payload["geojson"]["features"]
+        if feature["properties"]["kind"] == "node"
+    ]
+    edge_features = [
+        feature
+        for feature in geojson_payload["geojson"]["features"]
+        if feature["properties"]["kind"] == "edge"
+    ]
+    assert {feature["properties"]["id"] for feature in node_features} >= {"gate_north", "library", "canteen"}
+    assert edge_features
+    lng, lat = node_features[0]["geometry"]["coordinates"]
+    assert 116.2 < lng < 116.5
+    assert 39.9 < lat < 40.1
+
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert "isSiteFrontendSelectable" in script
+    assert 'site.data_status === "backend_ready"' in script
+    assert "试点可演示" in script
+    assert "filterRoutePresetsForCurrentSite" in script
+    assert "filterMultiRoutePresetsForCurrentSite" in script
+    assert "defaultRouteTargetId" in script
+    assert "resolveDemoRouteScenario" in script
+    assert "currentSiteId() === siteId" in script
+    assert "state.mapGeoJsonLoading === loading" in script
+    assert "state.osmLayersLoading === loading" in script
+
+
 def test_demo_osm_edge_matches_file_records_m14_white_road_edges():
     service = DemoUIService("PKU")
     match_path = Path("data/sites/PKU/geo/edge_osm_geometry_matches.json")
@@ -2013,6 +2065,8 @@ def test_demo_multi_route_contains_visit_order_and_legs():
 def run_all_tests():
     print("Running UI demo service tests...")
     test_demo_bootstrap_contains_map_and_controls()
+    test_m26b_thu_backend_main_chain_is_available_without_frontend_switch()
+    test_m26c_thu_frontend_switch_contract_and_leaflet_data()
     test_demo_osm_edge_matches_file_records_m14_white_road_edges()
     test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
     test_demo_map_geojson_reports_geometry_coverage_stats()
