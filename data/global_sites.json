@@ -120,8 +120,10 @@
     {
       "id": "SEU",
       "name": "东南大学",
-      "description": "东南大学校园占位注册，后续阶段将补充室外图、室内图和查询推荐数据。",
-      "location": "南京",
+      "description": "东南大学 M28X 室外批次校园，已完成九龙湖校区室外图、核心 POI、综合查询、场所查询、美食推荐和路径规划接入。",
+      "location": "江苏省南京市江宁区东南大学路2号",
+      "is_available": true,
+      "data_status": "available",
       "sub_graphs": [
         "outdoor"
       ]
