@@ -186,8 +186,10 @@
     {
       "id": "SCUT",
       "name": "华南理工大学",
-      "description": "华南理工大学校园占位注册，后续阶段将补充室外图、室内图和查询推荐数据。",
-      "location": "广州",
+      "description": "华南理工大学 M28X 室外批次校园，已完成五山校区室外图、核心 POI、综合查询、场所查询、美食推荐和路径规划接入。",
+      "location": "广东省广州市天河区五山路381号",
+      "is_available": true,
+      "data_status": "available",
       "sub_graphs": [
         "outdoor"
       ]
