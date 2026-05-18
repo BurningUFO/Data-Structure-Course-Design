@@ -1,0 +1,80 @@
+{
+  "buildings": [
+    {
+      "building_id": "library",
+      "building_name": "武汉大学图书馆总馆",
+      "entry_node_id": "library",
+      "indoor_graph_id": "indoor_LIB",
+      "template_id": "library_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M29X WHU 复用武汉大学图书馆总馆室外建筑节点作为唯一室内外入口。"
+    },
+    {
+      "building_id": "teaching_building",
+      "building_name": "武汉大学法学院",
+      "entry_node_id": "teaching_building",
+      "indoor_graph_id": "indoor_TB1",
+      "template_id": "teaching_block_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M29X WHU 复用武汉大学法学院室外建筑节点作为教学楼室内模板入口。"
+    },
+    {
+      "building_id": "dormitory_1",
+      "building_name": "桂园学生宿舍",
+      "entry_node_id": "dormitory_1",
+      "indoor_graph_id": "indoor_DORM1",
+      "template_id": "dormitory_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M29X WHU 复用桂园学生宿舍室外节点作为宿舍室内模板入口。"
+    },
+    {
+      "building_id": "canteen",
+      "building_name": "桂园食堂",
+      "entry_node_id": "canteen",
+      "indoor_graph_id": "indoor_CANTEEN_GUIYUAN",
+      "template_id": "canteen_service_v1",
+      "floor_ids": [
+        "F1",
+        "F2"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M29X WHU 复用桂园食堂室外餐饮节点作为食堂室内模板入口。"
+    },
+    {
+      "building_id": "wanlin_museum",
+      "building_name": "万林艺术博物馆",
+      "entry_node_id": "wanlin_museum",
+      "indoor_graph_id": "indoor_WANLIN_MUSEUM",
+      "template_id": "sports_public_v1",
+      "floor_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "default_floor_id": "F1",
+      "entry_mapping_reason": "M29X WHU 复用万林艺术博物馆室外公共建筑节点作为大型公共建筑室内模板入口。"
+    }
+  ],
+  "metadata": {
+    "stage": "M29X",
+    "site_id": "WHU",
+    "site_name": "武汉大学",
+    "source_template_site": "PKU",
+    "scope": "单校代表性建筑室内模板与入口映射。"
+  }
+}

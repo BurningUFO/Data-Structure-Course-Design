@@ -2798,7 +2798,7 @@ function renderIndoorQuickStart() {
   }
 
   const buildings = state.indoor.buildings || [];
-  const preferredIds = ["library", "teaching_building_1", "dormitory_1"];
+  const preferredIds = ["library", "teaching_building_1", "teaching_building", "dormitory_1"];
   const preferredBuildings = preferredIds
     .map((buildingId) => indoorBuildingRecord(buildingId))
     .filter(Boolean);
@@ -2821,7 +2821,7 @@ function renderIndoorQuickStart() {
       let label = `进入 ${building.building_name}`;
       if (building.building_id === "library") {
         label = "进入图书馆室内导航";
-      } else if (building.building_id === "teaching_building_1") {
+      } else if (["teaching_building_1", "teaching_building"].includes(building.building_id)) {
         label = "去教学楼找教室";
       } else if (building.building_id === "dormitory_1") {
         label = "去宿舍找房间";

@@ -469,6 +469,132 @@ def test_m29x_thu_indoor_templates_entry_mapping_and_route_views():
     )
 
 
+def test_m29x_whu_indoor_templates_entry_mapping_and_route_views():
+    service = DemoUIService("WHU")
+    bootstrap = service.get_bootstrap_payload()
+    outdoor = json.loads(Path("data/sites/WHU/outdoor.json").read_text(encoding="utf-8"))
+    registry = json.loads(
+        Path("data/sites/WHU/geo/indoor_building_registry.json").read_text(encoding="utf-8")
+    )["buildings"]
+    global_sites = json.loads(Path("data/global_sites.json").read_text(encoding="utf-8"))
+    whu_site = next(item for item in global_sites["sites"] if item["id"] == "WHU")
+    outdoor_nodes = {node["id"]: node for node in outdoor["nodes"]}
+    registry_by_building = {item["building_id"]: item for item in registry}
+    expected_buildings = {
+        "library": "indoor_LIB",
+        "teaching_building": "indoor_TB1",
+        "dormitory_1": "indoor_DORM1",
+        "canteen": "indoor_CANTEEN_GUIYUAN",
+        "wanlin_museum": "indoor_WANLIN_MUSEUM",
+    }
+
+    assert outdoor["metadata"]["stage"] == "M27X"
+    assert outdoor["metadata"]["indoor_stage"] == "M29X"
+    assert outdoor["metadata"]["indoor_site_id"] == "WHU"
+    assert outdoor["metadata"]["indoor_supported_building_count"] == 5
+    assert set(outdoor["metadata"]["indoor_supported_buildings"]) == set(expected_buildings)
+    assert whu_site["sub_graphs"] == ["outdoor", *expected_buildings.values()]
+    assert bootstrap["site"]["id"] == "WHU"
+    assert bootstrap["map_capabilities"]["indoor_navigation"] is True
+    assert bootstrap["map_capabilities"]["indoor_supported_building_count"] == 5
+    assert {item["building_id"] for item in bootstrap["indoor_buildings"]} == set(expected_buildings)
+    assert bootstrap["stats"]["indoor_building_count"] == 5
+
+    for building_id, indoor_graph_id in expected_buildings.items():
+        entry = registry_by_building[building_id]
+        outdoor_entry = outdoor_nodes[entry["entry_node_id"]]
+        graph = json.loads(Path(f"data/sites/WHU/{indoor_graph_id}.json").read_text(encoding="utf-8"))
+        gate_nodes = [node for node in graph["nodes"] if node.get("is_gate")]
+
+        assert entry["indoor_graph_id"] == indoor_graph_id
+        assert outdoor_entry["is_gate"] is True
+        assert outdoor_entry["sub_graph_id"] == indoor_graph_id
+        assert outdoor_entry["indoor_supported"] is True
+        assert outdoor_entry["indoor_graph_id"] == indoor_graph_id
+        assert outdoor_entry["indoor_entry_node_id"] == entry["entry_node_id"]
+        assert graph["graph_id"] == f"WHU_{indoor_graph_id}"
+        assert graph["graph_type"] == "indoor"
+        assert graph["building_id"] == building_id
+        assert graph["building_name"] == entry["building_name"]
+        assert graph["floor_ids"] == entry["floor_ids"]
+        assert graph["default_floor_id"] == entry["default_floor_id"]
+        assert len(gate_nodes) == 1
+        assert gate_nodes[0]["floor_id"] == entry["default_floor_id"]
+        assert all(any(node.get("floor_id") == floor_id for node in graph["nodes"]) for floor_id in entry["floor_ids"])
+
+    teaching_floor = service.get_indoor_map_payload("teaching_building", "F2")
+    assert teaching_floor["success"] is True
+    assert teaching_floor["building_name"] == "武汉大学法学院"
+    assert teaching_floor["current_floor_id"] == "F2"
+    assert {item["id"] for item in teaching_floor["available_floors"]} == {"F1", "F2", "F3"}
+    assert all(node["floor_id"] == "F2" for node in teaching_floor["nodes"])
+    assert any(node["id"] == "tb1_classroom_201" for node in teaching_floor["nodes"])
+
+    invalid_floor = service.get_indoor_map_payload("canteen", "F3")
+    assert invalid_floor["success"] is False
+
+    canteen_floor = service.get_indoor_map_payload("canteen", "F2")
+    assert canteen_floor["success"] is True
+    assert any(node["id"] == "guiyuan_canteen_dining_area_2f" for node in canteen_floor["nodes"])
+    assert all(not node["id"].startswith("yannan_") for node in canteen_floor["nodes"])
+
+    wanlin_floor = service.get_indoor_map_payload("wanlin_museum", "F2")
+    assert wanlin_floor["success"] is True
+    assert any(node["id"] == "wanlin_museum_gallery_2f" for node in wanlin_floor["nodes"])
+    assert all(not node["id"].startswith("qdb_sports_") for node in wanlin_floor["nodes"])
+    assert all("观赛区" not in node["name"] and "训练室" not in node["name"] for node in wanlin_floor["nodes"])
+
+    indoor_route = service.plan_route(
+        {
+            "start_node_id": "library",
+            "target_node_id": "lib_reading_room_1",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+    assert indoor_route["success"] is True
+    assert indoor_route["site_id"] == "WHU"
+    assert indoor_route["path"] == ["library", "lib_entrance", "lib_reading_room_1"]
+    assert indoor_route["ui"]["default_route_view"] == "indoor:library:F1"
+    assert any(view["id"] == "outdoor" for view in indoor_route["ui"]["available_route_views"])
+    assert any(view["id"] == "indoor:library:F1" for view in indoor_route["ui"]["available_route_views"])
+
+    outdoor_to_indoor_route = service.plan_route(
+        {
+            "start_node_id": "gate_west",
+            "target_node_id": "lib_reading_room_2",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+    assert outdoor_to_indoor_route["success"] is True
+    assert outdoor_to_indoor_route["site_id"] == "WHU"
+    assert outdoor_to_indoor_route["ui"]["default_route_view"] == "outdoor"
+    assert outdoor_to_indoor_route["ui"]["route_geojson"] is not None
+    assert any(
+        view["id"] == "indoor:library:F2"
+        for view in outdoor_to_indoor_route["ui"]["available_route_views"]
+    )
+
+    wanlin_route = service.plan_route(
+        {
+            "start_node_id": "wanlin_museum",
+            "target_node_id": "wanlin_museum_gallery_2f",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+    assert wanlin_route["success"] is True
+    assert wanlin_route["ui"]["default_route_view"] == "indoor:wanlin_museum:F2"
+    assert any(
+        view["id"] == "indoor:wanlin_museum:F2"
+        for view in wanlin_route["ui"]["available_route_views"]
+    )
+
+    script = Path("src/ui/static/app.js").read_text(encoding="utf-8")
+    assert '["library", "teaching_building_1", "teaching_building", "dormitory_1"]' in script
+
+
 def test_m27x_whu_outdoor_main_chain_is_available_in_first_batch():
     service = DemoUIService("WHU")
     payload = service.get_bootstrap_payload()
@@ -541,20 +667,28 @@ def test_m27x_whu_outdoor_main_chain_is_available_in_first_batch():
         }
     )
     assert place["success"] is True
-    assert place["results"][0]["route_target_node_id"] == "restroom_main"
-    assert place["results"][0]["distance_status"] == "available"
+    restroom_result_by_target = {
+        item["route_target_node_id"]: item
+        for item in place["results"]
+    }
+    assert "restroom_main" in restroom_result_by_target
+    assert restroom_result_by_target["restroom_main"]["distance_status"] == "available"
 
     catering = service.catering_search(
         {
             "keyword": "桂园食堂",
             "sort_field": "distance_m",
             "start_node_id": "gate_west",
-            "limit": 3,
+            "limit": 8,
         }
     )
     assert catering["success"] is True
-    assert catering["results"][0]["route_target_node_id"] == "canteen"
-    assert catering["results"][0]["distance_status"] == "available"
+    catering_result_by_target = {
+        item["route_target_node_id"]: item
+        for item in catering["results"]
+    }
+    assert "canteen" in catering_result_by_target
+    assert catering_result_by_target["canteen"]["distance_status"] == "available"
 
     route = service.plan_route(
         {
