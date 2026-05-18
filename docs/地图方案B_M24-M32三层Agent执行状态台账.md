@@ -14,10 +14,10 @@
 - `top_manager_status`: `in_progress`
 - `current_manager`: `L2-03`
 - `last_completed_manager`: `L2-02`
-- `next_manager`: `L2-03`
+- `next_manager`: `L2-04`
 - `last_commit`: `fef62cc`
-- `last_verification`: `py -m pytest -q`，152 passed；M27Y HTTP smoke 覆盖 THU/WHU/XMU/ZJU/NJU 与 PKU 切回
-- `last_update_note`: `M27Y 首批 5 校室外统一回归完成，L2-02 completed`
+- `last_verification`: `py -m pytest -q`，152 passed；一级总管复核 L2-02 completed/10-10，暂存区为空
+- `last_update_note`: `准备进入 L2-03 剩余 15 校室外扩展阶段`
 
 ## 二级经理状态总表
 
@@ -37,9 +37,9 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02`
-- `current_action`: `L2-02 已完成，等待一级总管复核并调度 L2-03`
-- `next_action`: `调用 L2-03`
-- `notes`: `L2-02 已完成 10/10；THU、WHU、XMU、ZJU、NJU 室外主链路与 PKU 切回均通过。`
+- `current_action`: `调用 L2-03`
+- `next_action`: `等待 L2-03 完成后复核`
+- `notes`: `L2-02 已完成一级总管复核；THU、WHU、XMU、ZJU、NJU 室外主链路与 PKU 切回均通过。`
 
 ## L2-01 基线模板经理子任务
 
