@@ -85,7 +85,12 @@
       "is_available": true,
       "data_status": "available",
       "sub_graphs": [
-        "outdoor"
+        "outdoor",
+        "indoor_LIB",
+        "indoor_TB1",
+        "indoor_DORM1",
+        "indoor_CANTEEN_LINHU",
+        "indoor_SPORTS_GROUND"
       ]
     },
     {

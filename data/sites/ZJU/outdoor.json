@@ -9,14 +9,17 @@
     "scaffold": false,
     "batch": "first_5_outdoor",
     "ready_for_first_batch_regression": true,
-    "scope": "M27X ZJU outdoor batch graph: Zijingang campus gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. Indoor graphs are intentionally not declared in this stage.",
+    "scope": "M27X ZJU outdoor batch graph: Zijingang campus gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. M29X adds representative indoor template graphs for selected buildings.",
     "capabilities": [
       "leaflet_geojson",
       "scenic_search",
       "place_search",
       "catering_recommend",
       "single_route",
-      "multi_route"
+      "multi_route",
+      "indoor_navigation",
+      "indoor_floorplan",
+      "indoor_route_view_switch"
     ],
     "core_poi_categories": [
       "entrance",
@@ -36,9 +39,21 @@
     ],
     "needs_review": [
       "Road geometries use endpoint fallback lines until a later offline OSM geometry stage.",
-      "No indoor graph is declared in M27X.",
-      "Coordinates are manual Zijingang-campus axis estimates and should be checked before cartographic use."
-    ]
+      "Coordinates are manual Zijingang-campus axis estimates and should be checked before cartographic use.",
+      "M29X ZJU indoor graphs reuse PKU templates; later stages may replace them with real indoor layouts."
+    ],
+    "indoor_stage": "M29X",
+    "indoor_site_id": "ZJU",
+    "indoor_template_source": "PKU",
+    "indoor_supported_building_count": 5,
+    "indoor_supported_buildings": [
+      "library",
+      "teaching_building",
+      "dormitory_1",
+      "canteen",
+      "sports_ground"
+    ],
+    "ready_for_first_batch_indoor_regression": true
   },
   "nodes": [
     {
@@ -171,8 +186,8 @@
       "id": "library",
       "name": "浙江大学紫金港图书信息中心",
       "type": "library",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_LIB",
       "tags": ["图书馆", "图书信息中心", "学习", "自习", "阅览"],
       "keywords": ["浙江大学图书馆", "紫金港图书信息中心", "图书信息中心", "图书馆", "自习"],
       "description": "浙江大学紫金港校区核心学习与阅览场所，作为 M27X 单目标路线和综合查询目标。",
@@ -183,14 +198,17 @@
       "rating": 4.8,
       "source": "m27x_manual_zju_zijingang_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 30.30785, "lng": 120.08690}
+      "location": {"lat": 30.30785, "lng": 120.08690},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_LIB",
+      "indoor_entry_node_id": "library"
     },
     {
       "id": "teaching_building",
       "name": "浙江大学紫金港东教学楼",
       "type": "teaching_building",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_TB1",
       "tags": ["教学楼", "东教学楼", "教室", "上课"],
       "keywords": ["东教学楼", "浙江大学东教学楼", "教学楼", "教室", "上课"],
       "description": "紫金港东教学楼是教学楼类核心 POI，可用于场所查询和路线演示。",
@@ -201,7 +219,10 @@
       "rating": 4.6,
       "source": "m27x_manual_zju_zijingang_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 30.30655, "lng": 120.09020}
+      "location": {"lat": 30.30655, "lng": 120.09020},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_TB1",
+      "indoor_entry_node_id": "teaching_building"
     },
     {
       "id": "teaching_building_2",
@@ -243,8 +264,8 @@
       "id": "dormitory_1",
       "name": "浙江大学丹青学园",
       "type": "dormitory",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_DORM1",
       "tags": ["宿舍", "丹青学园", "住宿", "生活区"],
       "keywords": ["丹青学园", "浙江大学丹青学园", "宿舍", "学生公寓"],
       "description": "丹青学园是紫金港西北侧生活区宿舍节点，用于住宿查询和多目标路线演示。",
@@ -255,7 +276,10 @@
       "rating": 4.4,
       "source": "m27x_manual_zju_zijingang_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 30.31155, "lng": 120.07970}
+      "location": {"lat": 30.31155, "lng": 120.07970},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_DORM1",
+      "indoor_entry_node_id": "dormitory_1"
     },
     {
       "id": "dormitory_2",
@@ -279,8 +303,8 @@
       "id": "canteen",
       "name": "浙江大学紫金港临湖餐厅",
       "type": "catering",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CANTEEN_LINHU",
       "tags": ["食堂", "餐厅", "餐饮", "临湖"],
       "keywords": ["临湖餐厅", "浙江大学临湖餐厅", "紫金港食堂", "食堂", "餐饮", "美食"],
       "description": "临湖餐厅是紫金港生活区餐饮节点，作为 M27X 美食推荐和多目标路线目标。",
@@ -291,7 +315,10 @@
       "rating": 4.6,
       "source": "m27x_manual_zju_zijingang_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 30.31205, "lng": 120.08925}
+      "location": {"lat": 30.31205, "lng": 120.08925},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CANTEEN_LINHU",
+      "indoor_entry_node_id": "canteen"
     },
     {
       "id": "canteen_yinquan",
@@ -315,8 +342,8 @@
       "id": "sports_ground",
       "name": "浙江大学紫金港体育馆",
       "type": "sports",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_SPORTS_GROUND",
       "tags": ["体育馆", "运动", "体育", "场馆"],
       "keywords": ["紫金港体育馆", "浙江大学体育馆", "体育馆", "运动"],
       "description": "紫金港体育馆服务运动和活动场景，可用于场所查询和路线目标。",
@@ -327,7 +354,10 @@
       "rating": 4.5,
       "source": "m27x_manual_zju_zijingang_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 30.30455, "lng": 120.08120}
+      "location": {"lat": 30.30455, "lng": 120.08120},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_SPORTS_GROUND",
+      "indoor_entry_node_id": "sports_ground"
     },
     {
       "id": "service_center",
