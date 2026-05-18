@@ -16,7 +16,10 @@
       "place_search",
       "catering_recommend",
       "single_route",
-      "multi_route"
+      "multi_route",
+      "indoor_navigation",
+      "indoor_floorplan",
+      "indoor_route_view_switch"
     ],
     "core_poi_categories": [
       "entrance",
@@ -35,9 +38,21 @@
     ],
     "needs_review": [
       "Road geometries use endpoint fallback lines until a later offline OSM geometry stage.",
-      "No indoor graph is declared in M27X.",
-      "Coordinates are manual Siming-campus axis estimates and should be checked before cartographic use."
-    ]
+      "Coordinates are manual Siming-campus axis estimates and should be checked before cartographic use.",
+      "M29X XMU 室内图复用 PKU 模板，后续阶段可替换为真实楼内结构。"
+    ],
+    "indoor_stage": "M29X",
+    "indoor_site_id": "XMU",
+    "indoor_template_source": "PKU",
+    "indoor_supported_building_count": 5,
+    "indoor_supported_buildings": [
+      "library",
+      "teaching_building",
+      "dormitory_1",
+      "canteen",
+      "sports_ground"
+    ],
+    "ready_for_first_batch_indoor_regression": true
   },
   "nodes": [
     {
@@ -206,8 +221,8 @@
       "id": "library",
       "name": "厦门大学图书馆",
       "type": "library",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_LIB",
       "tags": ["图书馆", "学习", "自习", "教育"],
       "keywords": ["厦门大学图书馆", "图书馆", "自习", "学习"],
       "description": "厦门大学思明校区核心学习与阅览场所，作为 M27X 单目标路线和综合查询目标。",
@@ -218,14 +233,17 @@
       "rating": 4.8,
       "source": "m27x_manual_xmu_siming_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 24.43960, "lng": 118.09415}
+      "location": {"lat": 24.43960, "lng": 118.09415},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_LIB",
+      "indoor_entry_node_id": "library"
     },
     {
       "id": "teaching_building",
       "name": "厦门大学南强二教学楼",
       "type": "teaching_building",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_TB1",
       "tags": ["教学楼", "教室", "南强", "教育"],
       "keywords": ["南强二教学楼", "教学楼", "教室", "上课"],
       "description": "M27X 厦门大学教学楼 POI，用于场所查询和教学路线演示。",
@@ -236,7 +254,10 @@
       "rating": 4.6,
       "source": "m27x_manual_xmu_siming_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 24.44025, "lng": 118.09345}
+      "location": {"lat": 24.44025, "lng": 118.09345},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_TB1",
+      "indoor_entry_node_id": "teaching_building"
     },
     {
       "id": "teaching_building_2",
@@ -260,8 +281,8 @@
       "id": "dormitory_1",
       "name": "厦门大学芙蓉学生公寓",
       "type": "dormitory",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_DORM1",
       "tags": ["宿舍", "学生公寓", "芙蓉"],
       "keywords": ["芙蓉学生公寓", "芙蓉宿舍", "宿舍", "学生公寓"],
       "description": "芙蓉生活区宿舍节点，用于住宿查询和多目标路线演示。",
@@ -272,7 +293,10 @@
       "rating": 4.4,
       "source": "m27x_manual_xmu_siming_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 24.43885, "lng": 118.09735}
+      "location": {"lat": 24.43885, "lng": 118.09735},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_DORM1",
+      "indoor_entry_node_id": "dormitory_1"
     },
     {
       "id": "nanguang_dormitory",
@@ -296,8 +320,8 @@
       "id": "canteen",
       "name": "厦门大学芙蓉餐厅",
       "type": "catering",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CANTEEN_FURONG",
       "tags": ["食堂", "餐厅", "餐饮", "芙蓉"],
       "keywords": ["芙蓉餐厅", "芙蓉食堂", "厦门大学食堂", "餐饮", "美食"],
       "description": "厦门大学芙蓉生活区主要餐饮节点，作为 M27X 美食推荐和多目标路线目标。",
@@ -308,7 +332,10 @@
       "rating": 4.6,
       "source": "m27x_manual_xmu_siming_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 24.43855, "lng": 118.09695}
+      "location": {"lat": 24.43855, "lng": 118.09695},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CANTEEN_FURONG",
+      "indoor_entry_node_id": "canteen"
     },
     {
       "id": "canteen_nanguang",
@@ -422,8 +449,8 @@
       "id": "sports_ground",
       "name": "厦门大学上弦场",
       "type": "sports",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_SPORTS_GROUND",
       "tags": ["运动", "操场", "上弦场", "体育"],
       "keywords": ["上弦场", "操场", "运动场", "体育"],
       "description": "厦门大学思明校区运动与活动场地节点。",
@@ -434,7 +461,10 @@
       "rating": 4.5,
       "source": "m27x_manual_xmu_siming_axis_estimate",
       "needs_review": true,
-      "location": {"lat": 24.43640, "lng": 118.09210}
+      "location": {"lat": 24.43640, "lng": 118.09210},
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_SPORTS_GROUND",
+      "indoor_entry_node_id": "sports_ground"
     },
     {
       "id": "road_west_village",
