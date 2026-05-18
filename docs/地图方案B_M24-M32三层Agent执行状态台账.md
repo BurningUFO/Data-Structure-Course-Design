@@ -15,15 +15,15 @@
 - `current_manager`: `L2-01`
 - `last_completed_manager`: `none`
 - `next_manager`: `L2-02`
-- `last_commit`: `25a3ae3`
+- `last_commit`: `6c8389f`
 - `last_verification`: `py -m pytest -q`，138 passed
-- `last_update_note`: `M24D 已完成，已完成脚手架兼容性自检，下一步 M25A`
+- `last_update_note`: `M25A 已完成，已审计 PKU 多校园复制依赖点，下一步 M25B`
 
 ## 二级经理状态总表
 
 | Manager ID | 经理文档 | 状态 | 子任务完成数 | 最后 commit | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `in_progress` | `4/8` | `25a3ae3` | M24D 已完成，下一步 M25A |
+| L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `in_progress` | `5/8` | `6c8389f` | M25A 已完成，下一步 M25B |
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `pending` | `0/10` | `none` | 试点校 + 首批 5 校室外 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室外 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `pending` | `0/6` | `none` | 首批 5 校室内 |
@@ -37,9 +37,9 @@
 
 - `status`: `in_progress`
 - `completed_managers`:
-- `current_action`: `L2-01 已完成 M24D`
-- `next_action`: `继续执行 M25A`
-- `notes`: `一级总管已完成启动检查，L2-01 当前完成 4/8。`
+- `current_action`: `L2-01 已完成 M25A`
+- `next_action`: `继续执行 M25B`
+- `notes`: `一级总管已完成启动检查，L2-01 当前完成 5/8。`
 
 ## L2-01 基线模板经理子任务
 
@@ -47,7 +47,7 @@
 - [x] `M24B`
 - [x] `M24C`
 - [x] `M24D`
-- [ ] `M25A`
+- [x] `M25A`
 - [ ] `M25B`
 - [ ] `M25C`
 - [ ] `M25D`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-18 18:07] manager=L2-01 child=M25A status=completed commit=6c8389f verify=`py -m pytest -q` 138 passed note=输出 `docs/地图方案B_M25A_PKU多校园复制依赖审计.md`，覆盖图加载、bootstrap、查询、推荐、路线、室内和前端切换契约
 - [2026-05-18 18:00] manager=L2-01 child=M24D status=completed commit=25a3ae3 verify=`py -m pytest -q` 138 passed note=为 bootstrap 站点项增加可用性标记，前端禁用脚手架站点以保护 PKU 当前体验
 - [2026-05-18 17:52] manager=L2-01 child=M24C status=completed commit=9aacd67 verify=`py -m pytest -q` 138 passed note=在 `data/global_sites.json` 新增 20 校占位注册，PKU 保持首位且测试通过
 - [2026-05-18 17:45] manager=L2-01 child=M24B status=completed commit=304c765 verify=`py -m pytest -q` 138 passed note=创建 20 校 `data/sites/<SITE_ID>/geo/.gitkeep` 脚手架，未修改 `global_sites.json`
