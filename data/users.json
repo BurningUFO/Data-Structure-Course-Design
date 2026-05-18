@@ -78,5 +78,21 @@
     "interests": ["城市美食", "动物园", "亲子游"],
     "home_site_id": "PKU",
     "created_at": "2026-05-10"
+  },
+  {
+    "id": "user_hzau_001",
+    "name": "华农学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "农业科技"],
+    "home_site_id": "HZAU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_hzau_002",
+    "name": "华农生活访客",
+    "role": "tourist",
+    "interests": ["食堂", "狮子山", "校园景观"],
+    "home_site_id": "HZAU",
+    "created_at": "2026-05-19"
   }
 ]
