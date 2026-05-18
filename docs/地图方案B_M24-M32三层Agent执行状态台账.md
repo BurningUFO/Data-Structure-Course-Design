@@ -12,18 +12,18 @@
 ## 全局摘要
 
 - `top_manager_status`: `in_progress`
-- `current_manager`: `L2-01`
-- `last_completed_manager`: `none`
+- `current_manager`: `none`
+- `last_completed_manager`: `L2-01`
 - `next_manager`: `L2-02`
-- `last_commit`: `db5597a`
+- `last_commit`: `6eb6a48`
 - `last_verification`: `py -m pytest -q`，142 passed
-- `last_update_note`: `M25C 已完成，已新增新校园模板脚手架脚本，下一步 M25D`
+- `last_update_note`: `L2-01 已完成 M24A-M25D，8/8 子任务全部完成，等待进入 L2-02`
 
 ## 二级经理状态总表
 
 | Manager ID | 经理文档 | 状态 | 子任务完成数 | 最后 commit | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `in_progress` | `7/8` | `db5597a` | M25C 已完成，下一步 M25D |
+| L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `completed` | `8/8` | `6eb6a48` | M24A-M25D 已完成 |
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `pending` | `0/10` | `none` | 试点校 + 首批 5 校室外 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室外 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `pending` | `0/6` | `none` | 首批 5 校室内 |
@@ -36,10 +36,10 @@
 ## 一级总管执行记录
 
 - `status`: `in_progress`
-- `completed_managers`:
-- `current_action`: `L2-01 已完成 M25C`
-- `next_action`: `继续执行 M25D`
-- `notes`: `一级总管已完成启动检查，L2-01 当前完成 7/8。`
+- `completed_managers`: `L2-01`
+- `current_action`: `L2-01 已完成 M24A-M25D`
+- `next_action`: `一级总管复核后进入 L2-02`
+- `notes`: `L2-01 当前完成 8/8，状态已标记为 completed。`
 
 ## L2-01 基线模板经理子任务
 
@@ -50,7 +50,7 @@
 - [x] `M25A`
 - [x] `M25B`
 - [x] `M25C`
-- [ ] `M25D`
+- [x] `M25D`
 
 ## L2-02 试点与首批室外经理子任务
 
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-18 18:32] manager=L2-01 child=M25D status=completed commit=6eb6a48 verify=`py -m pytest -q` 142 passed note=输出 `docs/地图方案B_M25D_多校园扩站规则与自检清单.md`，L2-01 已完成 8/8 并标记 completed
 - [2026-05-18 18:26] manager=L2-01 child=M25C status=completed commit=db5597a verify=`py -m pytest -q` 142 passed note=新增 `scripts/scaffold_new_campus.py`、脚手架测试和使用说明，支持生成 `outdoor.json`、`geo/` 占位与可选室内模板
 - [2026-05-18 18:15] manager=L2-01 child=M25B status=completed commit=bacee84 verify=`py -m pytest -q` 138 passed note=输出 `docs/地图方案B_M25B_新校园最小必备字段清单.md`，区分 PKU 固定契约与站点自定义字段
 - [2026-05-18 18:07] manager=L2-01 child=M25A status=completed commit=6c8389f verify=`py -m pytest -q` 138 passed note=输出 `docs/地图方案B_M25A_PKU多校园复制依赖审计.md`，覆盖图加载、bootstrap、查询、推荐、路线、室内和前端切换契约
