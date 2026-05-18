@@ -153,8 +153,10 @@
     {
       "id": "HNU",
       "name": "湖南大学",
-      "description": "湖南大学校园占位注册，后续阶段将补充室外图、室内图和查询推荐数据。",
-      "location": "长沙",
+      "description": "湖南大学 M28X 室外批次校园，已完成岳麓山校区室外图、核心 POI、综合查询、场所查询、美食推荐和路径规划接入。",
+      "location": "湖南省长沙市岳麓区麓山南路",
+      "is_available": true,
+      "data_status": "available",
       "sub_graphs": [
         "outdoor"
       ]
