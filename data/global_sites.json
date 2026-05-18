@@ -32,10 +32,10 @@
     {
       "id": "THU",
       "name": "清华大学",
-      "description": "清华大学试点校园，M26B 已接入后端图加载、bootstrap、查询推荐和路径规划，前端切换仍待 M26C。",
+      "description": "清华大学首批室外批次校园，已完成站点切换、Leaflet GeoJSON、综合查询、场所查询、美食推荐和路径规划接入。",
       "location": "北京市海淀区清华园",
-      "is_available": false,
-      "data_status": "backend_ready",
+      "is_available": true,
+      "data_status": "available",
       "sub_graphs": [
         "outdoor"
       ]

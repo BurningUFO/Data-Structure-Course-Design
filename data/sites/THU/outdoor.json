@@ -2,19 +2,40 @@
   "graph_id": "THU_outdoor",
   "graph_type": "outdoor",
   "metadata": {
-    "stage": "M26A",
+    "stage": "M27X",
     "site_id": "THU",
     "site_name": "清华大学",
-    "scaffold": true,
-    "scope": "Minimal outdoor skeleton only: gates, main-road waypoints, and core POI. Frontend switch, backend wiring, and full validation are intentionally left to later stages.",
+    "scaffold": false,
+    "batch": "first_5_outdoor",
+    "ready_for_first_batch_regression": true,
+    "scope": "M27X THU outdoor batch graph: gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. Indoor graphs are intentionally not declared in this stage.",
+    "capabilities": [
+      "leaflet_geojson",
+      "scenic_search",
+      "place_search",
+      "catering_recommend",
+      "single_route",
+      "multi_route"
+    ],
+    "core_poi_categories": [
+      "entrance",
+      "landmark",
+      "education",
+      "dormitory",
+      "catering",
+      "sports",
+      "service",
+      "shopping",
+      "restroom"
+    ],
     "coordinate_sources": [
       "TsinghuaCoordinates public building centroids, 2014 Google Earth seed data",
       "OpenStreetMap Nominatim west-gate lookup",
-      "M26A manual campus-axis estimates for gates and road waypoints"
+      "M26A manual campus-axis estimates carried forward for M27X THU outdoor batch"
     ],
     "needs_review": [
-      "Gate and road waypoint coordinates are enough for a runnable M26A skeleton but should be reviewed before refined map presentation.",
-      "No indoor graph is declared in this stage."
+      "Road geometries still use endpoint fallback lines until a later offline OSM geometry stage.",
+      "No indoor graph is declared in M27X."
     ]
   },
   "nodes": [

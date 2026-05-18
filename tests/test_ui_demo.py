@@ -67,8 +67,8 @@ def test_demo_bootstrap_contains_map_and_controls():
     site_options = {item["id"]: item for item in payload["sites"]}
     assert site_options["PKU"]["is_available"] is True
     assert site_options["PKU"]["data_status"] == "available"
-    assert site_options["THU"]["is_available"] is False
-    assert site_options["THU"]["data_status"] == "backend_ready"
+    assert site_options["THU"]["is_available"] is True
+    assert site_options["THU"]["data_status"] == "available"
     assert payload["site"]["name"] == "北京大学"
     assert payload["default_start_node"] == "gate_north"
     assert payload["map"]["node_count"] >= 1000
@@ -170,19 +170,47 @@ def test_demo_bootstrap_contains_map_and_controls():
     print("test_demo_bootstrap_contains_map_and_controls passed.")
 
 
-def test_m26b_thu_backend_main_chain_is_available_without_frontend_switch():
+def test_m27x_thu_outdoor_main_chain_is_available_in_first_batch():
     service = DemoUIService("THU")
     payload = service.get_bootstrap_payload()
     site_options = {item["id"]: item for item in payload["sites"]}
+    outdoor = json.loads(Path("data/sites/THU/outdoor.json").read_text(encoding="utf-8"))
+    node_ids = {node["id"] for node in outdoor["nodes"]}
+    categories = {node["category"] for node in outdoor["nodes"]}
 
     assert getattr(service.graph, "site_id", "") == "THU"
     assert {"gate_west", "library", "canteen"} <= set(service.graph.nodes)
+    assert outdoor["metadata"]["stage"] == "M27X"
+    assert outdoor["metadata"]["scaffold"] is False
+    assert outdoor["metadata"]["batch"] == "first_5_outdoor"
+    assert outdoor["metadata"]["ready_for_first_batch_regression"] is True
+    assert {
+        "gate_west",
+        "gate_south",
+        "gate_east",
+        "gate_north",
+        "library",
+        "teaching_building",
+        "dormitory_1",
+        "canteen",
+        "service_center",
+        "restroom_main",
+    } <= node_ids
+    assert {
+        "entrance",
+        "education",
+        "dormitory",
+        "catering",
+        "service",
+        "shopping",
+        "restroom",
+    } <= categories
     assert payload["site"]["id"] == "THU"
     assert payload["site"]["name"] == "清华大学"
-    assert payload["site"]["is_available"] is False
-    assert payload["site"]["data_status"] == "backend_ready"
-    assert site_options["THU"]["is_available"] is False
-    assert site_options["THU"]["data_status"] == "backend_ready"
+    assert payload["site"]["is_available"] is True
+    assert payload["site"]["data_status"] == "available"
+    assert site_options["THU"]["is_available"] is True
+    assert site_options["THU"]["data_status"] == "available"
     assert payload["default_start_node"] == "gate_north"
     assert payload["stats"]["record_count"] >= 10
     assert payload["stats"]["route_target_count"] >= 10
@@ -256,17 +284,17 @@ def test_m26b_thu_backend_main_chain_is_available_without_frontend_switch():
     assert multi_route["target_node_ids"] == ["library", "canteen"]
 
 
-def test_m26c_thu_frontend_switch_contract_and_leaflet_data():
+def test_m27x_thu_frontend_switch_contract_and_leaflet_data():
     service = DemoUIService("THU")
     bootstrap = service.get_bootstrap_payload()
     site_options = {item["id"]: item for item in bootstrap["sites"]}
     geojson_payload = service.get_map_geojson_payload()
 
     assert bootstrap["site"]["id"] == "THU"
-    assert bootstrap["site"]["is_available"] is False
-    assert bootstrap["site"]["data_status"] == "backend_ready"
-    assert site_options["THU"]["is_available"] is False
-    assert site_options["THU"]["data_status"] == "backend_ready"
+    assert bootstrap["site"]["is_available"] is True
+    assert bootstrap["site"]["data_status"] == "available"
+    assert site_options["THU"]["is_available"] is True
+    assert site_options["THU"]["data_status"] == "available"
     assert bootstrap["map_renderer"] == "leaflet_geo"
     assert bootstrap["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
     assert geojson_payload["success"] is True
@@ -2065,8 +2093,8 @@ def test_demo_multi_route_contains_visit_order_and_legs():
 def run_all_tests():
     print("Running UI demo service tests...")
     test_demo_bootstrap_contains_map_and_controls()
-    test_m26b_thu_backend_main_chain_is_available_without_frontend_switch()
-    test_m26c_thu_frontend_switch_contract_and_leaflet_data()
+    test_m27x_thu_outdoor_main_chain_is_available_in_first_batch()
+    test_m27x_thu_frontend_switch_contract_and_leaflet_data()
     test_demo_osm_edge_matches_file_records_m14_white_road_edges()
     test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
     test_demo_map_geojson_reports_geometry_coverage_stats()
