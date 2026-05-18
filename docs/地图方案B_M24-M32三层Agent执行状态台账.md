@@ -15,15 +15,15 @@
 - `current_manager`: `L2-01`
 - `last_completed_manager`: `none`
 - `next_manager`: `L2-02`
-- `last_commit`: `304c765`
+- `last_commit`: `9aacd67`
 - `last_verification`: `py -m pytest -q`，138 passed
-- `last_update_note`: `M24B 已完成，已创建 20 校目录与 geo 脚手架，下一步 M24C`
+- `last_update_note`: `M24C 已完成，已接入 20 校 global_sites 占位注册，下一步 M24D`
 
 ## 二级经理状态总表
 
 | Manager ID | 经理文档 | 状态 | 子任务完成数 | 最后 commit | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `in_progress` | `2/8` | `304c765` | M24B 已完成，下一步 M24C |
+| L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `in_progress` | `3/8` | `9aacd67` | M24C 已完成，下一步 M24D |
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `pending` | `0/10` | `none` | 试点校 + 首批 5 校室外 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室外 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `pending` | `0/6` | `none` | 首批 5 校室内 |
@@ -37,15 +37,15 @@
 
 - `status`: `in_progress`
 - `completed_managers`:
-- `current_action`: `L2-01 已完成 M24B`
-- `next_action`: `继续执行 M24C`
-- `notes`: `一级总管已完成启动检查，L2-01 当前完成 2/8。`
+- `current_action`: `L2-01 已完成 M24C`
+- `next_action`: `继续执行 M24D`
+- `notes`: `一级总管已完成启动检查，L2-01 当前完成 3/8。`
 
 ## L2-01 基线模板经理子任务
 
 - [x] `M24A`
 - [x] `M24B`
-- [ ] `M24C`
+- [x] `M24C`
 - [ ] `M24D`
 - [ ] `M25A`
 - [ ] `M25B`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-18 17:52] manager=L2-01 child=M24C status=completed commit=9aacd67 verify=`py -m pytest -q` 138 passed note=在 `data/global_sites.json` 新增 20 校占位注册，PKU 保持首位且测试通过
 - [2026-05-18 17:45] manager=L2-01 child=M24B status=completed commit=304c765 verify=`py -m pytest -q` 138 passed note=创建 20 校 `data/sites/<SITE_ID>/geo/.gitkeep` 脚手架，未修改 `global_sites.json`
 - [2026-05-18 17:37] manager=L2-01 child=M24A status=completed commit=10557c6 verify=`py -m pytest -q` 138 passed note=冻结 20 校 SITE_ID、中文名、城市、优先级，输出 `docs/地图方案B_M24A_20校SITE_ID注册表.md`
 
