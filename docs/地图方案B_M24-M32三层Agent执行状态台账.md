@@ -15,9 +15,9 @@
 - `current_manager`: `L2-03`
 - `last_completed_manager`: `L2-02`
 - `next_manager`: `L2-04`
-- `last_commit`: `5968285`
-- `last_verification`: `py -m pytest -q`，154 passed；FDU 室外主链路、Leaflet GeoJSON、查询推荐和路径规划回归通过
-- `last_update_note`: `M28X FDU 已完成，继续等待 L2-03 执行 SJTU`
+- `last_commit`: `580dda7`
+- `last_verification`: `py -m pytest -q`，156 passed；M28X SJTU 修正复核时全量回归通过
+- `last_update_note`: `M28X SJTU 已完成并形成聚焦提交，下一步执行 M28X TONGJI`
 
 ## 二级经理状态总表
 
@@ -25,7 +25,7 @@
 | --- | --- | --- | --- | --- | --- |
 | L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `completed` | `8/8` | `6eb6a48` | M24A-M25D 已完成 |
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `completed` | `10/10` | `fef62cc` | 试点校 + 首批 5 校室外；M27Y 无实现变更 |
-| L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `in_progress` | `1/16` | `5968285` | FDU 室外已完成，剩余 14 校 + M28Y |
+| L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `in_progress` | `2/16` | `580dda7` | FDU、SJTU 室外已完成，剩余 13 校 + M28Y |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `pending` | `0/6` | `none` | 首批 5 校室内 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室内 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校交通方式 |
@@ -68,7 +68,7 @@
 ## L2-03 全量室外扩展经理子任务
 
 - [x] `M28X FDU`
-- [ ] `M28X SJTU`
+- [x] `M28X SJTU`
 - [ ] `M28X TONGJI`
 - [ ] `M28X SEU`
 - [ ] `M28X SYSU`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-18 22:04] manager=L2-03 child=M28X SJTU status=completed commit=580dda7 verify=`py -m pytest -q` 156 passed note=新增 SJTU 闵行校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；流程复核后已形成聚焦提交
 - [2026-05-18 21:21] manager=L2-03 child=M28X FDU status=completed commit=5968285 verify=`py -m pytest -q` 154 passed note=新增 FDU 邯郸校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归
 - [2026-05-18 21:02] manager=L2-02 child=M27Y status=completed commit=none verify=`py -m pytest -q` 152 passed; HTTP smoke passed for THU/WHU/XMU/ZJU/NJU and PKU switch-back note=首批 5 校室外统一回归通过，覆盖站点切换、bootstrap、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线、多目标路线和数据隔离；M27Y 无实现变更
 - [2026-05-18 20:53] manager=L2-02 child=M27X NJU status=completed commit=fef62cc verify=`py -m pytest -q` 152 passed note=新增 NJU `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、查询推荐和单/多目标路线回归
