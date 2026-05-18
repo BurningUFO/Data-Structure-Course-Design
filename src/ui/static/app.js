@@ -42,6 +42,7 @@ const state = {
   expandedPanelPlaceholder: null,
   currentStartNodeId: "",
   focusedNodeId: "",
+  nearbyCenterNodeId: "",
   currentResults: [],
   currentRoute: null,
   selectedDiaryId: "",
@@ -334,13 +335,7 @@ function bindForms() {
 
   document.querySelector("#place-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    await runQuery("/api/search/places", {
-      keyword: document.querySelector("#place-keyword").value.trim(),
-      category: document.querySelector("#place-category").value,
-      sort_field: document.querySelector("#place-sort").value,
-      start_node_id: state.currentStartNodeId,
-      limit: 6,
-    });
+    await runQuery("/api/search/places", buildPlaceSearchPayload());
   });
 
   document.querySelector("#catering-form").addEventListener("submit", async (event) => {
@@ -463,6 +458,12 @@ function bindForms() {
       state.focusedNodeId = focusButton.dataset.focusNode;
       renderMap();
       setStatus(`已在地图中定位 ${getNodeName(state.focusedNodeId)}。`, "info");
+      return;
+    }
+
+    const nearbyButton = event.target.closest("[data-nearby-center]");
+    if (nearbyButton) {
+      await runNearbySearch(nearbyButton.dataset.nearbyCenter);
       return;
     }
 
@@ -705,10 +706,15 @@ function bindMapDemoControls() {
 
   document.addEventListener("click", (event) => {
     const popupRouteButton = event.target.closest(".leaflet-popup-button[data-route-target]");
-    if (!popupRouteButton) {
+    if (popupRouteButton) {
+      void planRoute(popupRouteButton.dataset.routeTarget);
       return;
     }
-    void planRoute(popupRouteButton.dataset.routeTarget);
+
+    const popupNearbyButton = event.target.closest(".leaflet-popup-button[data-nearby-center]");
+    if (popupNearbyButton) {
+      void runNearbySearch(popupNearbyButton.dataset.nearbyCenter);
+    }
   });
 }
 
@@ -748,6 +754,7 @@ function resetInteractionState(options = {}) {
   state.currentResults = [];
   state.currentRoute = null;
   state.focusedNodeId = "";
+  state.nearbyCenterNodeId = "";
   state.currentStartNodeId = state.bootstrap ? state.bootstrap.default_start_node : "";
   state.selectedDiaryId = "";
   resetMapViewState();
@@ -788,6 +795,8 @@ function clearUserInputs() {
 
   setSelectValue("#scenic-category", "");
   setSelectValue("#place-category", "");
+  setSelectValue("#place-center-node", "");
+  setSelectValue("#place-radius", "500");
   setSelectValue("#scenic-sort", "heat");
   setSelectValue("#place-sort", "distance_m");
   setSelectValue("#catering-sort", "distance_m");
@@ -948,6 +957,23 @@ function hydrateBootstrap(bootstrap) {
     })),
   );
   populateSelect(document.querySelector("#place-category"), placeOptions, "");
+  const nearbyCenterOptions = [{ value: "", label: "全校场所" }].concat(
+    bootstrap.route_targets.map((item) => ({
+      value: item.id,
+      label: routeTargetLabel(item),
+    })),
+  );
+  populateSelect(document.querySelector("#place-center-node"), nearbyCenterOptions, "");
+  const nearbyRadiusOptions = (bootstrap.controls.nearby_radius_options || [
+    { value: 200, label: "200 m" },
+    { value: 500, label: "500 m" },
+    { value: 800, label: "800 m" },
+    { value: 1200, label: "1200 m" },
+  ]).map((item) => ({
+    value: String(item.value),
+    label: item.label,
+  }));
+  populateSelect(document.querySelector("#place-radius"), nearbyRadiusOptions, "500");
 
   const sortOptions = bootstrap.controls.sort_options.map((item) => ({
     value: item.value,
@@ -1420,13 +1446,56 @@ function handleScenicPreset(preset) {
 function handlePlacePreset(preset) {
   document.querySelector("#place-keyword").value = preset.keyword || "";
   document.querySelector("#place-category").value = preset.category || "";
-  void runQuery("/api/search/places", {
+  void runQuery("/api/search/places", buildPlaceSearchPayload({
     keyword: preset.keyword || "",
     category: preset.category || "",
-    sort_field: document.querySelector("#place-sort").value,
+  }));
+}
+
+function buildPlaceSearchPayload(overrides = {}) {
+  const centerNodeId = overrides.center_node_id ?? document.querySelector("#place-center-node").value;
+  const radiusM = overrides.radius_m ?? document.querySelector("#place-radius").value;
+  const payload = {
+    keyword: overrides.keyword ?? document.querySelector("#place-keyword").value.trim(),
+    category: overrides.category ?? document.querySelector("#place-category").value,
+    sort_field: "distance_m",
     start_node_id: state.currentStartNodeId,
-    limit: 6,
-  });
+    limit: overrides.limit ?? 6,
+  };
+
+  if (centerNodeId) {
+    payload.center_node_id = centerNodeId;
+    payload.radius_m = Number(radiusM || 500);
+  } else {
+    payload.sort_field = overrides.sort_field ?? document.querySelector("#place-sort").value;
+  }
+
+  return payload;
+}
+
+async function runNearbySearch(centerNodeId, options = {}) {
+  if (!centerNodeId) {
+    setStatus("缺少附近查询中心点。", "error");
+    return;
+  }
+
+  state.nearbyCenterNodeId = centerNodeId;
+  switchTab("place");
+  setSelectValue("#place-center-node", centerNodeId);
+  setSelectValue("#place-radius", String(options.radius_m || document.querySelector("#place-radius").value || 500));
+  document.querySelector("#place-keyword").value = options.keyword || "";
+  document.querySelector("#place-sort").value = "distance_m";
+  if (options.category !== undefined) {
+    setSelectValue("#place-category", options.category);
+  }
+
+  await runQuery("/api/search/places", buildPlaceSearchPayload({
+    center_node_id: centerNodeId,
+    radius_m: options.radius_m,
+    keyword: options.keyword || "",
+    category: options.category ?? document.querySelector("#place-category").value,
+    sort_field: "distance_m",
+  }));
 }
 
 function handleCateringPreset(preset) {
@@ -2103,6 +2172,7 @@ function renderResultCard(item, index, queryType = "") {
 
   const metrics = [
     distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
+    item.nearby_reason ? `<span class="metric-pill">${escapeHtml(item.nearby_reason)}</span>` : "",
     item.category_label ? `<span class="metric-pill">${escapeHtml(item.category_label)}</span>` : "",
     item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}</span>` : "",
     item.destination ? `<span class="metric-pill">目的地 ${escapeHtml(item.destination)}</span>` : "",
@@ -2123,6 +2193,9 @@ function renderResultCard(item, index, queryType = "") {
       : "",
     focusNode
       ? `<button class="ghost-button" type="button" data-focus-node="${escapeHtml(focusNode)}">定位</button>`
+      : "",
+    routeTarget
+      ? `<button class="ghost-button" type="button" data-nearby-center="${escapeHtml(routeTarget)}">查附近设施</button>`
       : "",
     indoorContext
       ? `<button class="ghost-button" type="button" data-enter-indoor="${escapeHtml(indoorContext.buildingId)}" data-indoor-floor="${escapeHtml(indoorContext.floorId || "")}" data-indoor-zone-target="${escapeHtml(indoorContext.targetNodeId)}">进入室内导航</button>`
@@ -3693,6 +3766,9 @@ function bindLeafletFeaturePopup(feature, layer) {
       <span>${escapeHtml(properties.category_label || properties.category || "")}</span><br>
       <button class="route-button leaflet-popup-button" type="button" data-route-target="${escapeHtml(properties.id || "")}">
         从当前起点规划路线
+      </button>
+      <button class="ghost-button leaflet-popup-button" type="button" data-nearby-center="${escapeHtml(properties.id || "")}">
+        查附近设施
       </button>
       ${indoorButton}
     `);

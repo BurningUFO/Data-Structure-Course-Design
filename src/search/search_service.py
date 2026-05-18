@@ -42,6 +42,8 @@ PLACE_CATEGORY_SET = {
     "landmark",
 }
 SUPPORTED_BUSINESS_SORT_FIELDS = {"heat", "rating", "distance_m"}
+DEFAULT_NEARBY_RADIUS_M = 500.0
+MAX_NEARBY_RADIUS_M = 3000.0
 
 
 def get_default_scenic_data_path() -> Path:
@@ -476,6 +478,8 @@ def search_places(
     category: str = "",
     site_id: str | None = None,
     start_node_id: str = "",
+    center_node_id: str = "",
+    radius_m: float | int | str | None = None,
     match_mode: str = "fuzzy",
     sort_field: str = "distance_m",
     sort_order: str = "",
@@ -487,19 +491,31 @@ def search_places(
 ) -> dict[str, Any]:
     """第九周新增：明确的设施/场所查询入口。"""
     normalized_category = canonicalize_category(category)
+    normalized_center_node_id = str(center_node_id or "").strip()
+    nearby_radius_m = (
+        normalize_nearby_radius_m(radius_m)
+        if normalized_center_node_id
+        else None
+    )
+    distance_origin_node_id = normalized_center_node_id or start_node_id
     effective_sort_field = resolve_business_sort_field(
         sort_field,
-        default="distance_m" if start_node_id else "heat",
+        default="distance_m" if distance_origin_node_id else "heat",
     )
+    if normalized_center_node_id:
+        effective_sort_field = "distance_m"
     filters = {
         "keyword": keyword,
         "category": normalized_category,
         "raw_category": category,
         "site_id": site_id or get_default_site_id(),
         "start_node_id": start_node_id,
+        "center_node_id": normalized_center_node_id,
+        "radius_m": nearby_radius_m,
+        "nearby_search": bool(normalized_center_node_id),
         "match_mode": match_mode,
         "sort_field": effective_sort_field,
-        "sort_order": _resolve_sort_order(effective_sort_field, sort_order),
+        "sort_order": "asc" if normalized_center_node_id else _resolve_sort_order(effective_sort_field, sort_order),
         "limit": limit,
         "distance_strategy": distance_strategy,
     }
@@ -516,7 +532,7 @@ def search_places(
             },
         )
 
-    if not keyword and not normalized_category:
+    if not keyword and not normalized_category and not normalized_center_node_id:
         return build_error_response(
             "keyword and category cannot both be empty",
             query_type="place_search",
@@ -530,6 +546,22 @@ def search_places(
 
     source_records = records[:] if records is not None else load_site_records(site_id)
     scoped_records = filter_records_by_categories(source_records, PLACE_CATEGORY_SET)
+
+    if normalized_center_node_id:
+        return search_nearby_places(
+            keyword=keyword,
+            category=normalized_category,
+            center_node_id=normalized_center_node_id,
+            radius_m=nearby_radius_m if nearby_radius_m is not None else DEFAULT_NEARBY_RADIUS_M,
+            match_mode=match_mode,
+            sort_order=filters["sort_order"],
+            limit=limit,
+            records=scoped_records,
+            filters=filters,
+            distance_provider=distance_provider,
+            use_default_distance_provider=use_default_distance_provider,
+            distance_strategy=distance_strategy,
+        )
 
     response = search_and_recommend(
         keyword=keyword,
@@ -556,6 +588,183 @@ def search_places(
             }
         },
     )
+
+
+def search_nearby_places(
+    *,
+    keyword: str,
+    category: str,
+    center_node_id: str,
+    radius_m: float,
+    match_mode: str,
+    sort_order: str,
+    limit: int,
+    records: list[Record],
+    filters: dict[str, Any],
+    distance_provider: DistanceProvider | None,
+    use_default_distance_provider: bool,
+    distance_strategy: str,
+) -> dict[str, Any]:
+    """围绕已选地点执行真实路径距离半径查询。"""
+    center_name = resolve_record_name_by_node_id(records, center_node_id)
+    filtered_records = filter_records(
+        records,
+        keyword=keyword,
+        category=category,
+        match_mode=match_mode,
+    )
+    filtered_records = [
+        record
+        for record in filtered_records
+        if resolve_target_node_id(record) != center_node_id
+    ]
+
+    active_distance_provider = resolve_distance_provider(
+        start_node_id=center_node_id,
+        distance_provider=distance_provider,
+        use_default_distance_provider=use_default_distance_provider,
+    )
+    enriched_records = attach_distance_fields(
+        filtered_records,
+        start_node_id=center_node_id,
+        distance_provider=active_distance_provider,
+        distance_strategy=distance_strategy,
+    )
+    ranged_records = [
+        record
+        for record in enriched_records
+        if is_record_within_nearby_radius(record, radius_m)
+    ]
+    decorated_records = [
+        decorate_nearby_record(
+            record,
+            center_node_id=center_node_id,
+            center_name=center_name,
+            radius_m=radius_m,
+        )
+        for record in ranged_records
+    ]
+    top_records = rank_nearby_records(
+        decorated_records,
+        limit=limit,
+    )
+    metadata = build_response_metadata(
+        records=top_records,
+        sort_field="distance_m",
+        sort_order=sort_order,
+        limit=limit,
+        start_node_id=center_node_id,
+        distance_strategy=distance_strategy,
+        distance_provider_active=active_distance_provider is not None,
+    )
+    metadata["nearby"] = {
+        "enabled": True,
+        "center_node_id": center_node_id,
+        "center_name": center_name,
+        "radius_m": radius_m,
+        "distance_basis": "graph_shortest_path",
+        "candidate_count": len(filtered_records),
+        "within_radius_count": len(ranged_records),
+        "returned_count": len(top_records),
+    }
+
+    response = build_success_response(
+        data=top_records,
+        message=(
+            "nearby place query success"
+            if top_records
+            else "no nearby places within radius"
+        ),
+        query_type="place_search",
+        filters=filters,
+        metadata=metadata,
+    )
+
+    return decorate_business_response(
+        response,
+        query_type="place_search",
+        extra_filters=filters,
+        extra_metadata={
+            "business": {
+                "supported_categories": sorted(PLACE_CATEGORY_SET),
+                "scope": "facility_place",
+                "nearby_scope": "selected_poi_radius",
+            },
+            "nearby": metadata["nearby"],
+        },
+    )
+
+
+def normalize_nearby_radius_m(value: float | int | str | None) -> float:
+    """归一化附近查询半径，避免无效输入破坏旧接口。"""
+    if value in (None, ""):
+        return DEFAULT_NEARBY_RADIUS_M
+
+    try:
+        radius = float(value)
+    except (TypeError, ValueError):
+        return DEFAULT_NEARBY_RADIUS_M
+
+    if math.isinf(radius) or math.isnan(radius) or radius <= 0:
+        return DEFAULT_NEARBY_RADIUS_M
+    return min(radius, MAX_NEARBY_RADIUS_M)
+
+
+def resolve_record_name_by_node_id(records: list[Record], node_id: str) -> str:
+    """从候选记录中解析中心点名称。"""
+    for record in records:
+        if resolve_target_node_id(record) == node_id:
+            return str(record.get("name", node_id)).strip() or node_id
+    return node_id
+
+
+def is_record_within_nearby_radius(record: Record, radius_m: float) -> bool:
+    """附近查询只保留真实路径距离可达且落在半径内的结果。"""
+    if record.get("distance_status") != "available":
+        return False
+    try:
+        distance = float(record.get("distance_m"))
+    except (TypeError, ValueError):
+        return False
+    return distance <= radius_m
+
+
+def decorate_nearby_record(
+    record: Record,
+    *,
+    center_node_id: str,
+    center_name: str,
+    radius_m: float,
+) -> Record:
+    """给附近查询结果补充可解释字段。"""
+    copied = record.copy()
+    distance = float(copied.get("distance_m", 0.0))
+    copied["nearby_center_node_id"] = center_node_id
+    copied["nearby_center_name"] = center_name
+    copied["nearby_radius_m"] = radius_m
+    copied["nearby_distance_m"] = distance
+    copied["nearby_reason"] = (
+        f"距离{center_name} {distance:.1f} m，在 {radius_m:.0f} m 范围内。"
+    )
+    return copied
+
+
+def rank_nearby_records(
+    records: list[Record],
+    *,
+    limit: int,
+) -> list[Record]:
+    """附近查询必须优先按真实路径距离稳定排序。"""
+    ranked = sorted(
+        records,
+        key=lambda record: (
+            float(record.get("distance_m", float("inf"))),
+            -float(record.get("heat", 0) or 0),
+            -float(record.get("rating", 0) or 0),
+            str(record.get("id", "")),
+        ),
+    )
+    return ranked[:limit]
 
 
 def filter_records(

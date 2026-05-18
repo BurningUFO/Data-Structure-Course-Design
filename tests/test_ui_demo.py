@@ -130,6 +130,7 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert any(item["value"] == "building" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["place_categories"])
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 500, 800, 1200]
     assert [item["value"] for item in payload["controls"]["transport_modes"]] == ["walk", "bike", "mixed"]
     assert [item["label"] for item in payload["controls"]["transport_modes"]] == [
         "步行",
@@ -1188,6 +1189,118 @@ def test_demo_place_search_distance_order():
     print("test_demo_place_search_distance_order passed.")
 
 
+def assert_nearby_place_response(response, *, center_node_id, radius_m, category):
+    assert response["success"] is True
+    assert response["query_type"] == "place_search"
+    assert response["filters"]["nearby_search"] is True
+    assert response["filters"]["center_node_id"] == center_node_id
+    assert response["filters"]["radius_m"] == float(radius_m)
+    assert response["metadata"]["nearby"]["center_node_id"] == center_node_id
+    assert response["metadata"]["nearby"]["radius_m"] == float(radius_m)
+    assert response["metadata"]["nearby"]["distance_basis"] == "graph_shortest_path"
+    assert response["results"]
+    distances = [item["distance_m"] for item in response["results"]]
+    assert distances == sorted(distances)
+    assert all(item["distance_status"] == "available" for item in response["results"])
+    assert all(item["distance_m"] <= radius_m for item in response["results"])
+    assert all(item["category"] == category for item in response["results"])
+    assert all(item["nearby_center_node_id"] == center_node_id for item in response["results"])
+    assert all(item["nearby_reason"] for item in response["results"])
+
+
+def test_demo_m22_fixed_nearby_facility_scenarios():
+    service = DemoUIService("PKU")
+
+    library_restrooms = service.place_search(
+        {
+            "keyword": "",
+            "category": "restroom",
+            "center_node_id": "library",
+            "radius_m": 220,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        library_restrooms,
+        center_node_id="library",
+        radius_m=220,
+        category="restroom",
+    )
+    assert library_restrooms["results"][0]["route_target_node_id"] == "lib_toilet_1f"
+
+    teaching_shopping = service.place_search(
+        {
+            "keyword": "",
+            "category": "shopping",
+            "center_node_id": "teaching_building_1",
+            "radius_m": 500,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        teaching_shopping,
+        center_node_id="teaching_building_1",
+        radius_m=500,
+        category="shopping",
+    )
+    assert teaching_shopping["results"][0]["route_target_node_id"] == "poi_osm_shopping_node_13006577029"
+
+    canteen_services = service.place_search(
+        {
+            "keyword": "",
+            "category": "service",
+            "center_node_id": "canteen",
+            "radius_m": 300,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        canteen_services,
+        center_node_id="canteen",
+        radius_m=300,
+        category="service",
+    )
+    assert canteen_services["results"][0]["route_target_node_id"] == "tb2_service_desk"
+
+    small_radius = service.place_search(
+        {
+            "keyword": "",
+            "category": "shopping",
+            "center_node_id": "teaching_building_1",
+            "radius_m": 500,
+            "limit": 20,
+        }
+    )
+    large_radius = service.place_search(
+        {
+            "keyword": "",
+            "category": "shopping",
+            "center_node_id": "teaching_building_1",
+            "radius_m": 700,
+            "limit": 20,
+        }
+    )
+    small_ids = [item["route_target_node_id"] for item in small_radius["results"]]
+    large_ids = [item["route_target_node_id"] for item in large_radius["results"]]
+    assert len(small_ids) < len(large_ids)
+    assert large_ids[: len(small_ids)] == small_ids
+
+    legacy = service.place_search(
+        {
+            "keyword": "便利店",
+            "category": "shopping",
+            "sort_field": "distance_m",
+            "start_node_id": "gate_north",
+            "limit": 3,
+        }
+    )
+    assert legacy["success"] is True
+    assert legacy["filters"]["nearby_search"] is False
+    assert legacy["results"][0]["route_target_node_id"] == "convenience_store"
+    assert "nearby_reason" not in legacy["results"][0]
+    print("test_demo_m22_fixed_nearby_facility_scenarios passed.")
+
+
 def test_demo_main_query_recommend_route_chains_remain_available():
     service = DemoUIService("PKU")
 
@@ -1546,6 +1659,30 @@ def test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly():
     print("test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly passed.")
 
 
+def test_demo_static_m22_nearby_place_search_controls():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert 'id="place-center-node"' in html
+    assert 'id="place-radius"' in html
+    assert "附近中心" in html
+    assert "范围" in html
+    assert "buildPlaceSearchPayload" in script
+    assert "runNearbySearch" in script
+    assert "data-nearby-center" in script
+    assert "center_node_id" in script
+    assert "radius_m" in script
+    assert "nearby_reason" in script
+    assert "查附近设施" in script
+    print("test_demo_static_m22_nearby_place_search_controls passed.")
+
+
 def test_demo_aigc_preview_returns_template_storyboard():
     service = DemoUIService("PKU")
     response = service.aigc_preview(
@@ -1727,6 +1864,7 @@ def run_all_tests():
     test_demo_waypoints_are_not_regular_route_targets_or_search_results()
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()
+    test_demo_m22_fixed_nearby_facility_scenarios()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_diary_management_flow_links_to_route()
@@ -1734,6 +1872,7 @@ def run_all_tests():
     test_demo_static_leaflet_renderer_contains_local_assets_and_fallback()
     test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks()
     test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly()
+    test_demo_static_m22_nearby_place_search_controls()
     test_demo_aigc_preview_returns_template_storyboard()
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()

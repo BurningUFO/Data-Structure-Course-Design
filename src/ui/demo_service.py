@@ -35,7 +35,7 @@ CATEGORY_LABELS = {
     "landmark": "地标",
     "dormitory": "宿舍",
     "catering": "餐饮",
-    "shopping": "购物",
+    "shopping": "便利店 / 购物",
     "sports": "运动",
     "restroom": "洗手间",
     "parking": "停车",
@@ -416,6 +416,12 @@ class DemoUIService:
                     {"value": "heat", "label": "按热度"},
                     {"value": "rating", "label": "按评分"},
                     {"value": "distance_m", "label": "按真实距离"},
+                ],
+                "nearby_radius_options": [
+                    {"value": 200, "label": "200 m"},
+                    {"value": 500, "label": "500 m"},
+                    {"value": 800, "label": "800 m"},
+                    {"value": 1200, "label": "1200 m"},
                 ],
                 "route_strategies": [
                     {"value": "shortest_distance", "label": "最短距离"},
@@ -1285,11 +1291,23 @@ class DemoUIService:
     def place_search(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         request = payload or {}
         start_node_id = self._normalize_start_node(request.get("start_node_id"))
+        center_node_id = normalize_text(request.get("center_node_id"))
+        if center_node_id and center_node_id not in self.graph.nodes:
+            return build_error_response(
+                "center_node_id is not a valid node in current site",
+                query_type="place_search",
+                filters={
+                    "site_id": self.site_id,
+                    "center_node_id": center_node_id,
+                },
+            )
         response = search_places(
             keyword=normalize_text(request.get("keyword")),
             category=normalize_text(request.get("category")),
             site_id=self.site_id,
             start_node_id=start_node_id,
+            center_node_id=center_node_id,
+            radius_m=self._normalize_radius_m(request.get("radius_m")),
             match_mode="fuzzy",
             sort_field=normalize_text(request.get("sort_field")) or "distance_m",
             limit=self._normalize_limit(request.get("limit"), default=6),
@@ -2635,6 +2653,17 @@ class DemoUIService:
         except (TypeError, ValueError):
             return default
         return max(1, min(limit, 20))
+
+    def _normalize_radius_m(self, value: Any, *, default: float = 500.0) -> float:
+        if value in (None, ""):
+            return default
+        try:
+            radius = float(value)
+        except (TypeError, ValueError):
+            return default
+        if radius <= 0:
+            return default
+        return min(radius, 3000.0)
 
     def _normalize_duration(self, value: Any, default: Any = 6) -> int:
         try:

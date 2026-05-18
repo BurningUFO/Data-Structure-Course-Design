@@ -309,6 +309,135 @@ def test_search_places_keyword_only_scope():
     print("test_search_places_keyword_only_scope passed.")
 
 
+def test_search_places_nearby_radius_uses_graph_distance():
+    records = [
+        {
+            "id": "center",
+            "name": "图书馆",
+            "category": "education",
+            "node_id": "library",
+            "heat": 90,
+            "rating": 4.8,
+            "keywords": ["图书馆"],
+            "tags": [],
+            "description": "",
+        },
+        {
+            "id": "near",
+            "name": "近处洗手间",
+            "category": "restroom",
+            "node_id": "near_toilet",
+            "heat": 70,
+            "rating": 4.2,
+            "keywords": ["洗手间"],
+            "tags": [],
+            "description": "",
+        },
+        {
+            "id": "mid",
+            "name": "中距离洗手间",
+            "category": "restroom",
+            "node_id": "mid_toilet",
+            "heat": 90,
+            "rating": 4.7,
+            "keywords": ["洗手间"],
+            "tags": [],
+            "description": "",
+        },
+        {
+            "id": "far",
+            "name": "远处洗手间",
+            "category": "restroom",
+            "node_id": "far_toilet",
+            "heat": 95,
+            "rating": 4.9,
+            "keywords": ["洗手间"],
+            "tags": [],
+            "description": "",
+        },
+    ]
+    graph_distances = {
+        ("library", "near_toilet"): 80,
+        ("library", "mid_toilet"): 210,
+        ("library", "far_toilet"): 450,
+    }
+
+    def provider(start_node_id, target_node_id, strategy):
+        return graph_distances.get((start_node_id, target_node_id), float("inf"))
+
+    response = search_places(
+        keyword="",
+        category="restroom",
+        center_node_id="library",
+        radius_m=250,
+        records=records,
+        distance_provider=provider,
+        use_default_distance_provider=False,
+        limit=10,
+    )
+
+    assert response["success"] is True
+    assert response["query_type"] == "place_search"
+    assert response["filters"]["nearby_search"] is True
+    assert response["filters"]["center_node_id"] == "library"
+    assert response["filters"]["radius_m"] == 250.0
+    assert [item["id"] for item in response["data"]] == ["near", "mid"]
+    assert [item["distance_m"] for item in response["data"]] == [80.0, 210.0]
+    assert all(item["nearby_center_node_id"] == "library" for item in response["data"])
+    assert all(item["nearby_radius_m"] == 250.0 for item in response["data"])
+    assert "图书馆" in response["data"][0]["nearby_reason"]
+    assert response["metadata"]["nearby"]["distance_basis"] == "graph_shortest_path"
+    assert response["metadata"]["nearby"]["within_radius_count"] == 2
+    print("test_search_places_nearby_radius_uses_graph_distance passed.")
+
+
+def test_search_places_legacy_start_node_call_stays_unbounded():
+    records = [
+        {
+            "id": "near",
+            "name": "近处洗手间",
+            "category": "restroom",
+            "node_id": "near_toilet",
+            "heat": 70,
+            "rating": 4.2,
+            "keywords": ["洗手间"],
+            "tags": [],
+            "description": "",
+        },
+        {
+            "id": "far",
+            "name": "远处洗手间",
+            "category": "restroom",
+            "node_id": "far_toilet",
+            "heat": 95,
+            "rating": 4.9,
+            "keywords": ["洗手间"],
+            "tags": [],
+            "description": "",
+        },
+    ]
+
+    def provider(start_node_id, target_node_id, strategy):
+        return {"near_toilet": 80, "far_toilet": 450}[target_node_id]
+
+    response = search_places(
+        keyword="",
+        category="restroom",
+        start_node_id="library",
+        records=records,
+        distance_provider=provider,
+        use_default_distance_provider=False,
+        limit=10,
+    )
+
+    assert response["success"] is True
+    assert response["filters"]["nearby_search"] is False
+    assert response["filters"]["center_node_id"] == ""
+    assert [item["id"] for item in response["data"]] == ["near", "far"]
+    assert not any("nearby_reason" in item for item in response["data"])
+    print("test_search_places_legacy_start_node_call_stays_unbounded passed.")
+
+
 def test_distance_adapter_uses_member_a_router():
     provider = build_distance_provider()
     distance = provider("gate_north", "library", "shortest_distance")
@@ -544,6 +673,8 @@ def run_all_tests():
     test_default_site_data_query_flow()
     test_search_places_distance_sort()
     test_search_places_keyword_only_scope()
+    test_search_places_nearby_radius_uses_graph_distance()
+    test_search_places_legacy_start_node_call_stays_unbounded()
     test_distance_adapter_uses_member_a_router()
     test_search_service_distance_integration()
     test_missing_node_id_distance_status()
