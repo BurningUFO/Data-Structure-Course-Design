@@ -162,16 +162,21 @@ class GraphLoader:
                     indoor_gate_nodes.setdefault(graph_file_id, []).append(node_id)
 
             for edge in data.get("edges", []):
+                edge_data = edge.copy()
+                source = edge_data.pop("from")
+                target = edge_data.pop("to")
+                distance = edge_data.pop("distance")
+                edge_data.setdefault("congestion", 1.0)
+                edge_data.setdefault("ideal_speed", 1.0)
+                edge_data.setdefault("type", "")
+                edge_data.setdefault("vehicle_access", "all")
+                edge_data.setdefault("name", "")
+                edge_data.setdefault("description", "")
                 graph.add_edge(
-                    u=edge["from"],
-                    v=edge["to"],
-                    distance=edge["distance"],
-                    congestion=edge.get("congestion", 1.0),
-                    ideal_speed=edge.get("ideal_speed", 1.0),
-                    type=edge.get("type", ""),
-                    vehicle_access=edge.get("vehicle_access", "all"),
-                    name=edge.get("name", ""),
-                    description=edge.get("description", ""),
+                    u=source,
+                    v=target,
+                    distance=distance,
+                    **edge_data,
                 )
 
         for outdoor_gate_id, indoor_graph_id in outdoor_gate_links:

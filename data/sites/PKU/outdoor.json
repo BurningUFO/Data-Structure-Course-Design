@@ -31671,9 +31671,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_gate_south 至 road_access_poi_osm_shopping_node_4457550089",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.98527,
@@ -31683,7 +31683,17 @@
           "lat": 39.98527,
           "lng": 116.3054565
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_poi_osm_shopping_node_4457550089",
@@ -31692,9 +31702,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_gate_south 至 road_access_poi_osm_shopping_node_4457550089",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.98527,
@@ -31704,7 +31714,17 @@
           "lat": 39.98527,
           "lng": 116.3054565
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_library",
@@ -31713,9 +31733,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_library 至 road_white_endpoint_0268",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9917484,
@@ -31725,7 +31745,17 @@
           "lat": 39.9917798,
           "lng": 116.3047631
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_endpoint_0268",
@@ -31734,9 +31764,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_library 至 road_white_endpoint_0268",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9917798,
@@ -31746,7 +31776,17 @@
           "lat": 39.9917484,
           "lng": 116.3030496
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_parking_lot",
@@ -35367,9 +35407,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_poi_osm_shopping_node_4457550089 至 road_access_poi_osm_shopping_node_4459827994",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.98527,
@@ -35379,7 +35419,17 @@
           "lat": 39.98527,
           "lng": 116.3054565
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_poi_osm_shopping_node_4459827994",
@@ -35388,9 +35438,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_poi_osm_shopping_node_4457550089 至 road_access_poi_osm_shopping_node_4459827994",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.98527,
@@ -35400,7 +35450,17 @@
           "lat": 39.98527,
           "lng": 116.3054565
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_poi_osm_shopping_node_4459827994",
@@ -35409,9 +35469,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_poi_osm_shopping_node_4459827994 至 road_white_endpoint_0003",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.98527,
@@ -35421,7 +35481,17 @@
           "lat": 39.98527,
           "lng": 116.3054565
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_endpoint_0003",
@@ -35430,9 +35500,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_poi_osm_shopping_node_4459827994 至 road_white_endpoint_0003",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.98527,
@@ -35442,7 +35512,17 @@
           "lat": 39.98527,
           "lng": 116.3054565
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_poi_osm_shopping_node_5938457341",
@@ -35819,9 +35899,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_poi_osm_sports_way_240832253 至 road_white_junction_0006",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9862069,
@@ -35831,7 +35911,17 @@
           "lat": 39.9871346,
           "lng": 116.3053328
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0006",
@@ -35840,9 +35930,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_poi_osm_sports_way_240832253 至 road_white_junction_0006",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9871346,
@@ -35852,7 +35942,17 @@
           "lat": 39.9862069,
           "lng": 116.3053832
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_poi_osm_sports_way_33457546",
@@ -35945,9 +36045,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_sports_ground 至 road_white_junction_0212",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9912889,
@@ -35957,7 +36057,17 @@
           "lat": 39.9912889,
           "lng": 116.3047501
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0212",
@@ -35966,9 +36076,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_access_sports_ground 至 road_white_junction_0212",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9912889,
@@ -35978,7 +36088,17 @@
           "lat": 39.9912889,
           "lng": 116.3047501
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_square_center",
@@ -45389,9 +45509,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_endpoint_0003 至 road_access_poi_osm_sports_way_240832253",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.98527,
@@ -45405,7 +45525,17 @@
           "lat": 39.9862069,
           "lng": 116.3053832
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_poi_osm_sports_way_240832253",
@@ -45414,9 +45544,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_endpoint_0003 至 road_access_poi_osm_sports_way_240832253",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9862069,
@@ -45430,7 +45560,17 @@
           "lat": 39.98527,
           "lng": 116.3054565
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_endpoint_0004",
@@ -49359,9 +49499,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_endpoint_0111 至 road_white_junction_0099",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9886173,
@@ -49371,7 +49511,17 @@
           "lat": 39.9889213,
           "lng": 116.3051786
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0099",
@@ -49380,9 +49530,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_endpoint_0111 至 road_white_junction_0099",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9889213,
@@ -49392,7 +49542,17 @@
           "lat": 39.9886173,
           "lng": 116.3052161
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_endpoint_0112",
@@ -51383,9 +51543,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_endpoint_0159 至 road_white_junction_0148",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9896187,
@@ -51395,7 +51555,17 @@
           "lat": 39.9897387,
           "lng": 116.305133
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0148",
@@ -51404,9 +51574,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_endpoint_0159 至 road_white_junction_0148",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9897387,
@@ -51416,7 +51586,17 @@
           "lat": 39.9896187,
           "lng": 116.3051388
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_endpoint_0160",
@@ -58809,9 +58989,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0006 至 road_white_junction_0039",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9871346,
@@ -58821,7 +59001,17 @@
           "lat": 39.9876515,
           "lng": 116.3053048
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0039",
@@ -58830,9 +59020,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0006 至 road_white_junction_0039",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9876515,
@@ -58842,7 +59032,17 @@
           "lat": 39.9871346,
           "lng": 116.3053328
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0007",
@@ -61051,9 +61251,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0039 至 road_white_junction_0054",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9876515,
@@ -61063,7 +61263,17 @@
           "lat": 39.9880915,
           "lng": 116.3052809
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0054",
@@ -61072,9 +61282,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0039 至 road_white_junction_0054",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9880915,
@@ -61084,7 +61294,17 @@
           "lat": 39.9876515,
           "lng": 116.3053048
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0040",
@@ -62143,9 +62363,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0054 至 road_white_endpoint_0111",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9880915,
@@ -62155,7 +62375,17 @@
           "lat": 39.9886173,
           "lng": 116.3052161
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_endpoint_0111",
@@ -62164,9 +62394,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0054 至 road_white_endpoint_0111",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9886173,
@@ -62176,7 +62406,17 @@
           "lat": 39.9880915,
           "lng": 116.3052809
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0055",
@@ -65129,9 +65369,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0099 至 road_white_junction_0123",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9889213,
@@ -65145,7 +65385,17 @@
           "lat": 39.9891805,
           "lng": 116.3051598
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0123",
@@ -65154,9 +65404,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0099 至 road_white_junction_0123",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9891805,
@@ -65170,7 +65420,17 @@
           "lat": 39.9889213,
           "lng": 116.3051786
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0100",
@@ -66993,9 +67253,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0123 至 road_white_junction_0136",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9891805,
@@ -67005,7 +67265,17 @@
           "lat": 39.9893971,
           "lng": 116.3051494
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0136",
@@ -67014,9 +67284,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0123 至 road_white_junction_0136",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9893971,
@@ -67026,7 +67296,17 @@
           "lat": 39.9891805,
           "lng": 116.3051598
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0125",
@@ -67917,9 +68197,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0136 至 road_white_endpoint_0159",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9893971,
@@ -67929,7 +68209,17 @@
           "lat": 39.9896187,
           "lng": 116.3051388
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_endpoint_0159",
@@ -67938,9 +68228,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0136 至 road_white_endpoint_0159",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9896187,
@@ -67950,7 +68240,17 @@
           "lat": 39.9893971,
           "lng": 116.3051494
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0137",
@@ -68757,9 +69057,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0148 至 road_white_junction_0166",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9897387,
@@ -68769,7 +69069,17 @@
           "lat": 39.9902074,
           "lng": 116.3051105
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0166",
@@ -68778,9 +69088,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0148 至 road_white_junction_0166",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9902074,
@@ -68790,7 +69100,17 @@
           "lat": 39.9897387,
           "lng": 116.305133
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0149",
@@ -70101,9 +70421,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0166 至 road_white_junction_0181",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9902074,
@@ -70113,7 +70433,17 @@
           "lat": 39.990637,
           "lng": 116.3050748
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0181",
@@ -70122,9 +70452,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0166 至 road_white_junction_0181",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.990637,
@@ -70134,7 +70464,17 @@
           "lat": 39.9902074,
           "lng": 116.3051105
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0167",
@@ -71419,9 +71759,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0181 至 road_white_junction_0202",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.990637,
@@ -71431,7 +71771,17 @@
           "lat": 39.9910584,
           "lng": 116.3050398
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0202",
@@ -71440,9 +71790,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0181 至 road_white_junction_0202",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9910584,
@@ -71452,7 +71802,17 @@
           "lat": 39.990637,
           "lng": 116.3050748
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0182",
@@ -73871,9 +74231,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0212 至 road_white_junction_0202",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9912889,
@@ -73883,7 +74243,17 @@
           "lat": 39.9910584,
           "lng": 116.3050398
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0202",
@@ -73892,9 +74262,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0212 至 road_white_junction_0202",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9910584,
@@ -73904,7 +74274,17 @@
           "lat": 39.9912889,
           "lng": 116.3047501
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0212",
@@ -73913,9 +74293,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0212 至 road_white_junction_0214",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9912889,
@@ -73925,7 +74305,17 @@
           "lat": 39.9913185,
           "lng": 116.3047882
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0214",
@@ -73934,9 +74324,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0212 至 road_white_junction_0214",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9913185,
@@ -73946,7 +74336,17 @@
           "lat": 39.9912889,
           "lng": 116.3047501
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0213",
@@ -74089,9 +74489,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0214 至 road_white_junction_0216",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9913182,
@@ -74101,7 +74501,17 @@
           "lat": 39.9915773,
           "lng": 116.3047743
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0216",
@@ -74110,9 +74520,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0214 至 road_white_junction_0216",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9915773,
@@ -74122,7 +74532,17 @@
           "lat": 39.9913182,
           "lng": 116.3047886
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0216",
@@ -74173,9 +74593,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0216 至 road_white_endpoint_0268",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9915773,
@@ -74185,7 +74605,17 @@
           "lat": 39.9917798,
           "lng": 116.3047631
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_endpoint_0268",
@@ -74194,9 +74624,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "white_road",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "白线道路 road_white_junction_0216 至 road_white_endpoint_0268",
-      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。",
+      "description": "由本地 OSM 白线道路 LineString 相邻节点切片生成。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9917798,
@@ -74206,7 +74636,17 @@
           "lat": 39.9915773,
           "lng": 116.3047743
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_white_junction_0217",
@@ -81875,9 +82315,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "poi_access",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "五四体育场接驳短边",
-      "description": "POI 只通过本短边连接到自己的 road_access 接驳点。",
+      "description": "POI 只通过本短边连接到自己的 road_access 接驳点。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9912889,
@@ -81887,7 +82327,17 @@
           "lat": 39.9912889,
           "lng": 116.3047501
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "road_access_sports_ground",
@@ -81896,9 +82346,9 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "poi_access",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "name": "五四体育场接驳短边",
-      "description": "POI 只通过本短边连接到自己的 road_access 接驳点。",
+      "description": "POI 只通过本短边连接到自己的 road_access 接驳点。 M21 walk/bike shared campus corridor for fixed defense scenarios.",
       "geometry": [
         {
           "lat": 39.9912889,
@@ -81908,7 +82358,17 @@
           "lat": 39.9912889,
           "lng": 116.3047501
         }
-      ]
+      ],
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.8
+      },
+      "transport_semantics": "shared_walk_bike",
+      "m21_demo_role": "shared_walk_bike_corridor"
     },
     {
       "from": "square_center",
@@ -86193,6 +86653,262 @@
           "lng": 116.3109864
         }
       ]
+    },
+    {
+      "from": "gate_south",
+      "to": "road_access_gate_south",
+      "distance": 240.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m21_demo_role": "bike_detour_access_south_gate",
+      "source": "m21_transport_demo",
+      "name": "M21 ????? gate_south ? road_access_gate_south",
+      "description": "M21 ?????????????????????????????/??????????????????",
+      "geometry": [
+        {
+          "lat": 39.98527,
+          "lng": 116.3054565
+        },
+        {
+          "lat": 39.98527,
+          "lng": 116.3054565
+        }
+      ],
+      "source_osm_id": "",
+      "source_highway": ""
+    },
+    {
+      "from": "road_access_gate_south",
+      "to": "gate_south",
+      "distance": 240.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m21_demo_role": "bike_detour_access_south_gate",
+      "source": "m21_transport_demo",
+      "name": "M21 ????? road_access_gate_south ? gate_south",
+      "description": "M21 ?????????????????????????????/??????????????????",
+      "geometry": [
+        {
+          "lat": 39.98527,
+          "lng": 116.3054565
+        },
+        {
+          "lat": 39.98527,
+          "lng": 116.3054565
+        }
+      ],
+      "source_osm_id": "",
+      "source_highway": ""
+    },
+    {
+      "from": "gate_east",
+      "to": "road_access_gate_east",
+      "distance": 180.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m21_demo_role": "bike_detour_access_east_gate",
+      "source": "m21_transport_demo",
+      "name": "M21 ????? gate_east ? road_access_gate_east",
+      "description": "M21 ?????????????????????????????/??????????????????",
+      "geometry": [
+        {
+          "lat": 39.992919,
+          "lng": 116.3095453
+        },
+        {
+          "lat": 39.9928933,
+          "lng": 116.3089311
+        }
+      ],
+      "source_osm_id": "",
+      "source_highway": ""
+    },
+    {
+      "from": "road_access_gate_east",
+      "to": "gate_east",
+      "distance": 180.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m21_demo_role": "bike_detour_access_east_gate",
+      "source": "m21_transport_demo",
+      "name": "M21 ????? road_access_gate_east ? gate_east",
+      "description": "M21 ?????????????????????????????/??????????????????",
+      "geometry": [
+        {
+          "lat": 39.9928933,
+          "lng": 116.3089311
+        },
+        {
+          "lat": 39.992919,
+          "lng": 116.3095453
+        }
+      ],
+      "source_osm_id": "",
+      "source_highway": ""
+    },
+    {
+      "from": "road_access_gate_east",
+      "to": "road_access_parking_lot",
+      "distance": 220.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m21_demo_role": "bike_detour_parking_connector",
+      "source": "m21_transport_demo",
+      "name": "M21 ????? road_access_gate_east ? road_access_parking_lot",
+      "description": "M21 ?????????????????????????????/??????????????????",
+      "geometry": [
+        {
+          "lat": 39.9928933,
+          "lng": 116.3089311
+        },
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        }
+      ],
+      "source_osm_id": "",
+      "source_highway": ""
+    },
+    {
+      "from": "road_access_parking_lot",
+      "to": "road_access_gate_east",
+      "distance": 220.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m21_demo_role": "bike_detour_parking_connector",
+      "source": "m21_transport_demo",
+      "name": "M21 ????? road_access_parking_lot ? road_access_gate_east",
+      "description": "M21 ?????????????????????????????/??????????????????",
+      "geometry": [
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        },
+        {
+          "lat": 39.9928933,
+          "lng": 116.3089311
+        }
+      ],
+      "source_osm_id": "",
+      "source_highway": ""
+    },
+    {
+      "from": "road_access_parking_lot",
+      "to": "parking_lot",
+      "distance": 90.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m21_demo_role": "bike_detour_parking_access",
+      "source": "m21_transport_demo",
+      "name": "M21 ????? road_access_parking_lot ? parking_lot",
+      "description": "M21 ?????????????????????????????/??????????????????",
+      "geometry": [
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        },
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        }
+      ],
+      "source_osm_id": "",
+      "source_highway": ""
+    },
+    {
+      "from": "parking_lot",
+      "to": "road_access_parking_lot",
+      "distance": 90.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m21_demo_role": "bike_detour_parking_access",
+      "source": "m21_transport_demo",
+      "name": "M21 ????? parking_lot ? road_access_parking_lot",
+      "description": "M21 ?????????????????????????????/??????????????????",
+      "geometry": [
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        },
+        {
+          "lat": 39.9928559,
+          "lng": 116.3089338
+        }
+      ],
+      "source_osm_id": "",
+      "source_highway": ""
     }
   ]
 }

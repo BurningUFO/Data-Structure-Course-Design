@@ -794,7 +794,7 @@ function clearUserInputs() {
   setSelectValue("#route-target", "library");
   setMultipleSelectValues("#multi-route-targets", []);
   setSelectValue("#route-strategy", "shortest_distance");
-  setSelectValue("#route-transport", "any");
+  setSelectValue("#route-transport", "mixed");
   setSelectValue("#global-start-node", state.currentStartNodeId);
   fillAigcFormFromSample(defaultAigcSampleId());
   clearDiaryManagementForm();
@@ -930,7 +930,7 @@ function hydrateBootstrap(bootstrap) {
       value: item.value,
       label: item.label,
     })),
-    "any",
+    "mixed",
   );
 
   const scenicOptions = [{ value: "", label: "不限类别" }].concat(
@@ -1857,8 +1857,8 @@ async function runMapDemoAction(action) {
     const scenario = DEMO_ROUTE_SCENARIOS.single;
     applyDemoStartNode(scenario.start_node_id);
     setSelectValue("#route-target", scenario.target_node_id);
-    setSelectValue("#route-strategy", "shortest_distance");
-    setSelectValue("#route-transport", "any");
+    setSelectValue("#route-strategy", "shortest_time");
+    setSelectValue("#route-transport", "mixed");
     switchTab("route");
     await planRoute(scenario.target_node_id);
     return;
@@ -1867,8 +1867,8 @@ async function runMapDemoAction(action) {
   if (action === "multi-route") {
     const scenario = DEMO_ROUTE_SCENARIOS.multi;
     applyDemoStartNode(scenario.start_node_id);
-    setSelectValue("#route-strategy", "shortest_distance");
-    setSelectValue("#route-transport", "any");
+    setSelectValue("#route-strategy", "shortest_time");
+    setSelectValue("#route-transport", "mixed");
     setMultipleSelectValues("#multi-route-targets", scenario.target_node_ids);
     const returnToStart = document.querySelector("#multi-route-return");
     if (returnToStart) {

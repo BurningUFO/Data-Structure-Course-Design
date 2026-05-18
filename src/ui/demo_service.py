@@ -48,6 +48,13 @@ CATEGORY_LABELS = {
     "road": "道路",
 }
 
+TRANSPORT_MODE_LABELS = {
+    None: "兼容模式",
+    "walk": "步行",
+    "bike": "自行车",
+    "mixed": "步行 + 自行车最短时间",
+}
+
 START_NODE_PRIORITY = {
     "gate_north": 0,
     "gate_east": 1,
@@ -415,8 +422,9 @@ class DemoUIService:
                     {"value": "shortest_time", "label": "最短时间"},
                 ],
                 "transport_modes": [
-                    {"value": "any", "label": "不限交通方式"},
-                    {"value": "walk", "label": "步行优先"},
+                    {"value": "walk", "label": "步行"},
+                    {"value": "bike", "label": "自行车"},
+                    {"value": "mixed", "label": "步行 + 自行车最短时间"},
                 ],
                 "aigc_styles": self._build_aigc_style_options(),
             },
@@ -508,6 +516,10 @@ class DemoUIService:
                         "name": edge["name"],
                         "edge_type": edge["type"],
                         "distance_m": edge["distance_m"],
+                        "vehicle_access": edge.get("vehicle_access", "all"),
+                        "allowed_transports": edge.get("allowed_transports", []),
+                        "transport_semantics": edge.get("transport_semantics", ""),
+                        "m21_demo_role": edge.get("m21_demo_role", ""),
                         "geometry_source": geometry_source,
                         "geometry_confidence": edge.get("geometry_confidence"),
                         "osm_way_ids": edge.get("osm_way_ids", []),
@@ -1401,7 +1413,7 @@ class DemoUIService:
             "distance_text": self.format_distance(decorated.get("total_distance_m")),
             "time_text": self.format_duration(decorated.get("estimated_time_s")),
             "layer_text": " -> ".join(decorated.get("layer_sequence", [])) or "outdoor",
-            "transport_text": "步行优先" if transport_mode == "walk" else "不限交通方式",
+            "transport_text": self._transport_mode_label(transport_mode),
             "strategy_text": "最短时间" if strategy == "shortest_time" else "最短距离",
         }
         return decorated
@@ -1445,7 +1457,7 @@ class DemoUIService:
             "target_count": len(decorated.get("target_node_ids", [])),
             "leg_count": len(decorated.get("leg_results", [])),
             "return_to_start_text": "返回起点" if return_to_start else "不返回起点",
-            "transport_text": "步行优先" if transport_mode == "walk" else "不限交通方式",
+            "transport_text": self._transport_mode_label(transport_mode),
             "strategy_text": "最短时间" if strategy == "shortest_time" else "最短距离",
         }
         return decorated
@@ -2136,6 +2148,10 @@ class DemoUIService:
                 "name": normalize_text(edge.get("name")),
                 "type": normalize_text(edge.get("type")) or "outdoor_road",
                 "distance_m": float(edge.get("distance", 0)),
+                "vehicle_access": normalize_text(edge.get("vehicle_access")) or "all",
+                "allowed_transports": self._normalize_transport_list(edge.get("allowed_transports")),
+                "transport_semantics": normalize_text(edge.get("transport_semantics")),
+                "m21_demo_role": normalize_text(edge.get("m21_demo_role")),
                 **self._resolve_edge_source_metadata(edge, source, target),
             }
             osm_match, reversed_match = self._resolve_osm_edge_match(source, target)
@@ -2636,10 +2652,46 @@ class DemoUIService:
             return "shortest_time"
         return "shortest_distance"
 
+    @staticmethod
+    def _normalize_transport_list(value: Any) -> list[str]:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [normalize_text(value).casefold()] if normalize_text(value) else []
+        if isinstance(value, (list, tuple, set)):
+            result = []
+            for item in value:
+                normalized = normalize_text(item).casefold()
+                if normalized:
+                    result.append(normalized)
+            return result
+        return []
+
+    @staticmethod
+    def _transport_mode_label(value: str | None) -> str:
+        return TRANSPORT_MODE_LABELS.get(value, value or TRANSPORT_MODE_LABELS[None])
+
     def _normalize_transport_mode(self, value: Any) -> str | None:
         normalized = normalize_text(value).casefold()
         if normalized in {"", "any", "all", "none", "不限交通方式"}:
             return None
+        aliases = {
+            "pedestrian": "walk",
+            "foot": "walk",
+            "步行": "walk",
+            "bicycle": "bike",
+            "cycling": "bike",
+            "自行车": "bike",
+            "walk+bike": "mixed",
+            "walk-bike": "mixed",
+            "walk_bike": "mixed",
+            "步行+自行车": "mixed",
+            "步行 + 自行车": "mixed",
+            "混合交通": "mixed",
+        }
+        normalized = aliases.get(normalized, normalized)
+        if normalized in {"walk", "bike", "mixed"}:
+            return normalized
         return normalized
 
     def _normalize_target_node_ids(self, value: Any) -> list[str]:

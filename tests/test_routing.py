@@ -519,6 +519,136 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(car_to_library["message"], "无法从起点到达终点。")
         self.assertEqual(car_to_parking["message"], "无法从起点到达终点。")
 
+    def test_m21_pku_walk_bike_and_mixed_time_scenarios(self):
+        router = Router(GraphLoader.load_site_graph("PKU"))
+
+        walk_better = router.query_routing(
+            "gate_east",
+            "parking_lot",
+            strategy="shortest_time",
+            transport_mode="walk",
+            site_id="PKU",
+        )
+        bike_detour = router.query_routing(
+            "gate_east",
+            "parking_lot",
+            strategy="shortest_time",
+            transport_mode="bike",
+            site_id="PKU",
+        )
+        self.assertTrue(walk_better["success"])
+        self.assertTrue(bike_detour["success"])
+        self.assertLess(walk_better["total_weight"], bike_detour["total_weight"])
+        self.assertEqual(
+            {step["transport_mode_used"] for step in walk_better["path_steps"]},
+            {"walk"},
+        )
+        self.assertEqual(
+            {step["transport_mode_used"] for step in bike_detour["path_steps"]},
+            {"bike"},
+        )
+
+        walk_sports = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="walk",
+            site_id="PKU",
+        )
+        bike_sports = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="bike",
+            site_id="PKU",
+        )
+        mixed_sports = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="mixed",
+            site_id="PKU",
+        )
+        self.assertTrue(walk_sports["success"])
+        self.assertTrue(bike_sports["success"])
+        self.assertTrue(mixed_sports["success"])
+        self.assertLess(bike_sports["total_weight"], walk_sports["total_weight"])
+        self.assertLess(mixed_sports["total_weight"], bike_sports["total_weight"])
+        mixed_modes = [step["transport_mode_used"] for step in mixed_sports["path_steps"]]
+        self.assertIn("walk", mixed_modes)
+        self.assertIn("bike", mixed_modes)
+        self.assertEqual(mixed_modes[0], "walk")
+
+    def test_m21_pku_mixed_keeps_indoor_segments_walk_only(self):
+        router = Router(GraphLoader.load_site_graph("PKU"))
+
+        outdoor_to_indoor = router.query_routing(
+            "gate_south",
+            "lib_reading_room_1",
+            strategy="shortest_time",
+            transport_mode="mixed",
+            site_id="PKU",
+        )
+        pure_indoor = router.query_routing(
+            "library",
+            "lib_reading_room_1",
+            strategy="shortest_time",
+            transport_mode="mixed",
+            site_id="PKU",
+        )
+        bike_indoor = router.query_routing(
+            "library",
+            "lib_reading_room_1",
+            strategy="shortest_time",
+            transport_mode="bike",
+            site_id="PKU",
+        )
+
+        self.assertTrue(outdoor_to_indoor["success"])
+        self.assertIn("bike", [step["transport_mode_used"] for step in outdoor_to_indoor["path_steps"]])
+        indoor_steps = [
+            step for step in outdoor_to_indoor["path_steps"]
+            if step["edge_type"] in {"gate_link", "indoor_path", "stairs", "elevator"}
+        ]
+        self.assertTrue(indoor_steps)
+        self.assertEqual({step["transport_mode_used"] for step in indoor_steps}, {"walk"})
+
+        self.assertTrue(pure_indoor["success"])
+        self.assertEqual(pure_indoor["path"], ["library", "lib_entrance", "lib_reading_room_1"])
+        self.assertEqual(
+            {step["transport_mode_used"] for step in pure_indoor["path_steps"]},
+            {"walk"},
+        )
+
+        self.assertFalse(bike_indoor["success"])
+        self.assertEqual(bike_indoor["message"], "无法从起点到达终点。")
+
+    def test_m21_pku_outdoor_data_declares_walk_bike_edge_semantics(self):
+        outdoor_path = Path(__file__).resolve().parents[1] / "data" / "sites" / "PKU" / "outdoor.json"
+        with outdoor_path.open("r", encoding="utf-8") as f:
+            outdoor = json.load(f)
+
+        edges = outdoor["edges"]
+        pedestrian_edges = [
+            edge for edge in edges
+            if edge.get("vehicle_access") == "pedestrian_only"
+        ]
+        shared_edges = [
+            edge for edge in edges
+            if set(edge.get("allowed_transports", [])) == {"walk", "bike"}
+            and edge.get("transport_semantics") == "shared_walk_bike"
+        ]
+        bike_only_edges = [
+            edge for edge in edges
+            if edge.get("allowed_transports") == ["bike"]
+            and edge.get("source") == "m21_transport_demo"
+        ]
+
+        self.assertGreater(len(pedestrian_edges), 0)
+        self.assertGreaterEqual(len(shared_edges), 40)
+        self.assertEqual(len(bike_only_edges), 8)
+        self.assertTrue(any(edge["type"] == "bike_lane" for edge in bike_only_edges))
+
     def test_standard_site_multi_target_uses_white_road_graph(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
         route = router.query_multi_target(

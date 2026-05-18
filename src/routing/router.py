@@ -4,6 +4,24 @@ class Router:
     """
     路径规划核心类，基于 Dijkstra 算法实现。
     """
+    WALK_MODES = {"walk", "pedestrian", "foot"}
+    BIKE_MODES = {"bike", "bicycle", "cycling"}
+    MIXED_MODES = {"mixed", "walk_bike", "walk+bike", "walk-bike"}
+    TRANSPORT_ALIASES = {
+        "pedestrian": "walk",
+        "foot": "walk",
+        "步行": "walk",
+        "bicycle": "bike",
+        "cycling": "bike",
+        "自行车": "bike",
+        "walk+bike": "mixed",
+        "walk-bike": "mixed",
+        "walk_bike": "mixed",
+        "步行+自行车": "mixed",
+        "步行 + 自行车": "mixed",
+        "混合交通": "mixed",
+    }
+
     def __init__(self, graph):
         self.graph = graph
 
@@ -46,6 +64,11 @@ class Router:
 
         return True, normalized_site_id
 
+    def _canonical_transport_mode(self, value):
+        """将交通方式别名折叠成路由内部的稳定字段。"""
+        normalized = str(value).strip().casefold()
+        return self.TRANSPORT_ALIASES.get(normalized, normalized)
+
     def _normalize_transport_modes(self, value):
         """
         将边上的交通方式配置统一转成小写列表，便于做兼容判断。
@@ -54,18 +77,70 @@ class Router:
             return []
 
         if isinstance(value, str):
-            return [value.strip().casefold()] if value.strip() else []
+            normalized = self._canonical_transport_mode(value)
+            return [normalized] if normalized else []
 
         result = []
         for item in value:
             if item is None:
                 continue
-            normalized = str(item).strip().casefold()
+            normalized = self._canonical_transport_mode(item)
             if normalized:
                 result.append(normalized)
         return result
 
-    def _is_edge_allowed(self, edge, transport_mode):
+    def _is_walk_mode(self, transport_mode):
+        return self._canonical_transport_mode(transport_mode) == "walk"
+
+    def _is_bike_mode(self, transport_mode):
+        return self._canonical_transport_mode(transport_mode) == "bike"
+
+    def _is_mixed_mode(self, transport_mode):
+        return self._canonical_transport_mode(transport_mode) == "mixed"
+
+    def _is_indoor_or_gate_edge(self, edge, from_node_id=None):
+        edge_type = str(edge.get("type", "")).strip().casefold()
+        if edge_type == "gate_link":
+            return True
+
+        for node_id in (from_node_id, edge.get("to")):
+            if node_id is None:
+                continue
+            if self._resolve_node_layer(node_id).startswith("indoor_"):
+                return True
+        return False
+
+    def _edge_configured_transport_modes(self, edge):
+        allowed_modes = edge.get("allowed_transports")
+        if allowed_modes is None:
+            allowed_modes = edge.get("transport_modes")
+        if allowed_modes is None:
+            allowed_modes = edge.get("transport_mode")
+        return set(self._normalize_transport_modes(allowed_modes))
+
+    def _default_edge_transport_modes(self, edge, from_node_id=None):
+        if self._is_indoor_or_gate_edge(edge, from_node_id):
+            return {"walk"}
+
+        vehicle_access = str(edge.get("vehicle_access", "")).strip().casefold()
+        if vehicle_access == "pedestrian_only":
+            return {"walk"}
+        if vehicle_access == "vehicle_only":
+            return {"bike", "car"}
+        return {"walk", "bike", "car"}
+
+    def _supported_edge_transport_modes(self, edge, from_node_id=None):
+        modes = self._edge_configured_transport_modes(edge)
+        if not modes:
+            modes = self._default_edge_transport_modes(edge, from_node_id)
+
+        if self._is_indoor_or_gate_edge(edge, from_node_id):
+            modes = modes & {"walk"}
+
+        blocked_modes = set(self._normalize_transport_modes(edge.get("blocked_transports")))
+        return modes - blocked_modes
+
+    def _is_edge_allowed(self, edge, transport_mode, from_node_id=None):
         """
         根据边上声明的交通方式限制判断当前边是否可通行。
 
@@ -77,53 +152,108 @@ class Router:
         if transport_mode is None:
             return True
 
-        normalized_mode = str(transport_mode).strip().casefold()
+        normalized_mode = self._canonical_transport_mode(transport_mode)
         if not normalized_mode or normalized_mode == "any":
             return True
 
-        vehicle_access = str(edge.get("vehicle_access", "")).strip().casefold()
-        if vehicle_access == "pedestrian_only" and normalized_mode not in {"walk", "pedestrian", "foot"}:
-            return False
-        if vehicle_access == "vehicle_only" and normalized_mode in {"walk", "pedestrian", "foot"}:
-            return False
+        supported_modes = self._supported_edge_transport_modes(edge, from_node_id)
+        if normalized_mode == "mixed":
+            return bool(supported_modes & {"walk", "bike"})
 
-        blocked_modes = self._normalize_transport_modes(edge.get("blocked_transports"))
-        if normalized_mode in blocked_modes:
-            return False
+        return normalized_mode in supported_modes
 
-        allowed_modes = edge.get("allowed_transports")
-        if allowed_modes is None:
-            allowed_modes = edge.get("transport_modes")
-        if allowed_modes is None:
-            allowed_modes = edge.get("transport_mode")
+    def _resolve_transport_value(self, edge, field_names, mode):
+        for field_name in field_names:
+            value = edge.get(field_name)
+            if not isinstance(value, dict):
+                continue
+            candidates = [
+                mode,
+                "pedestrian" if mode == "walk" else mode,
+                "bicycle" if mode == "bike" else mode,
+            ]
+            for candidate in candidates:
+                if candidate in value:
+                    return value[candidate]
+        return None
 
-        normalized_allowed = self._normalize_transport_modes(allowed_modes)
-        if not normalized_allowed:
-            return True
+    def _get_transport_speed(self, edge, mode=None):
+        value = None
+        if mode:
+            value = self._resolve_transport_value(
+                edge,
+                ("transport_speeds", "ideal_speeds", "speed_by_transport"),
+                mode,
+            )
+        if value is None:
+            value = edge.get("ideal_speed", 1.0)
+        return float(value)
 
-        return normalized_mode in normalized_allowed
+    def _get_transport_congestion(self, edge, mode=None):
+        value = None
+        if mode:
+            value = self._resolve_transport_value(
+                edge,
+                ("transport_congestion", "congestion_by_transport"),
+                mode,
+            )
+        if value is None:
+            value = edge.get("congestion", 1.0)
+        return float(value)
 
-    def _get_travel_time_seconds(self, edge):
+    def _select_edge_transport_mode(self, edge, transport_mode=None, from_node_id=None):
+        normalized_mode = None
+        if transport_mode is not None:
+            normalized_mode = self._canonical_transport_mode(transport_mode)
+
+        if not normalized_mode or normalized_mode == "any":
+            return None
+
+        supported_modes = self._supported_edge_transport_modes(edge, from_node_id)
+        if normalized_mode != "mixed":
+            return normalized_mode if normalized_mode in supported_modes else None
+
+        candidates = [mode for mode in ("bike", "walk") if mode in supported_modes]
+        best_mode = None
+        best_time = float("inf")
+        distance = float(edge.get("distance", float("inf")))
+        for mode in candidates:
+            speed = self._get_transport_speed(edge, mode)
+            congestion = self._get_transport_congestion(edge, mode)
+            if speed <= 0 or congestion <= 0:
+                continue
+            travel_time = distance / (speed * congestion)
+            if travel_time < best_time:
+                best_time = travel_time
+                best_mode = mode
+        return best_mode
+
+    def _get_travel_time_seconds(self, edge, transport_mode=None, from_node_id=None):
         """按秒计算边的预计通行时间。"""
+        selected_mode = self._select_edge_transport_mode(edge, transport_mode, from_node_id)
+        if transport_mode is not None and selected_mode is None:
+            return float('inf')
+
         distance = edge.get("distance", float('inf'))
-        speed = edge.get("ideal_speed", 1.0)
-        congestion = edge.get("congestion", 1.0)
+        speed = self._get_transport_speed(edge, selected_mode)
+        congestion = self._get_transport_congestion(edge, selected_mode)
 
         if speed <= 0 or congestion <= 0:
             return float('inf')
 
         return distance / (speed * congestion)
 
-    def _summarize_path_metrics(self, path_edges):
+    def _summarize_path_metrics(self, path, path_edges, transport_mode=None):
         """
         统计一条路径的总距离和总时间。
         """
         total_distance_m = 0.0
         total_time_s = 0.0
 
-        for edge in path_edges:
+        for index, edge in enumerate(path_edges):
+            from_node_id = path[index] if index < len(path) else None
             total_distance_m += float(edge.get("distance", 0))
-            edge_time = self._get_travel_time_seconds(edge)
+            edge_time = self._get_travel_time_seconds(edge, transport_mode, from_node_id)
             if edge_time == float('inf'):
                 total_time_s = None
             elif total_time_s is not None:
@@ -191,7 +321,7 @@ class Router:
         name = str(node_data.get("name", "")).strip()
         return name or str(node_id)
 
-    def _build_path_steps(self, path, path_edges):
+    def _build_path_steps(self, path, path_edges, transport_mode=None):
         """
         为业务层构造逐边的路径明细，便于展示“经过了哪条路、进了哪一层”。
         """
@@ -211,7 +341,12 @@ class Router:
             is_cross_layer = self._is_cross_layer_transition(start_node_id, end_node_id)
             edge_type = str(edge.get("type", "")).strip()
             edge_name = str(edge.get("name", "")).strip()
-            edge_time = self._get_travel_time_seconds(edge)
+            edge_time = self._get_travel_time_seconds(edge, transport_mode, start_node_id)
+            selected_transport_mode = self._select_edge_transport_mode(
+                edge,
+                transport_mode,
+                start_node_id,
+            )
 
             steps.append(
                 {
@@ -234,6 +369,10 @@ class Router:
                     "distance_m": float(edge.get("distance", 0)),
                     "estimated_time_s": None if edge_time == float('inf') else edge_time,
                     "vehicle_access": str(edge.get("vehicle_access", "all")).strip() or "all",
+                    "allowed_transports": sorted(
+                        self._supported_edge_transport_modes(edge, start_node_id)
+                    ),
+                    "transport_mode_used": selected_transport_mode,
                     "is_cross_floor_transition": bool(
                         start_floor_id and end_floor_id and start_floor_id != end_floor_id
                     ),
@@ -386,7 +525,7 @@ class Router:
             "transport_mode": transport_mode,
         }
 
-    def _get_weight(self, edge, strategy):
+    def _get_weight(self, edge, strategy, transport_mode=None, from_node_id=None):
         """
         根据当前策略计算边的权重。
         """
@@ -394,7 +533,7 @@ class Router:
             return edge.get("distance", float('inf'))
         elif strategy == "shortest_time":
             # 时间单位：秒 (distance: 米, ideal_speed: 米/秒)
-            return self._get_travel_time_seconds(edge)
+            return self._get_travel_time_seconds(edge, transport_mode, from_node_id)
         else:
             raise ValueError(f"Unknown routing strategy: {strategy}")
 
@@ -448,11 +587,11 @@ class Router:
 
             # 遍历相邻节点
             for edge in self.graph.adj.get(current_node, []):
-                if not self._is_edge_allowed(edge, transport_mode):
+                if not self._is_edge_allowed(edge, transport_mode, current_node):
                     continue
 
                 neighbor = edge["to"]
-                weight = self._get_weight(edge, strategy)
+                weight = self._get_weight(edge, strategy, transport_mode, current_node)
                 
                 new_weight = current_weight + weight
                 
@@ -480,10 +619,14 @@ class Router:
         path.reverse()
         path_edges.reverse()
 
-        total_distance_m, estimated_time_s = self._summarize_path_metrics(path_edges)
+        total_distance_m, estimated_time_s = self._summarize_path_metrics(
+            path,
+            path_edges,
+            transport_mode,
+        )
         total_weight = distances[target_node_id]
         weight_unit = "meter" if strategy == "shortest_distance" else "second"
-        path_steps = self._build_path_steps(path, path_edges)
+        path_steps = self._build_path_steps(path, path_edges, transport_mode)
         segments = self._build_segments(path, path_steps)
         route_overview = self._build_route_overview(path, path_steps, segments, strategy, transport_mode)
 

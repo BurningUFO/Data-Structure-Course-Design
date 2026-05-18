@@ -189,7 +189,12 @@ def test_current_scale_snapshot_for_m14_white_road_audit_tracking():
     assert len(edges) >= 38
     assert len(outdoor_edges) > 0
     assert all(edge.get("geometry") for edge in outdoor_edges)
-    assert {edge.get("type") for edge in outdoor_edges} <= {"white_road", "poi_access"}
+    assert {edge.get("type") for edge in outdoor_edges} <= {"white_road", "poi_access", "bike_lane"}
+    assert all(
+        edge.get("source") == "m21_transport_demo"
+        for edge in outdoor_edges
+        if edge.get("type") == "bike_lane"
+    )
     assert len(white_road_nodes) >= 600
     assert len(poi_access_nodes) >= 90
     assert role_counts["junction"] >= 200

@@ -130,6 +130,12 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert any(item["value"] == "building" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["place_categories"])
+    assert [item["value"] for item in payload["controls"]["transport_modes"]] == ["walk", "bike", "mixed"]
+    assert [item["label"] for item in payload["controls"]["transport_modes"]] == [
+        "步行",
+        "自行车",
+        "步行 + 自行车最短时间",
+    ]
     library_target = next(item for item in payload["route_targets"] if item["id"] == "library")
     room_target = next(item for item in payload["route_targets"] if item["id"] == "lib_reading_room_1")
     dorm_target = next(item for item in payload["route_targets"] if item["id"] == "dorm1_room_101")
@@ -332,7 +338,16 @@ def test_demo_white_road_skeleton_audit_matches_m14_edges():
     assert audit["summary"]["old_road_node_count_removed"] >= 0
     assert audit["summary"]["poi_node_count"] >= CORE_PKU_POI_COUNT + ENRICHED_NEW_POI_MIN
     assert audit["summary"]["generated_node_count_total"] == len(outdoor["nodes"])
-    assert audit["summary"]["outdoor_edge_count"] == len(outdoor["edges"]) > 0
+    m14_edges = [
+        edge for edge in outdoor["edges"]
+        if edge.get("source") != "m21_transport_demo"
+    ]
+    m21_edges = [
+        edge for edge in outdoor["edges"]
+        if edge.get("source") == "m21_transport_demo"
+    ]
+    assert audit["summary"]["outdoor_edge_count"] == len(m14_edges) > 0
+    assert len(m21_edges) == 8
     assert audit["summary"]["white_road_edge_count"] > 0
     assert audit["summary"]["poi_access_edge_count"] == len(access_node_ids) * 2
     assert audit["summary"]["geometry_edge_count"] == audit["summary"]["outdoor_edge_count"]
@@ -384,6 +399,10 @@ def test_demo_white_road_skeleton_audit_matches_m14_edges():
         assert projection["needs_review"] is False
         assert projection["projection_distance_m"] <= audit["rules"]["access_review_distance_m"]
     for edge in outdoor["edges"]:
+        if edge.get("source") == "m21_transport_demo":
+            assert edge["type"] == "bike_lane"
+            assert edge.get("allowed_transports") == ["bike"]
+            continue
         assert edge["type"] in {"white_road", "poi_access"}
         assert edge["geometry"]
         for point in edge["geometry"]:
@@ -689,7 +708,11 @@ def test_demo_white_road_skeleton_quality_and_geojson_coordinate_order():
     for edge in outdoor_data["edges"]:
         assert edge["from"] in node_index
         assert edge["to"] in node_index
-        assert edge["type"] in {"white_road", "poi_access"}
+        assert edge["type"] in {"white_road", "poi_access", "bike_lane"}
+        if edge["type"] == "bike_lane":
+            assert edge.get("source") == "m21_transport_demo"
+            assert edge.get("allowed_transports") == ["bike"]
+            continue
         assert len(edge["geometry"]) >= 2
 
     payload = service.get_map_geojson_payload()
@@ -1598,6 +1621,64 @@ def test_demo_route_overlay_contains_indoor_note():
     print("test_demo_route_overlay_contains_indoor_note passed.")
 
 
+def test_demo_m21_mixed_transport_single_and_multi_routes():
+    service = DemoUIService("PKU")
+
+    walk_response = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "sports_ground",
+            "strategy": "shortest_time",
+            "transport_mode": "walk",
+        }
+    )
+    bike_response = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "sports_ground",
+            "strategy": "shortest_time",
+            "transport_mode": "bike",
+        }
+    )
+    mixed_response = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "sports_ground",
+            "strategy": "shortest_time",
+            "transport_mode": "mixed",
+        }
+    )
+
+    assert walk_response["success"] is True
+    assert bike_response["success"] is True
+    assert mixed_response["success"] is True
+    assert bike_response["total_weight"] < walk_response["total_weight"]
+    assert mixed_response["total_weight"] < bike_response["total_weight"]
+    assert mixed_response["summary"]["transport_text"] == "步行 + 自行车最短时间"
+    assert mixed_response["summary"]["strategy_text"] == "最短时间"
+    assert mixed_response["ui"]["route_geometry_stats"]["fallback_edge_count"] == 0
+    mixed_modes = {step["transport_mode_used"] for step in mixed_response["path_steps"]}
+    assert {"walk", "bike"}.issubset(mixed_modes)
+
+    multi_response = service.plan_multi_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_ids": ["sports_ground", "library"],
+            "strategy": "shortest_time",
+            "transport_mode": "mixed",
+            "return_to_start": False,
+        }
+    )
+
+    assert multi_response["success"] is True
+    assert multi_response["route_type"] == "multi_target"
+    assert multi_response["summary"]["transport_text"] == "步行 + 自行车最短时间"
+    assert multi_response["summary"]["strategy_text"] == "最短时间"
+    assert multi_response["visit_order"][0] == "gate_south"
+    assert multi_response["ui"]["route_geometry_stats"]["fallback_edge_count"] == 0
+    print("test_demo_m21_mixed_transport_single_and_multi_routes passed.")
+
+
 def test_demo_multi_route_contains_visit_order_and_legs():
     service = DemoUIService("PKU")
     response = service.plan_multi_route(
@@ -1657,6 +1738,7 @@ def run_all_tests():
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()
     test_demo_route_overlay_contains_indoor_note()
+    test_demo_m21_mixed_transport_single_and_multi_routes()
     test_demo_multi_route_contains_visit_order_and_legs()
     print("All UI demo service tests passed.")
 
