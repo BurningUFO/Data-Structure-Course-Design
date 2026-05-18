@@ -28,6 +28,7 @@ from src.routing.router import Router
 from src.search.search_service import (
     PLACE_CATEGORY_SET,
     get_default_site_id,
+    get_site_graph_paths,
     load_global_sites,
     load_site_records,
     search_and_recommend,
@@ -1287,6 +1288,7 @@ class DemoUIService:
         sites = []
         for site in load_global_sites():
             site_id = normalize_text(site.get("id"))
+            has_graph_data = bool(get_site_graph_paths(site_id))
             sites.append(
                 {
                     "id": site_id,
@@ -1294,6 +1296,8 @@ class DemoUIService:
                     "description": normalize_text(site.get("description")),
                     "location": normalize_text(site.get("location")),
                     "is_current": site_id == self.site_id,
+                    "is_available": has_graph_data,
+                    "data_status": "available" if has_graph_data else "scaffold_only",
                     "sub_graphs": site.get("sub_graphs", []),
                 }
             )

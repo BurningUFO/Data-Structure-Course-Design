@@ -936,7 +936,10 @@ function hydrateBootstrap(bootstrap) {
     document.querySelector("#site-selector"),
     bootstrap.sites.map((item) => ({
       value: item.id,
-      label: `${item.name} · ${item.location || item.id}`,
+      label: `${item.name} · ${item.location || item.id}${
+        item.is_available === false ? " · 待接入" : ""
+      }`,
+      disabled: item.is_available === false && item.id !== bootstrap.site.id,
     })),
     bootstrap.site.id,
   );
@@ -4535,8 +4538,11 @@ function getNodeName(nodeId) {
 function populateSelect(selectElement, options, selectedValue) {
   selectElement.innerHTML = options
     .map(
-      (option) =>
-        `<option value="${escapeHtml(option.value)}"${option.value === selectedValue ? " selected" : ""}>${escapeHtml(option.label)}</option>`,
+      (option) => {
+        const selected = option.value === selectedValue ? " selected" : "";
+        const disabled = option.disabled ? " disabled" : "";
+        return `<option value="${escapeHtml(option.value)}"${selected}${disabled}>${escapeHtml(option.label)}</option>`;
+      },
     )
     .join("");
 }

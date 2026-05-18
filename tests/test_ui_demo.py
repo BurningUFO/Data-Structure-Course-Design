@@ -64,6 +64,11 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["product"]["stage"] == "正式产品演示版"
     assert payload["sites"][0]["id"] == "PKU"
     assert payload["sites"][0]["is_current"] is True
+    site_options = {item["id"]: item for item in payload["sites"]}
+    assert site_options["PKU"]["is_available"] is True
+    assert site_options["PKU"]["data_status"] == "available"
+    assert site_options["THU"]["is_available"] is False
+    assert site_options["THU"]["data_status"] == "scaffold_only"
     assert payload["site"]["name"] == "北京大学"
     assert payload["default_start_node"] == "gate_north"
     assert payload["map"]["node_count"] >= 1000
