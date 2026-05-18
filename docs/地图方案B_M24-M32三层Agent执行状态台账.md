@@ -12,19 +12,19 @@
 ## 全局摘要
 
 - `top_manager_status`: `in_progress`
-- `current_manager`: `L2-02`
-- `last_completed_manager`: `L2-01`
+- `current_manager`: `L2-03`
+- `last_completed_manager`: `L2-02`
 - `next_manager`: `L2-03`
 - `last_commit`: `fef62cc`
-- `last_verification`: `py -m pytest -q`，152 passed
-- `last_update_note`: `M27X NJU 室外主链路完成`
+- `last_verification`: `py -m pytest -q`，152 passed；M27Y HTTP smoke 覆盖 THU/WHU/XMU/ZJU/NJU 与 PKU 切回
+- `last_update_note`: `M27Y 首批 5 校室外统一回归完成，L2-02 completed`
 
 ## 二级经理状态总表
 
 | Manager ID | 经理文档 | 状态 | 子任务完成数 | 最后 commit | 备注 |
 | --- | --- | --- | --- | --- | --- |
 | L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `completed` | `8/8` | `6eb6a48` | M24A-M25D 已完成 |
-| L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `in_progress` | `9/10` | `fef62cc` | 试点校 + 首批 5 校室外 |
+| L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `completed` | `10/10` | `fef62cc` | 试点校 + 首批 5 校室外；M27Y 无实现变更 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室外 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `pending` | `0/6` | `none` | 首批 5 校室内 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室内 |
@@ -36,10 +36,10 @@
 ## 一级总管执行记录
 
 - `status`: `in_progress`
-- `completed_managers`: `L2-01`
-- `current_action`: `调用 L2-02`
-- `next_action`: `等待 L2-02 完成后复核`
-- `notes`: `L2-01 已完成一级总管复核，开始调度 L2-02。`
+- `completed_managers`: `L2-01,L2-02`
+- `current_action`: `L2-02 已完成，等待一级总管复核并调度 L2-03`
+- `next_action`: `调用 L2-03`
+- `notes`: `L2-02 已完成 10/10；THU、WHU、XMU、ZJU、NJU 室外主链路与 PKU 切回均通过。`
 
 ## L2-01 基线模板经理子任务
 
@@ -63,7 +63,7 @@
 - [x] `M27X XMU`
 - [x] `M27X ZJU`
 - [x] `M27X NJU`
-- [ ] `M27Y`
+- [x] `M27Y`
 
 ## L2-03 全量室外扩展经理子任务
 
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-18 21:02] manager=L2-02 child=M27Y status=completed commit=none verify=`py -m pytest -q` 152 passed; HTTP smoke passed for THU/WHU/XMU/ZJU/NJU and PKU switch-back note=首批 5 校室外统一回归通过，覆盖站点切换、bootstrap、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线、多目标路线和数据隔离；M27Y 无实现变更
 - [2026-05-18 20:53] manager=L2-02 child=M27X NJU status=completed commit=fef62cc verify=`py -m pytest -q` 152 passed note=新增 NJU `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、查询推荐和单/多目标路线回归
 - [2026-05-18 20:30] manager=L2-02 child=M27X ZJU status=completed commit=962c14b verify=`py -m pytest -q` 150 passed note=新增 ZJU `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、查询推荐和单/多目标路线回归
 - [2026-05-18 20:17] manager=L2-02 child=M27X XMU status=completed commit=7241280 verify=`py -m pytest -q` 148 passed note=新增 XMU `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、查询推荐和单/多目标路线回归
