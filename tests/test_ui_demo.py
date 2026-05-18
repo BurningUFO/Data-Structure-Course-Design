@@ -77,6 +77,8 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert site_options["ZJU"]["data_status"] == "available"
     assert site_options["FDU"]["is_available"] is True
     assert site_options["FDU"]["data_status"] == "available"
+    assert site_options["SJTU"]["is_available"] is True
+    assert site_options["SJTU"]["data_status"] == "available"
     assert payload["site"]["name"] == "北京大学"
     assert payload["default_start_node"] == "gate_north"
     assert payload["map"]["node_count"] >= 1000
@@ -1112,6 +1114,172 @@ def test_m28x_fdu_frontend_switch_contract_and_leaflet_data():
     lng, lat = node_features[0]["geometry"]["coordinates"]
     assert 121.49 < lng < 121.51
     assert 31.29 < lat < 31.31
+
+
+def test_m28x_sjtu_outdoor_main_chain_is_available_in_remaining_batch():
+    service = DemoUIService("SJTU")
+    payload = service.get_bootstrap_payload()
+    site_options = {item["id"]: item for item in payload["sites"]}
+    outdoor = json.loads(Path("data/sites/SJTU/outdoor.json").read_text(encoding="utf-8"))
+    node_ids = {node["id"] for node in outdoor["nodes"]}
+    categories = {node["category"] for node in outdoor["nodes"]}
+
+    assert getattr(service.graph, "site_id", "") == "SJTU"
+    assert {"gate_west", "library", "canteen"} <= set(service.graph.nodes)
+    assert outdoor["metadata"]["stage"] == "M28X"
+    assert outdoor["metadata"]["site_id"] == "SJTU"
+    assert outdoor["metadata"]["scaffold"] is False
+    assert outdoor["metadata"]["batch"] == "remaining_15_outdoor"
+    assert outdoor["metadata"]["ready_for_m28_regression"] is True
+    assert {
+        "gate_west",
+        "gate_south",
+        "gate_east",
+        "gate_north",
+        "library",
+        "teaching_building",
+        "dormitory_1",
+        "canteen",
+        "service_center",
+        "restroom_main",
+    } <= node_ids
+    assert {
+        "entrance",
+        "education",
+        "dormitory",
+        "catering",
+        "service",
+        "shopping",
+        "restroom",
+    } <= categories
+    assert payload["site"]["id"] == "SJTU"
+    assert payload["site"]["name"] == "上海交通大学"
+    assert payload["site"]["is_available"] is True
+    assert payload["site"]["data_status"] == "available"
+    assert site_options["SJTU"]["is_available"] is True
+    assert site_options["SJTU"]["data_status"] == "available"
+    assert payload["default_start_node"] == "gate_north"
+    assert payload["stats"]["record_count"] >= 20
+    assert payload["stats"]["route_target_count"] >= 20
+    assert payload["map"]["node_count"] >= 30
+    assert payload["map"]["edge_count"] > 0
+    assert "library" in {item["id"] for item in payload["route_targets"]}
+    assert "canteen" in {item["id"] for item in payload["route_targets"]}
+
+    scenic = service.scenic_search(
+        {
+            "keyword": "图书馆",
+            "category": "education",
+            "sort_field": "heat",
+            "start_node_id": "gate_west",
+            "limit": 3,
+        }
+    )
+    assert scenic["success"] is True
+    assert scenic["results"][0]["route_target_node_id"] == "library"
+    assert scenic["results"][0]["distance_status"] == "available"
+
+    place = service.place_search(
+        {
+            "category": "restroom",
+            "sort_field": "distance_m",
+            "start_node_id": "gate_west",
+            "limit": 3,
+        }
+    )
+    assert place["success"] is True
+    assert place["results"][0]["route_target_node_id"] in {"restroom_main", "restroom_teaching"}
+    assert place["results"][0]["distance_status"] == "available"
+
+    shopping = service.place_search(
+        {
+            "keyword": "便利",
+            "category": "shopping",
+            "sort_field": "distance_m",
+            "start_node_id": "gate_west",
+            "limit": 3,
+        }
+    )
+    assert shopping["success"] is True
+    assert shopping["results"][0]["route_target_node_id"] == "convenience_store"
+    assert shopping["results"][0]["distance_status"] == "available"
+
+    catering = service.catering_search(
+        {
+            "keyword": "食堂",
+            "sort_field": "distance_m",
+            "start_node_id": "gate_west",
+            "limit": 3,
+        }
+    )
+    assert catering["success"] is True
+    assert catering["results"][0]["route_target_node_id"] == "canteen"
+    assert catering["results"][0]["distance_status"] == "available"
+
+    route = service.plan_route(
+        {
+            "start_node_id": "gate_west",
+            "target_node_id": scenic["results"][0]["route_target_node_id"],
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+    assert route["success"] is True
+    assert route["site_id"] == "SJTU"
+    assert route["target_node_id"] == "library"
+    assert route["total_distance_m"] > 0
+
+    multi_route = service.plan_multi_route(
+        {
+            "start_node_id": "gate_west",
+            "target_node_ids": ["library", "canteen"],
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+            "return_to_start": False,
+        }
+    )
+    assert multi_route["success"] is True
+    assert multi_route["site_id"] == "SJTU"
+    assert multi_route["route_type"] == "multi_target"
+    assert multi_route["target_node_ids"] == ["library", "canteen"]
+
+
+def test_m28x_sjtu_frontend_switch_contract_and_leaflet_data():
+    service = DemoUIService("SJTU")
+    bootstrap = service.get_bootstrap_payload()
+    site_options = {item["id"]: item for item in bootstrap["sites"]}
+    geojson_payload = service.get_map_geojson_payload()
+
+    assert bootstrap["site"]["id"] == "SJTU"
+    assert bootstrap["site"]["is_available"] is True
+    assert bootstrap["site"]["data_status"] == "available"
+    assert site_options["SJTU"]["is_available"] is True
+    assert site_options["SJTU"]["data_status"] == "available"
+    assert bootstrap["map_renderer"] == "leaflet_geo"
+    assert bootstrap["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
+    assert geojson_payload["success"] is True
+    assert geojson_payload["site_id"] == "SJTU"
+    assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
+    assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
+    assert geojson_payload["stats"]["feature_count"] > 0
+    assert geojson_payload["stats"]["geometry_edge_count"] == 0
+    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+
+    node_features = [
+        feature
+        for feature in geojson_payload["geojson"]["features"]
+        if feature["properties"]["kind"] == "node"
+    ]
+    edge_features = [
+        feature
+        for feature in geojson_payload["geojson"]["features"]
+        if feature["properties"]["kind"] == "edge"
+    ]
+    assert {feature["properties"]["id"] for feature in node_features} >= {"gate_north", "library", "canteen"}
+    assert edge_features
+    lng, lat = node_features[0]["geometry"]["coordinates"]
+    assert 121.42 < lng < 121.45
+    assert 31.01 < lat < 31.04
 
 
 def test_demo_osm_edge_matches_file_records_m14_white_road_edges():
