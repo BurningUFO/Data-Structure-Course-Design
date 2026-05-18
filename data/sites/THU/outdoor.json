@@ -15,7 +15,10 @@
       "place_search",
       "catering_recommend",
       "single_route",
-      "multi_route"
+      "multi_route",
+      "indoor_navigation",
+      "indoor_floorplan",
+      "indoor_route_view_switch"
     ],
     "core_poi_categories": [
       "entrance",
@@ -35,8 +38,21 @@
     ],
     "needs_review": [
       "Road geometries still use endpoint fallback lines until a later offline OSM geometry stage.",
-      "No indoor graph is declared in M27X."
-    ]
+      "No indoor graph is declared in M27X.",
+      "M29X THU 室内图复用 PKU 模板，后续阶段可替换为真实楼内结构。"
+    ],
+    "indoor_stage": "M29X",
+    "indoor_site_id": "THU",
+    "indoor_template_source": "PKU",
+    "indoor_supported_building_count": 5,
+    "indoor_supported_buildings": [
+      "library",
+      "teaching_building",
+      "dormitory_1",
+      "canteen",
+      "main_building"
+    ],
+    "ready_for_first_batch_indoor_regression": true
   },
   "nodes": [
     {
@@ -148,8 +164,8 @@
       "id": "library",
       "name": "清华大学图书馆",
       "type": "building",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_LIB",
       "tags": ["图书馆", "学习", "自习", "阅览"],
       "keywords": ["清华大学图书馆", "图书馆", "逸夫馆", "自习"],
       "description": "清华大学图书馆区域，M26A 作为学习类核心 POI。",
@@ -163,7 +179,10 @@
       "location": {
         "lat": 40.01065,
         "lng": 116.331
-      }
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_LIB",
+      "indoor_entry_node_id": "library"
     },
     {
       "id": "auditorium",
@@ -190,8 +209,8 @@
       "id": "teaching_building",
       "name": "第三教室楼",
       "type": "building",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_TB1",
       "tags": ["教学楼", "教室", "上课", "三教"],
       "keywords": ["第三教室楼", "三教", "教学楼", "教室"],
       "description": "第三教室楼是 M26A 室外骨架中的教学区核心 POI。",
@@ -205,14 +224,17 @@
       "location": {
         "lat": 40.00848,
         "lng": 116.33535
-      }
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_TB1",
+      "indoor_entry_node_id": "teaching_building"
     },
     {
       "id": "main_building",
       "name": "中央主楼",
       "type": "building",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_MAIN_BUILDING",
       "tags": ["主楼", "行政", "教学科研", "地标"],
       "keywords": ["中央主楼", "清华主楼", "主楼"],
       "description": "中央主楼位于清华校园东侧主轴，是教学科研和地标类核心 POI。",
@@ -226,14 +248,17 @@
       "location": {
         "lat": 40.0074263,
         "lng": 116.3391018
-      }
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_MAIN_BUILDING",
+      "indoor_entry_node_id": "main_building"
     },
     {
       "id": "canteen",
       "name": "桃李园",
       "type": "facility",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_CANTEEN_TAOLI",
       "tags": ["食堂", "餐饮", "美食", "桃李园"],
       "keywords": ["桃李园", "清华食堂", "餐饮", "食堂"],
       "description": "桃李园是紫荆学生区附近的餐饮核心 POI。",
@@ -247,14 +272,17 @@
       "location": {
         "lat": 40.0166197,
         "lng": 116.3326885
-      }
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CANTEEN_TAOLI",
+      "indoor_entry_node_id": "canteen"
     },
     {
       "id": "dormitory_1",
       "name": "紫荆学生公寓",
       "type": "dormitory",
-      "is_gate": false,
-      "sub_graph_id": null,
+      "is_gate": true,
+      "sub_graph_id": "indoor_DORM1",
       "tags": ["宿舍", "紫荆", "住宿", "生活区"],
       "keywords": ["紫荆学生公寓", "紫荆公寓", "宿舍", "学生区"],
       "description": "紫荆学生公寓区域，M26A 作为宿舍生活类核心 POI。",
@@ -268,7 +296,10 @@
       "location": {
         "lat": 40.0165,
         "lng": 116.3354
-      }
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_DORM1",
+      "indoor_entry_node_id": "dormitory_1"
     },
     {
       "id": "sports_ground",

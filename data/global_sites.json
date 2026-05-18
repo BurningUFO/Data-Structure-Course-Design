@@ -32,12 +32,17 @@
     {
       "id": "THU",
       "name": "清华大学",
-      "description": "清华大学首批室外批次校园，已完成站点切换、Leaflet GeoJSON、综合查询、场所查询、美食推荐和路径规划接入。",
+      "description": "清华大学首批室外与 M29X 室内模板校园，已完成站点切换、Leaflet GeoJSON、查询推荐、路径规划和代表性建筑室内导航接入。",
       "location": "北京市海淀区清华园",
       "is_available": true,
       "data_status": "available",
       "sub_graphs": [
-        "outdoor"
+        "outdoor",
+        "indoor_LIB",
+        "indoor_TB1",
+        "indoor_DORM1",
+        "indoor_CANTEEN_TAOLI",
+        "indoor_MAIN_BUILDING"
       ]
     },
     {
