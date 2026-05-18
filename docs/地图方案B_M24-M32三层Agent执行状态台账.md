@@ -12,12 +12,12 @@
 ## 全局摘要
 
 - `top_manager_status`: `in_progress`
-- `current_manager`: `L2-04`
+- `current_manager`: `L2-05`
 - `last_completed_manager`: `L2-04`
-- `next_manager`: `L2-05`
-- `last_commit`: `40fe989`
-- `last_verification`: `py -m pytest -q`，188 passed；L2-04 M29Y 首批 5 校室内回归通过，暂存区为空
-- `last_update_note`: `L2-04 首批 5 校室内扩展完成`
+- `next_manager`: `L2-06`
+- `last_commit`: `80b291b`
+- `last_verification`: `py -m pytest -q`，188 passed；一级总管复核 L2-04 completed/6-6，暂存区为空
+- `last_update_note`: `准备进入 L2-05 剩余 15 校室内扩展阶段`
 
 ## 二级经理状态总表
 
@@ -36,10 +36,10 @@
 ## 一级总管执行记录
 
 - `status`: `in_progress`
-- `completed_managers`: `L2-01,L2-02,L2-03`
-- `current_action`: `L2-04 已完成，等待一级总管复核`
-- `next_action`: `一级总管复核后调用 L2-05`
-- `notes`: `L2-03 已完成一级总管复核；THU、WHU、XMU、ZJU、NJU、FDU、SJTU、TONGJI、SEU、SYSU、SCU、HNU、SDU、HUST、SCUT、OUC、SUDA、HIT、YNU、HZAU 室外主链路与站点隔离均通过。`
+- `completed_managers`: `L2-01,L2-02,L2-03,L2-04`
+- `current_action`: `调用 L2-05`
+- `next_action`: `等待 L2-05 完成后复核`
+- `notes`: `L2-04 已完成一级总管复核；首批 THU、WHU、XMU、ZJU、NJU 室内模板、楼层切换、室内外路线视图切换与回归均通过。`
 
 ## L2-01 基线模板经理子任务
 
