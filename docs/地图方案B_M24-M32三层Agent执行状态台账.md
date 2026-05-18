@@ -13,11 +13,11 @@
 
 - `top_manager_status`: `in_progress`
 - `current_manager`: `L2-04`
-- `last_completed_manager`: `L2-03`
+- `last_completed_manager`: `L2-04`
 - `next_manager`: `L2-05`
-- `last_commit`: `ee177cb`
-- `last_verification`: `py -m pytest -q`，187 passed；L2-04 M29X NJU 经理层复核通过，暂存区为空
-- `last_update_note`: `完成 M29X NJU，继续 M29Y 首批室内回归`
+- `last_commit`: `40fe989`
+- `last_verification`: `py -m pytest -q`，188 passed；L2-04 M29Y 首批 5 校室内回归通过，暂存区为空
+- `last_update_note`: `L2-04 首批 5 校室内扩展完成`
 
 ## 二级经理状态总表
 
@@ -26,7 +26,7 @@
 | L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `completed` | `8/8` | `6eb6a48` | M24A-M25D 已完成 |
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `completed` | `10/10` | `fef62cc` | 试点校 + 首批 5 校室外；M27Y 无实现变更 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
-| L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `in_progress` | `5/6` | `ee177cb` | 首批 5 校室内 |
+| L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室内 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校交通方式 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
@@ -37,8 +37,8 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03`
-- `current_action`: `调用 L2-04`
-- `next_action`: `等待 L2-04 完成后复核`
+- `current_action`: `L2-04 已完成，等待一级总管复核`
+- `next_action`: `一级总管复核后调用 L2-05`
 - `notes`: `L2-03 已完成一级总管复核；THU、WHU、XMU、ZJU、NJU、FDU、SJTU、TONGJI、SEU、SYSU、SCU、HNU、SDU、HUST、SCUT、OUC、SUDA、HIT、YNU、HZAU 室外主链路与站点隔离均通过。`
 
 ## L2-01 基线模板经理子任务
@@ -91,7 +91,7 @@
 - [x] `M29X XMU`
 - [x] `M29X ZJU`
 - [x] `M29X NJU`
-- [ ] `M29Y`
+- [x] `M29Y`
 
 ## L2-05 全量室内扩展经理子任务
 
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 06:19] manager=L2-04 child=M29Y status=completed commit=40fe989 verify=`py -m pytest -q` 188 passed; tertiary execution reported `py -3 -m pytest tests/test_ui_demo.py -k m29y -q` 1 passed and `py -3 -m pytest` 188 passed note=新增首批 5 校室内统一回归测试，覆盖 THU/WHU/XMU/ZJU/NJU 建筑入口、楼层切换、室内路线、室内外路线视图切换与室外主链路保持；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；L2-04 标记 completed 6/6
 - [2026-05-19 06:05] manager=L2-04 child=M29X NJU status=completed commit=ee177cb verify=`py -m pytest -q` 187 passed; tertiary execution reported NJU focused UI demo checks passed note=新增 NJU 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼、宿舍、九食堂和体育馆；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；保持 PKU/SVG/Leaflet 契约不回退
 - [2026-05-19 05:41] manager=L2-04 child=M29X ZJU status=completed commit=8c36681 verify=`py -m pytest -q` 186 passed; tertiary execution reported ZJU bootstrap, Leaflet GeoJSON, indoor map, route and multi-route smoke passed note=新增 ZJU 5 个代表性建筑室内模板与入口映射，覆盖图书信息中心、东教学楼、丹青学园、临湖餐厅和紫金港体育馆；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；保持 PKU/SVG/Leaflet 契约不回退
 - [2026-05-19 05:11] manager=L2-04 child=M29X XMU status=completed commit=15641c8 verify=`py -m pytest -q` 185 passed; tertiary execution reported XMU bootstrap, Leaflet GeoJSON, indoor map, route and multi-route smoke passed note=新增 XMU 5 个代表性建筑室内模板与入口映射，覆盖图书馆、南强二教学楼、芙蓉学生公寓、芙蓉餐厅和上弦场；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；保持 PKU/SVG/Leaflet 契约不回退
