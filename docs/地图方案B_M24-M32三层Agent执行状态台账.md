@@ -13,11 +13,11 @@
 
 - `top_manager_status`: `in_progress`
 - `current_manager`: `L2-03`
-- `last_completed_manager`: `L2-02`
+- `last_completed_manager`: `L2-03`
 - `next_manager`: `L2-04`
 - `last_commit`: `fed3f4e`
-- `last_verification`: `py -m pytest -q`，182 passed；M28X HZAU 三级执行完成并由 L2-03 经理复核，覆盖 HZAU bootstrap、Leaflet GeoJSON、综合查询、场所查询、美食推荐、兴趣推荐、单目标路线、多目标路线和 PKU 稳定契约
-- `last_update_note`: `已完成 M28X HZAU，下一步执行 M28Y 20 校室外总回归`
+- `last_verification`: `py -m pytest -q`，182 passed；M28Y 20 校室外总回归通过，覆盖 global_sites 切换、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线、多目标路线和站点隔离
+- `last_update_note`: `L2-03 已完成 16/16，等待一级总管复核并进入 L2-04`
 
 ## 二级经理状态总表
 
@@ -25,7 +25,7 @@
 | --- | --- | --- | --- | --- | --- |
 | L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `completed` | `8/8` | `6eb6a48` | M24A-M25D 已完成 |
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `completed` | `10/10` | `fef62cc` | 试点校 + 首批 5 校室外；M27Y 无实现变更 |
-| L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `in_progress` | `15/16` | `fed3f4e` | FDU、SJTU、TONGJI、SEU、SYSU、SCU、HNU、SDU、HUST、SCUT、OUC、SUDA、HIT、YNU、HZAU 室外已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核，剩余 M28Y |
+| L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `pending` | `0/6` | `none` | 首批 5 校室内 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室内 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校交通方式 |
@@ -36,10 +36,10 @@
 ## 一级总管执行记录
 
 - `status`: `in_progress`
-- `completed_managers`: `L2-01,L2-02`
-- `current_action`: `调用 L2-03`
-- `next_action`: `等待 L2-03 完成后复核`
-- `notes`: `L2-02 已完成一级总管复核；THU、WHU、XMU、ZJU、NJU 室外主链路与 PKU 切回均通过。`
+- `completed_managers`: `L2-01,L2-02,L2-03`
+- `current_action`: `L2-03 已完成，等待一级总管复核`
+- `next_action`: `一级总管复核 L2-03 后调用 L2-04`
+- `notes`: `L2-03 已完成剩余 15 校室外接入与 20 校室外总回归；THU、WHU、XMU、ZJU、NJU、FDU、SJTU、TONGJI、SEU、SYSU、SCU、HNU、SDU、HUST、SCUT、OUC、SUDA、HIT、YNU、HZAU 室外主链路与站点隔离均通过。`
 
 ## L2-01 基线模板经理子任务
 
@@ -82,7 +82,7 @@
 - [x] `M28X HIT`
 - [x] `M28X YNU`
 - [x] `M28X HZAU`
-- [ ] `M28Y`
+- [x] `M28Y`
 
 ## L2-04 首批室内经理子任务
 
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 03:04] manager=L2-03 child=M28Y status=completed commit=none verify=`py -m pytest -q` 182 passed; 20-site service/API matrix passed for THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU bootstrap, Leaflet GeoJSON, scenic/place/catering, route, multi-route and site isolation note=20 校室外总回归通过，未产生实现变更；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal/codex exec、Start-Process 或任何新 agent；未调用 OSMnx、Overpass 或 web search；L2-03 标记 completed 16/16
 - [2026-05-19 02:53] manager=L2-03 child=M28X HZAU status=completed commit=fed3f4e verify=`py -m pytest -q` 182 passed; HTTP smoke passed in tertiary execution for HZAU health, HZAU bootstrap, HZAU Leaflet GeoJSON, HZAU scenic/place/catering, HZAU route and HZAU multi-route note=新增 HZAU 狮子山校区 `outdoor.json` 和 HZAU 示例用户，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、兴趣推荐、单目标路线和多目标路线回归；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal/codex exec、Start-Process 或任何新 agent；未调用 OSMnx、Overpass 或 web search，坐标保持 M28X 人工估算 needs_review
 - [2026-05-19 02:27] manager=L2-03 child=M28X YNU status=completed commit=7e0dc43 verify=`py -m pytest -q` 180 passed; HTTP smoke passed in tertiary execution for YNU bootstrap, YNU Leaflet GeoJSON, YNU scenic/place/catering, YNU route and YNU multi-route note=新增 YNU 呈贡校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal/codex exec、Start-Process 或任何新 agent；未调用 OSMnx、Overpass 或 web search，坐标保持 M28X 人工估算 needs_review
 - [2026-05-19 02:13] manager=L2-03 child=M28X HIT status=completed commit=3dc98bb verify=`py -m pytest -q` 178 passed; HTTP smoke passed in tertiary execution for HIT health, HIT bootstrap, HIT Leaflet GeoJSON, HIT scenic/place/catering, HIT route and HIT multi-route note=新增 HIT 一校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal/codex exec、Start-Process 或任何新 agent；未调用 OSMnx、Overpass 或 web search，坐标保持 M28X 人工估算 needs_review
