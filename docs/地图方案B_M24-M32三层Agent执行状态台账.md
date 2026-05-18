@@ -16,8 +16,8 @@
 - `last_completed_manager`: `L2-02`
 - `next_manager`: `L2-04`
 - `last_commit`: `f9d1f62`
-- `last_verification`: `py -m pytest -q`，174 passed；HTTP smoke 覆盖 OUC health、OUC bootstrap、OUC Leaflet GeoJSON、OUC 综合查询、场所查询、美食推荐、单目标路线、多目标路线和 PKU GeoJSON 切回
-- `last_update_note`: `M28X OUC 已完成并形成聚焦提交，下一步执行 M28X SUDA`
+- `last_verification`: `py -m pytest -q`，174 passed；L2-03 独立 smoke 覆盖 SCU/HNU/TONGJI bootstrap、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线、多目标路线和 PKU GeoJSON 切回
+- `last_update_note`: `已完成 SCU/HNU/TONGJI 三层结构合规独立复核，下一步恢复 M28X SUDA`
 
 ## 二级经理状态总表
 
@@ -25,7 +25,7 @@
 | --- | --- | --- | --- | --- | --- |
 | L2-01 | `docs/地图方案B_M24-M25基线模板经理Agent_Goal提示词.md` | `completed` | `8/8` | `6eb6a48` | M24A-M25D 已完成 |
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `completed` | `10/10` | `fef62cc` | 试点校 + 首批 5 校室外；M27Y 无实现变更 |
-| L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `in_progress` | `11/16` | `f9d1f62` | FDU、SJTU、TONGJI、SEU、SYSU、SCU、HNU、SDU、HUST、SCUT、OUC 室外已完成，剩余 4 校 + M28Y |
+| L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `in_progress` | `11/16` | `f9d1f62` | FDU、SJTU、TONGJI、SEU、SYSU、SCU、HNU、SDU、HUST、SCUT、OUC 室外已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核，剩余 4 校 + M28Y |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `pending` | `0/6` | `none` | 首批 5 校室内 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `pending` | `0/16` | `none` | 剩余 15 校室内 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校交通方式 |
@@ -192,15 +192,16 @@
 
 按时间倒序追加：
 
+- [2026-05-19 01:20] manager=L2-03 child=三层结构合规审计 status=completed commit=ledger-only verify=`py -m pytest -q` 174 passed; L2 service smoke passed for SCU/HNU/TONGJI bootstrap, Leaflet GeoJSON, scenic/place/catering, route, multi-route and PKU GeoJSON switch-back note=审计 L2-03 已完成 M28X 记录：台账中仅 SCU 明确写有“只读 explorer”备注；日志层发现 SCU、HNU 和 TONGJI 初次执行存在 explorer/SpawnAgent 痕迹或疑似痕迹。已由 L2-03 经理独立复核 SCU/HNU/TONGJI 数据、global_sites、相关测试和接口契约，完成依据不再依赖任何三级额外委派输出；后续 M28X/M28Y 三级提示必须明确禁止 explorer、worker、spawn_agent、SpawnAgent、collab、goal/codex exec、Start-Process 或任何新 agent。
 - [2026-05-19 01:00] manager=L2-03 child=M28X OUC status=completed commit=f9d1f62 verify=`py -m pytest -q` 174 passed; HTTP smoke passed for OUC health, OUC bootstrap, OUC Leaflet GeoJSON, OUC scenic/place/catering, OUC route, OUC multi-route and PKU GeoJSON switch-back note=新增 OUC 崂山校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；未调用 OSMnx、Overpass、web search 或新的子 agent，坐标保持 M28X 人工估算 needs_review
 - [2026-05-19 00:40] manager=L2-03 child=M28X SCUT status=completed commit=536ca82 verify=`py -m pytest -q` 172 passed; HTTP smoke passed for SCUT health, SCUT bootstrap, SCUT Leaflet GeoJSON, SCUT scenic/place/catering, SCUT route, SCUT multi-route and PKU GeoJSON switch-back note=新增 SCUT 五山校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；未调用 OSMnx、Overpass、web search 或新的子 agent，坐标保持 M28X 人工估算 needs_review
 - [2026-05-19 00:28] manager=L2-03 child=M28X HUST status=completed commit=c35c6a0 verify=`py -m pytest -q` 170 passed; HTTP smoke passed for HUST health, HUST bootstrap, HUST Leaflet GeoJSON, HUST scenic/place/catering, HUST route, HUST multi-route and PKU GeoJSON switch-back note=新增 HUST 主校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；未调用 OSMnx、Overpass、web search 或新的子 agent，坐标保持 M28X 人工估算 needs_review
 - [2026-05-19 00:13] manager=L2-03 child=M28X SDU status=completed commit=e6f6130 verify=`py -m pytest -q` 168 passed; HTTP smoke passed for SDU health, SDU bootstrap, SDU Leaflet GeoJSON, SDU scenic/place/catering, SDU route, SDU multi-route, static SVG/Leaflet local assets and PKU GeoJSON switch-back note=新增 SDU 中心校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；未调用 OSMnx、Overpass、web search 或新的子 agent，坐标保持 M28X 人工估算 needs_review
-- [2026-05-18 23:57] manager=L2-03 child=M28X HNU status=completed commit=4d68511 verify=`py -m pytest -q` 166 passed; HTTP smoke passed for HNU health, HNU bootstrap, HNU Leaflet GeoJSON, HNU scenic/place/catering, HNU route, HNU multi-route and PKU GeoJSON switch-back note=新增 HNU 岳麓山校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；未调用 OSMnx、Overpass 或新的子 agent，坐标保持 M28X 人工估算 needs_review
-- [2026-05-18 23:33] manager=L2-03 child=M28X SCU status=completed commit=2287e20 verify=`py -m pytest -q` 164 passed; HTTP smoke passed for SCU health, SCU bootstrap, SCU Leaflet GeoJSON, SCU scenic/place/catering, SCU route, SCU multi-route and PKU bootstrap switch-back note=新增 SCU 望江校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；仅调用只读 explorer 辅助梳理验收点，未调用 OSMnx、Overpass 或 web search
+- [2026-05-18 23:57] manager=L2-03 child=M28X HNU status=completed commit=4d68511 verify=`py -m pytest -q` 166 passed; HTTP smoke passed for HNU health, HNU bootstrap, HNU Leaflet GeoJSON, HNU scenic/place/catering, HNU route, HNU multi-route and PKU GeoJSON switch-back note=新增 HNU 岳麓山校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；日志审计发现初次三级执行存在 explorer/SpawnAgent 痕迹，已由 L2-03 经理独立复核 HNU 数据、global_sites、测试和接口契约，不再依赖三级额外委派输出作为完成依据；未调用 OSMnx、Overpass 或 web search，坐标保持 M28X 人工估算 needs_review
+- [2026-05-18 23:33] manager=L2-03 child=M28X SCU status=completed commit=2287e20 verify=`py -m pytest -q` 164 passed; HTTP smoke passed for SCU health, SCU bootstrap, SCU Leaflet GeoJSON, SCU scenic/place/catering, SCU route, SCU multi-route and PKU bootstrap switch-back note=新增 SCU 望江校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；原“只读 explorer”备注已更正，已由 L2-03 经理独立复核 SCU 数据、global_sites、测试和接口契约，不再依赖 explorer 输出作为完成依据；未调用 OSMnx、Overpass 或 web search
 - [2026-05-18 23:16] manager=L2-03 child=M28X SYSU status=completed commit=5b01890 verify=`py -m pytest -q` 162 passed; HTTP smoke passed for SYSU bootstrap, SYSU/PKU Leaflet GeoJSON, SYSU route and SYSU multi-route note=新增 SYSU 广州校区南校园 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；未调用 OSMnx、Overpass、web search 或新的子 agent
 - [2026-05-18 22:59] manager=L2-03 child=M28X SEU status=completed commit=d872b8c verify=`py -m pytest -q` 160 passed; HTTP smoke passed for PKU/THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU note=新增 SEU 九龙湖校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；未调用 OSMnx、Overpass、web search 或新的子 agent
-- [2026-05-18 22:46] manager=L2-03 child=M28X TONGJI status=completed commit=d7d1599 verify=`py -m pytest -q` 158 passed note=新增 TONGJI 四平路校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；未调用 OSMnx、Overpass、web search 或新的子 agent
+- [2026-05-18 22:46] manager=L2-03 child=M28X TONGJI status=completed commit=d7d1599 verify=`py -m pytest -q` 158 passed note=新增 TONGJI 四平路校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；日志审计发现初次执行存在 SpawnAgent 疑似痕迹，已由 L2-03 经理独立复核 TONGJI 数据、global_sites、测试和接口契约，不再依赖任何三级额外委派输出作为完成依据；未调用 OSMnx、Overpass 或 web search
 - [2026-05-18 22:04] manager=L2-03 child=M28X SJTU status=completed commit=580dda7 verify=`py -m pytest -q` 156 passed note=新增 SJTU 闵行校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归；流程复核后已形成聚焦提交
 - [2026-05-18 21:21] manager=L2-03 child=M28X FDU status=completed commit=5968285 verify=`py -m pytest -q` 154 passed note=新增 FDU 邯郸校区 `outdoor.json`，接入站点可用状态、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线和多目标路线回归
 - [2026-05-18 21:02] manager=L2-02 child=M27Y status=completed commit=none verify=`py -m pytest -q` 152 passed; HTTP smoke passed for THU/WHU/XMU/ZJU/NJU and PKU switch-back note=首批 5 校室外统一回归通过，覆盖站点切换、bootstrap、Leaflet GeoJSON、综合查询、场所查询、美食推荐、单目标路线、多目标路线和数据隔离；M27Y 无实现变更
