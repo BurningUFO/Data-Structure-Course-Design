@@ -56,6 +56,58 @@
       "walk",
       "bike",
       "mixed"
+    ],
+    "nearby_calibration_stage": "M31B_TONGJI",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "四平路校区图书馆查附近优先命中借还、咨询与自习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "教学楼查附近优先展示教学服务台、共享学习区与教师支持空间。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "学苑食堂查附近优先命中取餐、回收与后勤配套服务。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 300,
+        "default_category": "catering",
+        "notes": "西区学生宿舍查附近优先命中北苑食堂和图书馆咖啡，贴合宿舍区就餐动线。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 400,
+        "default_category": "shopping",
+        "notes": "北区学生公寓查附近优先命中文创书店与便利补给，兼顾学习和生活采购场景。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 500,
+        "default_category": "landmark",
+        "notes": "四平路校区南门查附近优先展示大礼堂与樱花大道，方便访客快速建立地标感知。"
+      },
+      {
+        "center_node_id": "service_center",
+        "default_radius_m": 300,
+        "default_category": "shopping",
+        "notes": "学生事务服务中心查附近优先命中便利补给与图书文创服务点。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "同济大学体育馆查附近优先展示更衣、训练和运动场等体育设施。"
+      }
     ]
   },
   "nodes": [
