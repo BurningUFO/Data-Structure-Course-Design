@@ -104,6 +104,30 @@
     "created_at": "2026-05-19"
   },
   {
+    "id": "user_whu_001",
+    "name": "武大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "法学院"],
+    "home_site_id": "WHU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_whu_002",
+    "name": "武大樱顶访客",
+    "role": "tourist",
+    "interests": ["樱顶", "老图书馆", "摄影"],
+    "home_site_id": "WHU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_whu_003",
+    "name": "武大桂园生活访客",
+    "role": "student",
+    "interests": ["食堂", "桂园", "校园生活"],
+    "home_site_id": "WHU",
+    "created_at": "2026-05-19"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",

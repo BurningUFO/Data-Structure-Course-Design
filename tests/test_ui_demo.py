@@ -9197,6 +9197,84 @@ def test_demo_m31b_whu_nearby_queries_use_calibrated_center_name_and_scope():
     print("test_demo_m31b_whu_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
+def test_demo_m31c_whu_bootstrap_interest_profiles():
+    service = DemoUIService("WHU")
+    payload = service.get_bootstrap_payload()
+    outdoor = json.loads(Path("data/sites/WHU/outdoor.json").read_text(encoding="utf-8"))
+    highlights = {
+        item["profile_id"]: item
+        for item in outdoor["metadata"]["interest_highlights"]
+    }
+
+    assert outdoor["metadata"]["interest_calibration_stage"] == "M31C_WHU"
+    assert highlights["study"]["highlight_node_ids"] == ["library", "teaching_building", "teaching_building_2"]
+    assert highlights["history"]["highlight_node_ids"] == ["old_library", "main_arch", "wanlin_museum"]
+    assert highlights["campus_life"]["highlight_node_ids"] == [
+        "canteen",
+        "canteen_meiyuan",
+        "dormitory_1",
+        "convenience_store",
+    ]
+    assert payload["stats"]["user_count"] == 3
+    assert payload["default_user_id"] == "user_whu_001"
+    assert any(item["value"] == "樱顶" for item in payload["controls"]["interest_options"])
+    assert any(item["value"] == "法学院" for item in payload["controls"]["interest_options"])
+    print("test_demo_m31c_whu_bootstrap_interest_profiles passed.")
+
+
+def test_demo_m31c_whu_interest_recommendations_follow_local_profiles():
+    service = DemoUIService("WHU")
+
+    study = service.scenic_search(
+        {
+            "keyword": "",
+            "category": "education",
+            "sort_field": "interest",
+            "user_id": "user_whu_001",
+            "start_node_id": "gate_west",
+            "limit": 5,
+        }
+    )
+    assert study["success"] is True
+    assert study["metadata"]["user_interest_context"]["user_id"] == "user_whu_001"
+    assert study["results"][0]["route_target_node_id"] == "library"
+    assert study["results"][0]["interest_match_score"] > 0
+    assert "兴趣命中" in study["results"][0]["interest_reason"]
+
+    history = service.scenic_search(
+        {
+            "keyword": "",
+            "category": "landmark",
+            "sort_field": "interest",
+            "user_id": "user_whu_002",
+            "start_node_id": "gate_west",
+            "limit": 5,
+        }
+    )
+    assert history["success"] is True
+    assert history["metadata"]["user_interest_context"]["user_id"] == "user_whu_002"
+    assert history["results"][0]["route_target_node_id"] == "old_library"
+    assert history["results"][0]["interest_match_score"] > 0
+    assert "樱顶" in history["results"][0]["interest_reason"]
+
+    campus_life = service.scenic_search(
+        {
+            "keyword": "",
+            "category": "catering",
+            "sort_field": "interest",
+            "user_id": "user_whu_003",
+            "start_node_id": "gate_west",
+            "limit": 5,
+        }
+    )
+    assert campus_life["success"] is True
+    assert campus_life["metadata"]["user_interest_context"]["user_id"] == "user_whu_003"
+    assert campus_life["results"][0]["route_target_node_id"] == "canteen"
+    assert campus_life["results"][0]["interest_match_score"] > 0
+    assert "桂园" in campus_life["results"][0]["interest_reason"]
+    print("test_demo_m31c_whu_interest_recommendations_follow_local_profiles passed.")
+
+
 def test_demo_m31b_xmu_bootstrap_nearby_profiles():
     service = DemoUIService("XMU")
     payload = service.get_bootstrap_payload()
@@ -11129,6 +11207,8 @@ def run_all_tests():
     test_demo_m31b_thu_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_whu_bootstrap_nearby_profiles()
     test_demo_m31b_whu_nearby_queries_use_calibrated_center_name_and_scope()
+    test_demo_m31c_whu_bootstrap_interest_profiles()
+    test_demo_m31c_whu_interest_recommendations_follow_local_profiles()
     test_demo_m31b_xmu_bootstrap_nearby_profiles()
     test_demo_m31b_xmu_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_zju_bootstrap_nearby_profiles()
