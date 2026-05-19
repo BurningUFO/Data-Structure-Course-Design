@@ -10050,6 +10050,76 @@ def test_demo_m31b_scut_nearby_queries_use_calibrated_center_name_and_scope():
     print("test_demo_m31b_scut_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
+def test_demo_m31b_ouc_bootstrap_nearby_profiles():
+    service = DemoUIService("OUC")
+    payload = service.get_bootstrap_payload()
+    profiles = payload["controls"]["nearby_profiles"]
+
+    assert payload["site"]["id"] == "OUC"
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 300, 400, 500, 600, 800]
+    assert profiles["library"]["default_radius_m"] == 200.0
+    assert profiles["library"]["default_category"] == "service"
+    assert profiles["dormitory_1"]["center_name"] == "中国海洋大学崂山校区学生宿舍区"
+    assert profiles["dormitory_1"]["default_category"] == "shopping"
+    assert profiles["dormitory_2"]["default_radius_m"] == 600.0
+    assert profiles["gate_south"]["default_radius_m"] == 400.0
+    assert profiles["gate_north"]["default_category"] == "sports"
+    assert profiles["central_square"]["default_category"] == "landmark"
+    assert profiles["gymnasium"]["default_category"] == "sports"
+    print("test_demo_m31b_ouc_bootstrap_nearby_profiles passed.")
+
+
+def test_demo_m31b_ouc_nearby_queries_use_calibrated_center_name_and_scope():
+    service = DemoUIService("OUC")
+
+    dorm_shopping = service.place_search(
+        {
+            "keyword": "",
+            "category": "shopping",
+            "center_node_id": "dormitory_1",
+            "radius_m": 200,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        dorm_shopping,
+        center_node_id="dormitory_1",
+        radius_m=200,
+        category="shopping",
+    )
+    assert dorm_shopping["metadata"]["nearby"]["center_name"] == "中国海洋大学崂山校区学生宿舍区"
+    assert dorm_shopping["metadata"]["nearby"]["calibration_stage"] == "M31B_OUC"
+    assert dorm_shopping["metadata"]["nearby"]["calibration_profile"]["default_category"] == "shopping"
+    assert dorm_shopping["results"][0]["route_target_node_id"] == "convenience_store"
+    assert dorm_shopping["results"][0]["nearby_reason"].startswith("距离中国海洋大学崂山校区学生宿舍区 ")
+
+    gate_north_sports = service.place_search(
+        {
+            "keyword": "",
+            "category": "sports",
+            "center_node_id": "gate_north",
+            "radius_m": 500,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        gate_north_sports,
+        center_node_id="gate_north",
+        radius_m=500,
+        category="sports",
+    )
+    assert gate_north_sports["metadata"]["nearby"]["center_name"] == "中国海洋大学崂山校区北门"
+    assert gate_north_sports["metadata"]["nearby"]["calibration_stage"] == "M31B_OUC"
+    assert gate_north_sports["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 500.0
+    assert gate_north_sports["metadata"]["nearby"]["calibration_profile"]["default_category"] == "sports"
+    assert [item["route_target_node_id"] for item in gate_north_sports["results"][:2]] == [
+        "sports_ground",
+        "gymnasium",
+    ]
+    assert gate_north_sports["results"][0]["nearby_reason"].startswith("距离中国海洋大学崂山校区北门 ")
+    print("test_demo_m31b_ouc_nearby_queries_use_calibrated_center_name_and_scope passed.")
+
+
 def test_demo_main_query_recommend_route_chains_remain_available():
     service = DemoUIService("PKU")
 
@@ -10778,6 +10848,8 @@ def run_all_tests():
     test_demo_m31b_hust_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_scut_bootstrap_nearby_profiles()
     test_demo_m31b_scut_nearby_queries_use_calibrated_center_name_and_scope()
+    test_demo_m31b_ouc_bootstrap_nearby_profiles()
+    test_demo_m31b_ouc_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()

@@ -56,6 +56,64 @@
       "walk",
       "bike",
       "mixed"
+    ],
+    "nearby_calibration_stage": "M31B_OUC",
+    "nearby_radius_options": [200, 300, 400, 500, 600, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "崂山校区图书馆查附近优先命中自助借还、咨询和学习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "教学楼群查附近优先展示教学服务台、共享学习区和教学配套服务。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "学生食堂查附近优先命中调料、取餐和餐盘回收等就餐配套服务。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 200,
+        "default_category": "shopping",
+        "notes": "学生宿舍区查附近优先命中便利店与生活补给，贴合西北生活区日常需求。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 600,
+        "default_category": "sports",
+        "notes": "北区学生公寓查附近优先展示田径场和体育馆，贴合北侧宿舍步行可达的运动片区。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 400,
+        "default_category": "catering",
+        "notes": "南门查附近优先命中学生食堂，适合从松岭路到达后快速找就餐点。"
+      },
+      {
+        "center_node_id": "gate_north",
+        "default_radius_m": 500,
+        "default_category": "sports",
+        "notes": "北门查附近优先命中田径场和体育馆，适合从北侧进入后快速定位运动片区。"
+      },
+      {
+        "center_node_id": "central_square",
+        "default_radius_m": 200,
+        "default_category": "landmark",
+        "notes": "中心广场查附近优先展示海洋文化景观轴等校园地标，贴合崂山校区核心漫游动线。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "体育馆查附近优先命中更衣室、训练室和田径场等运动配套空间。"
+      }
     ]
   },
   "nodes": [
