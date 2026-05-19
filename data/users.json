@@ -248,6 +248,30 @@
     "created_at": "2026-05-19"
   },
   {
+    "id": "user_tongji_001",
+    "name": "同济学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "建筑学院"],
+    "home_site_id": "TONGJI",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_tongji_002",
+    "name": "同济校园游访客",
+    "role": "tourist",
+    "interests": ["樱花大道", "大礼堂", "摄影"],
+    "home_site_id": "TONGJI",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_tongji_003",
+    "name": "同济四平路生活访客",
+    "role": "student",
+    "interests": ["学苑食堂", "北苑食堂", "校园生活"],
+    "home_site_id": "TONGJI",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
