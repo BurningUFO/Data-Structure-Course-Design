@@ -272,6 +272,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_seu_001",
+    "name": "东大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "李文正图书馆"],
+    "home_site_id": "SEU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_seu_002",
+    "name": "东大九龙湖访客",
+    "role": "tourist",
+    "interests": ["九龙湖", "活动中心", "摄影"],
+    "home_site_id": "SEU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_seu_003",
+    "name": "东大桃园生活访客",
+    "role": "student",
+    "interests": ["食堂", "桃园", "校园生活"],
+    "home_site_id": "SEU",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
