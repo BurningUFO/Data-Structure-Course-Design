@@ -15,9 +15,9 @@
 - `current_manager`: `L2-08`
 - `last_completed_manager`: `L2-07`
 - `next_manager`: `L2-09`
-- `last_commit`: `3f2c7cf`
-- `last_verification`: `git diff --cached --name-status` empty；`py -m pytest -q`，351 passed
-- `last_update_note`: `L2-08 完成 M31C SDU 13/20；下一步 M31C HUST`
+- `last_commit`: `4a863bd`
+- `last_verification`: `git diff --cached --name-status` empty；`py -m pytest -q`，353 passed
+- `last_update_note`: `L2-08 完成 M31C HUST 14/20；下一步 M31C SCUT`
 
 ## 二级经理状态总表
 
@@ -30,14 +30,14 @@
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `44728b2` | M31B 20 校附近查询校准已全部完成 |
-| L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `in_progress` | `13/20` | `3f2c7cf` | M31C SDU 已完成；下一步 HUST |
+| L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `in_progress` | `14/20` | `4a863bd` | M31C HUST 已完成；下一步 SCUT |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
 
 ## 一级总管执行记录
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05,L2-06,L2-07`
-- `current_action`: `L2-08 调用 M31C HUST`
+- `current_action`: `L2-08 调用 M31C SCUT`
 - `next_action`: `等待 L2-08 完成后复核`
 - `notes`: `L2-07 已完成 M31B 20 校附近查询校准并通过一级总管复核。L2-08 经理必须按 /fast off 启动并确认分支正确；因 goal CLI 不存在，继续使用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派；简单重复性三级任务可使用 gpt-5.4 xhigh，复杂返修继续使用 gpt-5.5 xhigh。`
 
@@ -173,7 +173,7 @@
 - [x] `M31C SCU`
 - [x] `M31C HNU`
 - [x] `M31C SDU`
-- [ ] `M31C HUST`
+- [x] `M31C HUST`
 - [ ] `M31C SCUT`
 - [ ] `M31C OUC`
 - [ ] `M31C SUDA`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-20 02:03] manager=L2-08 child=M31C HUST status=completed commit=4a863bd verify=`git diff --cached --name-status` empty; `py -m pytest -q` 353 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 HUST 兴趣推荐与 POI 文案校准；HUST outdoor 增加 M31C_HUST 元数据和兴趣 highlights，校准图书馆、东九教学楼、西十二教学楼、中心广场、喻家山、校史展示点、百景园食堂、韵苑食堂、咖啡服务点、便利服务点、图书馆书店、学生事务服务中心和韵苑学生公寓标签、关键词和文案；补充 HUST 示例用户、站点描述与独立专项测试；L2 复核确认暂存区只包含 HUST 数据、用户样例、站点描述和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-20 01:43] manager=L2-08 child=M31C SDU status=completed commit=3f2c7cf verify=`git diff --cached --name-status` empty; `py -m pytest -q` 351 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 SDU 兴趣推荐与 POI 文案校准；SDU outdoor 增加 M31C_SDU 元数据和兴趣 highlights，校准图书馆、教学楼群、知新楼、中心广场、校史展示点、学生食堂、齐园餐厅、咖啡服务点、便利服务点、校园书店与学生公寓标签、关键词和文案；补充 SDU 示例用户、站点描述与独立专项测试；L2 复核确认暂存区只包含 SDU 数据、用户样例、站点描述和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-20 01:29] manager=L2-08 child=M31C HNU status=completed commit=c24077a verify=`git diff --cached --name-status` empty; `py -m pytest -q` 349 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 HNU 兴趣推荐与 POI 文案校准；HNU outdoor 增加 M31C_HNU 元数据和兴趣 highlights，校准图书馆、教学楼群、实验教学中心、岳麓书院、东方红广场、校史展示点、德智园学生食堂、天马园区食堂、咖啡服务点、生活区便利服务点和天马学生公寓标签、关键词和文案；补充 HNU 示例用户、站点描述与独立专项测试；L2 复核确认暂存区只包含 HNU 数据、用户样例、站点描述和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-20 01:15] manager=L2-08 child=M31C SCU status=completed commit=010a5ac verify=`git diff --cached --name-status` empty; `py -m pytest -q` 347 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 SCU 兴趣推荐与 POI 文案校准；SCU outdoor 增加 M31C_SCU 元数据和兴趣 highlights，校准图书馆、基础教学楼、理科实验教学区、四川大学博物馆、钟楼、学生食堂、东区食堂、咖啡服务点和便利服务点标签、关键词和文案；补充 SCU 示例用户、站点描述与独立专项测试；L2 复核确认暂存区只包含 SCU 数据、用户样例、站点描述和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
