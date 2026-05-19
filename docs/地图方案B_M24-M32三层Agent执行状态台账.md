@@ -15,9 +15,9 @@
 - `current_manager`: `L2-06`
 - `last_completed_manager`: `L2-05`
 - `next_manager`: `L2-06`
-- `last_commit`: `38c6f8f`
-- `last_verification`: `py -m pytest -q`，236 passed；M31A TONGJI L2 复核通过，暂存区已在提交前确认只包含 TONGJI 相关实现与测试
-- `last_update_note`: `M31A TONGJI 已完成，L2-06 继续按顺序调用 M31A SEU；后续子 agent 调用必须先执行 /fast off`
+- `last_commit`: `4d12c21`
+- `last_verification`: `py -m pytest -q`，240 passed；M31A SEU L2 复核通过，暂存区已在提交前确认只包含 SEU 相关实现与测试
+- `last_update_note`: `M31A SEU 已完成，L2-06 继续按顺序调用 M31A SYSU；后续子 agent 调用必须先执行 /fast off`
 
 ## 二级经理状态总表
 
@@ -28,7 +28,7 @@
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
-| L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `in_progress` | `8/20` | `38c6f8f` | M31A THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI 已完成；继续 SEU 交通方式校准 |
+| L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `in_progress` | `9/20` | `4d12c21` | M31A THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU 已完成；继续 SYSU 交通方式校准 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
@@ -37,7 +37,7 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05`
-- `current_action`: `L2-06 调用 M31A SEU`
+- `current_action`: `L2-06 调用 M31A SYSU`
 - `next_action`: `等待 L2-06 完成后复核`
 - `notes`: `L2-05 已完成 M30Y 20 校室内总回归并通过一级总管复核。L2-06 经理已按 /fast off 启动并确认分支正确；因 goal CLI 不存在，改用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派。`
 
@@ -122,7 +122,7 @@
 - [x] `M31A FDU`
 - [x] `M31A SJTU`
 - [x] `M31A TONGJI`
-- [ ] `M31A SEU`
+- [x] `M31A SEU`
 - [ ] `M31A SYSU`
 - [ ] `M31A SCU`
 - [ ] `M31A HNU`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 15:54] manager=L2-06 child=M31A SEU status=completed commit=4d12c21 verify=`py -m pytest -q` 240 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 SEU 交通方式校准；SEU outdoor 增加 M31A_SEU 元数据、九龙湖校区步骑共享速度、西门/南门步行短接、非机动车绕行接驳和服务中心/运动场骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 SEU 相关实现与测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 15:36] manager=L2-06 child=M31A TONGJI status=completed commit=38c6f8f verify=`py -m pytest -q` 236 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 TONGJI 交通方式校准；TONGJI outdoor 增加 M31A_TONGJI 元数据、四平路校区步骑共享速度、西门/南门步行短接、非机动车绕行接驳和教学楼/学生事务服务中心骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 TONGJI 相关实现与测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 15:20] manager=L2-06 child=M31A SJTU status=completed commit=a88b1f3 verify=`py -m pytest -q` 232 passed note=通过 codex exec 串行调用三级原子执行 agent 完成 SJTU 交通方式校准；首次 gpt-5.4 L3 草稿经 L2 复核发现门岗短接语义需修复，随后通过 gpt-5.5 L3 收口；SJTU outdoor 增加 M31A_SJTU 元数据、闵行校区步骑共享速度、西门/南门步行短接、非机动车绕行接驳和 POI 骑行落客线，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 14:53] manager=L2-06 child=M31A FDU status=completed commit=cee30e5 verify=`py -m pytest -q` 228 passed note=通过 codex exec 串行调用三级原子执行 agent 完成 FDU 交通方式校准；首次 FDU L3 因 2 小时超时返回 exit code 124，L2 确认无 FDU 改动后停止自启动残留 codex exec 进程并用同校 L3 收口；FDU outdoor 增加 M31A_FDU 元数据、邯郸校区步骑共享速度、正门/西门步行短接与非机动车绕行接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
