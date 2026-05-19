@@ -15,9 +15,9 @@
 - `current_manager`: `L2-08`
 - `last_completed_manager`: `L2-07`
 - `next_manager`: `L2-09`
-- `last_commit`: `42ae6f5`
-- `last_verification`: `git diff --cached --name-status` empty；`py -m pytest -q`，335 passed
-- `last_update_note`: `L2-08 完成 M31C NJU 5/20；下一步 M31C FDU`
+- `last_commit`: `604fce9`
+- `last_verification`: `git diff --cached --name-status` empty；`py -m pytest -q`，337 passed
+- `last_update_note`: `L2-08 完成 M31C FDU 6/20；下一步 M31C SJTU`
 
 ## 二级经理状态总表
 
@@ -30,14 +30,14 @@
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `44728b2` | M31B 20 校附近查询校准已全部完成 |
-| L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `in_progress` | `5/20` | `42ae6f5` | M31C NJU 已完成；下一步 FDU |
+| L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `in_progress` | `6/20` | `604fce9` | M31C FDU 已完成；下一步 SJTU |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
 
 ## 一级总管执行记录
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05,L2-06,L2-07`
-- `current_action`: `L2-08 调用 M31C FDU`
+- `current_action`: `L2-08 调用 M31C SJTU`
 - `next_action`: `等待 L2-08 完成后复核`
 - `notes`: `L2-07 已完成 M31B 20 校附近查询校准并通过一级总管复核。L2-08 经理必须按 /fast off 启动并确认分支正确；因 goal CLI 不存在，继续使用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派；简单重复性三级任务可使用 gpt-5.4 xhigh，复杂返修继续使用 gpt-5.5 xhigh。`
 
@@ -165,7 +165,7 @@
 - [x] `M31C XMU`
 - [x] `M31C ZJU`
 - [x] `M31C NJU`
-- [ ] `M31C FDU`
+- [x] `M31C FDU`
 - [ ] `M31C SJTU`
 - [ ] `M31C TONGJI`
 - [ ] `M31C SEU`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 23:50] manager=L2-08 child=M31C FDU status=completed commit=604fce9 verify=`git diff --cached --name-status` empty; `py -m pytest -q` 337 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 FDU 兴趣推荐与 POI 文案校准；FDU outdoor 增加 M31C_FDU 元数据和兴趣 highlights，校准学习、地标与校园生活相关 FDU POI 标签、关键词和说明文案；补充 FDU 示例用户与独立专项测试；L2 复核确认暂存区只包含 FDU 数据、用户样例和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 23:39] manager=L2-08 child=M31C NJU status=completed commit=42ae6f5 verify=`git diff --cached --name-status` empty; `py -m pytest -q` 335 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 NJU 兴趣推荐与 POI 文案校准；NJU outdoor 增加 M31C_NJU 元数据和兴趣 highlights，校准杜厦图书馆、二源广场、南京大学鼎、校史展示点、左涤江天文台、九食堂、东区食堂、宿舍一组团和便利店标签、关键词和文案；补充 NJU 示例用户与独立专项测试；L2 复核确认暂存区只包含 NJU 数据、用户样例和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 23:30] manager=L2-08 child=M31C ZJU status=completed commit=4f6a5d9 verify=`git diff --cached --name-status` empty; `py -m pytest -q` 333 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 ZJU 兴趣推荐与 POI 文案校准；ZJU outdoor 增加 M31C_ZJU 元数据和兴趣 highlights，校准求是广场、求是大讲堂、临湖餐厅、银泉餐厅等紫金港校区标签、关键词和文案；补充 ZJU 示例用户与独立专项测试；L2 复核确认暂存区只包含 ZJU 数据、用户样例和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 23:20] manager=L2-08 child=M31C XMU status=completed commit=6430987 verify=`git diff --cached --name-status` empty; `py -m pytest -q` 331 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 XMU 兴趣推荐与 POI 文案校准；XMU outdoor 增加 M31C_XMU 元数据和兴趣 highlights，校准图书馆、南强二教学楼、嘉庚楼群、芙蓉隧道、芙蓉餐厅、南光餐厅、宿舍与便利服务点标签、关键词和文案；补充 XMU 示例用户与独立专项测试；L2 复核确认暂存区只包含 XMU 数据、用户样例和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
