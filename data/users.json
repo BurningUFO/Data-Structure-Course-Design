@@ -224,6 +224,30 @@
     "created_at": "2026-05-19"
   },
   {
+    "id": "user_sjtu_001",
+    "name": "交大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "东中院", "工程科研"],
+    "home_site_id": "SJTU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_sjtu_002",
+    "name": "交大校园游访客",
+    "role": "tourist",
+    "interests": ["思源湖", "文化广场", "霍英东"],
+    "home_site_id": "SJTU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_sjtu_003",
+    "name": "交大闵行生活访客",
+    "role": "student",
+    "interests": ["食堂", "第一餐饮大楼", "校园生活"],
+    "home_site_id": "SJTU",
+    "created_at": "2026-05-19"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
