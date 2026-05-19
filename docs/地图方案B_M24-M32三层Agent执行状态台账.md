@@ -15,9 +15,9 @@
 - `current_manager`: `L2-07`
 - `last_completed_manager`: `L2-06`
 - `next_manager`: `L2-07`
-- `last_commit`: `67a5806`
-- `last_verification`: `py -m pytest -q`，291 passed；L2-07 复核 M31B XMU 通过，暂存区只包含聚焦实现提交后续台账变更
-- `last_update_note`: `L2-07 已完成 M31B XMU 3/20；下一步调用 M31B ZJU`
+- `last_commit`: `8ce6eb4`
+- `last_verification`: `py -m pytest -q`，293 passed；L2-07 复核 M31B ZJU 通过，暂存区只包含聚焦实现提交后续台账变更
+- `last_update_note`: `L2-07 已完成 M31B ZJU 4/20；下一步调用 M31B NJU`
 
 ## 二级经理状态总表
 
@@ -29,7 +29,7 @@
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
-| L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `in_progress` | `3/20` | `67a5806` | 20 校查附近；THU/WHU/XMU 已完成，下一步 ZJU |
+| L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `in_progress` | `4/20` | `8ce6eb4` | 20 校查附近；THU/WHU/XMU/ZJU 已完成，下一步 NJU |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
 
@@ -37,7 +37,7 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05,L2-06`
-- `current_action`: `L2-07 调用 M31B ZJU`
+- `current_action`: `L2-07 调用 M31B NJU`
 - `next_action`: `等待 L2-07 完成后复核`
 - `notes`: `L2-06 已完成 M31A 20 校交通方式校准并通过一级总管复核。L2-07 经理必须按 /fast off 启动并确认分支正确；因 goal CLI 不存在，继续使用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派；简单重复性三级任务可使用 gpt-5.4 xhigh，复杂返修继续使用 gpt-5.5 xhigh。`
 
@@ -140,7 +140,7 @@
 - [x] `M31B THU`
 - [x] `M31B WHU`
 - [x] `M31B XMU`
-- [ ] `M31B ZJU`
+- [x] `M31B ZJU`
 - [ ] `M31B NJU`
 - [ ] `M31B FDU`
 - [ ] `M31B SJTU`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 19:42] manager=L2-07 child=M31B ZJU status=completed commit=8ce6eb4 verify=`py -m pytest -q` 293 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 ZJU 附近查询校准；ZJU outdoor 增加 M31B_ZJU 元数据、200/300/400/600/800 半径选项和 8 个高频中心 profile，覆盖图书信息中心、东教学楼、临湖餐厅、丹青学园、蓝田学园、求是广场、南大门与紫金港体育馆；专项测试确认丹青学园 300m 餐饮命中银泉餐厅、南大门 600m 教育类命中图书信息中心，并回填中心中文名、校准阶段与附近理由；L2 复核确认暂存区只包含 ZJU 数据和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 19:34] manager=L2-07 child=M31B XMU status=completed commit=67a5806 verify=`py -m pytest -q` 291 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 XMU 附近查询校准；XMU outdoor 增加 M31B_XMU 元数据、200/300/400/500/800 半径选项和 7 个高频中心 profile，覆盖图书馆、南强二教学楼、芙蓉餐厅、芙蓉学生公寓、南光学生公寓、白城校门和上弦场；专项测试确认宿舍附近 300m 餐饮命中芙蓉餐厅、白城校门 200m 洗手间命中南门洗手间，并回填中心中文名、校准阶段与附近理由；L2 复核确认暂存区只包含 XMU 数据和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 19:26] manager=L2-07 child=M31B WHU status=completed commit=4732987 verify=`py -m pytest -q` 289 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 WHU 附近查询校准；WHU outdoor 增加 M31B_WHU 元数据、200/300/500/600/800 半径选项和 7 个高频中心 profile，重点覆盖图书馆总馆、法学院、万林艺术博物馆、桂园食堂、桂园宿舍、国立武汉大学牌楼与老图书馆；专项测试确认宿舍与老图书馆附近查询按校准半径/分类命中桂园食堂并回填中心中文名、校准阶段与附近理由；L2 复核确认暂存区只包含 WHU 数据和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 19:18] manager=L2-07 child=M31B THU status=completed commit=b8bd320 verify=`py -m pytest -q` 287 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 THU 附近查询校准；THU outdoor 增加 M31B_THU 元数据、5 档附近半径和 6 个高频中心 profile，后端 bootstrap 下发 nearby_profiles/nearby_radius_options 并在 place_search 响应中回填校准 profile、中心中文名和附近理由，前端切换附近中心时自动套用该校默认半径与分类；L2 复核确认暂存区只包含 THU 数据、nearby profile 共用读取/展示逻辑和专项测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
