@@ -56,6 +56,64 @@
       "walk",
       "bike",
       "mixed"
+    ],
+    "nearby_calibration_stage": "M31B_HUST",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "华中科技大学图书馆查附近优先命中自助借还、总服务台和咨询等学习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "东九教学楼查附近优先展示教学服务台、共享学习区和教师办公等教学配套。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "百景园食堂查附近优先命中取餐、调料和餐盘回收等就餐配套服务。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 300,
+        "default_category": "catering",
+        "notes": "韵苑学生公寓查附近优先命中韵苑食堂，贴合宿舍区步行就餐动线。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 400,
+        "default_category": "education",
+        "notes": "紫菘学生公寓查附近优先展示西十二教学楼，贴合西侧生活区到教学区的步行到达场景。"
+      },
+      {
+        "center_node_id": "gate_north",
+        "default_radius_m": 500,
+        "default_category": "sports",
+        "notes": "主校区北门查附近优先命中中心操场和体育馆，贴合北门进入运动片区的到达场景。"
+      },
+      {
+        "center_node_id": "central_square",
+        "default_radius_m": 300,
+        "default_category": "catering",
+        "notes": "中心广场查附近优先展示图书馆咖啡和轻餐点，贴合广场与图书馆之间的停留补给场景。"
+      },
+      {
+        "center_node_id": "history_museum",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "校史展示点查附近优先命中学生事务和行政服务，贴合校园参观后转办事务的动线。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "体育馆查附近优先展示更衣、训练和观赛等运动设施。"
+      }
     ]
   },
   "nodes": [
