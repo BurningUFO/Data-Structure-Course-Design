@@ -10348,6 +10348,83 @@ def test_demo_m31b_hit_nearby_queries_use_calibrated_center_name_and_scope():
     print("test_demo_m31b_hit_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
+def test_demo_m31b_hzau_bootstrap_nearby_profiles():
+    service = DemoUIService("HZAU")
+    payload = service.get_bootstrap_payload()
+    profiles = payload["controls"]["nearby_profiles"]
+
+    assert payload["site"]["id"] == "HZAU"
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 300, 400, 500, 800]
+    assert profiles["library"]["default_radius_m"] == 200.0
+    assert profiles["library"]["default_category"] == "service"
+    assert profiles["canteen"]["default_category"] == "service"
+    assert profiles["dormitory_1"]["center_name"] == "华中农业大学学生宿舍区"
+    assert profiles["dormitory_1"]["default_radius_m"] == 200.0
+    assert profiles["dormitory_1"]["default_category"] == "shopping"
+    assert profiles["gate_south"]["default_radius_m"] == 400.0
+    assert profiles["gate_south"]["default_category"] == "sports"
+    assert profiles["gate_east"]["default_category"] == "education"
+    assert profiles["history_museum"]["default_category"] == "service"
+    assert profiles["gymnasium"]["default_category"] == "sports"
+    print("test_demo_m31b_hzau_bootstrap_nearby_profiles passed.")
+
+
+def test_demo_m31b_hzau_nearby_queries_use_calibrated_center_name_and_scope():
+    service = DemoUIService("HZAU")
+
+    gate_south_sports = service.place_search(
+        {
+            "keyword": "",
+            "category": "sports",
+            "center_node_id": "gate_south",
+            "radius_m": 400,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        gate_south_sports,
+        center_node_id="gate_south",
+        radius_m=400,
+        category="sports",
+    )
+    assert gate_south_sports["metadata"]["nearby"]["center_name"] == "华中农业大学狮子山校区南门"
+    assert gate_south_sports["metadata"]["nearby"]["calibration_stage"] == "M31B_HZAU"
+    assert gate_south_sports["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 400.0
+    assert gate_south_sports["metadata"]["nearby"]["calibration_profile"]["default_category"] == "sports"
+    assert [item["route_target_node_id"] for item in gate_south_sports["results"][:2]] == [
+        "gymnasium",
+        "sports_ground",
+    ]
+    assert gate_south_sports["results"][0]["nearby_reason"].startswith("距离华中农业大学狮子山校区南门 ")
+
+    history_museum_service = service.place_search(
+        {
+            "keyword": "",
+            "category": "service",
+            "center_node_id": "history_museum",
+            "radius_m": 200,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        history_museum_service,
+        center_node_id="history_museum",
+        radius_m=200,
+        category="service",
+    )
+    assert history_museum_service["metadata"]["nearby"]["center_name"] == "华中农业大学校史展示点"
+    assert history_museum_service["metadata"]["nearby"]["calibration_stage"] == "M31B_HZAU"
+    assert history_museum_service["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 200.0
+    assert history_museum_service["metadata"]["nearby"]["calibration_profile"]["default_category"] == "service"
+    assert [item["route_target_node_id"] for item in history_museum_service["results"][:3]] == [
+        "service_center",
+        "administration",
+        "innovation_center",
+    ]
+    assert history_museum_service["results"][0]["nearby_reason"].startswith("距离华中农业大学校史展示点 ")
+    print("test_demo_m31b_hzau_nearby_queries_use_calibrated_center_name_and_scope passed.")
+
+
 def test_demo_main_query_recommend_route_chains_remain_available():
     service = DemoUIService("PKU")
 
@@ -11084,6 +11161,8 @@ def run_all_tests():
     test_demo_m31b_ouc_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_hit_bootstrap_nearby_profiles()
     test_demo_m31b_hit_nearby_queries_use_calibrated_center_name_and_scope()
+    test_demo_m31b_hzau_bootstrap_nearby_profiles()
+    test_demo_m31b_hzau_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()

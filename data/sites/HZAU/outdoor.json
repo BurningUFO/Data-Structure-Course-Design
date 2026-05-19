@@ -53,7 +53,59 @@
     "indoor_scope": "M30X HZAU representative indoor templates and gate_link entry mapping; no real indoor survey data.",
     "indoor_source_template_site": "PKU",
     "transport_calibration_stage": "M31A_HZAU",
-    "transport_modes": ["walk", "bike", "mixed"]
+    "transport_modes": ["walk", "bike", "mixed"],
+    "nearby_calibration_stage": "M31B_HZAU",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "华中农业大学图书馆查附近优先命中自助借还、咨询和学习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "教学楼群查附近优先展示教学服务台、共享学习区和教师支持空间。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "博园食堂查附近优先命中调料、自助取餐和餐盘回收等就餐配套服务。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 200,
+        "default_category": "shopping",
+        "notes": "学生宿舍区查附近优先命中便利服务点，贴合宿舍生活区的日常补给动线。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 400,
+        "default_category": "sports",
+        "notes": "南门查附近优先命中体育馆和田径场，贴合南侧入校后直达运动片区的动线。"
+      },
+      {
+        "center_node_id": "gate_east",
+        "default_radius_m": 500,
+        "default_category": "education",
+        "notes": "东门查附近优先展示生命科学与农学教学科研区，贴合东侧入校后的教学科研导向。"
+      },
+      {
+        "center_node_id": "history_museum",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "校史展示点查附近优先命中学生事务、行政和创新服务，贴合参观后转办事务的场景。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "体育馆查附近优先展示更衣、训练和观赛等运动设施。"
+      }
+    ]
   },
   "nodes": [
     {"id": "gate_west", "name": "华中农业大学狮子山校区西门", "type": "entrance", "is_gate": true, "sub_graph_id": null, "tags": ["校门", "西门", "入口", "狮子山校区", "华农"], "keywords": ["华中农业大学西门", "华农西门", "西门", "校门", "入口"], "description": "华中农业大学狮子山校区西侧入口，连接校园主轴、图书馆和宿舍生活片区。", "category": "entrance", "facilities": ["安保"], "open_hours": "24/7", "heat": 87, "rating": 4.6, "source": "m28x_manual_hzau_shizishan_axis_estimate", "needs_review": true, "location": {"lat": 30.4796, "lng": 114.3506}},
