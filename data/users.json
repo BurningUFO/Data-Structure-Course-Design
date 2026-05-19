@@ -200,6 +200,30 @@
     "created_at": "2026-05-19"
   },
   {
+    "id": "user_fdu_001",
+    "name": "复旦学习访客",
+    "role": "student",
+    "interests": ["图书馆", "文科图书馆", "第三教学楼"],
+    "home_site_id": "FDU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_fdu_002",
+    "name": "复旦校园游访客",
+    "role": "tourist",
+    "interests": ["光华楼", "相辉堂", "校史"],
+    "home_site_id": "FDU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_fdu_003",
+    "name": "复旦邯郸生活访客",
+    "role": "student",
+    "interests": ["食堂", "南区食堂", "校园生活"],
+    "home_site_id": "FDU",
+    "created_at": "2026-05-19"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
