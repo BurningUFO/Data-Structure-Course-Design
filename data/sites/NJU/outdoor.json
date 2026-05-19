@@ -72,6 +72,24 @@
         "notes": "方肇周体育馆查附近优先展示更衣、票务和训练等运动配套设施。"
       }
     ],
+    "interest_calibration_stage": "M31C_NJU",
+    "interest_highlights": [
+      {
+        "profile_id": "study",
+        "interests": ["图书馆", "自习", "杜厦"],
+        "highlight_node_ids": ["library", "teaching_building", "basic_lab"]
+      },
+      {
+        "profile_id": "history",
+        "interests": ["二源", "南大鼎", "校史"],
+        "highlight_node_ids": ["er_yuan_square", "nju_ding", "museum", "observatory"]
+      },
+      {
+        "profile_id": "campus_life",
+        "interests": ["食堂", "九食堂", "校园生活"],
+        "highlight_node_ids": ["canteen", "canteen_east", "dormitory_1", "convenience_store"]
+      }
+    ],
     "scope": "M27X NJU outdoor batch graph with M29X representative-building indoor templates: Xianlin campus gates, main-road waypoints, core POI, search/place/catering targets, single/multi-route demo targets, and five indoor entry mappings.",
     "capabilities": [
       "leaflet_geojson",
@@ -239,9 +257,18 @@
         "二源广场",
         "广场",
         "地标",
-        "西门轴线"
+        "西门轴线",
+        "毕业照",
+        "校园漫步"
       ],
-      "description": "仙林校区西门进入后的核心景观节点，可作为到访集合点和导航中转点。",
+      "keywords": [
+        "南京大学二源广场",
+        "二源广场",
+        "南大二源",
+        "毕业照",
+        "校园地标"
+      ],
+      "description": "二源广场是仙林校区从西门进入后的代表性景观节点，常作为集合、拍照和校园漫步的起点。",
       "category": "landmark",
       "facilities": [
         "景观",
@@ -267,9 +294,18 @@
         "南大鼎",
         "南京大学鼎",
         "地标",
+        "打卡",
+        "校史",
+        "校园精神"
+      ],
+      "keywords": [
+        "南京大学鼎",
+        "南大鼎",
+        "校史地标",
+        "校园精神",
         "打卡"
       ],
-      "description": "南京大学仙林校区代表性校园地标，靠近西门至图书馆主轴。",
+      "description": "南京大学鼎位于仙林校区西门主轴，是南大学生和访客最常提及的校史地标与合影点之一。",
       "category": "landmark",
       "facilities": [
         "景观",
@@ -296,9 +332,18 @@
         "仙林图书馆",
         "图书馆",
         "自习",
-        "阅览"
+        "阅览",
+        "考试周"
       ],
-      "description": "南京大学仙林校区图书馆，也是本阶段综合查询和路径规划的核心学习类 POI。",
+      "keywords": [
+        "南京大学杜厦图书馆",
+        "杜厦图书馆",
+        "仙林图书馆",
+        "图书馆",
+        "自习",
+        "考试周"
+      ],
+      "description": "杜厦图书馆是南京大学仙林校区最核心的学习地标，覆盖自习、借阅、备考和学术活动等典型场景。",
       "category": "education",
       "facilities": [
         "借阅",
@@ -330,9 +375,18 @@
         "仙I",
         "仙II",
         "上课",
-        "教室"
+        "教室",
+        "课程"
       ],
-      "description": "仙林校区本科教学核心区域，覆盖常规上课、考试和课程咨询场景。",
+      "keywords": [
+        "南京大学仙林教学楼",
+        "仙林教学楼",
+        "仙I",
+        "仙II",
+        "教室",
+        "上课"
+      ],
+      "description": "仙林教学楼承载本科课程、考试周和日常上课动线，是仙林校区最典型的教学类 POI 之一。",
       "category": "education",
       "facilities": [
         "教室",
@@ -362,9 +416,17 @@
         "基础实验楼",
         "实验楼",
         "教学",
-        "实验"
+        "实验",
+        "理科课程"
       ],
-      "description": "仙林校区实验教学与公共实验课程常用建筑。",
+      "keywords": [
+        "基础实验楼",
+        "南京大学基础实验楼",
+        "实验楼",
+        "理科实验",
+        "实验课程"
+      ],
+      "description": "基础实验楼承载仙林校区公共实验课和理科实验教学，是学习线上的补充型热门教学点。",
       "category": "education",
       "facilities": [
         "实验室",
@@ -418,9 +480,17 @@
         "宿舍",
         "学生宿舍",
         "生活区",
-        "一组团"
+        "一组团",
+        "校园生活"
       ],
-      "description": "西南生活区学生宿舍节点，作为住宿类查询和路线目标。",
+      "keywords": [
+        "南京大学宿舍一组团",
+        "一组团",
+        "学生宿舍",
+        "校园生活",
+        "生活区"
+      ],
+      "description": "宿舍一组团位于仙林西南生活区，连接九食堂、便利店和夜间回宿舍动线，是校园生活兴趣的典型落点。",
       "category": "dormitory",
       "facilities": [
         "门禁",
@@ -480,9 +550,18 @@
         "食堂",
         "餐饮",
         "学生餐厅",
-        "快餐"
+        "快餐",
+        "校园生活"
       ],
-      "description": "仙林校区生活区核心餐饮点，作为 M27X 美食推荐和多目标路线演示目标。",
+      "keywords": [
+        "南京大学九食堂",
+        "九食堂",
+        "仙林食堂",
+        "学生食堂",
+        "校园生活",
+        "夜宵"
+      ],
+      "description": "九食堂是仙林校区最具代表性的学生食堂之一，覆盖日常三餐、课后补给和生活区聚集场景。",
       "category": "catering",
       "facilities": [
         "早餐",
@@ -513,9 +592,17 @@
         "东区食堂",
         "食堂",
         "餐饮",
+        "学生餐厅",
+        "东区生活"
+      ],
+      "keywords": [
+        "南京大学东区食堂",
+        "东区食堂",
+        "仙林东区餐饮",
+        "食堂",
         "学生餐厅"
       ],
-      "description": "东区教学科研楼群附近的餐饮补充点。",
+      "description": "东区食堂面向教学科研楼群和东区宿舍动线，是仙林东侧更贴近日常上课节奏的餐饮补给点。",
       "category": "catering",
       "facilities": [
         "午餐",
@@ -629,9 +716,17 @@
         "便利店",
         "购物",
         "生活区",
+        "超市",
+        "校园生活"
+      ],
+      "keywords": [
+        "南京大学便利店",
+        "生活区便利店",
+        "仙林便利店",
+        "校园生活",
         "超市"
       ],
-      "description": "西南生活区日用品与简餐补给点。",
+      "description": "生活区便利店靠近宿舍一组团和九食堂，是零食、日用品和夜间补给最常用的生活服务点。",
       "category": "shopping",
       "facilities": [
         "日用品",
@@ -805,9 +900,17 @@
         "左涤江天文台",
         "天文台",
         "地标",
-        "科普"
+        "科普",
+        "摄影"
       ],
-      "description": "仙林校区北部科普与科研地标节点。",
+      "keywords": [
+        "左涤江天文台",
+        "南京大学天文台",
+        "天文台",
+        "科普",
+        "校园地标"
+      ],
+      "description": "左涤江天文台是仙林校区北部兼具科普感和辨识度的代表性地标，适合校史参观与校园摄影线路。",
       "category": "landmark",
       "facilities": [
         "科普",
@@ -889,9 +992,17 @@
         "校史",
         "展示",
         "地标",
-        "参观"
+        "参观",
+        "南大记忆"
       ],
-      "description": "主轴附近的校史展示与参观补充节点。",
+      "keywords": [
+        "南京大学校史展示点",
+        "校史",
+        "南大记忆",
+        "参观",
+        "校园文化"
+      ],
+      "description": "校史展示点位于仙林主轴附近，补充南京大学校史、参观讲解和校园文化导览场景。",
       "category": "landmark",
       "facilities": [
         "展示",
