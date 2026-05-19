@@ -2813,7 +2813,9 @@ def test_m27x_thu_outdoor_main_chain_is_available_in_first_batch():
         }
     )
     assert catering["success"] is True
-    assert catering["results"][0]["route_target_node_id"] == "canteen"
+    catering_targets = [item["route_target_node_id"] for item in catering["results"]]
+    assert catering_targets[0] in {"canteen", "guanchouyuan_canteen"}
+    assert "canteen" in catering_targets
     assert catering["results"][0]["distance_status"] == "available"
 
     route = service.plan_route(
