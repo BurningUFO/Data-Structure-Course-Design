@@ -9774,6 +9774,85 @@ def test_demo_m31b_scu_nearby_queries_use_calibrated_center_name_and_scope():
     print("test_demo_m31b_scu_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
+def test_demo_m31b_ynu_bootstrap_nearby_profiles():
+    service = DemoUIService("YNU")
+    payload = service.get_bootstrap_payload()
+    profiles = payload["controls"]["nearby_profiles"]
+
+    assert payload["site"]["id"] == "YNU"
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 300, 400, 500, 800]
+    assert profiles["library"]["default_radius_m"] == 200.0
+    assert profiles["library"]["default_category"] == "service"
+    assert profiles["teaching_building"]["default_category"] == "service"
+    assert profiles["canteen"]["default_category"] == "service"
+    assert profiles["dormitory_1"]["center_name"] == "云南大学呈贡校区学生宿舍区"
+    assert profiles["dormitory_1"]["default_category"] == "shopping"
+    assert profiles["dormitory_2"]["default_radius_m"] == 200.0
+    assert profiles["dormitory_2"]["default_category"] == "service"
+    assert profiles["central_square"]["default_category"] == "catering"
+    assert profiles["gate_south"]["default_radius_m"] == 400.0
+    assert profiles["gate_south"]["default_category"] == "sports"
+    assert profiles["gymnasium"]["default_category"] == "sports"
+    print("test_demo_m31b_ynu_bootstrap_nearby_profiles passed.")
+
+
+def test_demo_m31b_ynu_nearby_queries_use_calibrated_center_name_and_scope():
+    service = DemoUIService("YNU")
+
+    dormitory_service = service.place_search(
+        {
+            "keyword": "",
+            "category": "service",
+            "center_node_id": "dormitory_2",
+            "radius_m": 200,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        dormitory_service,
+        center_node_id="dormitory_2",
+        radius_m=200,
+        category="service",
+    )
+    assert dormitory_service["metadata"]["nearby"]["center_name"] == "云南大学呈贡校区东区学生公寓"
+    assert dormitory_service["metadata"]["nearby"]["calibration_stage"] == "M31B_YNU"
+    assert dormitory_service["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 200.0
+    assert dormitory_service["metadata"]["nearby"]["calibration_profile"]["default_category"] == "service"
+    assert [item["route_target_node_id"] for item in dormitory_service["results"][:3]] == [
+        "service_center",
+        "administration",
+        "innovation_center",
+    ]
+    assert dormitory_service["results"][0]["nearby_reason"].startswith("距离云南大学呈贡校区东区学生公寓 ")
+
+    gate_south_sports = service.place_search(
+        {
+            "keyword": "",
+            "category": "sports",
+            "center_node_id": "gate_south",
+            "radius_m": 400,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        gate_south_sports,
+        center_node_id="gate_south",
+        radius_m=400,
+        category="sports",
+    )
+    assert gate_south_sports["metadata"]["nearby"]["center_name"] == "云南大学呈贡校区南门"
+    assert gate_south_sports["metadata"]["nearby"]["calibration_stage"] == "M31B_YNU"
+    assert gate_south_sports["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 400.0
+    assert gate_south_sports["metadata"]["nearby"]["calibration_profile"]["default_category"] == "sports"
+    assert [item["route_target_node_id"] for item in gate_south_sports["results"][:3]] == [
+        "gymnasium",
+        "sports_ground",
+        "gymnasium_locker_room_1f",
+    ]
+    assert gate_south_sports["results"][0]["nearby_reason"].startswith("距离云南大学呈贡校区南门 ")
+    print("test_demo_m31b_ynu_nearby_queries_use_calibrated_center_name_and_scope passed.")
+
+
 def test_demo_m31b_hnu_bootstrap_nearby_profiles():
     service = DemoUIService("HNU")
     payload = service.get_bootstrap_payload()
@@ -10989,6 +11068,8 @@ def run_all_tests():
     test_demo_m31b_sysu_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_scu_bootstrap_nearby_profiles()
     test_demo_m31b_scu_nearby_queries_use_calibrated_center_name_and_scope()
+    test_demo_m31b_ynu_bootstrap_nearby_profiles()
+    test_demo_m31b_ynu_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_hnu_bootstrap_nearby_profiles()
     test_demo_m31b_hnu_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_sdu_bootstrap_nearby_profiles()

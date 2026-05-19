@@ -52,7 +52,59 @@
     "indoor_scope": "M30X YNU representative indoor templates and gate_link entry mapping; no real indoor survey data.",
     "indoor_source_template_site": "PKU",
     "transport_calibration_stage": "M31A_YNU",
-    "transport_modes": ["walk", "bike", "mixed"]
+    "transport_modes": ["walk", "bike", "mixed"],
+    "nearby_calibration_stage": "M31B_YNU",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "图书馆查附近优先命中借阅、咨询和自习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "教学楼群查附近优先展示教学服务台、学习角和教师支持空间。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "学生食堂查附近优先命中取餐、调料和自助回收等就餐配套服务。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 200,
+        "default_category": "shopping",
+        "notes": "北侧学生宿舍区查附近优先命中便利补给点，贴合宿舍生活区的日常购物动线。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "东区学生公寓查附近优先命中学生事务、行政与创新服务节点，贴合东侧生活学习复合片区。"
+      },
+      {
+        "center_node_id": "central_square",
+        "default_radius_m": 300,
+        "default_category": "catering",
+        "notes": "中心广场查附近优先展示图书馆咖啡和轻食点，贴合广场停留后的轻餐饮需求。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 400,
+        "default_category": "sports",
+        "notes": "南门查附近优先命中体育馆和田径场，贴合南侧入校后直达运动片区的动线。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "体育馆查附近优先展示更衣、训练和观赛等运动设施。"
+      }
+    ]
   },
   "nodes": [
     {"id": "gate_west", "name": "云南大学呈贡校区西门", "type": "entrance", "is_gate": true, "sub_graph_id": null, "tags": ["校门", "西门", "入口", "呈贡校区", "云大"], "keywords": ["云南大学西门", "云大西门", "呈贡校区西门", "西门", "校门", "入口"], "description": "云南大学呈贡校区西侧入口，连接校园主轴、教学区和城市到达点。", "category": "entrance", "facilities": ["安保"], "open_hours": "24/7", "heat": 86, "rating": 4.6, "source": "m28x_manual_ynu_chenggong_axis_estimate", "needs_review": true, "location": {"lat": 24.8307, "lng": 102.8510}},
