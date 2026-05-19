@@ -236,6 +236,24 @@ M30X_HZAU_CASE = {
         "gymnasium": "indoor_GYMNASIUM",
     }
 }
+M30Y_EXPANSION_CASES = {
+    **M29Y_FIRST_BATCH_CASES,
+    "FDU": M30X_FDU_CASE,
+    "SJTU": M30X_SJTU_CASE,
+    "TONGJI": M30X_TONGJI_CASE,
+    "SEU": M30X_SEU_CASE,
+    "SYSU": M30X_SYSU_CASE,
+    "SCU": M30X_SCU_CASE,
+    "HNU": M30X_HNU_CASE,
+    "SDU": M30X_SDU_CASE,
+    "HUST": M30X_HUST_CASE,
+    "SCUT": M30X_SCUT_CASE,
+    "OUC": M30X_OUC_CASE,
+    "SUDA": M30X_SUDA_CASE,
+    "HIT": M30X_HIT_CASE,
+    "YNU": M30X_YNU_CASE,
+    "HZAU": M30X_HZAU_CASE,
+}
 
 
 def test_demo_bootstrap_contains_map_and_controls():
@@ -2538,6 +2556,178 @@ def test_m30x_hzau_indoor_templates_entry_mapping_and_route_views():
     assert pku_bootstrap["site"]["id"] == "PKU"
     assert pku_bootstrap["map_renderer"] == "leaflet_geo"
     assert pku_bootstrap["map_capabilities"]["indoor_supported_building_count"] >= 20
+
+
+def test_m30y_twenty_campus_indoor_regression_preserves_site_isolation():
+    global_sites = json.loads(Path("data/global_sites.json").read_text(encoding="utf-8"))
+    site_by_id = {item["id"]: item for item in global_sites["sites"]}
+
+    assert len(M30Y_EXPANSION_CASES) == 20
+    assert len(site_by_id) == len(global_sites["sites"])
+    assert "PKU" in site_by_id
+    assert set(M30Y_EXPANSION_CASES) <= set(site_by_id)
+
+    pku_service = DemoUIService("PKU")
+    pku_bootstrap = pku_service.get_bootstrap_payload()
+    pku_geojson = pku_service.get_map_geojson_payload()
+    pku_indoor_floor = pku_service.get_indoor_map_payload("library", "F1")
+
+    assert pku_bootstrap["site"]["id"] == "PKU"
+    assert pku_bootstrap["map_renderer"] == "leaflet_geo"
+    assert pku_bootstrap["map_capabilities"]["indoor_navigation"] is True
+    assert pku_bootstrap["map_capabilities"]["indoor_supported_building_count"] >= 20
+    assert pku_bootstrap["map_capabilities"]["indoor_buildings"] == pku_bootstrap["indoor_buildings"]
+    assert pku_geojson["success"] is True
+    assert pku_geojson["site_id"] == "PKU"
+    assert pku_geojson["stats"]["node_feature_count"] == pku_bootstrap["map"]["node_count"]
+    assert pku_geojson["stats"]["edge_feature_count"] == pku_bootstrap["map"]["edge_count"]
+    assert pku_indoor_floor["success"] is True
+    assert pku_indoor_floor["site_id"] == "PKU"
+    assert pku_indoor_floor["building_id"] == "library"
+    assert pku_indoor_floor["current_floor_id"] == "F1"
+
+    for site_id, case in M30Y_EXPANSION_CASES.items():
+        expected_buildings = case["buildings"]
+        expected_stage = "M29X" if site_id in M29Y_FIRST_BATCH_CASES else "M30X"
+        service = DemoUIService(site_id)
+        bootstrap = service.get_bootstrap_payload()
+        geojson_payload = service.get_map_geojson_payload()
+        outdoor = json.loads(Path(f"data/sites/{site_id}/outdoor.json").read_text(encoding="utf-8"))
+        registry_payload = json.loads(
+            Path(f"data/sites/{site_id}/geo/indoor_building_registry.json").read_text(encoding="utf-8")
+        )
+        registry = registry_payload["buildings"]
+        registry_by_building = {item["building_id"]: item for item in registry}
+        outdoor_nodes = {node["id"]: node for node in outdoor["nodes"]}
+        route_target_ids = [item["id"] for item in bootstrap["route_targets"]]
+
+        assert len(expected_buildings) == 5
+        assert len(set(expected_buildings)) == 5
+        assert len(set(expected_buildings.values())) == 5
+        assert site_by_id[site_id]["is_available"] is True
+        assert site_by_id[site_id]["data_status"] == "available"
+        assert site_by_id[site_id]["sub_graphs"] == ["outdoor", *expected_buildings.values()]
+        assert outdoor["metadata"]["indoor_stage"] == expected_stage
+        assert outdoor["metadata"]["indoor_site_id"] == site_id
+        assert outdoor["metadata"]["indoor_supported_building_count"] == 5
+        assert set(outdoor["metadata"]["indoor_supported_buildings"]) == set(expected_buildings)
+        assert registry_payload["metadata"]["stage"] == expected_stage
+        assert {item["building_id"] for item in registry} == set(expected_buildings)
+        assert len({item["entry_node_id"] for item in registry}) == len(registry)
+        assert len({item["indoor_graph_id"] for item in registry}) == len(registry)
+
+        assert bootstrap["site"]["id"] == site_id
+        assert bootstrap["map_renderer"] == "leaflet_geo"
+        assert bootstrap["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
+        assert bootstrap["map_capabilities"]["indoor_map_endpoint"] == "/api/map/indoor"
+        assert bootstrap["map_capabilities"]["indoor_navigation"] is True
+        assert bootstrap["map_capabilities"]["indoor_supported_building_count"] == 5
+        assert bootstrap["map_capabilities"]["indoor_buildings"] == bootstrap["indoor_buildings"]
+        assert bootstrap["stats"]["indoor_building_count"] == 5
+        assert {item["building_id"] for item in bootstrap["indoor_buildings"]} == set(expected_buildings)
+        assert len(route_target_ids) == len(set(route_target_ids))
+        assert {"library", "lib_reading_room_1", "lib_reading_room_2"} <= set(route_target_ids)
+
+        assert geojson_payload["success"] is True
+        assert geojson_payload["site_id"] == site_id
+        assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
+        assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
+        assert geojson_payload["stats"]["feature_count"] > 0
+
+        for building_id, indoor_graph_id in expected_buildings.items():
+            entry = registry_by_building[building_id]
+            outdoor_entry = outdoor_nodes[entry["entry_node_id"]]
+            graph = json.loads(Path(f"data/sites/{site_id}/{indoor_graph_id}.json").read_text(encoding="utf-8"))
+            graph_node_ids = [node["id"] for node in graph["nodes"]]
+            graph_floor_ids = {node.get("floor_id") for node in graph["nodes"] if node.get("floor_id")}
+            entry_floor_ids = list(entry["floor_ids"])
+
+            assert entry["indoor_graph_id"] == indoor_graph_id
+            assert entry_floor_ids
+            assert len(entry_floor_ids) == len(set(entry_floor_ids))
+            assert entry["default_floor_id"] in entry_floor_ids
+            assert outdoor_entry["is_gate"] is True
+            assert outdoor_entry["sub_graph_id"] == indoor_graph_id
+            assert outdoor_entry["indoor_supported"] is True
+            assert outdoor_entry["indoor_graph_id"] == indoor_graph_id
+            assert outdoor_entry["indoor_entry_node_id"] == entry["entry_node_id"]
+            assert graph["graph_id"] == f"{site_id}_{indoor_graph_id}"
+            assert graph["graph_type"] == "indoor"
+            assert graph["building_id"] == building_id
+            assert graph["building_name"] == entry["building_name"]
+            assert graph["floor_ids"] == entry_floor_ids
+            assert graph["default_floor_id"] == entry["default_floor_id"]
+            assert set(entry_floor_ids) <= graph_floor_ids
+            assert len(graph_node_ids) == len(set(graph_node_ids))
+            assert len([node for node in graph["nodes"] if node.get("is_gate")]) == 1
+
+            default_floor = service.get_indoor_map_payload(building_id)
+            assert default_floor["success"] is True
+            assert default_floor["site_id"] == site_id
+            assert default_floor["building_id"] == building_id
+            assert default_floor["indoor_graph_id"] == indoor_graph_id
+            assert default_floor["current_floor_id"] == entry["default_floor_id"]
+            assert {item["id"] for item in default_floor["available_floors"]} == set(entry_floor_ids)
+            assert default_floor["stats"]["node_count"] > 0
+            assert default_floor["stats"]["zone_count"] > 0
+            assert any(node["is_gate"] for node in default_floor["nodes"])
+
+            for floor_id in entry_floor_ids:
+                floor_payload = service.get_indoor_map_payload(building_id, floor_id)
+                assert floor_payload["success"] is True
+                assert floor_payload["current_floor_id"] == floor_id
+                assert floor_payload["stats"]["node_count"] > 0
+                assert all(node["floor_id"] == floor_id for node in floor_payload["nodes"])
+
+            invalid_floor = service.get_indoor_map_payload(building_id, "__m30y_missing_floor__")
+            assert invalid_floor["success"] is False
+
+        indoor_route = service.plan_route(
+            {
+                "start_node_id": "library",
+                "target_node_id": "lib_reading_room_1",
+                "strategy": "shortest_distance",
+                "transport_mode": "walk",
+            }
+        )
+        assert indoor_route["success"] is True
+        assert indoor_route["site_id"] == site_id
+        assert indoor_route["ui"]["default_route_view"] == "indoor:library:F1"
+        assert {view["id"] for view in indoor_route["ui"]["available_route_views"]} >= {
+            "outdoor",
+            "indoor:library:F1",
+        }
+
+        outdoor_to_indoor_route = service.plan_route(
+            {
+                "start_node_id": "gate_west",
+                "target_node_id": "lib_reading_room_2",
+                "strategy": "shortest_distance",
+                "transport_mode": "walk",
+            }
+        )
+        assert outdoor_to_indoor_route["success"] is True
+        assert outdoor_to_indoor_route["site_id"] == site_id
+        assert outdoor_to_indoor_route["ui"]["default_route_view"] == "outdoor"
+        assert outdoor_to_indoor_route["ui"]["route_geojson"] is not None
+        assert any(
+            view["id"] == "indoor:library:F2"
+            for view in outdoor_to_indoor_route["ui"]["available_route_views"]
+        )
+
+        multi_route = service.plan_multi_route(
+            {
+                "start_node_id": "gate_west",
+                "target_node_ids": ["library", "canteen"],
+                "strategy": "shortest_distance",
+                "transport_mode": "walk",
+                "return_to_start": False,
+            }
+        )
+        assert multi_route["success"] is True
+        assert multi_route["site_id"] == site_id
+        assert multi_route["route_type"] == "multi_target"
+        assert multi_route["ui"]["route_geojson"] is not None
 
 
 def test_m27x_thu_outdoor_main_chain_is_available_in_first_batch():
@@ -8500,6 +8690,7 @@ def run_all_tests():
     test_m28x_hzau_outdoor_main_chain_is_available_in_remaining_batch()
     test_m28x_hzau_frontend_switch_contract_and_leaflet_data()
     test_m30x_hzau_indoor_templates_entry_mapping_and_route_views()
+    test_m30y_twenty_campus_indoor_regression_preserves_site_isolation()
     test_demo_osm_edge_matches_file_records_m14_white_road_edges()
     test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
     test_demo_map_geojson_reports_geometry_coverage_stats()
