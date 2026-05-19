@@ -15,9 +15,9 @@
 - `current_manager`: `L2-05`
 - `last_completed_manager`: `L2-04`
 - `next_manager`: `L2-06`
-- `last_commit`: `16a8160`
-- `last_verification`: `py -m pytest -q`，194 passed；M30X SCU 专项回归通过，实现提交仅包含本次 SCU 室内数据与测试
-- `last_update_note`: `M30X SCU 已完成，L2-05 继续等待下一所校园室内扩展`
+- `last_commit`: `53f10ae`
+- `last_verification`: `py -m pytest -q`，195 passed；M30X HNU 专项回归通过，暂存区仅提交本次 HNU 室内数据与测试
+- `last_update_note`: `M30X HNU 已完成，L2-05 继续等待下一所校园室内扩展`
 
 ## 二级经理状态总表
 
@@ -27,7 +27,7 @@
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `completed` | `10/10` | `fef62cc` | 试点校 + 首批 5 校室外；M27Y 无实现变更 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
-| L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `in_progress` | `6/16` | `16a8160` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU 已完成；剩余 9 校室内 + M30Y |
+| L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `in_progress` | `7/16` | `53f10ae` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU 已完成；剩余 8 校室内 + M30Y |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校交通方式 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
@@ -101,7 +101,7 @@
 - [x] `M30X SEU`
 - [x] `M30X SYSU`
 - [x] `M30X SCU`
-- [ ] `M30X HNU`
+- [x] `M30X HNU`
 - [ ] `M30X SDU`
 - [ ] `M30X HUST`
 - [ ] `M30X SCUT`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 08:43] manager=L2-05 child=M30X HNU status=completed commit=53f10ae verify=`py -m pytest -q` 195 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_hnu or m28x_hnu" -q` 3 passed note=新增 HNU 岳麓山校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、天马学生公寓、德智园学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
 - [2026-05-19 08:30] manager=L2-05 child=M30X SCU status=completed commit=16a8160 verify=`py -m pytest -q` 194 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_scu or m28x_scu" -q` 5 passed note=新增 SCU 望江校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、基础教学楼、西区学生宿舍、学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
 - [2026-05-19 08:15] manager=L2-05 child=M30X SYSU status=completed commit=80be9d3 verify=`py -m pytest -q` 193 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_sysu or m28x_sysu" -q` 3 passed note=新增 SYSU 广州校区南校园 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼、宿舍、西区食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
 - [2026-05-19 07:58] manager=L2-05 child=M30X SEU status=completed commit=029de5a verify=`py -m pytest -q` 192 passed; focused M30X SEU regression passed in tertiary execution note=新增 SEU 九龙湖校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼、宿舍、桃园食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
