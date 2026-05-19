@@ -20,6 +20,58 @@
       "南门和西门保留步行短接，并补充非机动车绕行接驳，便于展示 walk、bike、mixed 的可解释路线差异。",
       "二源广场、南京大学鼎、洗手间和入楼 gate_link 继续按步行进入；室内路线保持步行语义。"
     ],
+    "nearby_calibration_stage": "M31B_NJU",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "杜厦图书馆查附近优先命中自助借还、咨询台和近侧洗手间等馆内服务设施。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "仙林教学楼周边优先命中教学服务台、学习支持点和近侧洗手间。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "九食堂查附近优先展示取餐、回收和就餐配套等餐饮服务设施。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 300,
+        "default_category": "shopping",
+        "notes": "宿舍一组团默认扩到 300 m，优先命中便利店等生活补给点。"
+      },
+      {
+        "center_node_id": "service_center",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "敬文学生活动中心查附近优先命中邮政、校园卡和生活服务设施。"
+      },
+      {
+        "center_node_id": "er_yuan_square",
+        "default_radius_m": 200,
+        "default_category": "landmark",
+        "notes": "二源广场作为游览中心时，优先命中南京大学鼎等近侧校园地标。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 800,
+        "default_category": "education",
+        "notes": "南门面向到课动线时默认放大到 800 m，避免教学区附近查询为空。"
+      },
+      {
+        "center_node_id": "sports_center",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "方肇周体育馆查附近优先展示更衣、票务和训练等运动配套设施。"
+      }
+    ],
     "scope": "M27X NJU outdoor batch graph with M29X representative-building indoor templates: Xianlin campus gates, main-road waypoints, core POI, search/place/catering targets, single/multi-route demo targets, and five indoor entry mappings.",
     "capabilities": [
       "leaflet_geojson",
