@@ -31,6 +31,13 @@
       "shopping",
       "restroom"
     ],
+    "transport_calibration_stage": "M31A_THU",
+    "transport_modes": ["walk", "bike", "mixed"],
+    "transport_notes": [
+      "清华主路按步行与自行车共享通行估时。",
+      "东南门和南区入口保留步行短接，并补充非机动车绕行接驳，便于展示 walk、bike、mixed 的可解释差异。",
+      "室内与入楼 gate_link 继续保持步行语义。"
+    ],
     "coordinate_sources": [
       "TsinghuaCoordinates public building centroids, 2014 Google Earth seed data",
       "OpenStreetMap Nominatim west-gate lookup",
@@ -522,8 +529,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "清华大学西门 至 清华路西段路口",
-      "description": "M26A 清华大学主路骨架边，后续阶段可继续校准真实道路几何。"
+      "description": "清华西门至清华路主轴的步骑共享段，骑行按校内主路速度估时。"
     },
     {
       "from": "road_west_axis",
@@ -534,8 +543,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "清华路西段路口 至 清华大学西门",
-      "description": "M26A 清华大学主路骨架边，后续阶段可继续校准真实道路几何。"
+      "description": "清华西门至清华路主轴的步骑共享段，骑行按校内主路速度估时。"
     },
     {
       "from": "road_west_axis",
@@ -546,8 +557,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "清华路西段路口 至 二校门主轴路口",
-      "description": "M26A 清华路东西向主路骨架边。"
+      "description": "清华路东西向主路，步行与自行车共享通行，长距离骑行更省时。"
     },
     {
       "from": "road_second_gate",
@@ -558,8 +571,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "二校门主轴路口 至 清华路西段路口",
-      "description": "M26A 清华路东西向主路骨架边。"
+      "description": "清华路东西向主路，步行与自行车共享通行，长距离骑行更省时。"
     },
     {
       "from": "road_second_gate",
@@ -570,8 +585,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "二校门主轴路口 至 主楼中轴路口",
-      "description": "M26A 二校门至中央主楼方向主路骨架边。"
+      "description": "二校门至中央主楼方向的中轴共享路段，混合交通可在此切换为骑行估时。"
     },
     {
       "from": "road_central_axis",
@@ -582,8 +599,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "主楼中轴路口 至 二校门主轴路口",
-      "description": "M26A 二校门至中央主楼方向主路骨架边。"
+      "description": "二校门至中央主楼方向的中轴共享路段，混合交通可在此切换为骑行估时。"
     },
     {
       "from": "road_central_axis",
@@ -594,8 +613,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "主楼中轴路口 至 东南门内侧路口",
-      "description": "M26A 中央主楼至东南门方向主路骨架边。"
+      "description": "中央主楼至东南门方向的步骑共享主路，适合清华东南侧进出校园。"
     },
     {
       "from": "road_east_gate",
@@ -606,8 +627,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "东南门内侧路口 至 主楼中轴路口",
-      "description": "M26A 中央主楼至东南门方向主路骨架边。"
+      "description": "中央主楼至东南门方向的步骑共享主路，适合清华东南侧进出校园。"
     },
     {
       "from": "road_east_gate",
@@ -616,10 +639,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "campus_main_road",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.25},
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "东南门内侧路口 至 清华大学东南门",
-      "description": "M26A 东南门入口接驳边。"
+      "description": "清华东南门步行短接，骑行模式需走东南门非机动车绕行接驳。"
     },
     {
       "from": "gate_east",
@@ -628,10 +653,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "campus_main_road",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.25},
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "清华大学东南门 至 东南门内侧路口",
-      "description": "M26A 东南门入口接驳边。"
+      "description": "清华东南门步行短接，骑行模式需走东南门非机动车绕行接驳。"
     },
     {
       "from": "road_second_gate",
@@ -642,8 +669,10 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "二校门主轴路口 至 南区入口内侧路口",
-      "description": "M26A 南区入口支路骨架边。"
+      "description": "二校门至南区入口方向的校内支路，步行和自行车均可通行。"
     },
     {
       "from": "road_south_gate",
@@ -654,8 +683,10 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "南区入口内侧路口 至 二校门主轴路口",
-      "description": "M26A 南区入口支路骨架边。"
+      "description": "二校门至南区入口方向的校内支路，步行和自行车均可通行。"
     },
     {
       "from": "road_south_gate",
@@ -664,10 +695,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "campus_branch_road",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.25},
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "南区入口内侧路口 至 清华大学南区入口",
-      "description": "M26A 南区入口接驳边。"
+      "description": "清华南区入口步行短接；自行车按校门外侧非机动车接驳绕行。"
     },
     {
       "from": "gate_south",
@@ -676,10 +709,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "campus_branch_road",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.25},
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "清华大学南区入口 至 南区入口内侧路口",
-      "description": "M26A 南区入口接驳边。"
+      "description": "清华南区入口步行短接；自行车按校门外侧非机动车接驳绕行。"
     },
     {
       "from": "road_second_gate",
@@ -690,8 +725,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "二校门主轴路口 至 学堂路南段路口",
-      "description": "M26A 学堂路南北向主路骨架边。"
+      "description": "二校门至学堂路南段的主路，适合由中轴步行转为清华校内骑行。"
     },
     {
       "from": "road_xuetang_south",
@@ -702,8 +739,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 二校门主轴路口",
-      "description": "M26A 学堂路南北向主路骨架边。"
+      "description": "二校门至学堂路南段的主路，适合由中轴步行转为清华校内骑行。"
     },
     {
       "from": "road_xuetang_south",
@@ -714,8 +753,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 紫荆区主路路口",
-      "description": "M26A 学堂路至紫荆学生区主路骨架边。"
+      "description": "学堂路通往紫荆学生区的长距离共享主路，骑行时间优势明显。"
     },
     {
       "from": "road_zijing_axis",
@@ -726,8 +767,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "紫荆区主路路口 至 学堂路南段路口",
-      "description": "M26A 学堂路至紫荆学生区主路骨架边。"
+      "description": "学堂路通往紫荆学生区的长距离共享主路，骑行时间优势明显。"
     },
     {
       "from": "road_zijing_axis",
@@ -738,8 +781,10 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "紫荆区主路路口 至 清华大学北区入口",
-      "description": "M26A 北区入口接驳边。"
+      "description": "紫荆学生区至北区入口的步骑共享接驳段。"
     },
     {
       "from": "gate_north",
@@ -750,8 +795,10 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 4.6},
+      "transport_semantics": "shared_walk_bike",
       "name": "清华大学北区入口 至 紫荆区主路路口",
-      "description": "M26A 北区入口接驳边。"
+      "description": "紫荆学生区至北区入口的步骑共享接驳段。"
     },
     {
       "from": "road_xuetang_south",
@@ -762,8 +809,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.2},
+      "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 清华大学图书馆",
-      "description": "M26A 图书馆 POI 接驳边。"
+      "description": "清华图书馆外侧接驳段，可步行进入，也可骑行到馆外停放区域后入楼。"
     },
     {
       "from": "library",
@@ -774,8 +823,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.2},
+      "transport_semantics": "shared_walk_bike",
       "name": "清华大学图书馆 至 学堂路南段路口",
-      "description": "M26A 图书馆 POI 接驳边。"
+      "description": "清华图书馆外侧接驳段，可步行进入，也可骑行到馆外停放区域后入楼。"
     },
     {
       "from": "road_xuetang_south",
@@ -786,8 +837,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.0},
+      "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 清华大学大礼堂",
-      "description": "M26A 大礼堂 POI 接驳边。"
+      "description": "清华大礼堂外侧接驳段，靠近校史参观区域，骑行按低速共享估时。"
     },
     {
       "from": "auditorium",
@@ -798,8 +851,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.0},
+      "transport_semantics": "shared_walk_bike",
       "name": "清华大学大礼堂 至 学堂路南段路口",
-      "description": "M26A 大礼堂 POI 接驳边。"
+      "description": "清华大礼堂外侧接驳段，靠近校史参观区域，骑行按低速共享估时。"
     },
     {
       "from": "road_second_gate",
@@ -808,10 +863,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "poi_access",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.25},
+      "transport_semantics": "pedestrian_landmark_access",
       "name": "二校门主轴路口 至 二校门",
-      "description": "M26A 二校门地标接驳边。"
+      "description": "二校门地标近距离参观点，按步行进入，不作为骑行穿越边。"
     },
     {
       "from": "second_gate",
@@ -820,10 +877,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "poi_access",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.25},
+      "transport_semantics": "pedestrian_landmark_access",
       "name": "二校门 至 二校门主轴路口",
-      "description": "M26A 二校门地标接驳边。"
+      "description": "二校门地标近距离参观点，按步行进入，不作为骑行穿越边。"
     },
     {
       "from": "road_central_axis",
@@ -834,8 +893,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.0},
+      "transport_semantics": "shared_walk_bike",
       "name": "主楼中轴路口 至 中央主楼",
-      "description": "M26A 中央主楼 POI 接驳边。"
+      "description": "中央主楼外侧接驳段，步行和低速骑行均可抵达楼前区域。"
     },
     {
       "from": "main_building",
@@ -846,8 +907,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.0},
+      "transport_semantics": "shared_walk_bike",
       "name": "中央主楼 至 主楼中轴路口",
-      "description": "M26A 中央主楼 POI 接驳边。"
+      "description": "中央主楼外侧接驳段，步行和低速骑行均可抵达楼前区域。"
     },
     {
       "from": "road_central_axis",
@@ -882,8 +945,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.2},
+      "transport_semantics": "shared_walk_bike",
       "name": "紫荆区主路路口 至 桃李园",
-      "description": "M26A 桃李园餐饮 POI 接驳边。"
+      "description": "桃李园外侧接驳段，支持从紫荆区主路步行或低速骑行到达。"
     },
     {
       "from": "canteen",
@@ -894,8 +959,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.2},
+      "transport_semantics": "shared_walk_bike",
       "name": "桃李园 至 紫荆区主路路口",
-      "description": "M26A 桃李园餐饮 POI 接驳边。"
+      "description": "桃李园外侧接驳段，支持从紫荆区主路步行或低速骑行到达。"
     },
     {
       "from": "road_zijing_axis",
@@ -930,8 +997,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.2},
+      "transport_semantics": "shared_walk_bike",
       "name": "紫荆区主路路口 至 紫荆操场",
-      "description": "M26A 紫荆操场 POI 接驳边。"
+      "description": "紫荆操场外侧接驳段，适合南区步行入校后在主路切换骑行。"
     },
     {
       "from": "sports_ground",
@@ -942,8 +1011,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.2},
+      "transport_semantics": "shared_walk_bike",
       "name": "紫荆操场 至 紫荆区主路路口",
-      "description": "M26A 紫荆操场 POI 接驳边。"
+      "description": "紫荆操场外侧接驳段，适合南区步行入校后在主路切换骑行。"
     },
     {
       "from": "road_zijing_axis",
@@ -1002,8 +1073,10 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.0},
+      "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 图书馆区公共洗手间",
-      "description": "M26A 图书馆区公共洗手间 POI 接驳边。"
+      "description": "图书馆区公共洗手间接驳段，靠近步行密集区域，骑行按低速共享估时。"
     },
     {
       "from": "restroom_main",
@@ -1014,8 +1087,74 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.25, "bike": 3.0},
+      "transport_semantics": "shared_walk_bike",
       "name": "图书馆区公共洗手间 至 学堂路南段路口",
-      "description": "M26A 图书馆区公共洗手间 POI 接驳边。"
+      "description": "图书馆区公共洗手间接驳段，靠近步行密集区域，骑行按低速共享估时。"
+    },
+    {
+      "from": "gate_east",
+      "to": "road_east_gate",
+      "distance": 900.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": ["bike"],
+      "transport_speeds": {"bike": 4.8},
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "thu_east_gate_bike_detour",
+      "source": "m31a_thu_transport_calibration",
+      "name": "清华东南门非机动车绕行接驳",
+      "description": "东南门自行车模式使用的绕行接驳段；步行用户走校门短接，短距离前往主楼时步行更合适。"
+    },
+    {
+      "from": "road_east_gate",
+      "to": "gate_east",
+      "distance": 900.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": ["bike"],
+      "transport_speeds": {"bike": 4.8},
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "thu_east_gate_bike_detour",
+      "source": "m31a_thu_transport_calibration",
+      "name": "清华东南门非机动车绕行接驳",
+      "description": "东南门自行车模式使用的绕行接驳段；步行用户走校门短接，短距离前往主楼时步行更合适。"
+    },
+    {
+      "from": "gate_south",
+      "to": "road_south_gate",
+      "distance": 240.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": ["bike"],
+      "transport_speeds": {"bike": 4.8},
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "thu_south_gate_bike_detour",
+      "source": "m31a_thu_transport_calibration",
+      "name": "清华南区入口非机动车绕行接驳",
+      "description": "南区入口自行车模式使用的绕行接驳段；mixed 会先走步行短接，再在校内主路切换为骑行。"
+    },
+    {
+      "from": "road_south_gate",
+      "to": "gate_south",
+      "distance": 240.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": ["bike"],
+      "transport_speeds": {"bike": 4.8},
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "thu_south_gate_bike_detour",
+      "source": "m31a_thu_transport_calibration",
+      "name": "清华南区入口非机动车绕行接驳",
+      "description": "南区入口自行车模式使用的绕行接驳段；mixed 会先走步行短接，再在校内主路切换为骑行。"
     }
   ]
 }
