@@ -9134,6 +9134,67 @@ def test_demo_m31b_thu_nearby_queries_use_calibrated_center_name_and_scope():
     print("test_demo_m31b_thu_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
+def test_demo_m31b_whu_bootstrap_nearby_profiles():
+    service = DemoUIService("WHU")
+    payload = service.get_bootstrap_payload()
+    profiles = payload["controls"]["nearby_profiles"]
+
+    assert payload["site"]["id"] == "WHU"
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 300, 500, 600, 800]
+    assert profiles["library"]["default_radius_m"] == 200.0
+    assert profiles["library"]["default_category"] == "service"
+    assert profiles["dormitory_1"]["center_name"] == "桂园学生宿舍"
+    assert profiles["dormitory_1"]["default_category"] == "catering"
+    assert profiles["main_arch"]["default_category"] == "service"
+    assert profiles["old_library"]["default_radius_m"] == 600.0
+    print("test_demo_m31b_whu_bootstrap_nearby_profiles passed.")
+
+
+def test_demo_m31b_whu_nearby_queries_use_calibrated_center_name_and_scope():
+    service = DemoUIService("WHU")
+
+    dorm_catering = service.place_search(
+        {
+            "keyword": "",
+            "category": "catering",
+            "center_node_id": "dormitory_1",
+            "radius_m": 200,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        dorm_catering,
+        center_node_id="dormitory_1",
+        radius_m=200,
+        category="catering",
+    )
+    assert dorm_catering["metadata"]["nearby"]["center_name"] == "桂园学生宿舍"
+    assert dorm_catering["metadata"]["nearby"]["calibration_stage"] == "M31B_WHU"
+    assert dorm_catering["metadata"]["nearby"]["calibration_profile"]["default_category"] == "catering"
+    assert dorm_catering["results"][0]["route_target_node_id"] == "canteen"
+    assert dorm_catering["results"][0]["nearby_reason"].startswith("距离桂园学生宿舍 ")
+
+    old_library_catering = service.place_search(
+        {
+            "keyword": "",
+            "category": "catering",
+            "center_node_id": "old_library",
+            "radius_m": 600,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        old_library_catering,
+        center_node_id="old_library",
+        radius_m=600,
+        category="catering",
+    )
+    assert old_library_catering["metadata"]["nearby"]["center_name"] == "武汉大学老图书馆"
+    assert old_library_catering["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 600.0
+    assert old_library_catering["results"][0]["route_target_node_id"] == "canteen"
+    print("test_demo_m31b_whu_nearby_queries_use_calibrated_center_name_and_scope passed.")
+
+
 def test_demo_main_query_recommend_route_chains_remain_available():
     service = DemoUIService("PKU")
 
@@ -9834,6 +9895,8 @@ def run_all_tests():
     test_demo_m22_fixed_nearby_facility_scenarios()
     test_demo_m31b_thu_bootstrap_nearby_profiles()
     test_demo_m31b_thu_nearby_queries_use_calibrated_center_name_and_scope()
+    test_demo_m31b_whu_bootstrap_nearby_profiles()
+    test_demo_m31b_whu_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()

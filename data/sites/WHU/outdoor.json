@@ -38,6 +38,52 @@
       "牌楼正门和南侧入口保留步行短接，并补充非机动车绕行接驳，便于展示 walk、bike、mixed 的路线差异。",
       "室内与入楼 gate_link 继续保持步行语义，不开放纯自行车入楼。"
     ],
+    "nearby_calibration_stage": "M31B_WHU",
+    "nearby_radius_options": [200, 300, 500, 600, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "图书馆总馆周边查附近优先命中自助借还、咨询台和馆内洗手间。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "法学院周边优先命中服务台、学习角和近侧洗手间。"
+      },
+      {
+        "center_node_id": "wanlin_museum",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "万林艺术博物馆周边优先展示票务、急救和展览服务设施。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "桂园食堂查附近优先展示餐盘回收、调料区和自助取餐等餐饮服务设施。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 200,
+        "default_category": "catering",
+        "notes": "桂园宿舍区查附近优先引导到最近食堂和生活补给点，适合宿舍生活场景。"
+      },
+      {
+        "center_node_id": "main_arch",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "牌楼查附近优先展示正门内侧的综合事务服务点，适合作为游客入校后的首个服务查询中心。"
+      },
+      {
+        "center_node_id": "old_library",
+        "default_radius_m": 600,
+        "default_category": "catering",
+        "notes": "老图书馆位于樱顶高点，默认放大到 600 m 以覆盖桂园餐饮补给，避免小半径下无结果。"
+      }
+    ],
     "coordinate_sources": [
       "Public WHU POI coordinate seeds for library, old library, Wanlin museum, Fengyuan area, Meiyuan canteen, clinic, and information center",
       "M27X manual Luojia campus-axis estimates for gates, road waypoints, dormitory, catering, service, shopping, and restroom access nodes"
