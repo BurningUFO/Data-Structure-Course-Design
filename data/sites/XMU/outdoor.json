@@ -20,6 +20,52 @@
         "西村校门与白城校门保留步行短接，并补充非机动车绕行接驳，便于展示 walk、bike、mixed 的可解释差异。",
         "芙蓉湖、嘉庚楼群、建南大礼堂、芙蓉隧道等近距离参观点继续按步行进入；室内与入楼 gate_link 保持步行语义。"
       ],
+      "nearby_calibration_stage": "M31B_XMU",
+      "nearby_radius_options": [200, 300, 400, 500, 800],
+      "nearby_profiles": [
+        {
+          "center_node_id": "library",
+          "default_radius_m": 200,
+          "default_category": "service",
+          "notes": "图书馆查附近优先命中自助借还、咨询服务和馆内近侧洗手间。"
+        },
+        {
+          "center_node_id": "teaching_building",
+          "default_radius_m": 200,
+          "default_category": "service",
+          "notes": "南强二教学楼周边优先命中教学服务台、共享学习区和近侧洗手间。"
+        },
+        {
+          "center_node_id": "canteen",
+          "default_radius_m": 200,
+          "default_category": "service",
+          "notes": "芙蓉餐厅查附近优先展示餐盘回收、就餐服务台和近侧配套服务点。"
+        },
+        {
+          "center_node_id": "dormitory_1",
+          "default_radius_m": 300,
+          "default_category": "catering",
+          "notes": "芙蓉学生公寓默认扩到 300 m 以稳定覆盖芙蓉餐厅，贴合宿舍生活场景。"
+        },
+        {
+          "center_node_id": "nanguang_dormitory",
+          "default_radius_m": 200,
+          "default_category": "shopping",
+          "notes": "南光学生公寓优先命中便利服务点，再扩展到餐厅和生活配套。"
+        },
+        {
+          "center_node_id": "gate_south",
+          "default_radius_m": 200,
+          "default_category": "restroom",
+          "notes": "白城校门作为海边入口时，默认先查 200 m 内洗手间，保证到访动线有明确服务落点。"
+        },
+        {
+          "center_node_id": "sports_ground",
+          "default_radius_m": 200,
+          "default_category": "sports",
+          "notes": "上弦场查附近优先展示更衣、器材和票务等运动配套设施。"
+        }
+      ],
       "scope": "M27X XMU outdoor batch graph: Siming campus gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. Indoor graphs are intentionally not declared in this stage.",
       "capabilities": [
         "leaflet_geojson",
