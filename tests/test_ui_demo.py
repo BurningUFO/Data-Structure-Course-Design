@@ -9381,6 +9381,69 @@ def test_demo_m31b_nju_nearby_queries_use_calibrated_center_name_and_scope():
     print("test_demo_m31b_nju_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
+def test_demo_m31b_fdu_bootstrap_nearby_profiles():
+    service = DemoUIService("FDU")
+    payload = service.get_bootstrap_payload()
+    profiles = payload["controls"]["nearby_profiles"]
+
+    assert payload["site"]["id"] == "FDU"
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 300, 400, 500, 800]
+    assert profiles["library"]["default_radius_m"] == 200.0
+    assert profiles["library"]["default_category"] == "service"
+    assert profiles["dormitory_1"]["center_name"] == "复旦大学邯郸校区南区学生宿舍"
+    assert profiles["dormitory_1"]["default_category"] == "shopping"
+    assert profiles["dormitory_2"]["default_category"] == "catering"
+    assert profiles["gate_south"]["default_category"] == "landmark"
+    assert profiles["guanghua_tower"]["default_radius_m"] == 200.0
+    assert profiles["gymnasium"]["default_category"] == "sports"
+    print("test_demo_m31b_fdu_bootstrap_nearby_profiles passed.")
+
+
+def test_demo_m31b_fdu_nearby_queries_use_calibrated_center_name_and_scope():
+    service = DemoUIService("FDU")
+
+    dorm_shopping = service.place_search(
+        {
+            "keyword": "",
+            "category": "shopping",
+            "center_node_id": "dormitory_1",
+            "radius_m": 500,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        dorm_shopping,
+        center_node_id="dormitory_1",
+        radius_m=500,
+        category="shopping",
+    )
+    assert dorm_shopping["metadata"]["nearby"]["center_name"] == "复旦大学邯郸校区南区学生宿舍"
+    assert dorm_shopping["metadata"]["nearby"]["calibration_stage"] == "M31B_FDU"
+    assert dorm_shopping["metadata"]["nearby"]["calibration_profile"]["default_category"] == "shopping"
+    assert dorm_shopping["results"][0]["route_target_node_id"] == "convenience_store"
+    assert dorm_shopping["results"][0]["nearby_reason"].startswith("距离复旦大学邯郸校区南区学生宿舍 ")
+
+    gate_south_landmark = service.place_search(
+        {
+            "keyword": "",
+            "category": "landmark",
+            "center_node_id": "gate_south",
+            "radius_m": 300,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        gate_south_landmark,
+        center_node_id="gate_south",
+        radius_m=300,
+        category="landmark",
+    )
+    assert gate_south_landmark["metadata"]["nearby"]["center_name"] == "复旦大学邯郸校区正门"
+    assert gate_south_landmark["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 300.0
+    assert gate_south_landmark["results"][0]["route_target_node_id"] == "guanghua_tower"
+    print("test_demo_m31b_fdu_nearby_queries_use_calibrated_center_name_and_scope passed.")
+
+
 def test_demo_main_query_recommend_route_chains_remain_available():
     service = DemoUIService("PKU")
 
@@ -10089,6 +10152,8 @@ def run_all_tests():
     test_demo_m31b_zju_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_nju_bootstrap_nearby_profiles()
     test_demo_m31b_nju_nearby_queries_use_calibrated_center_name_and_scope()
+    test_demo_m31b_fdu_bootstrap_nearby_profiles()
+    test_demo_m31b_fdu_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()

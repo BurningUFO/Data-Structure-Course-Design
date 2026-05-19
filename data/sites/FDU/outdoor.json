@@ -20,6 +20,58 @@
       "正门和西门保留步行短接，并补充非机动车绕行接驳，用于区分 walk、bike、mixed 的路线表现。",
       "图书馆、教学楼、食堂等入楼和室内 gate_link 继续按步行进入；mixed 在室外可骑行，进入建筑后保持步行语义。"
     ],
+    "nearby_calibration_stage": "M31B_FDU",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "文科图书馆查附近优先命中自助借还、咨询台和近侧馆内服务设施。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "第三教学楼周边优先命中教学服务台、学习支持点和近侧洗手间。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "南区食堂查附近优先展示取餐、调料和就餐配套等餐饮服务设施。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 500,
+        "default_category": "shopping",
+        "notes": "南区学生宿舍查附近优先命中便利服务点，突出生活补给与校园卡配套。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 200,
+        "default_category": "catering",
+        "notes": "北区学生公寓查附近优先命中北区食堂，贴合宿舍区就餐动线。"
+      },
+      {
+        "center_node_id": "guanghua_tower",
+        "default_radius_m": 200,
+        "default_category": "catering",
+        "notes": "光华楼查附近优先命中咖啡与轻食服务点，贴合会客和课间停留场景。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 300,
+        "default_category": "landmark",
+        "notes": "邯郸校区正门查附近优先命中光华楼等校园地标，适合访客快速定位。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "体育馆查附近优先展示更衣、球场和训练等运动设施。"
+      }
+    ],
     "scope": "M28X FDU outdoor graph: Handan campus gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. Indoor graphs are intentionally not declared in this stage.",
     "capabilities": [
       "leaflet_geojson",
