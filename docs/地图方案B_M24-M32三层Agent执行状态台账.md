@@ -17,7 +17,7 @@
 - `next_manager`: `L2-09`
 - `last_commit`: `5c487a9`
 - `last_verification`: `git diff --cached --name-status` empty；`py -m pytest -q`，325 passed
-- `last_update_note`: `一级总管复核 L2-07 completed 20/20 通过；准备按 /fast off 调度 L2-08`
+- `last_update_note`: `L2-08 开始执行 20 校兴趣推荐校准；当前调用 M31C THU`
 
 ## 二级经理状态总表
 
