@@ -2146,6 +2146,181 @@ class TestRouting(unittest.TestCase):
             all("非机动车绕行接驳" in f"{edge.get('name', '')}{edge.get('description', '')}" for edge in bike_gate_detour_edges)
         )
 
+    def test_m31a_scu_transport_calibration_walk_bike_and_mixed(self):
+        router = Router(GraphLoader.load_site_graph("SCU"))
+
+        south_to_teaching_axis_walk = router.query_routing(
+            "gate_south",
+            "road_teaching_axis",
+            strategy="shortest_time",
+            transport_mode="walk",
+            site_id="SCU",
+        )
+        south_to_teaching_axis_bike = router.query_routing(
+            "gate_south",
+            "road_teaching_axis",
+            strategy="shortest_time",
+            transport_mode="bike",
+            site_id="SCU",
+        )
+        self.assertTrue(south_to_teaching_axis_walk["success"])
+        self.assertTrue(south_to_teaching_axis_bike["success"])
+        self.assertLess(
+            south_to_teaching_axis_walk["total_weight"],
+            south_to_teaching_axis_bike["total_weight"],
+        )
+        self.assertEqual(
+            {step["transport_mode_used"] for step in south_to_teaching_axis_walk["path_steps"]},
+            {"walk"},
+        )
+        self.assertEqual(
+            {step["transport_mode_used"] for step in south_to_teaching_axis_bike["path_steps"]},
+            {"bike"},
+        )
+        self.assertEqual(south_to_teaching_axis_bike["path_steps"][0]["edge_type"], "bike_lane")
+        self.assertIn(
+            "南门非机动车绕行接驳",
+            south_to_teaching_axis_bike["path_steps"][0]["edge_name"],
+        )
+
+        south_to_sports_walk = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="walk",
+            site_id="SCU",
+        )
+        south_to_sports_bike = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="bike",
+            site_id="SCU",
+        )
+        south_to_sports_mixed = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="mixed",
+            site_id="SCU",
+        )
+        self.assertTrue(south_to_sports_walk["success"])
+        self.assertTrue(south_to_sports_bike["success"])
+        self.assertTrue(south_to_sports_mixed["success"])
+        self.assertLess(south_to_sports_bike["total_weight"], south_to_sports_walk["total_weight"])
+        self.assertLess(south_to_sports_mixed["total_weight"], south_to_sports_bike["total_weight"])
+        self.assertEqual(south_to_sports_bike["path_steps"][0]["edge_type"], "bike_lane")
+        self.assertEqual(south_to_sports_bike["path_steps"][-1]["edge_type"], "bike_lane")
+        self.assertIn("运动场非机动车接驳", south_to_sports_bike["path_steps"][-1]["edge_name"])
+        mixed_modes = [step["transport_mode_used"] for step in south_to_sports_mixed["path_steps"]]
+        self.assertIn("walk", mixed_modes)
+        self.assertIn("bike", mixed_modes)
+        self.assertEqual(mixed_modes[0], "walk")
+        self.assertIn("南门步行短接", south_to_sports_mixed["path_steps"][0]["description"])
+
+    def test_m31a_scu_transport_keeps_indoor_segments_walk_only(self):
+        router = Router(GraphLoader.load_site_graph("SCU"))
+
+        mixed_indoor = router.query_routing(
+            "gate_south",
+            "lib_reading_room_2",
+            strategy="shortest_time",
+            transport_mode="mixed",
+            site_id="SCU",
+        )
+        bike_indoor = router.query_routing(
+            "gate_south",
+            "lib_reading_room_2",
+            strategy="shortest_time",
+            transport_mode="bike",
+            site_id="SCU",
+        )
+
+        self.assertTrue(mixed_indoor["success"])
+        self.assertFalse(bike_indoor["success"])
+        self.assertEqual(bike_indoor["message"], "无法从起点到达终点。")
+        self.assertIn("bike", [step["transport_mode_used"] for step in mixed_indoor["path_steps"]])
+        indoor_steps = [
+            step for step in mixed_indoor["path_steps"]
+            if step["edge_type"] in {"gate_link", "indoor_path", "stairs", "elevator"}
+        ]
+        self.assertTrue(indoor_steps)
+        self.assertEqual({step["transport_mode_used"] for step in indoor_steps}, {"walk"})
+
+    def test_m31a_scu_outdoor_data_declares_transport_semantics(self):
+        outdoor_path = Path(__file__).resolve().parents[1] / "data" / "sites" / "SCU" / "outdoor.json"
+        with outdoor_path.open("r", encoding="utf-8") as f:
+            outdoor = json.load(f)
+
+        edges = outdoor["edges"]
+        shared_edges = [
+            edge for edge in edges
+            if edge.get("source") == "m31a_scu_transport_calibration"
+            and edge.get("transport_semantics") == "shared_walk_bike"
+        ]
+        bike_calibration_edges = [
+            edge for edge in edges
+            if edge.get("allowed_transports") == ["bike"]
+            and edge.get("source") == "m31a_scu_transport_calibration"
+        ]
+        bike_gate_detour_edges = [
+            edge for edge in bike_calibration_edges
+            if edge.get("transport_semantics") == "bike_only"
+            and edge.get("m31a_demo_role") == "scu_south_gate_bike_detour"
+        ]
+        bike_poi_connector_edges = [
+            edge for edge in bike_calibration_edges
+            if edge.get("transport_semantics") == "bike_dismount_connector"
+            and edge.get("m31a_demo_role") == "scu_sports_ground_bike_connector"
+        ]
+        pedestrian_gate_edges = [
+            edge for edge in edges
+            if edge.get("source") == "m31a_scu_transport_calibration"
+            and edge.get("transport_semantics") == "pedestrian_gate_shortcut"
+        ]
+
+        self.assertEqual(outdoor["metadata"]["transport_calibration_stage"], "M31A_SCU")
+        self.assertEqual(outdoor["metadata"]["transport_modes"], ["walk", "bike", "mixed"])
+        self.assertEqual(len(shared_edges), 36)
+        self.assertEqual(len(bike_calibration_edges), 4)
+        self.assertEqual(len(bike_gate_detour_edges), 2)
+        self.assertEqual(len(bike_poi_connector_edges), 2)
+        self.assertEqual(len(pedestrian_gate_edges), 2)
+        self.assertTrue(
+            all(edge.get("allowed_transports") == ["walk"] for edge in pedestrian_gate_edges)
+        )
+        self.assertTrue(
+            all(edge.get("vehicle_access") == "pedestrian_only" for edge in pedestrian_gate_edges)
+        )
+        self.assertTrue(
+            all(set(edge.get("transport_speeds", {}).keys()) == {"walk"} for edge in pedestrian_gate_edges)
+        )
+        self.assertTrue(
+            all(set(edge.get("transport_speeds", {}).keys()) == {"walk", "bike"} for edge in shared_edges)
+        )
+        self.assertTrue(
+            all("四川大学望江校区步骑共享主路" in edge.get("description", "") for edge in shared_edges)
+        )
+        self.assertTrue(all(edge.get("type") == "bike_lane" for edge in bike_gate_detour_edges))
+        self.assertTrue(
+            all(edge.get("vehicle_access") == "vehicle_only" for edge in bike_gate_detour_edges)
+        )
+        self.assertTrue(
+            all(edge.get("type") == "bike_lane" for edge in bike_poi_connector_edges)
+        )
+        self.assertTrue(
+            all(edge.get("vehicle_access") == "vehicle_only" for edge in bike_poi_connector_edges)
+        )
+        self.assertTrue(
+            all("四川大学" in f"{edge.get('name', '')}{edge.get('description', '')}" for edge in bike_calibration_edges)
+        )
+        self.assertTrue(
+            all("非机动车绕行接驳" in f"{edge.get('name', '')}{edge.get('description', '')}" for edge in bike_gate_detour_edges)
+        )
+        self.assertTrue(
+            all("运动场非机动车接驳" in f"{edge.get('name', '')}{edge.get('description', '')}" for edge in bike_poi_connector_edges)
+        )
+
     def test_standard_site_multi_target_uses_white_road_graph(self):
         router = Router(GraphLoader.load_site_graph("PKU"))
         route = router.query_multi_target(
