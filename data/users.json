@@ -464,6 +464,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_suda_001",
+    "name": "苏大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "苏大红楼"],
+    "home_site_id": "SUDA",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_suda_002",
+    "name": "苏大老校区漫游访客",
+    "role": "tourist",
+    "interests": ["红楼", "校史", "摄影"],
+    "home_site_id": "SUDA",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_suda_003",
+    "name": "苏大天赐庄生活访客",
+    "role": "student",
+    "interests": ["食堂", "东区餐厅", "校园生活"],
+    "home_site_id": "SUDA",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
