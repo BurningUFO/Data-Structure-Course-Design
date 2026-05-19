@@ -368,6 +368,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_sdu_001",
+    "name": "山大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "知新楼"],
+    "home_site_id": "SDU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_sdu_002",
+    "name": "山大广场游访客",
+    "role": "tourist",
+    "interests": ["中心广场", "校史", "摄影"],
+    "home_site_id": "SDU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_sdu_003",
+    "name": "山大齐园生活访客",
+    "role": "student",
+    "interests": ["食堂", "齐园", "校园生活"],
+    "home_site_id": "SDU",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
