@@ -52,7 +52,65 @@
     "indoor_scope": "M30X SCUT representative indoor templates and gate_link entry mapping; no real indoor survey data.",
     "indoor_source_template_site": "PKU",
     "transport_calibration_stage": "M31A_SCUT",
-    "transport_modes": ["walk", "bike", "mixed"]
+    "transport_modes": ["walk", "bike", "mixed"],
+    "nearby_calibration_stage": "M31B_SCUT",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "五山校区图书馆查附近优先命中自助借还、咨询与学习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "教学楼群查附近优先展示教学服务台、学习支持与近侧洗手间等教学配套。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "学生食堂查附近优先命中取餐、调料、餐盘回收和校医院等生活配套服务。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 200,
+        "default_category": "shopping",
+        "notes": "学生宿舍区查附近优先命中便利补给与校园卡相关服务，贴合宿舍区日常采购动线。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 500,
+        "default_category": "sports",
+        "notes": "北区宿舍查附近优先展示田径场和体育馆，贴合北侧宿舍到运动片区的步行范围。"
+      },
+      {
+        "center_node_id": "gate_north",
+        "default_radius_m": 500,
+        "default_category": "sports",
+        "notes": "北门查附近优先命中田径场和体育馆，贴合从北侧入校后快速进入运动片区的到达场景。"
+      },
+      {
+        "center_node_id": "central_square",
+        "default_radius_m": 300,
+        "default_category": "catering",
+        "notes": "中心广场查附近优先展示图书馆咖啡和轻餐点，贴合学习休息与会合补给场景。"
+      },
+      {
+        "center_node_id": "history_museum",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "校史展示点查附近优先命中学生事务、行政与创新创业服务，贴合参观后转办事务的校园动线。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "体育馆查附近优先展示更衣、训练和观赛等运动设施。"
+      }
+    ]
   },
   "nodes": [
     {"id": "gate_west", "name": "华南理工大学五山校区西门", "type": "entrance", "is_gate": true, "sub_graph_id": null, "tags": ["校门", "西门", "入口", "五山校区"], "keywords": ["华南理工大学西门", "华工西门", "西门", "校门", "入口"], "description": "华南理工大学五山校区西侧入口，连接五山路、生活片区和校园主轴。", "category": "entrance", "facilities": ["安保"], "open_hours": "24/7", "heat": 86, "rating": 4.6, "source": "m28x_manual_scut_wushan_axis_estimate", "needs_review": true, "location": {"lat": 23.1518, "lng": 113.3439}},
