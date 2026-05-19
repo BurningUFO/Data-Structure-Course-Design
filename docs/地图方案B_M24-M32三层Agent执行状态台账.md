@@ -15,9 +15,9 @@
 - `current_manager`: `L2-07`
 - `last_completed_manager`: `L2-06`
 - `next_manager`: `L2-07`
-- `last_commit`: `cfac93c`
-- `last_verification`: `py -m pytest -q`，284 passed；M31A HZAU L2 复核通过，L2-06 20/20 已完成，暂存区已在提交前确认只包含 HZAU 相关实现与测试
-- `last_update_note`: `L2-06 M31A 20 校交通方式校准已完成，等待一级总管复核后启动 L2-07`
+- `last_commit`: `c1e8267`
+- `last_verification`: `py -m pytest -q`，284 passed；一级总管复核 L2-06 completed 20/20 通过，暂存区为空
+- `last_update_note`: `L2-06 一级复核通过，L2-07 已启动；后续子 agent 调用必须先执行 /fast off`
 
 ## 二级经理状态总表
 
@@ -29,7 +29,7 @@
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
-| L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
+| L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `in_progress` | `0/20` | `none` | 20 校查附近；从 THU 开始 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
 
@@ -37,9 +37,9 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05,L2-06`
-- `current_action`: `等待一级总管复核 L2-06`
-- `next_action`: `复核通过后启动 L2-07`
-- `notes`: `L2-05 已完成 M30Y 20 校室内总回归并通过一级总管复核。L2-06 经理已按 /fast off 启动并确认分支正确；因 goal CLI 不存在，改用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派。`
+- `current_action`: `L2-07 调用 M31B THU`
+- `next_action`: `等待 L2-07 完成后复核`
+- `notes`: `L2-06 已完成 M31A 20 校交通方式校准并通过一级总管复核。L2-07 经理必须按 /fast off 启动并确认分支正确；因 goal CLI 不存在，继续使用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派；简单重复性三级任务可使用 gpt-5.4 xhigh，复杂返修继续使用 gpt-5.5 xhigh。`
 
 ## L2-01 基线模板经理子任务
 
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 19:00] manager=top child=L2-06-gate status=completed commit=c1e8267 verify=`git diff --cached --name-status` empty; `py -m pytest -q` 284 passed note=一级总管复核 L2-06 完成态，确认 L2-06 为 completed 20/20、M31A HZAU 已勾选、暂存区为空且未触碰无关脏文件；将 L2-07 置为 in_progress；后续子 agent 调用必须先执行 /fast off，简单重复性三级任务可用 gpt-5.4 xhigh
 - [2026-05-19 18:55] manager=L2-06 child=M31A HZAU status=completed commit=cfac93c verify=`py -m pytest -q` 284 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 HZAU 交通方式校准；HZAU outdoor 增加 M31A_HZAU 元数据、狮子山校区步骑共享速度、南门步行短接、非机动车绕行接驳和体育馆骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 HZAU 相关实现与测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；L2-06 已完成 20/20
 - [2026-05-19 18:42] manager=L2-06 child=M31A YNU status=completed commit=a6220ae verify=`py -m pytest -q` 280 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 YNU 交通方式校准；YNU outdoor 增加 M31A_YNU 元数据、呈贡校区南区步骑共享速度、南门步行短接、非机动车绕行接驳和体育馆骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 YNU 相关实现与测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 18:26] manager=L2-06 child=M31A HIT status=completed commit=bf836fa verify=`py -m pytest -q` 276 passed note=通过 codex exec 串行调用三级原子执行 agent 完成 HIT 交通方式校准；首次 gpt-5.4 L3 草稿全量测试通过但 L2 复核发现 HIT outdoor 部分语义边缺少统一 source 且 routing 测试混淆 bike_only 与 bike_dismount_connector，随后通过 gpt-5.5 L3 返修收口；HIT outdoor 增加 M31A_HIT 元数据、一校区步骑共享速度、南门步行短接、非机动车绕行接驳和图书馆/田径场骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 HIT 相关实现与测试；L3 提示均已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
