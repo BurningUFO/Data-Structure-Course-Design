@@ -296,6 +296,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_sysu_001",
+    "name": "中大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "第一教学楼"],
+    "home_site_id": "SYSU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_sysu_002",
+    "name": "中大校史游访客",
+    "role": "tourist",
+    "interests": ["怀士堂", "孙中山", "校史"],
+    "home_site_id": "SYSU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_sysu_003",
+    "name": "中大东区生活访客",
+    "role": "student",
+    "interests": ["食堂", "东区食堂", "校园生活"],
+    "home_site_id": "SYSU",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",

@@ -63,6 +63,24 @@
         "notes": "南校园体育馆查附近优先展示更衣、训练和观赛等运动设施。"
       }
     ],
+    "interest_calibration_stage": "M31C_SYSU",
+    "interest_highlights": [
+      {
+        "profile_id": "study",
+        "interests": ["图书馆", "自习", "第一教学楼"],
+        "highlight_node_ids": ["library", "teaching_building", "lab_building"]
+      },
+      {
+        "profile_id": "history",
+        "interests": ["怀士堂", "孙中山", "校史"],
+        "highlight_node_ids": ["sun_yat_sen_statue", "huaishi_hall", "yixian_lake"]
+      },
+      {
+        "profile_id": "campus_life",
+        "interests": ["食堂", "东区食堂", "校园生活"],
+        "highlight_node_ids": ["canteen", "canteen_east", "dormitory_1", "convenience_store"]
+      }
+    ],
     "scope": "M28X SYSU outdoor graph: Guangzhou South Campus gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. Indoor graphs are intentionally not declared in this stage.",
     "capabilities": [
       "leaflet_geojson",
