@@ -15,9 +15,9 @@
 - `current_manager`: `L2-05`
 - `last_completed_manager`: `L2-04`
 - `next_manager`: `L2-06`
-- `last_commit`: `a5fcfa5`
-- `last_verification`: `py -m pytest -q`，199 passed；M30X OUC 专项回归通过；OUC HTTP smoke 覆盖 health/bootstrap/Leaflet GeoJSON/indoor map/route/multi-route 与 PKU GeoJSON switch-back
-- `last_update_note`: `M30X OUC 已完成，L2-05 继续等待下一所校园室内扩展`
+- `last_commit`: `230af84`
+- `last_verification`: `py -m pytest -q`，200 passed；M30X SUDA 专项回归通过；SUDA HTTP smoke 覆盖 health/bootstrap/Leaflet GeoJSON/indoor map/route/multi-route 与 PKU GeoJSON switch-back
+- `last_update_note`: `M30X SUDA 已完成，L2-05 继续等待下一所校园室内扩展`
 
 ## 二级经理状态总表
 
@@ -27,7 +27,7 @@
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `completed` | `10/10` | `fef62cc` | 试点校 + 首批 5 校室外；M27Y 无实现变更 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
-| L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `in_progress` | `11/16` | `a5fcfa5` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC 已完成；剩余 4 校室内 + M30Y |
+| L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `in_progress` | `12/16` | `230af84` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA 已完成；剩余 3 校室内 + M30Y |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校交通方式 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
@@ -106,7 +106,7 @@
 - [x] `M30X HUST`
 - [x] `M30X SCUT`
 - [x] `M30X OUC`
-- [ ] `M30X SUDA`
+- [x] `M30X SUDA`
 - [ ] `M30X HIT`
 - [ ] `M30X YNU`
 - [ ] `M30X HZAU`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 09:53] manager=L2-05 child=M30X SUDA status=completed commit=230af84 verify=`py -m pytest -q` 200 passed; focused `py -3 -m pytest tests/test_ui_demo.py -k "m30x_suda or m28x_suda or m30x_ouc" -q` 4 passed; HTTP smoke passed for SUDA health, SUDA bootstrap, SUDA Leaflet GeoJSON, SUDA indoor map, SUDA route, SUDA multi-route and PKU GeoJSON switch-back note=新增 SUDA 天赐庄校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、学生宿舍区、学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
 - [2026-05-19 09:41] manager=L2-05 child=M30X OUC status=completed commit=a5fcfa5 verify=`py -m pytest -q` 199 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_ouc or m28x_ouc or m30x_scut" -q` 4 passed; HTTP smoke passed for OUC health, OUC bootstrap, OUC Leaflet GeoJSON, OUC indoor map, OUC route, OUC multi-route and PKU GeoJSON switch-back note=新增 OUC 崂山校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、学生宿舍区、学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
 - [2026-05-19 09:26] manager=L2-05 child=M30X SCUT status=completed commit=5c736c3 verify=`py -m pytest -q` 198 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_scut or m28x_scut or m30x_hust" -q` 4 passed note=新增 SCUT 五山校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、宿舍区、学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
 - [2026-05-19 09:12] manager=L2-05 child=M30X HUST status=completed commit=1efe608 verify=`py -m pytest -q` 197 passed; focused `py -3 -m pytest tests/test_ui_demo.py -k "m30x_hust or m28x_hust or m30x_sdu or m28x_sdu" -q` 6 passed note=新增 HUST 主校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼、学生宿舍、百景园食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
