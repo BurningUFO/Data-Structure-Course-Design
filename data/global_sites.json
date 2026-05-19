@@ -256,12 +256,17 @@
     {
       "id": "SCUT",
       "name": "华南理工大学",
-      "description": "华南理工大学 M28X 室外批次校园，已完成五山校区室外图、核心 POI、综合查询、场所查询、美食推荐和路径规划接入。",
+      "description": "华南理工大学 M30X 室内模板校园，已完成五山校区室外图、查询推荐、路径规划和代表性建筑室内导航接入。",
       "location": "广东省广州市天河区五山路381号",
       "is_available": true,
       "data_status": "available",
       "sub_graphs": [
-        "outdoor"
+        "outdoor",
+        "indoor_LIB",
+        "indoor_TB1",
+        "indoor_DORM1",
+        "indoor_CANTEEN_WUSHAN",
+        "indoor_GYMNASIUM"
       ]
     },
     {

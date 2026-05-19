@@ -1,0 +1,93 @@
+{
+  "templates": [
+    {
+      "template_id": "teaching_block_v1",
+      "template_name": "教学 / 实验楼模板",
+      "recommended_building_types": [
+        "teaching",
+        "research",
+        "academy"
+      ],
+      "default_floor_count": 3,
+      "required_zone_types": [
+        "restroom",
+        "elevator",
+        "stairs",
+        "education",
+        "service"
+      ]
+    },
+    {
+      "template_id": "library_service_v1",
+      "template_name": "图书馆 / 综合服务楼模板",
+      "recommended_building_types": [
+        "library",
+        "archive",
+        "service_center"
+      ],
+      "default_floor_count": 3,
+      "required_zone_types": [
+        "restroom",
+        "elevator",
+        "stairs",
+        "reading_room",
+        "service"
+      ]
+    },
+    {
+      "template_id": "dormitory_v1",
+      "template_name": "宿舍模板",
+      "recommended_building_types": [
+        "dormitory",
+        "residence"
+      ],
+      "default_floor_count": 3,
+      "required_zone_types": [
+        "restroom",
+        "elevator",
+        "stairs",
+        "dormitory",
+        "service"
+      ]
+    },
+    {
+      "template_id": "canteen_service_v1",
+      "template_name": "食堂 / 生活服务楼模板",
+      "recommended_building_types": [
+        "canteen",
+        "lifestyle_service"
+      ],
+      "default_floor_count": 2,
+      "required_zone_types": [
+        "restroom",
+        "elevator",
+        "stairs",
+        "catering",
+        "service"
+      ]
+    },
+    {
+      "template_id": "sports_public_v1",
+      "template_name": "体育 / 大型公共建筑模板",
+      "recommended_building_types": [
+        "sports",
+        "public"
+      ],
+      "default_floor_count": 3,
+      "required_zone_types": [
+        "restroom",
+        "elevator",
+        "stairs",
+        "sports",
+        "service"
+      ]
+    }
+  ],
+  "metadata": {
+    "stage": "M30X",
+    "site_id": "SCUT",
+    "site_name": "华南理工大学",
+    "source_template_site": "PKU",
+    "scope": "Shared indoor template catalog reused for SCUT representative buildings."
+  }
+}
