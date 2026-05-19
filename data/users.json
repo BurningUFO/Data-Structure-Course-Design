@@ -320,6 +320,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_scu_001",
+    "name": "川大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "基础教学楼"],
+    "home_site_id": "SCU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_scu_002",
+    "name": "川大校史游访客",
+    "role": "tourist",
+    "interests": ["四川大学博物馆", "钟楼", "校史"],
+    "home_site_id": "SCU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_scu_003",
+    "name": "川大望江生活访客",
+    "role": "student",
+    "interests": ["食堂", "东区食堂", "校园生活"],
+    "home_site_id": "SCU",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
