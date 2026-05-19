@@ -14,10 +14,10 @@
 - `top_manager_status`: `in_progress`
 - `current_manager`: `L2-06`
 - `last_completed_manager`: `L2-05`
-- `next_manager`: `L2-06`
-- `last_commit`: `3888144`
-- `last_verification`: `py -m pytest -q`，204 passed；M30Y 专项 `py -m pytest tests/test_ui_demo.py -k m30y -q` 1 passed；20 校室内总回归覆盖 bootstrap indoor_buildings、Leaflet GeoJSON、indoor map、室内/室内外路线视图、多目标路线与 PKU switch-back
-- `last_update_note`: `M30Y 20 校室内总回归已完成，L2-05 标记 completed，等待 L2-06`
+- `next_manager`: `L2-07`
+- `last_commit`: `8403cb3`
+- `last_verification`: `py -m pytest -q`，204 passed；一级总管复核 L2-05 完成态、暂存区为空，准备调用 L2-06
+- `last_update_note`: `L2-05 已完成一级总管复核，L2-06 已置为 in_progress；后续子 agent 调用必须先执行 /fast off`
 
 ## 二级经理状态总表
 
@@ -28,7 +28,7 @@
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
-| L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校交通方式 |
+| L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `in_progress` | `0/20` | `none` | 20 校交通方式；等待经理执行 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
@@ -37,9 +37,9 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05`
-- `current_action`: `等待 L2-06`
-- `next_action`: `调用 L2-06 前复核 M30Y 结果`
-- `notes`: `L2-05 已完成 M30Y 20 校室内总回归；THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 的室内模板、楼层切换、建筑入口映射、室内外路线视图与 PKU switch-back 均通过。`
+- `current_action`: `调用 L2-06`
+- `next_action`: `等待 L2-06 完成后复核`
+- `notes`: `L2-05 已完成 M30Y 20 校室内总回归并通过一级总管复核；THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 的室内模板、楼层切换、建筑入口映射、室内外路线视图与 PKU switch-back 均通过。后续调用子 agent 必须先执行 /fast off。`
 
 ## L2-01 基线模板经理子任务
 
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 10:55] manager=top child=L2-05-gate status=completed commit=8403cb3 verify=`git diff --cached --name-status` empty; `py -m pytest -q` 204 passed note=一级总管复核 L2-05 完成态，确认 L2-05 为 completed 16/16、M30Y 已勾选、暂存区为空且未触碰无关脏文件；将 L2-06 置为 in_progress；后续调用子 agent 必须先执行 /fast off
 - [2026-05-19 10:48] manager=L2-05 child=M30Y status=completed commit=3888144 verify=`py -m pytest tests/test_ui_demo.py -k m30y -q` 1 passed; `py -m pytest -q` 204 passed note=新增 M30Y 20 校室内总回归测试，覆盖 THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 的 bootstrap indoor_buildings、Leaflet GeoJSON、indoor map、室内路线、室内外路线视图、多目标路线、建筑/楼层/入口映射唯一性，并验证 PKU Leaflet/indoor switch-back；未进入 M31/M32；未调用 OSMnx、Overpass、explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent
 - [2026-05-19 10:39] manager=L2-05 child=M30X HZAU status=completed commit=f2a0fb3 verify=`py -m pytest -q` 203 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_hzau or m28x_hzau or m30x_ynu" -q` 4 passed; HTTP smoke passed for HZAU health, HZAU bootstrap, HZAU Leaflet GeoJSON, HZAU indoor map, HZAU route, HZAU multi-route and PKU GeoJSON switch-back note=新增 HZAU 狮子山校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、学生宿舍区、博园食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；未处理 M30Y；未调用 OSMnx、Overpass、explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent
 - [2026-05-19 10:22] manager=L2-05 child=M30X YNU status=completed commit=5f2b94c verify=`py -m pytest -q` 202 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_ynu or m28x_ynu or m30x_hit" -q` 4 passed; HTTP smoke passed for YNU health, YNU bootstrap, YNU Leaflet GeoJSON, YNU indoor map, YNU route, YNU multi-route and PKU GeoJSON switch-back note=新增 YNU 呈贡校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、学生宿舍区、学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；未处理 HZAU/M30Y；未调用 OSMnx、Overpass、explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent
