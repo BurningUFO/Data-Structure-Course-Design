@@ -15,9 +15,9 @@
 - `current_manager`: `L2-07`
 - `last_completed_manager`: `L2-06`
 - `next_manager`: `L2-07`
-- `last_commit`: `08f265b`
-- `last_verification`: `py -m pytest -q`，317 passed；L2-07 复核 M31B OUC 通过，暂存区只包含聚焦实现提交后续台账变更
-- `last_update_note`: `L2-07 已完成 M31B OUC 16/20；下一步调用 M31B SUDA`
+- `last_commit`: `c24575c`
+- `last_verification`: `py -m pytest -q`，319 passed；L2-07 复核 M31B SUDA 通过，暂存区只包含聚焦实现提交后续台账变更
+- `last_update_note`: `L2-07 已完成 M31B SUDA 17/20；下一步调用 M31B HIT`
 
 ## 二级经理状态总表
 
@@ -29,7 +29,7 @@
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
-| L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `in_progress` | `16/20` | `08f265b` | 20 校查附近；已完成至 OUC，下一步 SUDA |
+| L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `in_progress` | `17/20` | `c24575c` | 20 校查附近；已完成至 SUDA，下一步 HIT |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
 
@@ -37,8 +37,8 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05,L2-06`
-- `current_action`: `L2-07 调用 M31B SUDA`
-- `next_action`: `等待 L2-07 完成 SUDA 后复核`
+- `current_action`: `L2-07 调用 M31B HIT`
+- `next_action`: `等待 L2-07 完成 HIT 后复核`
 - `notes`: `L2-06 已完成 M31A 20 校交通方式校准并通过一级总管复核。L2-07 经理必须按 /fast off 启动并确认分支正确；因 goal CLI 不存在，继续使用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派；简单重复性三级任务可使用 gpt-5.4 xhigh，复杂返修继续使用 gpt-5.5 xhigh。`
 
 ## L2-01 基线模板经理子任务
@@ -153,7 +153,7 @@
 - [x] `M31B HUST`
 - [x] `M31B SCUT`
 - [x] `M31B OUC`
-- [ ] `M31B SUDA`
+- [x] `M31B SUDA`
 - [ ] `M31B HIT`
 - [ ] `M31B YNU`
 - [ ] `M31B HZAU`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 22:02] manager=L2-07 child=M31B SUDA status=completed commit=c24575c verify=`py -m pytest -q` 319 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 SUDA 附近查询校准；SUDA outdoor 增加 M31B_SUDA 元数据、200/300/400/500/800 半径选项和 8 个高频中心 profile，覆盖图书馆、教学楼、食堂、学生宿舍区、南门、中心广场、校史展示点与体育馆；专项测试确认学生宿舍区 500m 生活补给按便利店与书店排序、中心广场 400m 地标按校史展示点与红楼历史建筑群排序，并回填中心中文名、校准阶段、校准 profile 与附近理由；L2 复核确认暂存区只包含 SUDA 数据和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 21:49] manager=L2-07 child=M31B OUC status=completed commit=08f265b verify=`py -m pytest -q` 317 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 OUC 附近查询校准；OUC outdoor 增加 M31B_OUC 元数据、200/300/400/500/600/800 半径选项和 9 个高频中心 profile，覆盖图书馆、教学楼、食堂、学生宿舍区、北区学生公寓、南门、北门、中心广场与体育馆；专项测试确认学生宿舍区 200m 生活补给命中便利店、北门 500m 运动类按田径场与体育馆排序，并回填中心中文名、校准阶段、校准 profile 与附近理由；L2 复核确认暂存区只包含 OUC 数据和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 21:36] manager=L2-07 child=M31B SCUT status=completed commit=f02e457 verify=`py -m pytest -q` 315 passed note=通过 codex exec 串行调用 gpt-5.5 xhigh 三级原子执行 agent 对疑似越界的 SCUT 未提交补丁完成独立复核与最小返修；SCUT outdoor 增加 M31B_SCUT 元数据、200/300/400/500/800 半径选项和 9 个高频中心 profile，覆盖图书馆、教学楼、食堂、学生宿舍区、北区宿舍、北门、中心广场、校史展示点与体育馆；专项测试确认学生宿舍区 200m 生活补给命中便利店、校史展示点 200m 服务类按学生事务服务中心、行政楼与创新创业中心排序，并回填中心中文名、校准阶段、校准 profile 与附近理由；L2 复核确认暂存区只包含 SCUT 数据和测试，提交后仅保留无关既有脏文件；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 21:16] manager=L2-07 child=M31B HUST status=completed commit=9de8b07 verify=`py -m pytest -q` 313 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 HUST 附近查询校准；HUST outdoor 增加 M31B_HUST 元数据、200/300/400/500/800 半径选项和 9 个高频中心 profile，覆盖图书馆、东九教学楼、百景园食堂、韵苑学生公寓、紫菘学生公寓、北门、中心广场、校史展示点与体育馆；专项测试确认韵苑学生公寓 300m 餐饮命中韵苑食堂、北门 500m 运动类按中心操场与体育馆排序，并回填中心中文名、校准阶段与附近理由；L2 复核确认暂存区只包含 HUST 数据和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
