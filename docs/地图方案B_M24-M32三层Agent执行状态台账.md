@@ -15,9 +15,9 @@
 - `current_manager`: `L2-05`
 - `last_completed_manager`: `L2-04`
 - `next_manager`: `L2-06`
-- `last_commit`: `5f2b94c`
-- `last_verification`: `py -m pytest -q`，202 passed；M30X YNU 专项回归通过；YNU HTTP smoke 覆盖 health/bootstrap/Leaflet GeoJSON/indoor map/route/multi-route 与 PKU GeoJSON switch-back
-- `last_update_note`: `M30X YNU 已完成，L2-05 继续等待 HZAU 室内扩展`
+- `last_commit`: `f2a0fb3`
+- `last_verification`: `py -m pytest -q`，203 passed；M30X HZAU 专项回归通过；HZAU HTTP smoke 覆盖 health/bootstrap/Leaflet GeoJSON/indoor map/route/multi-route 与 PKU GeoJSON switch-back
+- `last_update_note`: `M30X HZAU 已完成，L2-05 继续等待 M30Y 室内总回归`
 
 ## 二级经理状态总表
 
@@ -27,7 +27,7 @@
 | L2-02 | `docs/地图方案B_M26-M27试点与首批室外经理Agent_Goal提示词.md` | `completed` | `10/10` | `fef62cc` | 试点校 + 首批 5 校室外；M27Y 无实现变更 |
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
-| L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `in_progress` | `14/16` | `5f2b94c` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU 已完成；剩余 1 校室内 + M30Y |
+| L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `in_progress` | `15/16` | `f2a0fb3` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 已完成；剩余 M30Y |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校交通方式 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
@@ -109,7 +109,7 @@
 - [x] `M30X SUDA`
 - [x] `M30X HIT`
 - [x] `M30X YNU`
-- [ ] `M30X HZAU`
+- [x] `M30X HZAU`
 - [ ] `M30Y`
 
 ## L2-06 交通方式校准经理子任务
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 10:39] manager=L2-05 child=M30X HZAU status=completed commit=f2a0fb3 verify=`py -m pytest -q` 203 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_hzau or m28x_hzau or m30x_ynu" -q` 4 passed; HTTP smoke passed for HZAU health, HZAU bootstrap, HZAU Leaflet GeoJSON, HZAU indoor map, HZAU route, HZAU multi-route and PKU GeoJSON switch-back note=新增 HZAU 狮子山校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、学生宿舍区、博园食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；未处理 M30Y；未调用 OSMnx、Overpass、explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent
 - [2026-05-19 10:22] manager=L2-05 child=M30X YNU status=completed commit=5f2b94c verify=`py -m pytest -q` 202 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_ynu or m28x_ynu or m30x_hit" -q` 4 passed; HTTP smoke passed for YNU health, YNU bootstrap, YNU Leaflet GeoJSON, YNU indoor map, YNU route, YNU multi-route and PKU GeoJSON switch-back note=新增 YNU 呈贡校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、学生宿舍区、学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；未处理 HZAU/M30Y；未调用 OSMnx、Overpass、explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent
 - [2026-05-19 10:10] manager=L2-05 child=M30X HIT status=completed commit=bcdf48d verify=`py -m pytest -q` 201 passed; focused `py -m pytest tests/test_ui_demo.py -k "m30x_hit or m28x_hit or m30x_suda" -q` 4 passed; HTTP smoke passed for HIT health, HIT bootstrap, HIT Leaflet GeoJSON, HIT indoor map, HIT route, HIT multi-route and PKU GeoJSON switch-back note=新增 HIT 一校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、正心楼与教学楼群、学生宿舍区、学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；未处理 YNU/HZAU/M30Y；未调用 OSMnx 或 Overpass
 - [2026-05-19 09:53] manager=L2-05 child=M30X SUDA status=completed commit=230af84 verify=`py -m pytest -q` 200 passed; focused `py -3 -m pytest tests/test_ui_demo.py -k "m30x_suda or m28x_suda or m30x_ouc" -q` 4 passed; HTTP smoke passed for SUDA health, SUDA bootstrap, SUDA Leaflet GeoJSON, SUDA indoor map, SUDA route, SUDA multi-route and PKU GeoJSON switch-back note=新增 SUDA 天赐庄校区 5 个代表性建筑室内模板与入口映射，覆盖图书馆、教学楼群、学生宿舍区、学生食堂和体育馆；接入 global_sites sub_graphs、室外入口 gate_link 字段、室内模板注册表和 M30X 专项回归；保持 PKU/SVG/Leaflet 契约不回退；三级提示已明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent；未调用 OSMnx 或 Overpass
