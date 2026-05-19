@@ -11,6 +11,58 @@
     "ready_for_m28_regression": true,
     "transport_calibration_stage": "M31A_SJTU",
     "transport_modes": ["walk", "bike", "mixed"],
+    "nearby_calibration_stage": "M31B_SJTU",
+    "nearby_radius_options": [200, 300, 400, 600, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "闵行校区图书馆查附近优先命中借还、自助与咨询等学习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "东中院教学楼查附近优先展示楼内服务台、教学支持与课间配套。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "第一餐饮大楼查附近优先命中取餐、托盘回收与就餐服务设施。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 300,
+        "default_category": "catering",
+        "notes": "北区学生宿舍查附近优先命中第二餐饮大楼，贴合宿舍区就餐动线。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 400,
+        "default_category": "shopping",
+        "notes": "西区学生公寓查附近优先命中便利服务点，突出生活补给场景。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 600,
+        "default_category": "landmark",
+        "notes": "闵行校区南门查附近优先展示文化广场与思源湖，方便访客快速建立地标感知。"
+      },
+      {
+        "center_node_id": "service_center",
+        "default_radius_m": 300,
+        "default_category": "shopping",
+        "notes": "学生服务中心查附近优先命中便利服务点与图书文创补给。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "霍英东体育中心查附近优先展示更衣、训练与观赛等运动设施。"
+      }
+    ],
     "scope": "M28X SJTU outdoor graph: Minhang campus gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. Indoor graphs are intentionally not declared in this stage.",
     "capabilities": [
       "leaflet_geojson",
