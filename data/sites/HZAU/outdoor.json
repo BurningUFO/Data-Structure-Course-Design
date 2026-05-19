@@ -105,6 +105,24 @@
         "default_category": "sports",
         "notes": "体育馆查附近优先展示更衣、训练和观赛等运动设施。"
       }
+    ],
+    "interest_calibration_stage": "M31C_HZAU",
+    "interest_highlights": [
+      {
+        "profile_id": "study",
+        "interests": ["图书馆", "自习", "农业科技"],
+        "highlight_node_ids": ["library", "agronomy_building", "lab_building"]
+      },
+      {
+        "profile_id": "landmark",
+        "interests": ["狮子山", "校史", "摄影"],
+        "highlight_node_ids": ["shizishan_landmark", "central_square", "history_museum"]
+      },
+      {
+        "profile_id": "campus_life",
+        "interests": ["食堂", "荟园", "校园生活"],
+        "highlight_node_ids": ["canteen_huiyuan", "canteen", "dormitory_1", "convenience_store"]
+      }
     ]
   },
   "nodes": [

@@ -545,10 +545,18 @@
   },
   {
     "id": "user_hzau_002",
-    "name": "华农生活访客",
+    "name": "华农狮子山访客",
     "role": "tourist",
-    "interests": ["食堂", "狮子山", "校园景观"],
+    "interests": ["狮子山", "步道", "校史", "摄影"],
     "home_site_id": "HZAU",
-    "created_at": "2026-05-19"
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_hzau_003",
+    "name": "华农荟园生活访客",
+    "role": "student",
+    "interests": ["食堂", "荟园", "校园生活"],
+    "home_site_id": "HZAU",
+    "created_at": "2026-05-20"
   }
 ]

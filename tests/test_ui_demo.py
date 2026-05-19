@@ -7774,7 +7774,7 @@ def test_m28x_hzau_outdoor_main_chain_is_available_in_remaining_batch():
     assert payload["default_start_node"] == "gate_north"
     assert payload["stats"]["record_count"] >= 20
     assert payload["stats"]["route_target_count"] >= 20
-    assert payload["stats"]["user_count"] == 2
+    assert payload["stats"]["user_count"] == 3
     assert payload["default_user_id"] == "user_hzau_001"
     assert any(item["value"] == "农业科技" for item in payload["controls"]["interest_options"])
     assert payload["map"]["node_count"] >= 30
