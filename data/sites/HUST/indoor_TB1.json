@@ -1,0 +1,1184 @@
+{
+  "graph_id": "HUST_indoor_TB1",
+  "graph_type": "indoor",
+  "building_id": "teaching_building",
+  "building_name": "华中科技大学东九教学楼",
+  "template_id": "teaching_block_v1",
+  "floor": "1F",
+  "default_floor_id": "F1",
+  "floor_ids": [
+    "F1",
+    "F2",
+    "F3"
+  ],
+  "nodes": [
+    {
+      "id": "tb1_entrance",
+      "name": "华中科技大学东九教学楼入口大厅",
+      "type": "hall",
+      "is_gate": true,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "入口",
+        "1F"
+      ],
+      "description": "华中科技大学东九教学楼 的主入口大厅，连接室外主门。",
+      "category": "hall",
+      "facilities": [
+        "导览牌"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 56,
+        "y": 240
+      },
+      "location": {
+        "lat": 30.5147,
+        "lng": 114.4222
+      }
+    },
+    {
+      "id": "tb1_corridor_f1",
+      "name": "1F主走廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "1F",
+        "主走廊"
+      ],
+      "description": "华中科技大学东九教学楼1F 的主通行走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "tb1_stairs_f1",
+      "name": "1F楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "1F",
+        "楼梯"
+      ],
+      "description": "华中科技大学东九教学楼1F 楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 96
+      }
+    },
+    {
+      "id": "tb1_elevator_f1",
+      "name": "1F电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "1F",
+        "电梯"
+      ],
+      "description": "华中科技大学东九教学楼1F 电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 176
+      }
+    },
+    {
+      "id": "tb1_restroom_f1",
+      "name": "1F洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "1F",
+        "洗手间"
+      ],
+      "description": "华中科技大学东九教学楼1F 公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "华中科技大学东九教学楼"
+    },
+    {
+      "id": "tb1_service_desk",
+      "name": "华中科技大学东九教学楼教学服务台",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "1F",
+        "教学服务台"
+      ],
+      "description": "华中科技大学东九教学楼1F 的教学服务台。",
+      "category": "service",
+      "facilities": [
+        "教学服务台"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "tb1_classroom_101",
+      "name": "华中科技大学东九教学楼101 教室",
+      "type": "classroom",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "1F",
+        "101 教室"
+      ],
+      "description": "华中科技大学东九教学楼1F 的101 教室。",
+      "category": "education",
+      "facilities": [
+        "101 教室"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "tb1_classroom_102",
+      "name": "华中科技大学东九教学楼102 教室",
+      "type": "classroom",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "1F",
+        "102 教室"
+      ],
+      "description": "华中科技大学东九教学楼1F 的102 教室。",
+      "category": "education",
+      "facilities": [
+        "102 教室"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "tb1_study_corner_1f",
+      "name": "华中科技大学东九教学楼共享学习区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "1F",
+        "共享学习区"
+      ],
+      "description": "华中科技大学东九教学楼1F 的共享学习区。",
+      "category": "service",
+      "facilities": [
+        "共享学习区"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    },
+    {
+      "id": "tb1_corridor_f2",
+      "name": "2F主走廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "2F",
+        "主走廊"
+      ],
+      "description": "华中科技大学东九教学楼2F 的主通行走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "tb1_stairs_f2",
+      "name": "2F楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "2F",
+        "楼梯"
+      ],
+      "description": "华中科技大学东九教学楼2F 楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 96
+      }
+    },
+    {
+      "id": "tb1_elevator_f2",
+      "name": "2F电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "2F",
+        "电梯"
+      ],
+      "description": "华中科技大学东九教学楼2F 电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 176
+      }
+    },
+    {
+      "id": "tb1_restroom_f2",
+      "name": "2F洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "2F",
+        "洗手间"
+      ],
+      "description": "华中科技大学东九教学楼2F 公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "华中科技大学东九教学楼"
+    },
+    {
+      "id": "tb1_classroom_201",
+      "name": "华中科技大学东九教学楼201 教室",
+      "type": "classroom",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "2F",
+        "201 教室"
+      ],
+      "description": "华中科技大学东九教学楼2F 的201 教室。",
+      "category": "education",
+      "facilities": [
+        "201 教室"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "tb1_classroom_202",
+      "name": "华中科技大学东九教学楼202 教室",
+      "type": "classroom",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "2F",
+        "202 教室"
+      ],
+      "description": "华中科技大学东九教学楼2F 的202 教室。",
+      "category": "education",
+      "facilities": [
+        "202 教室"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "tb1_seminar_room_2f",
+      "name": "华中科技大学东九教学楼研讨室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "2F",
+        "研讨室"
+      ],
+      "description": "华中科技大学东九教学楼2F 的研讨室。",
+      "category": "education",
+      "facilities": [
+        "研讨室"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "tb1_faculty_office_2f",
+      "name": "华中科技大学东九教学楼教师办公室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "2F",
+        "教师办公室"
+      ],
+      "description": "华中科技大学东九教学楼2F 的教师办公室。",
+      "category": "service",
+      "facilities": [
+        "教师办公室"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    },
+    {
+      "id": "tb1_corridor_f3",
+      "name": "3F主走廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "3F",
+        "主走廊"
+      ],
+      "description": "华中科技大学东九教学楼3F 的主通行走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "tb1_stairs_f3",
+      "name": "3F楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "3F",
+        "楼梯"
+      ],
+      "description": "华中科技大学东九教学楼3F 楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 330,
+        "y": 96
+      }
+    },
+    {
+      "id": "tb1_elevator_f3",
+      "name": "3F电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "3F",
+        "电梯"
+      ],
+      "description": "华中科技大学东九教学楼3F 电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 330,
+        "y": 176
+      }
+    },
+    {
+      "id": "tb1_restroom_f3",
+      "name": "3F洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "3F",
+        "洗手间"
+      ],
+      "description": "华中科技大学东九教学楼3F 公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 330,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "华中科技大学东九教学楼"
+    },
+    {
+      "id": "tb1_classroom_301",
+      "name": "华中科技大学东九教学楼301 教室",
+      "type": "classroom",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "3F",
+        "301 教室"
+      ],
+      "description": "华中科技大学东九教学楼3F 的301 教室。",
+      "category": "education",
+      "facilities": [
+        "301 教室"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "tb1_innovation_room_3f",
+      "name": "华中科技大学东九教学楼创新教室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "3F",
+        "创新教室"
+      ],
+      "description": "华中科技大学东九教学楼3F 的创新教室。",
+      "category": "education",
+      "facilities": [
+        "创新教室"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "tb1_meeting_room_3f",
+      "name": "华中科技大学东九教学楼会议室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "3F",
+        "会议室"
+      ],
+      "description": "华中科技大学东九教学楼3F 的会议室。",
+      "category": "service",
+      "facilities": [
+        "会议室"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "tb1_rest_area_3f",
+      "name": "华中科技大学东九教学楼休息区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "华中科技大学东九教学楼",
+        "3F",
+        "休息区"
+      ],
+      "description": "华中科技大学东九教学楼3F 的休息区。",
+      "category": "service",
+      "facilities": [
+        "休息区"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "tb1_entrance",
+      "to": "tb1_corridor_f1",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "华中科技大学东九教学楼1F 主走廊",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f1",
+      "to": "tb1_entrance",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "华中科技大学东九教学楼1F 主走廊",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f1",
+      "to": "tb1_stairs_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "tb1_stairs_f1",
+      "to": "tb1_corridor_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f1",
+      "to": "tb1_elevator_f1",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "1F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_elevator_f1",
+      "to": "tb1_corridor_f1",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "1F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f1",
+      "to": "tb1_restroom_f1",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "tb1_restroom_f1",
+      "to": "tb1_corridor_f1",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f1",
+      "to": "tb1_service_desk",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 教学服务台",
+      "description": ""
+    },
+    {
+      "from": "tb1_service_desk",
+      "to": "tb1_corridor_f1",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 教学服务台",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f1",
+      "to": "tb1_classroom_101",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 101 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_classroom_101",
+      "to": "tb1_corridor_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 101 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f1",
+      "to": "tb1_classroom_102",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 102 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_classroom_102",
+      "to": "tb1_corridor_f1",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 102 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f1",
+      "to": "tb1_study_corner_1f",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 共享学习区",
+      "description": ""
+    },
+    {
+      "from": "tb1_study_corner_1f",
+      "to": "tb1_corridor_f1",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 共享学习区",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f2",
+      "to": "tb1_stairs_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "tb1_stairs_f2",
+      "to": "tb1_corridor_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f2",
+      "to": "tb1_elevator_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "2F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_elevator_f2",
+      "to": "tb1_corridor_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "2F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f2",
+      "to": "tb1_restroom_f2",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "tb1_restroom_f2",
+      "to": "tb1_corridor_f2",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f2",
+      "to": "tb1_classroom_201",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 201 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_classroom_201",
+      "to": "tb1_corridor_f2",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 201 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f2",
+      "to": "tb1_classroom_202",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 202 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_classroom_202",
+      "to": "tb1_corridor_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 202 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f2",
+      "to": "tb1_seminar_room_2f",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 研讨室",
+      "description": ""
+    },
+    {
+      "from": "tb1_seminar_room_2f",
+      "to": "tb1_corridor_f2",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 研讨室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f2",
+      "to": "tb1_faculty_office_2f",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 教师办公室",
+      "description": ""
+    },
+    {
+      "from": "tb1_faculty_office_2f",
+      "to": "tb1_corridor_f2",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 教师办公室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f3",
+      "to": "tb1_stairs_f3",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "tb1_stairs_f3",
+      "to": "tb1_corridor_f3",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f3",
+      "to": "tb1_elevator_f3",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "3F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_elevator_f3",
+      "to": "tb1_corridor_f3",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "3F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f3",
+      "to": "tb1_restroom_f3",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "tb1_restroom_f3",
+      "to": "tb1_corridor_f3",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f3",
+      "to": "tb1_classroom_301",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 301 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_classroom_301",
+      "to": "tb1_corridor_f3",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 301 教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f3",
+      "to": "tb1_innovation_room_3f",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 创新教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_innovation_room_3f",
+      "to": "tb1_corridor_f3",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 创新教室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f3",
+      "to": "tb1_meeting_room_3f",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 会议室",
+      "description": ""
+    },
+    {
+      "from": "tb1_meeting_room_3f",
+      "to": "tb1_corridor_f3",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 会议室",
+      "description": ""
+    },
+    {
+      "from": "tb1_corridor_f3",
+      "to": "tb1_rest_area_3f",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 休息区",
+      "description": ""
+    },
+    {
+      "from": "tb1_rest_area_3f",
+      "to": "tb1_corridor_f3",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "3F走廊 -> 休息区",
+      "description": ""
+    },
+    {
+      "from": "tb1_stairs_f1",
+      "to": "tb1_stairs_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_stairs_f2",
+      "to": "tb1_stairs_f1",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_elevator_f1",
+      "to": "tb1_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_elevator_f2",
+      "to": "tb1_elevator_f1",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_stairs_f2",
+      "to": "tb1_stairs_f3",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F2 -> F3 楼梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_stairs_f3",
+      "to": "tb1_stairs_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F2 -> F3 楼梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_elevator_f2",
+      "to": "tb1_elevator_f3",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F2 -> F3 电梯",
+      "description": ""
+    },
+    {
+      "from": "tb1_elevator_f3",
+      "to": "tb1_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F2 -> F3 电梯",
+      "description": ""
+    }
+  ],
+  "metadata": {
+    "stage": "M30X",
+    "site_id": "HUST",
+    "site_name": "华中科技大学",
+    "source_template_site": "PKU",
+    "source_template_mode": "reusable_indoor_floorplan_and_navigation",
+    "representative_building": true,
+    "notes": "Template indoor graph for course demonstration; not a real building survey."
+  }
+}
