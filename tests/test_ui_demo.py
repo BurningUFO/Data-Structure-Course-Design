@@ -227,6 +227,15 @@ M30X_YNU_CASE = {
         "gymnasium": "indoor_GYMNASIUM",
     }
 }
+M30X_HZAU_CASE = {
+    "buildings": {
+        "library": "indoor_LIB",
+        "teaching_building": "indoor_TB1",
+        "dormitory_1": "indoor_DORM1",
+        "canteen": "indoor_CANTEEN_BOYUAN",
+        "gymnasium": "indoor_GYMNASIUM",
+    }
+}
 
 
 def test_demo_bootstrap_contains_map_and_controls():
@@ -2385,6 +2394,143 @@ def test_m30x_ynu_indoor_templates_entry_mapping_and_route_views():
     geojson_payload = service.get_map_geojson_payload()
     assert geojson_payload["success"] is True
     assert geojson_payload["site_id"] == "YNU"
+    assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
+    assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
+
+    pku_bootstrap = DemoUIService("PKU").get_bootstrap_payload()
+    assert pku_bootstrap["site"]["id"] == "PKU"
+    assert pku_bootstrap["map_renderer"] == "leaflet_geo"
+    assert pku_bootstrap["map_capabilities"]["indoor_supported_building_count"] >= 20
+
+
+def test_m30x_hzau_indoor_templates_entry_mapping_and_route_views():
+    service = DemoUIService("HZAU")
+    bootstrap = service.get_bootstrap_payload()
+    outdoor = json.loads(Path("data/sites/HZAU/outdoor.json").read_text(encoding="utf-8"))
+    registry_payload = json.loads(
+        Path("data/sites/HZAU/geo/indoor_building_registry.json").read_text(encoding="utf-8")
+    )
+    registry = registry_payload["buildings"]
+    global_sites = json.loads(Path("data/global_sites.json").read_text(encoding="utf-8"))
+    hzau_site = next(item for item in global_sites["sites"] if item["id"] == "HZAU")
+    outdoor_nodes = {node["id"]: node for node in outdoor["nodes"]}
+    registry_by_building = {item["building_id"]: item for item in registry}
+    expected_buildings = M30X_HZAU_CASE["buildings"]
+
+    assert outdoor["metadata"]["stage"] == "M28X"
+    assert outdoor["metadata"]["indoor_stage"] == "M30X"
+    assert outdoor["metadata"]["indoor_site_id"] == "HZAU"
+    assert outdoor["metadata"]["indoor_supported_building_count"] == 5
+    assert set(outdoor["metadata"]["indoor_supported_buildings"]) == set(expected_buildings)
+    assert registry_payload["metadata"]["stage"] == "M30X"
+    assert hzau_site["sub_graphs"] == ["outdoor", *expected_buildings.values()]
+    assert bootstrap["site"]["id"] == "HZAU"
+    assert bootstrap["map_renderer"] == "leaflet_geo"
+    assert bootstrap["map_capabilities"]["indoor_navigation"] is True
+    assert bootstrap["map_capabilities"]["indoor_supported_building_count"] == 5
+    assert {item["building_id"] for item in bootstrap["indoor_buildings"]} == set(expected_buildings)
+    assert bootstrap["stats"]["indoor_building_count"] == 5
+
+    for building_id, indoor_graph_id in expected_buildings.items():
+        entry = registry_by_building[building_id]
+        outdoor_entry = outdoor_nodes[entry["entry_node_id"]]
+        graph = json.loads(Path(f"data/sites/HZAU/{indoor_graph_id}.json").read_text(encoding="utf-8"))
+        gate_nodes = [node for node in graph["nodes"] if node.get("is_gate")]
+
+        assert entry["indoor_graph_id"] == indoor_graph_id
+        assert outdoor_entry["is_gate"] is True
+        assert outdoor_entry["sub_graph_id"] == indoor_graph_id
+        assert outdoor_entry["indoor_supported"] is True
+        assert outdoor_entry["indoor_graph_id"] == indoor_graph_id
+        assert outdoor_entry["indoor_entry_node_id"] == entry["entry_node_id"]
+        assert graph["graph_id"] == f"HZAU_{indoor_graph_id}"
+        assert graph["graph_type"] == "indoor"
+        assert graph["building_id"] == building_id
+        assert graph["building_name"] == entry["building_name"]
+        assert graph["floor_ids"] == entry["floor_ids"]
+        assert graph["default_floor_id"] == entry["default_floor_id"]
+        assert graph["metadata"]["stage"] == "M30X"
+        assert graph["metadata"]["source_template_site"] == "PKU"
+        assert len(gate_nodes) == 1
+        assert gate_nodes[0]["floor_id"] == entry["default_floor_id"]
+        assert all(any(node.get("floor_id") == floor_id for node in graph["nodes"]) for floor_id in entry["floor_ids"])
+
+    teaching_floor = service.get_indoor_map_payload("teaching_building", "F2")
+    assert teaching_floor["success"] is True
+    assert teaching_floor["building_name"] == "华中农业大学教学楼群"
+    assert teaching_floor["current_floor_id"] == "F2"
+    assert any(node["id"] == "tb1_classroom_201" for node in teaching_floor["nodes"])
+
+    invalid_floor = service.get_indoor_map_payload("canteen", "F3")
+    assert invalid_floor["success"] is False
+
+    canteen_floor = service.get_indoor_map_payload("canteen", "F2")
+    assert canteen_floor["success"] is True
+    assert any(node["id"] == "hzau_canteen_dining_area_2f" for node in canteen_floor["nodes"])
+    assert all(not node["id"].startswith("hit_canteen") for node in canteen_floor["nodes"])
+    assert all(not node["id"].startswith("suda_canteen") for node in canteen_floor["nodes"])
+    assert all(not node["id"].startswith("ouc_canteen") for node in canteen_floor["nodes"])
+    assert all(not node["id"].startswith("ynu_canteen") for node in canteen_floor["nodes"])
+
+    gymnasium_floor = service.get_indoor_map_payload("gymnasium", "F2")
+    assert gymnasium_floor["success"] is True
+    assert any(node["id"] == "gymnasium_court_2f" for node in gymnasium_floor["nodes"])
+
+    indoor_route = service.plan_route(
+        {
+            "start_node_id": "library",
+            "target_node_id": "lib_reading_room_1",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+    assert indoor_route["success"] is True
+    assert indoor_route["site_id"] == "HZAU"
+    assert indoor_route["path"] == ["library", "lib_entrance", "lib_reading_room_1"]
+    assert indoor_route["ui"]["default_route_view"] == "indoor:library:F1"
+
+    outdoor_to_indoor_route = service.plan_route(
+        {
+            "start_node_id": "gate_west",
+            "target_node_id": "lib_reading_room_2",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+    assert outdoor_to_indoor_route["success"] is True
+    assert outdoor_to_indoor_route["site_id"] == "HZAU"
+    assert outdoor_to_indoor_route["ui"]["default_route_view"] == "outdoor"
+    assert outdoor_to_indoor_route["ui"]["route_geojson"] is not None
+    assert any(view["id"] == "indoor:library:F2" for view in outdoor_to_indoor_route["ui"]["available_route_views"])
+
+    canteen_route = service.plan_route(
+        {
+            "start_node_id": "canteen",
+            "target_node_id": "hzau_canteen_dining_area_2f",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+    assert canteen_route["success"] is True
+    assert canteen_route["ui"]["default_route_view"] == "indoor:canteen:F2"
+
+    outdoor_multi_route = service.plan_multi_route(
+        {
+            "start_node_id": "gate_west",
+            "target_node_ids": ["library", "canteen"],
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+            "return_to_start": False,
+        }
+    )
+    assert outdoor_multi_route["success"] is True
+    assert outdoor_multi_route["site_id"] == "HZAU"
+    assert outdoor_multi_route["route_type"] == "multi_target"
+    assert outdoor_multi_route["ui"]["route_geojson"] is not None
+
+    geojson_payload = service.get_map_geojson_payload()
+    assert geojson_payload["success"] is True
+    assert geojson_payload["site_id"] == "HZAU"
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
 
@@ -8353,6 +8499,7 @@ def run_all_tests():
     test_m28x_ynu_frontend_switch_contract_and_leaflet_data()
     test_m28x_hzau_outdoor_main_chain_is_available_in_remaining_batch()
     test_m28x_hzau_frontend_switch_contract_and_leaflet_data()
+    test_m30x_hzau_indoor_templates_entry_mapping_and_route_views()
     test_demo_osm_edge_matches_file_records_m14_white_road_edges()
     test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order()
     test_demo_map_geojson_reports_geometry_coverage_stats()
