@@ -9,6 +9,17 @@
     "scaffold": false,
     "batch": "first_5_outdoor",
     "ready_for_first_batch_regression": true,
+    "transport_modes": [
+      "walk",
+      "bike",
+      "mixed"
+    ],
+    "transport_calibration_stage": "M31A_NJU",
+    "transport_notes": [
+      "南京大学仙林校区主轴和南北生活区支路按步行与自行车共享通行估时，东西向跨区通勤体现自行车时间优势。",
+      "南门和西门保留步行短接，并补充非机动车绕行接驳，便于展示 walk、bike、mixed 的可解释路线差异。",
+      "二源广场、南京大学鼎、洗手间和入楼 gate_link 继续按步行进入；室内路线保持步行语义。"
+    ],
     "scope": "M27X NJU outdoor batch graph with M29X representative-building indoor templates: Xianlin campus gates, main-road waypoints, core POI, search/place/catering targets, single/multi-route demo targets, and five indoor entry mappings.",
     "capabilities": [
       "leaflet_geojson",
@@ -1265,11 +1276,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "南京大学仙林校区西门 至 西门入口路口",
-      "description": "M27X NJU 室外图边：南京大学仙林校区西门 至 西门入口路口。",
+      "description": "南京大学仙林校区西门步行短接，适合从西门快速进入二源广场和主轴片区；自行车按西门外侧非机动车接驳绕行。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_west_gate",
@@ -1282,11 +1296,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "西门入口路口 至 南京大学仙林校区西门",
-      "description": "M27X NJU 室外图边：西门入口路口 至 南京大学仙林校区西门。",
+      "description": "南京大学仙林校区西门步行短接，适合从西门快速进入二源广场和主轴片区；自行车按西门外侧非机动车接驳绕行。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "gate_south",
@@ -1299,11 +1316,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "南京大学仙林校区南门 至 南门入口路口",
-      "description": "M27X NJU 室外图边：南京大学仙林校区南门 至 南门入口路口。",
+      "description": "南京大学仙林校区南门步行短接，适合从仙林大道快速进入教学生活区；自行车按南门外侧非机动车接驳绕行。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_south_gate",
@@ -1316,11 +1336,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "南门入口路口 至 南京大学仙林校区南门",
-      "description": "M27X NJU 室外图边：南门入口路口 至 南京大学仙林校区南门。",
+      "description": "南京大学仙林校区南门步行短接，适合从仙林大道快速进入教学生活区；自行车按南门外侧非机动车接驳绕行。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "gate_east",
@@ -1333,11 +1356,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林校区东门 至 东门入口路口",
-      "description": "M27X NJU 室外图边：南京大学仙林校区东门 至 东门入口路口。",
+      "description": "南京大学仙林校区东门 至 东门入口路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_east_gate",
@@ -1350,11 +1376,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "东门入口路口 至 南京大学仙林校区东门",
-      "description": "M27X NJU 室外图边：东门入口路口 至 南京大学仙林校区东门。",
+      "description": "东门入口路口 至 南京大学仙林校区东门，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "gate_north",
@@ -1367,11 +1396,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林校区北门 至 北门入口路口",
-      "description": "M27X NJU 室外图边：南京大学仙林校区北门 至 北门入口路口。",
+      "description": "南京大学仙林校区北门 至 北门入口路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_north_gate",
@@ -1384,11 +1416,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "北门入口路口 至 南京大学仙林校区北门",
-      "description": "M27X NJU 室外图边：北门入口路口 至 南京大学仙林校区北门。",
+      "description": "北门入口路口 至 南京大学仙林校区北门，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_west_gate",
@@ -1402,11 +1437,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "西门入口路口 至 西门主轴西段",
-      "description": "M27X NJU 室外图边：西门入口路口 至 西门主轴西段。",
+      "description": "西门入口路口 至 西门主轴西段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_west_axis",
@@ -1420,11 +1459,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "西门主轴西段 至 西门入口路口",
-      "description": "M27X NJU 室外图边：西门主轴西段 至 西门入口路口。",
+      "description": "西门主轴西段 至 西门入口路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_west_axis",
@@ -1438,11 +1481,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "西门主轴西段 至 二源广场路口",
-      "description": "M27X NJU 室外图边：西门主轴西段 至 二源广场路口。",
+      "description": "西门主轴西段 至 二源广场路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_square",
@@ -1456,11 +1503,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "二源广场路口 至 西门主轴西段",
-      "description": "M27X NJU 室外图边：二源广场路口 至 西门主轴西段。",
+      "description": "二源广场路口 至 西门主轴西段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_square",
@@ -1474,11 +1525,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "二源广场路口 至 校园主轴中段",
-      "description": "M27X NJU 室外图边：二源广场路口 至 校园主轴中段。",
+      "description": "二源广场路口 至 校园主轴中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_axis_mid",
@@ -1492,11 +1547,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "校园主轴中段 至 二源广场路口",
-      "description": "M27X NJU 室外图边：校园主轴中段 至 二源广场路口。",
+      "description": "校园主轴中段 至 二源广场路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_axis_mid",
@@ -1510,11 +1569,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "校园主轴中段 至 东区主路中段",
-      "description": "M27X NJU 室外图边：校园主轴中段 至 东区主路中段。",
+      "description": "校园主轴中段 至 东区主路中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_east_axis",
@@ -1528,11 +1591,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "东区主路中段 至 校园主轴中段",
-      "description": "M27X NJU 室外图边：东区主路中段 至 校园主轴中段。",
+      "description": "东区主路中段 至 校园主轴中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_east_axis",
@@ -1546,11 +1613,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "东区主路中段 至 东门入口路口",
-      "description": "M27X NJU 室外图边：东区主路中段 至 东门入口路口。",
+      "description": "东区主路中段 至 东门入口路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_east_gate",
@@ -1564,11 +1635,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "东门入口路口 至 东区主路中段",
-      "description": "M27X NJU 室外图边：东门入口路口 至 东区主路中段。",
+      "description": "东门入口路口 至 东区主路中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_south_gate",
@@ -1582,11 +1657,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "南门入口路口 至 南门生活教学路口",
-      "description": "M27X NJU 室外图边：南门入口路口 至 南门生活教学路口。",
+      "description": "南门入口路口 至 南门生活教学路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_south_axis",
@@ -1600,11 +1679,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "南门生活教学路口 至 南门入口路口",
-      "description": "M27X NJU 室外图边：南门生活教学路口 至 南门入口路口。",
+      "description": "南门生活教学路口 至 南门入口路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_south_axis",
@@ -1618,11 +1701,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "南门生活教学路口 至 校园主轴中段",
-      "description": "M27X NJU 室外图边：南门生活教学路口 至 校园主轴中段。",
+      "description": "南门生活教学路口 至 校园主轴中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_axis_mid",
@@ -1636,11 +1723,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "校园主轴中段 至 南门生活教学路口",
-      "description": "M27X NJU 室外图边：校园主轴中段 至 南门生活教学路口。",
+      "description": "校园主轴中段 至 南门生活教学路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_axis_mid",
@@ -1654,11 +1745,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "校园主轴中段 至 杜厦图书馆南侧路口",
-      "description": "M27X NJU 室外图边：校园主轴中段 至 杜厦图书馆南侧路口。",
+      "description": "校园主轴中段 至 杜厦图书馆南侧路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_library_south",
@@ -1672,11 +1767,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "杜厦图书馆南侧路口 至 校园主轴中段",
-      "description": "M27X NJU 室外图边：杜厦图书馆南侧路口 至 校园主轴中段。",
+      "description": "杜厦图书馆南侧路口 至 校园主轴中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_library_south",
@@ -1690,11 +1789,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "杜厦图书馆南侧路口 至 杜厦图书馆北侧路口",
-      "description": "M27X NJU 室外图边：杜厦图书馆南侧路口 至 杜厦图书馆北侧路口。",
+      "description": "杜厦图书馆南侧路口 至 杜厦图书馆北侧路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_library_north",
@@ -1708,11 +1811,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "杜厦图书馆北侧路口 至 杜厦图书馆南侧路口",
-      "description": "M27X NJU 室外图边：杜厦图书馆北侧路口 至 杜厦图书馆南侧路口。",
+      "description": "杜厦图书馆北侧路口 至 杜厦图书馆南侧路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_library_north",
@@ -1726,11 +1833,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "杜厦图书馆北侧路口 至 北门入口路口",
-      "description": "M27X NJU 室外图边：杜厦图书馆北侧路口 至 北门入口路口。",
+      "description": "杜厦图书馆北侧路口 至 北门入口路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_north_gate",
@@ -1744,11 +1855,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "北门入口路口 至 杜厦图书馆北侧路口",
-      "description": "M27X NJU 室外图边：北门入口路口 至 杜厦图书馆北侧路口。",
+      "description": "北门入口路口 至 杜厦图书馆北侧路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_south_axis",
@@ -1762,11 +1877,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "南门生活教学路口 至 教学楼东侧路口",
-      "description": "M27X NJU 室外图边：南门生活教学路口 至 教学楼东侧路口。",
+      "description": "南门生活教学路口 至 教学楼东侧路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_teaching_axis",
@@ -1780,11 +1899,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "教学楼东侧路口 至 南门生活教学路口",
-      "description": "M27X NJU 室外图边：教学楼东侧路口 至 南门生活教学路口。",
+      "description": "教学楼东侧路口 至 南门生活教学路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_teaching_axis",
@@ -1798,11 +1921,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "教学楼东侧路口 至 东区主路中段",
-      "description": "M27X NJU 室外图边：教学楼东侧路口 至 东区主路中段。",
+      "description": "教学楼东侧路口 至 东区主路中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_east_axis",
@@ -1816,11 +1943,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "东区主路中段 至 教学楼东侧路口",
-      "description": "M27X NJU 室外图边：东区主路中段 至 教学楼东侧路口。",
+      "description": "东区主路中段 至 教学楼东侧路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_west_axis",
@@ -1834,11 +1965,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "西门主轴西段 至 西南宿舍路口",
-      "description": "M27X NJU 室外图边：西门主轴西段 至 西南宿舍路口。",
+      "description": "西门主轴西段 至 西南宿舍路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_dorm_west",
@@ -1852,11 +1987,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "西南宿舍路口 至 西门主轴西段",
-      "description": "M27X NJU 室外图边：西南宿舍路口 至 西门主轴西段。",
+      "description": "西南宿舍路口 至 西门主轴西段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_dorm_west",
@@ -1870,11 +2009,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "西南宿舍路口 至 九食堂路口",
-      "description": "M27X NJU 室外图边：西南宿舍路口 至 九食堂路口。",
+      "description": "西南宿舍路口 至 九食堂路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_canteen",
@@ -1888,11 +2031,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "九食堂路口 至 西南宿舍路口",
-      "description": "M27X NJU 室外图边：九食堂路口 至 西南宿舍路口。",
+      "description": "九食堂路口 至 西南宿舍路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_canteen",
@@ -1906,11 +2053,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "九食堂路口 至 学生活动中心路口",
-      "description": "M27X NJU 室外图边：九食堂路口 至 学生活动中心路口。",
+      "description": "九食堂路口 至 学生活动中心路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_service",
@@ -1924,11 +2075,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "学生活动中心路口 至 九食堂路口",
-      "description": "M27X NJU 室外图边：学生活动中心路口 至 九食堂路口。",
+      "description": "学生活动中心路口 至 九食堂路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_service",
@@ -1942,11 +2097,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "学生活动中心路口 至 校园主轴中段",
-      "description": "M27X NJU 室外图边：学生活动中心路口 至 校园主轴中段。",
+      "description": "学生活动中心路口 至 校园主轴中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_axis_mid",
@@ -1960,11 +2119,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "校园主轴中段 至 学生活动中心路口",
-      "description": "M27X NJU 室外图边：校园主轴中段 至 学生活动中心路口。",
+      "description": "校园主轴中段 至 学生活动中心路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_library_south",
@@ -1978,11 +2141,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "杜厦图书馆南侧路口 至 体育馆路口",
-      "description": "M27X NJU 室外图边：杜厦图书馆南侧路口 至 体育馆路口。",
+      "description": "杜厦图书馆南侧路口 至 体育馆路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_sports",
@@ -1996,11 +2163,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "体育馆路口 至 杜厦图书馆南侧路口",
-      "description": "M27X NJU 室外图边：体育馆路口 至 杜厦图书馆南侧路口。",
+      "description": "体育馆路口 至 杜厦图书馆南侧路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_sports",
@@ -2014,11 +2185,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "体育馆路口 至 东区主路中段",
-      "description": "M27X NJU 室外图边：体育馆路口 至 东区主路中段。",
+      "description": "体育馆路口 至 东区主路中段，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_east_axis",
@@ -2032,11 +2207,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "东区主路中段 至 体育馆路口",
-      "description": "M27X NJU 室外图边：东区主路中段 至 体育馆路口。",
+      "description": "东区主路中段 至 体育馆路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_south_axis",
@@ -2050,11 +2229,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "南门生活教学路口 至 校医院路口",
-      "description": "M27X NJU 室外图边：南门生活教学路口 至 校医院路口。",
+      "description": "南门生活教学路口 至 校医院路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_hospital",
@@ -2068,11 +2251,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "校医院路口 至 南门生活教学路口",
-      "description": "M27X NJU 室外图边：校医院路口 至 南门生活教学路口。",
+      "description": "校医院路口 至 南门生活教学路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_hospital",
@@ -2086,11 +2273,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "校医院路口 至 教学楼东侧路口",
-      "description": "M27X NJU 室外图边：校医院路口 至 教学楼东侧路口。",
+      "description": "校医院路口 至 教学楼东侧路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_teaching_axis",
@@ -2104,11 +2295,15 @@
         "walk",
         "bike"
       ],
-      "transport_semantics": "campus_outdoor_road",
+      "transport_semantics": "shared_walk_bike",
       "name": "教学楼东侧路口 至 校医院路口",
-      "description": "M27X NJU 室外图边：教学楼东侧路口 至 校医院路口。",
+      "description": "教学楼东侧路口 至 校医院路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "er_yuan_square",
@@ -2121,11 +2316,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学二源广场 至 二源广场路口",
-      "description": "M27X NJU 室外图边：南京大学二源广场 至 二源广场路口。",
+      "description": "南京大学二源广场 至 二源广场路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_square",
@@ -2138,11 +2336,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "二源广场路口 至 南京大学二源广场",
-      "description": "M27X NJU 室外图边：二源广场路口 至 南京大学二源广场。",
+      "description": "二源广场路口 至 南京大学二源广场，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "nju_ding",
@@ -2155,11 +2356,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学鼎 至 二源广场路口",
-      "description": "M27X NJU 室外图边：南京大学鼎 至 二源广场路口。",
+      "description": "南京大学鼎 至 二源广场路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_square",
@@ -2172,11 +2376,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "二源广场路口 至 南京大学鼎",
-      "description": "M27X NJU 室外图边：二源广场路口 至 南京大学鼎。",
+      "description": "二源广场路口 至 南京大学鼎，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "restroom_main",
@@ -2189,11 +2396,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "二源广场公共洗手间 至 二源广场路口",
-      "description": "M27X NJU 室外图边：二源广场公共洗手间 至 二源广场路口。",
+      "description": "二源广场公共洗手间 至 二源广场路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_square",
@@ -2206,11 +2416,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "二源广场路口 至 二源广场公共洗手间",
-      "description": "M27X NJU 室外图边：二源广场路口 至 二源广场公共洗手间。",
+      "description": "二源广场路口 至 二源广场公共洗手间，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "library",
@@ -2223,11 +2436,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学杜厦图书馆 至 杜厦图书馆南侧路口",
-      "description": "M27X NJU 室外图边：南京大学杜厦图书馆 至 杜厦图书馆南侧路口。",
+      "description": "南京大学杜厦图书馆 至 杜厦图书馆南侧路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_library_south",
@@ -2240,11 +2456,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "杜厦图书馆南侧路口 至 南京大学杜厦图书馆",
-      "description": "M27X NJU 室外图边：杜厦图书馆南侧路口 至 南京大学杜厦图书馆。",
+      "description": "杜厦图书馆南侧路口 至 南京大学杜厦图书馆，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "teaching_building",
@@ -2257,11 +2476,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林教学楼 至 教学楼东侧路口",
-      "description": "M27X NJU 室外图边：南京大学仙林教学楼 至 教学楼东侧路口。",
+      "description": "南京大学仙林教学楼 至 教学楼东侧路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_teaching_axis",
@@ -2274,11 +2496,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "教学楼东侧路口 至 南京大学仙林教学楼",
-      "description": "M27X NJU 室外图边：教学楼东侧路口 至 南京大学仙林教学楼。",
+      "description": "教学楼东侧路口 至 南京大学仙林教学楼，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "basic_lab",
@@ -2291,11 +2516,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学基础实验楼 至 教学楼东侧路口",
-      "description": "M27X NJU 室外图边：南京大学基础实验楼 至 教学楼东侧路口。",
+      "description": "南京大学基础实验楼 至 教学楼东侧路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_teaching_axis",
@@ -2308,11 +2536,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "教学楼东侧路口 至 南京大学基础实验楼",
-      "description": "M27X NJU 室外图边：教学楼东侧路口 至 南京大学基础实验楼。",
+      "description": "教学楼东侧路口 至 南京大学基础实验楼，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "science_building",
@@ -2325,11 +2556,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林理科楼群 至 东区主路中段",
-      "description": "M27X NJU 室外图边：南京大学仙林理科楼群 至 东区主路中段。",
+      "description": "南京大学仙林理科楼群 至 东区主路中段，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_east_axis",
@@ -2342,11 +2576,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "东区主路中段 至 南京大学仙林理科楼群",
-      "description": "M27X NJU 室外图边：东区主路中段 至 南京大学仙林理科楼群。",
+      "description": "东区主路中段 至 南京大学仙林理科楼群，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "dormitory_1",
@@ -2359,11 +2596,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林学生宿舍一组团 至 西南宿舍路口",
-      "description": "M27X NJU 室外图边：南京大学仙林学生宿舍一组团 至 西南宿舍路口。",
+      "description": "南京大学仙林学生宿舍一组团 至 西南宿舍路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_dorm_west",
@@ -2376,11 +2616,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "西南宿舍路口 至 南京大学仙林学生宿舍一组团",
-      "description": "M27X NJU 室外图边：西南宿舍路口 至 南京大学仙林学生宿舍一组团。",
+      "description": "西南宿舍路口 至 南京大学仙林学生宿舍一组团，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "dormitory_2",
@@ -2393,11 +2636,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林学生宿舍东区 至 教学楼东侧路口",
-      "description": "M27X NJU 室外图边：南京大学仙林学生宿舍东区 至 教学楼东侧路口。",
+      "description": "南京大学仙林学生宿舍东区 至 教学楼东侧路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_teaching_axis",
@@ -2410,11 +2656,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "教学楼东侧路口 至 南京大学仙林学生宿舍东区",
-      "description": "M27X NJU 室外图边：教学楼东侧路口 至 南京大学仙林学生宿舍东区。",
+      "description": "教学楼东侧路口 至 南京大学仙林学生宿舍东区，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "canteen",
@@ -2427,11 +2676,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林校区九食堂 至 九食堂路口",
-      "description": "M27X NJU 室外图边：南京大学仙林校区九食堂 至 九食堂路口。",
+      "description": "南京大学仙林校区九食堂 至 九食堂路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_canteen",
@@ -2444,11 +2696,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "九食堂路口 至 南京大学仙林校区九食堂",
-      "description": "M27X NJU 室外图边：九食堂路口 至 南京大学仙林校区九食堂。",
+      "description": "九食堂路口 至 南京大学仙林校区九食堂，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "canteen_east",
@@ -2461,11 +2716,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林校区东区食堂 至 教学楼东侧路口",
-      "description": "M27X NJU 室外图边：南京大学仙林校区东区食堂 至 教学楼东侧路口。",
+      "description": "南京大学仙林校区东区食堂 至 教学楼东侧路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_teaching_axis",
@@ -2478,11 +2736,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "教学楼东侧路口 至 南京大学仙林校区东区食堂",
-      "description": "M27X NJU 室外图边：教学楼东侧路口 至 南京大学仙林校区东区食堂。",
+      "description": "教学楼东侧路口 至 南京大学仙林校区东区食堂，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "service_center",
@@ -2491,15 +2752,20 @@
       "congestion": 1.0,
       "ideal_speed": 1.35,
       "type": "poi_access",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "allowed_transports": [
-        "walk"
+        "walk",
+        "bike"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "shared_walk_bike",
       "name": "南京大学敬文学生活动中心 至 学生活动中心路口",
-      "description": "M27X NJU 室外图边：南京大学敬文学生活动中心 至 学生活动中心路口。",
+      "description": "南京大学敬文学生活动中心 至 学生活动中心路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_service",
@@ -2508,15 +2774,20 @@
       "congestion": 1.0,
       "ideal_speed": 1.35,
       "type": "poi_access",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "allowed_transports": [
-        "walk"
+        "walk",
+        "bike"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "shared_walk_bike",
       "name": "学生活动中心路口 至 南京大学敬文学生活动中心",
-      "description": "M27X NJU 室外图边：学生活动中心路口 至 南京大学敬文学生活动中心。",
+      "description": "学生活动中心路口 至 南京大学敬文学生活动中心，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "hospital",
@@ -2529,11 +2800,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林校区校医院 至 校医院路口",
-      "description": "M27X NJU 室外图边：南京大学仙林校区校医院 至 校医院路口。",
+      "description": "南京大学仙林校区校医院 至 校医院路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_hospital",
@@ -2546,11 +2820,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "校医院路口 至 南京大学仙林校区校医院",
-      "description": "M27X NJU 室外图边：校医院路口 至 南京大学仙林校区校医院。",
+      "description": "校医院路口 至 南京大学仙林校区校医院，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "convenience_store",
@@ -2563,11 +2840,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林生活区便利店 至 九食堂路口",
-      "description": "M27X NJU 室外图边：南京大学仙林生活区便利店 至 九食堂路口。",
+      "description": "南京大学仙林生活区便利店 至 九食堂路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_canteen",
@@ -2580,11 +2860,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "九食堂路口 至 南京大学仙林生活区便利店",
-      "description": "M27X NJU 室外图边：九食堂路口 至 南京大学仙林生活区便利店。",
+      "description": "九食堂路口 至 南京大学仙林生活区便利店，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "sports_center",
@@ -2593,15 +2876,20 @@
       "congestion": 1.0,
       "ideal_speed": 1.35,
       "type": "poi_access",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "allowed_transports": [
-        "walk"
+        "walk",
+        "bike"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "shared_walk_bike",
       "name": "南京大学方肇周体育馆 至 体育馆路口",
-      "description": "M27X NJU 室外图边：南京大学方肇周体育馆 至 体育馆路口。",
+      "description": "南京大学方肇周体育馆 至 体育馆路口，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "road_sports",
@@ -2610,15 +2898,20 @@
       "congestion": 1.0,
       "ideal_speed": 1.35,
       "type": "poi_access",
-      "vehicle_access": "pedestrian_only",
+      "vehicle_access": "all",
       "allowed_transports": [
-        "walk"
+        "walk",
+        "bike"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "shared_walk_bike",
       "name": "体育馆路口 至 南京大学方肇周体育馆",
-      "description": "M27X NJU 室外图边：体育馆路口 至 南京大学方肇周体育馆。",
+      "description": "体育馆路口 至 南京大学方肇周体育馆，按南京大学仙林校区步骑共享主路估时；东西向主轴和南北生活区通勤骑行更省时。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.2,
+        "bike": 3.9
+      }
     },
     {
       "from": "admin_building",
@@ -2631,11 +2924,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林行政服务楼 至 校园主轴中段",
-      "description": "M27X NJU 室外图边：南京大学仙林行政服务楼 至 校园主轴中段。",
+      "description": "南京大学仙林行政服务楼 至 校园主轴中段，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_axis_mid",
@@ -2648,11 +2944,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "校园主轴中段 至 南京大学仙林行政服务楼",
-      "description": "M27X NJU 室外图边：校园主轴中段 至 南京大学仙林行政服务楼。",
+      "description": "校园主轴中段 至 南京大学仙林行政服务楼，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "post_office",
@@ -2665,11 +2964,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林邮政服务点 至 学生活动中心路口",
-      "description": "M27X NJU 室外图边：南京大学仙林邮政服务点 至 学生活动中心路口。",
+      "description": "南京大学仙林邮政服务点 至 学生活动中心路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_service",
@@ -2682,11 +2984,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "学生活动中心路口 至 南京大学仙林邮政服务点",
-      "description": "M27X NJU 室外图边：学生活动中心路口 至 南京大学仙林邮政服务点。",
+      "description": "学生活动中心路口 至 南京大学仙林邮政服务点，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "bank_atm",
@@ -2699,11 +3004,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林校园卡与 ATM 服务点 至 学生活动中心路口",
-      "description": "M27X NJU 室外图边：南京大学仙林校园卡与 ATM 服务点 至 学生活动中心路口。",
+      "description": "南京大学仙林校园卡与 ATM 服务点 至 学生活动中心路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_service",
@@ -2716,11 +3024,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "学生活动中心路口 至 南京大学仙林校园卡与 ATM 服务点",
-      "description": "M27X NJU 室外图边：学生活动中心路口 至 南京大学仙林校园卡与 ATM 服务点。",
+      "description": "学生活动中心路口 至 南京大学仙林校园卡与 ATM 服务点，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "bookstore",
@@ -2733,11 +3044,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "杜厦图书馆书店与咖啡区 至 杜厦图书馆南侧路口",
-      "description": "M27X NJU 室外图边：杜厦图书馆书店与咖啡区 至 杜厦图书馆南侧路口。",
+      "description": "杜厦图书馆书店与咖啡区 至 杜厦图书馆南侧路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_library_south",
@@ -2750,11 +3064,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "杜厦图书馆南侧路口 至 杜厦图书馆书店与咖啡区",
-      "description": "M27X NJU 室外图边：杜厦图书馆南侧路口 至 杜厦图书馆书店与咖啡区。",
+      "description": "杜厦图书馆南侧路口 至 杜厦图书馆书店与咖啡区，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "observatory",
@@ -2767,11 +3084,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学左涤江天文台 至 杜厦图书馆北侧路口",
-      "description": "M27X NJU 室外图边：南京大学左涤江天文台 至 杜厦图书馆北侧路口。",
+      "description": "南京大学左涤江天文台 至 杜厦图书馆北侧路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_library_north",
@@ -2784,11 +3104,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "杜厦图书馆北侧路口 至 南京大学左涤江天文台",
-      "description": "M27X NJU 室外图边：杜厦图书馆北侧路口 至 南京大学左涤江天文台。",
+      "description": "杜厦图书馆北侧路口 至 南京大学左涤江天文台，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "central_lake",
@@ -2801,11 +3124,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林校区中心景观水系 至 校园主轴中段",
-      "description": "M27X NJU 室外图边：南京大学仙林校区中心景观水系 至 校园主轴中段。",
+      "description": "南京大学仙林校区中心景观水系 至 校园主轴中段，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_axis_mid",
@@ -2818,11 +3144,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "校园主轴中段 至 南京大学仙林校区中心景观水系",
-      "description": "M27X NJU 室外图边：校园主轴中段 至 南京大学仙林校区中心景观水系。",
+      "description": "校园主轴中段 至 南京大学仙林校区中心景观水系，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "parking_south",
@@ -2835,11 +3164,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林南门停车点 至 南门入口路口",
-      "description": "M27X NJU 室外图边：南京大学仙林南门停车点 至 南门入口路口。",
+      "description": "南京大学仙林南门停车点 至 南门入口路口，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_south_gate",
@@ -2852,11 +3184,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南门入口路口 至 南京大学仙林南门停车点",
-      "description": "M27X NJU 室外图边：南门入口路口 至 南京大学仙林南门停车点。",
+      "description": "南门入口路口 至 南京大学仙林南门停车点，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "museum",
@@ -2869,11 +3204,14 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "南京大学仙林校史展示点 至 校园主轴中段",
-      "description": "M27X NJU 室外图边：南京大学仙林校史展示点 至 校园主轴中段。",
+      "description": "南京大学仙林校史展示点 至 校园主轴中段，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
-      "needs_review": true
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
     },
     {
       "from": "road_axis_mid",
@@ -2886,10 +3224,93 @@
       "allowed_transports": [
         "walk"
       ],
-      "transport_semantics": "poi_access",
+      "transport_semantics": "pedestrian_poi_access",
       "name": "校园主轴中段 至 南京大学仙林校史展示点",
-      "description": "M27X NJU 室外图边：校园主轴中段 至 南京大学仙林校史展示点。",
+      "description": "校园主轴中段 至 南京大学仙林校史展示点，按南京大学仙林校区近距离 POI 步行接驳，不作为骑行穿越边。",
       "source": "m27x_manual_nju_xianlin_axis_estimate",
+      "needs_review": true,
+      "transport_speeds": {
+        "walk": 1.15
+      }
+    },
+    {
+      "from": "gate_south",
+      "to": "road_south_gate",
+      "distance": 1050.0,
+      "name": "南京大学仙林校区南门非机动车绕行接驳",
+      "description": "南京大学仙林校区南门自行车模式使用的绕行接驳段；mixed 会先走南门步行短接，再在仙林校区主路切换为骑行。",
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "bike_lane",
+      "vehicle_access": "vehicle_only",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.0
+      },
+      "transport_semantics": "bike_only",
+      "source": "m31a_nju_transport_calibration",
+      "needs_review": true
+    },
+    {
+      "from": "road_south_gate",
+      "to": "gate_south",
+      "distance": 1050.0,
+      "name": "南京大学仙林校区南门非机动车绕行接驳",
+      "description": "南京大学仙林校区南门自行车模式使用的绕行接驳段；mixed 会先走南门步行短接，再在仙林校区主路切换为骑行。",
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "bike_lane",
+      "vehicle_access": "vehicle_only",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.0
+      },
+      "transport_semantics": "bike_only",
+      "source": "m31a_nju_transport_calibration",
+      "needs_review": true
+    },
+    {
+      "from": "gate_west",
+      "to": "road_west_gate",
+      "distance": 2600.0,
+      "name": "南京大学仙林校区西门非机动车绕行接驳",
+      "description": "南京大学仙林校区西门自行车模式使用的绕行接驳段；步行用户走西门短接，短距离前往二源广场和学生活动中心更直接。",
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "bike_lane",
+      "vehicle_access": "vehicle_only",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.0
+      },
+      "transport_semantics": "bike_only",
+      "source": "m31a_nju_transport_calibration",
+      "needs_review": true
+    },
+    {
+      "from": "road_west_gate",
+      "to": "gate_west",
+      "distance": 2600.0,
+      "name": "南京大学仙林校区西门非机动车绕行接驳",
+      "description": "南京大学仙林校区西门自行车模式使用的绕行接驳段；步行用户走西门短接，短距离前往二源广场和学生活动中心更直接。",
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "bike_lane",
+      "vehicle_access": "vehicle_only",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.0
+      },
+      "transport_semantics": "bike_only",
+      "source": "m31a_nju_transport_calibration",
       "needs_review": true
     }
   ]
