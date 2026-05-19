@@ -15,9 +15,9 @@
 - `current_manager`: `L2-06`
 - `last_completed_manager`: `L2-05`
 - `next_manager`: `L2-06`
-- `last_commit`: `0eefe2f`
-- `last_verification`: `py -m pytest -q`，252 passed；M31A HNU L2 复核通过，暂存区已在提交前确认只包含 HNU 相关实现与测试
-- `last_update_note`: `M31A HNU 已完成，L2-06 继续按顺序调用 M31A SDU；后续子 agent 调用必须先执行 /fast off`
+- `last_commit`: `e891784`
+- `last_verification`: `py -m pytest -q`，256 passed；M31A SDU L2 复核通过，暂存区已在提交前确认只包含 SDU 相关实现与测试
+- `last_update_note`: `M31A SDU 已完成，L2-06 继续按顺序调用 M31A HUST；后续子 agent 调用必须先执行 /fast off`
 
 ## 二级经理状态总表
 
@@ -28,7 +28,7 @@
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
-| L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `in_progress` | `12/20` | `0eefe2f` | M31A THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU 已完成；继续 SDU 交通方式校准 |
+| L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `in_progress` | `13/20` | `e891784` | M31A THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU 已完成；继续 HUST 交通方式校准 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
@@ -37,7 +37,7 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05`
-- `current_action`: `L2-06 调用 M31A SDU`
+- `current_action`: `L2-06 调用 M31A HUST`
 - `next_action`: `等待 L2-06 完成后复核`
 - `notes`: `L2-05 已完成 M30Y 20 校室内总回归并通过一级总管复核。L2-06 经理已按 /fast off 启动并确认分支正确；因 goal CLI 不存在，改用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派。`
 
@@ -126,7 +126,7 @@
 - [x] `M31A SYSU`
 - [x] `M31A SCU`
 - [x] `M31A HNU`
-- [ ] `M31A SDU`
+- [x] `M31A SDU`
 - [ ] `M31A HUST`
 - [ ] `M31A SCUT`
 - [ ] `M31A OUC`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 17:09] manager=L2-06 child=M31A SDU status=completed commit=e891784 verify=`py -m pytest -q` 256 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 SDU 交通方式校准；SDU outdoor 增加 M31A_SDU 元数据、中心校区步骑共享速度、南门步行短接、非机动车绕行接驳和田径场骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 SDU 相关实现与测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 16:54] manager=L2-06 child=M31A HNU status=completed commit=0eefe2f verify=`py -m pytest -q` 252 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 HNU 交通方式校准；HNU outdoor 增加 M31A_HNU 元数据、岳麓山校区步骑共享速度、南门步行短接、非机动车绕行接驳和田径场骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 HNU 相关实现与测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 16:40] manager=L2-06 child=M31A SCU status=completed commit=0815e60 verify=`py -m pytest -q` 248 passed note=通过 codex exec 串行调用三级原子执行 agent 完成 SCU 交通方式校准；首次 gpt-5.4 L3 草稿全量测试通过但 L2 复核发现 SCU outdoor 存在整文件格式化级 churn 且 bike 语义与前序学校不一致，随后通过 gpt-5.5 L3 返修收窄 diff 并统一为 bike_only/bike_dismount_connector；SCU outdoor 增加 M31A_SCU 元数据、望江校区步骑共享速度、南门步行短接、非机动车绕行接驳和运动场骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 SCU 相关实现与测试；L3 提示均已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 16:12] manager=L2-06 child=M31A SYSU status=completed commit=a2ea5f1 verify=`py -m pytest -q` 244 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 SYSU 交通方式校准；SYSU outdoor 增加 M31A_SYSU 元数据、广州校区南校园步骑共享速度、西门/南门步行短接、非机动车绕行接驳和服务中心/运动场骑行落客接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L2 复核确认未残留编码乱码，暂存区只包含 SYSU 相关实现与测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
