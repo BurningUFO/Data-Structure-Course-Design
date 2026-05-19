@@ -31,6 +31,13 @@
       "shopping",
       "restroom"
     ],
+    "transport_calibration_stage": "M31A_WHU",
+    "transport_modes": ["walk", "bike", "mixed"],
+    "transport_notes": [
+      "武汉大学珞珈山核心路网按步行与自行车共享通行估时，自行车在长距离主路上更省时。",
+      "牌楼正门和南侧入口保留步行短接，并补充非机动车绕行接驳，便于展示 walk、bike、mixed 的路线差异。",
+      "室内与入楼 gate_link 继续保持步行语义，不开放纯自行车入楼。"
+    ],
     "coordinate_sources": [
       "Public WHU POI coordinate seeds for library, old library, Wanlin museum, Fengyuan area, Meiyuan canteen, clinic, and information center",
       "M27X manual Luojia campus-axis estimates for gates, road waypoints, dormitory, catering, service, shopping, and restroom access nodes"
@@ -696,10 +703,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "campus_main_road",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "武汉大学牌楼正门 至 牌楼内侧主路口",
-      "description": "M27X 武汉大学主路骨架边，后续阶段可继续校准真实道路几何。"
+      "description": "武汉大学牌楼正门步行短接，适合从牌楼快速进入珞珈核心区；自行车按非机动车绕行接驳。"
     },
     {
       "from": "road_main_gate",
@@ -708,10 +717,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "campus_main_road",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "牌楼内侧主路口 至 武汉大学牌楼正门",
-      "description": "M27X 武汉大学主路骨架边，后续阶段可继续校准真实道路几何。"
+      "description": "武汉大学牌楼正门步行短接，适合从珞珈核心区步行出校；自行车按非机动车绕行接驳。"
     },
     {
       "from": "road_main_gate",
@@ -722,8 +733,10 @@
       "type": "poi_access",
       "vehicle_access": "pedestrian_only",
       "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_landmark_access",
       "name": "牌楼内侧主路口 至 国立武汉大学牌楼",
-      "description": "M27X 武汉大学牌楼地标接驳边。"
+      "description": "国立武汉大学牌楼地标近距离参观点，按步行进入，不作为骑行穿越边。"
     },
     {
       "from": "main_arch",
@@ -734,8 +747,10 @@
       "type": "poi_access",
       "vehicle_access": "pedestrian_only",
       "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_landmark_access",
       "name": "国立武汉大学牌楼 至 牌楼内侧主路口",
-      "description": "M27X 武汉大学牌楼地标接驳边。"
+      "description": "国立武汉大学牌楼地标近距离参观点，按步行返回主路，不作为骑行穿越边。"
     },
     {
       "from": "road_main_gate",
@@ -746,8 +761,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "牌楼内侧主路口 至 牌楼服务区路口",
-      "description": "M27X 牌楼至服务区主路骨架边。"
+      "description": "牌楼至服务区主路，步行与自行车共享通行；mixed 可在牌楼步行短接后切换为珞珈山校内骑行。"
     },
     {
       "from": "road_service_axis",
@@ -758,8 +775,10 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "牌楼服务区路口 至 牌楼内侧主路口",
-      "description": "M27X 牌楼至服务区主路骨架边。"
+      "description": "牌楼至服务区主路，步行与自行车共享通行；mixed 可在珞珈山校内骑行后切换为牌楼步行短接。"
     },
     {
       "from": "road_service_axis",
@@ -770,6 +789,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "牌楼服务区路口 至 武汉大学综合事务服务中心",
       "description": "M27X 综合事务服务中心 POI 接驳边。"
     },
@@ -782,6 +803,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "武汉大学综合事务服务中心 至 牌楼服务区路口",
       "description": "M27X 综合事务服务中心 POI 接驳边。"
     },
@@ -794,6 +817,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "牌楼服务区路口 至 武汉大学国学院",
       "description": "M27X 国学院 POI 接驳边。"
     },
@@ -806,6 +831,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "武汉大学国学院 至 牌楼服务区路口",
       "description": "M27X 国学院 POI 接驳边。"
     },
@@ -818,6 +845,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "牌楼服务区路口 至 珞珈广场主路口",
       "description": "M27X 牌楼服务区至珞珈核心区主路骨架边。"
     },
@@ -830,6 +859,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "珞珈广场主路口 至 牌楼服务区路口",
       "description": "M27X 牌楼服务区至珞珈核心区主路骨架边。"
     },
@@ -842,6 +873,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "珞珈广场主路口 至 武汉大学图书馆总馆",
       "description": "M27X 图书馆总馆 POI 接驳边。"
     },
@@ -854,6 +887,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "武汉大学图书馆总馆 至 珞珈广场主路口",
       "description": "M27X 图书馆总馆 POI 接驳边。"
     },
@@ -866,6 +901,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "珞珈广场主路口 至 万林艺术博物馆",
       "description": "M27X 万林艺术博物馆 POI 接驳边。"
     },
@@ -878,6 +915,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "万林艺术博物馆 至 珞珈广场主路口",
       "description": "M27X 万林艺术博物馆 POI 接驳边。"
     },
@@ -890,8 +929,10 @@
       "type": "poi_access",
       "vehicle_access": "pedestrian_only",
       "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_service_access",
       "name": "珞珈广场主路口 至 图书馆区公共洗手间",
-      "description": "M27X 图书馆区公共洗手间 POI 接驳边。"
+      "description": "图书馆区公共洗手间为步行密集服务点，按步行进入，不作为骑行穿越边。"
     },
     {
       "from": "restroom_main",
@@ -902,8 +943,10 @@
       "type": "poi_access",
       "vehicle_access": "pedestrian_only",
       "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_service_access",
       "name": "图书馆区公共洗手间 至 珞珈广场主路口",
-      "description": "M27X 图书馆区公共洗手间 POI 接驳边。"
+      "description": "图书馆区公共洗手间为步行密集服务点，按步行返回主路，不作为骑行穿越边。"
     },
     {
       "from": "road_luojia_square",
@@ -914,6 +957,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "珞珈广场主路口 至 武汉大学校医院",
       "description": "M27X 校医院 POI 接驳边。"
     },
@@ -926,6 +971,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "武汉大学校医院 至 珞珈广场主路口",
       "description": "M27X 校医院 POI 接驳边。"
     },
@@ -938,6 +985,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "珞珈广场主路口 至 图书馆中轴路口",
       "description": "M27X 珞珈广场至图书馆中轴主路骨架边。"
     },
@@ -950,6 +999,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "图书馆中轴路口 至 珞珈广场主路口",
       "description": "M27X 珞珈广场至图书馆中轴主路骨架边。"
     },
@@ -962,6 +1013,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "图书馆中轴路口 至 樱花大道路口",
       "description": "M27X 图书馆至樱顶方向主路骨架边。"
     },
@@ -974,6 +1027,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "樱花大道路口 至 图书馆中轴路口",
       "description": "M27X 图书馆至樱顶方向主路骨架边。"
     },
@@ -986,8 +1041,10 @@
       "type": "poi_access",
       "vehicle_access": "pedestrian_only",
       "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_landmark_access",
       "name": "樱花大道路口 至 武汉大学老图书馆",
-      "description": "M27X 老图书馆 POI 接驳边。"
+      "description": "武汉大学老图书馆与樱花大道游览区按步行参观点处理，不作为骑行穿越边。"
     },
     {
       "from": "old_library",
@@ -998,8 +1055,10 @@
       "type": "poi_access",
       "vehicle_access": "pedestrian_only",
       "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_landmark_access",
       "name": "武汉大学老图书馆 至 樱花大道路口",
-      "description": "M27X 老图书馆 POI 接驳边。"
+      "description": "武汉大学老图书馆与樱花大道游览区按步行参观点处理，不作为骑行穿越边。"
     },
     {
       "from": "road_cherry_axis",
@@ -1010,6 +1069,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "樱花大道路口 至 樱园学生宿舍",
       "description": "M27X 樱园学生宿舍 POI 接驳边。"
     },
@@ -1022,6 +1083,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "樱园学生宿舍 至 樱花大道路口",
       "description": "M27X 樱园学生宿舍 POI 接驳边。"
     },
@@ -1034,6 +1097,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "樱花大道路口 至 桂园生活区路口",
       "description": "M27X 樱顶至桂园生活区支路骨架边。"
     },
@@ -1046,6 +1111,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园生活区路口 至 樱花大道路口",
       "description": "M27X 樱顶至桂园生活区支路骨架边。"
     },
@@ -1058,6 +1125,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园生活区路口 至 桂园食堂",
       "description": "M27X 桂园食堂 POI 接驳边。"
     },
@@ -1070,6 +1139,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园食堂 至 桂园生活区路口",
       "description": "M27X 桂园食堂 POI 接驳边。"
     },
@@ -1082,6 +1153,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园生活区路口 至 桂园学生宿舍",
       "description": "M27X 桂园学生宿舍 POI 接驳边。"
     },
@@ -1094,6 +1167,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园学生宿舍 至 桂园生活区路口",
       "description": "M27X 桂园学生宿舍 POI 接驳边。"
     },
@@ -1106,6 +1181,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园生活区路口 至 桂园操场",
       "description": "M27X 桂园操场 POI 接驳边。"
     },
@@ -1118,6 +1195,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园操场 至 桂园生活区路口",
       "description": "M27X 桂园操场 POI 接驳边。"
     },
@@ -1130,6 +1209,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园生活区路口 至 湖滨北侧路口",
       "description": "M27X 桂园生活区至北侧湖滨方向支路骨架边。"
     },
@@ -1142,6 +1223,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "湖滨北侧路口 至 桂园生活区路口",
       "description": "M27X 桂园生活区至北侧湖滨方向支路骨架边。"
     },
@@ -1154,6 +1237,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "桂园生活区路口 至 牌楼服务区路口",
       "description": "M27X 桂园生活区至牌楼服务区支路骨架边。"
     },
@@ -1166,6 +1251,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "牌楼服务区路口 至 桂园生活区路口",
       "description": "M27X 桂园生活区至牌楼服务区支路骨架边。"
     },
@@ -1178,6 +1265,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "图书馆中轴路口 至 梅园餐饮服务路口",
       "description": "M27X 图书馆中轴至梅园服务区支路骨架边。"
     },
@@ -1190,6 +1279,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "梅园餐饮服务路口 至 图书馆中轴路口",
       "description": "M27X 图书馆中轴至梅园服务区支路骨架边。"
     },
@@ -1202,6 +1293,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "梅园餐饮服务路口 至 梅园食堂",
       "description": "M27X 梅园食堂 POI 接驳边。"
     },
@@ -1214,6 +1307,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "梅园食堂 至 梅园餐饮服务路口",
       "description": "M27X 梅园食堂 POI 接驳边。"
     },
@@ -1226,6 +1321,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "梅园餐饮服务路口 至 梅园生活服务点",
       "description": "M27X 梅园生活服务点 POI 接驳边。"
     },
@@ -1238,6 +1335,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "梅园生活服务点 至 梅园餐饮服务路口",
       "description": "M27X 梅园生活服务点 POI 接驳边。"
     },
@@ -1250,6 +1349,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "梅园餐饮服务路口 至 东侧教学区路口",
       "description": "M27X 梅园服务区至东侧教学区主路骨架边。"
     },
@@ -1262,6 +1363,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "东侧教学区路口 至 梅园餐饮服务路口",
       "description": "M27X 梅园服务区至东侧教学区主路骨架边。"
     },
@@ -1274,6 +1377,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "东侧教学区路口 至 武汉大学法学院",
       "description": "M27X 法学院 POI 接驳边。"
     },
@@ -1286,6 +1391,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "武汉大学法学院 至 东侧教学区路口",
       "description": "M27X 法学院 POI 接驳边。"
     },
@@ -1298,6 +1405,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "东侧教学区路口 至 枫园东门路口",
       "description": "M27X 东侧教学区至东门方向主路骨架边。"
     },
@@ -1310,6 +1419,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "枫园东门路口 至 东侧教学区路口",
       "description": "M27X 东侧教学区至东门方向主路骨架边。"
     },
@@ -1322,6 +1433,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "枫园东门路口 至 武汉大学东门",
       "description": "M27X 东门入口接驳边。"
     },
@@ -1334,6 +1447,8 @@
       "type": "campus_main_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "武汉大学东门 至 枫园东门路口",
       "description": "M27X 东门入口接驳边。"
     },
@@ -1346,8 +1461,10 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "牌楼内侧主路口 至 南侧入口内路口",
-      "description": "M27X 南侧入口支路骨架边。"
+      "description": "牌楼内侧至南侧入口的校内支路，步行与自行车共享通行，适合 mixed 从南侧步行入校后切换为骑行。"
     },
     {
       "from": "road_south_axis",
@@ -1358,8 +1475,10 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "南侧入口内路口 至 牌楼内侧主路口",
-      "description": "M27X 南侧入口支路骨架边。"
+      "description": "南侧入口至牌楼内侧的校内支路，步行与自行车共享通行，长距离前往珞珈核心区时骑行更省时。"
     },
     {
       "from": "road_south_axis",
@@ -1368,10 +1487,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "campus_branch_road",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "南侧入口内路口 至 武汉大学南侧入口",
-      "description": "M27X 南侧入口接驳边。"
+      "description": "武汉大学南侧入口步行短接，适合南侧到达后步行入校；自行车按外侧非机动车接驳绕行。"
     },
     {
       "from": "gate_south",
@@ -1380,10 +1501,12 @@
       "congestion": 1.0,
       "ideal_speed": 1.25,
       "type": "campus_branch_road",
-      "vehicle_access": "all",
-      "allowed_transports": ["walk", "bike"],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": ["walk"],
+      "transport_speeds": {"walk": 1.15},
+      "transport_semantics": "pedestrian_gate_shortcut",
       "name": "武汉大学南侧入口 至 南侧入口内路口",
-      "description": "M27X 南侧入口接驳边。"
+      "description": "武汉大学南侧入口步行短接，适合南侧到达后步行入校；自行车按外侧非机动车接驳绕行。"
     },
     {
       "from": "road_north_axis",
@@ -1394,6 +1517,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "湖滨北侧路口 至 武汉大学北侧湖滨入口",
       "description": "M27X 北侧湖滨入口接驳边。"
     },
@@ -1406,6 +1531,8 @@
       "type": "campus_branch_road",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "武汉大学北侧湖滨入口 至 湖滨北侧路口",
       "description": "M27X 北侧湖滨入口接驳边。"
     },
@@ -1418,6 +1545,8 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "湖滨北侧路口 至 武汉大学信息中心",
       "description": "M27X 信息中心 POI 接驳边。"
     },
@@ -1430,8 +1559,74 @@
       "type": "poi_access",
       "vehicle_access": "all",
       "allowed_transports": ["walk", "bike"],
+      "transport_speeds": {"walk": 1.2, "bike": 3.8},
+      "transport_semantics": "shared_walk_bike",
       "name": "武汉大学信息中心 至 湖滨北侧路口",
       "description": "M27X 信息中心 POI 接驳边。"
+    },
+    {
+      "from": "gate_west",
+      "to": "road_service_axis",
+      "distance": 720.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.2,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": ["bike"],
+      "transport_speeds": {"bike": 4.2},
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "whu_west_gate_bike_detour",
+      "source": "m31a_whu_transport_calibration",
+      "name": "武汉大学牌楼正门非机动车绕行接驳",
+      "description": "牌楼正门自行车模式使用的绕行接驳段；步行用户走牌楼短接，短距离前往服务区时步行更合适。"
+    },
+    {
+      "from": "road_service_axis",
+      "to": "gate_west",
+      "distance": 720.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.2,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": ["bike"],
+      "transport_speeds": {"bike": 4.2},
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "whu_west_gate_bike_detour",
+      "source": "m31a_whu_transport_calibration",
+      "name": "武汉大学牌楼正门非机动车绕行接驳",
+      "description": "牌楼正门自行车模式使用的绕行接驳段；步行用户走牌楼短接，短距离前往服务区时步行更合适。"
+    },
+    {
+      "from": "gate_south",
+      "to": "road_main_gate",
+      "distance": 780.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.2,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": ["bike"],
+      "transport_speeds": {"bike": 4.2},
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "whu_south_gate_bike_detour",
+      "source": "m31a_whu_transport_calibration",
+      "name": "武汉大学南侧入口非机动车绕行接驳",
+      "description": "南侧入口自行车模式使用的绕行接驳段；mixed 会先走南侧入口步行短接，再在珞珈山校内主路切换为骑行。"
+    },
+    {
+      "from": "road_main_gate",
+      "to": "gate_south",
+      "distance": 780.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.2,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": ["bike"],
+      "transport_speeds": {"bike": 4.2},
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "whu_south_gate_bike_detour",
+      "source": "m31a_whu_transport_calibration",
+      "name": "武汉大学南侧入口非机动车绕行接驳",
+      "description": "南侧入口自行车模式使用的绕行接驳段；mixed 会先走南侧入口步行短接，再在珞珈山校内主路切换为骑行。"
     }
   ]
 }
