@@ -3925,6 +3925,60 @@ def test_m31a_suda_transport_summary_and_step_copy():
     )
 
 
+def test_m31a_ynu_transport_summary_and_step_copy():
+    service = DemoUIService("YNU")
+
+    walk_route = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "gymnasium",
+            "strategy": "shortest_time",
+            "transport_mode": "walk",
+        }
+    )
+    bike_route = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "gymnasium",
+            "strategy": "shortest_time",
+            "transport_mode": "bike",
+        }
+    )
+    mixed_route = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "gymnasium",
+            "strategy": "shortest_time",
+            "transport_mode": "mixed",
+        }
+    )
+
+    assert walk_route["success"] is True
+    assert bike_route["success"] is True
+    assert mixed_route["success"] is True
+    assert bike_route["total_weight"] < walk_route["total_weight"]
+    assert mixed_route["total_weight"] < bike_route["total_weight"]
+    assert mixed_route["summary"]["transport_text"] == "步行 + 自行车最短时间"
+    assert mixed_route["summary"]["strategy_text"] == "最短时间"
+    assert mixed_route["site_id"] == "YNU"
+    assert mixed_route["ui"]["route_geojson"] is not None
+
+    mixed_modes = [step["transport_mode_used"] for step in mixed_route["path_steps"]]
+    assert "walk" in mixed_modes
+    assert "bike" in mixed_modes
+    assert mixed_modes[0] == "walk"
+    assert bike_route["path_steps"][0]["edge_type"] == "bike_lane"
+    assert bike_route["path_steps"][-1]["edge_type"] == "bike_lane"
+    assert "南门非机动车绕行接驳" in bike_route["path_steps"][0]["edge_name"]
+    assert "体育馆骑行落客接驳" in bike_route["path_steps"][-1]["description"]
+    assert mixed_route["path_steps"][0]["allowed_transports"] == ["walk"]
+    assert "云南大学呈贡校区南门步行短接" in mixed_route["path_steps"][0]["description"]
+    assert any(
+        "云南大学呈贡校区南区步骑共享主路示范段" in step["description"]
+        for step in mixed_route["path_steps"]
+    )
+
+
 def test_m29x_whu_indoor_templates_entry_mapping_and_route_views():
     service = DemoUIService("WHU")
     bootstrap = service.get_bootstrap_payload()
