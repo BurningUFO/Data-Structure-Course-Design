@@ -72,6 +72,24 @@
         "notes": "紫金港体育馆查附近优先展示更衣、票务和训练等运动配套设施。"
       }
     ],
+    "interest_calibration_stage": "M31C_ZJU",
+    "interest_highlights": [
+      {
+        "profile_id": "study",
+        "interests": ["图书馆", "自习", "求是"],
+        "highlight_node_ids": ["library", "teaching_building", "teaching_building_2"]
+      },
+      {
+        "profile_id": "landmark",
+        "interests": ["求是", "大讲堂", "摄影"],
+        "highlight_node_ids": ["qiushi_square", "qiushi_great_hall", "anzhong_building"]
+      },
+      {
+        "profile_id": "campus_life",
+        "interests": ["食堂", "银泉", "丹青"],
+        "highlight_node_ids": ["canteen_yinquan", "canteen", "dormitory_1", "convenience_store"]
+      }
+    ],
     "scope": "M27X ZJU outdoor batch graph: Zijingang campus gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. M29X adds representative indoor template graphs for selected buildings.",
     "capabilities": [
       "leaflet_geojson",
@@ -197,9 +215,9 @@
       "type": "landmark",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["求是", "广场", "地标", "校园景观"],
-      "keywords": ["求是广场", "浙江大学求是广场", "浙大地标", "校园广场"],
-      "description": "求是广场是紫金港校区核心景观和校园游览锚点。",
+      "tags": ["求是", "广场", "地标", "校园景观", "摄影", "毕业照"],
+      "keywords": ["求是广场", "浙江大学求是广场", "浙大地标", "校园广场", "求是精神", "毕业照"],
+      "description": "求是广场是紫金港校区最具代表性的校园锚点之一，常作为求是主题活动、合影打卡和参观讲解的起点。",
       "category": "landmark",
       "facilities": ["休憩", "参观点"],
       "open_hours": "全天开放",
@@ -215,9 +233,9 @@
       "type": "landmark",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["求是大讲堂", "会堂", "活动", "地标"],
-      "keywords": ["求是大讲堂", "浙江大学求是大讲堂", "讲堂", "活动场地"],
-      "description": "求是大讲堂是紫金港校区大型活动和校园参观路线中的代表性建筑。",
+      "tags": ["求是大讲堂", "会堂", "活动", "地标", "讲座", "典礼"],
+      "keywords": ["求是大讲堂", "浙江大学求是大讲堂", "讲堂", "活动场地", "学术讲座", "开学典礼"],
+      "description": "求是大讲堂承载紫金港校区的大型讲座、典礼与校园参观动线，是体现浙大求是气质的代表性建筑。",
       "category": "landmark",
       "facilities": ["活动空间"],
       "open_hours": "按活动安排开放",
@@ -368,9 +386,9 @@
       "type": "catering",
       "is_gate": true,
       "sub_graph_id": "indoor_CANTEEN_LINHU",
-      "tags": ["食堂", "餐厅", "餐饮", "临湖"],
-      "keywords": ["临湖餐厅", "浙江大学临湖餐厅", "紫金港食堂", "食堂", "餐饮", "美食"],
-      "description": "临湖餐厅是紫金港生活区餐饮节点，作为 M27X 美食推荐和多目标路线目标。",
+      "tags": ["食堂", "餐厅", "餐饮", "临湖", "蓝田", "校园生活"],
+      "keywords": ["临湖餐厅", "浙江大学临湖餐厅", "紫金港食堂", "食堂", "餐饮", "美食", "蓝田学园食堂"],
+      "description": "临湖餐厅靠近蓝田学园与北侧生活区，是紫金港日常就餐和课后补给最常用的食堂节点之一。",
       "category": "catering",
       "facilities": ["食堂", "餐饮"],
       "open_hours": "早餐至晚餐时段",
@@ -389,9 +407,9 @@
       "type": "catering",
       "is_gate": false,
       "sub_graph_id": null,
-      "tags": ["食堂", "餐厅", "餐饮", "银泉"],
-      "keywords": ["银泉餐厅", "浙江大学银泉餐厅", "紫金港食堂", "食堂", "餐饮"],
-      "description": "银泉餐厅补齐西北生活区餐饮推荐候选集。",
+      "tags": ["食堂", "餐厅", "餐饮", "银泉", "丹青", "校园生活"],
+      "keywords": ["银泉餐厅", "浙江大学银泉餐厅", "紫金港食堂", "食堂", "餐饮", "丹青学园食堂", "银泉夜宵"],
+      "description": "银泉餐厅紧邻丹青学园，是紫金港西北生活区就餐、夜间补给和宿舍生活场景下更有代表性的食堂选择。",
       "category": "catering",
       "facilities": ["食堂", "餐饮"],
       "open_hours": "早餐至晚餐时段",

@@ -152,6 +152,30 @@
     "created_at": "2026-05-19"
   },
   {
+    "id": "user_zju_001",
+    "name": "浙大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "求是"],
+    "home_site_id": "ZJU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_zju_002",
+    "name": "浙大求是访客",
+    "role": "tourist",
+    "interests": ["求是", "大讲堂", "摄影"],
+    "home_site_id": "ZJU",
+    "created_at": "2026-05-19"
+  },
+  {
+    "id": "user_zju_003",
+    "name": "浙大丹青生活访客",
+    "role": "student",
+    "interests": ["食堂", "银泉", "丹青"],
+    "home_site_id": "ZJU",
+    "created_at": "2026-05-19"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
