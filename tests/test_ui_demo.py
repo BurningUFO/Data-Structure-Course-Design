@@ -10050,6 +10050,83 @@ def test_demo_m31b_scut_nearby_queries_use_calibrated_center_name_and_scope():
     print("test_demo_m31b_scut_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
+def test_demo_m31b_suda_bootstrap_nearby_profiles():
+    service = DemoUIService("SUDA")
+    payload = service.get_bootstrap_payload()
+    profiles = payload["controls"]["nearby_profiles"]
+
+    assert payload["site"]["id"] == "SUDA"
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 300, 400, 500, 800]
+    assert profiles["library"]["default_radius_m"] == 200.0
+    assert profiles["library"]["default_category"] == "service"
+    assert profiles["teaching_building"]["default_category"] == "service"
+    assert profiles["canteen"]["default_category"] == "service"
+    assert profiles["dormitory_1"]["center_name"] == "苏州大学天赐庄校区学生宿舍区"
+    assert profiles["dormitory_1"]["default_radius_m"] == 500.0
+    assert profiles["dormitory_1"]["default_category"] == "shopping"
+    assert profiles["gate_south"]["default_radius_m"] == 400.0
+    assert profiles["gate_south"]["default_category"] == "catering"
+    assert profiles["central_square"]["default_category"] == "landmark"
+    assert profiles["history_museum"]["default_category"] == "service"
+    assert profiles["gymnasium"]["default_category"] == "sports"
+    print("test_demo_m31b_suda_bootstrap_nearby_profiles passed.")
+
+
+def test_demo_m31b_suda_nearby_queries_use_calibrated_center_name_and_scope():
+    service = DemoUIService("SUDA")
+
+    dormitory_shopping = service.place_search(
+        {
+            "keyword": "",
+            "category": "shopping",
+            "center_node_id": "dormitory_1",
+            "radius_m": 500,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        dormitory_shopping,
+        center_node_id="dormitory_1",
+        radius_m=500,
+        category="shopping",
+    )
+    assert dormitory_shopping["metadata"]["nearby"]["center_name"] == "苏州大学天赐庄校区学生宿舍区"
+    assert dormitory_shopping["metadata"]["nearby"]["calibration_stage"] == "M31B_SUDA"
+    assert dormitory_shopping["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 500.0
+    assert dormitory_shopping["metadata"]["nearby"]["calibration_profile"]["default_category"] == "shopping"
+    assert [item["route_target_node_id"] for item in dormitory_shopping["results"][:2]] == [
+        "convenience_store",
+        "book_store",
+    ]
+    assert dormitory_shopping["results"][0]["nearby_reason"].startswith("距离苏州大学天赐庄校区学生宿舍区 ")
+
+    central_square_landmark = service.place_search(
+        {
+            "keyword": "",
+            "category": "landmark",
+            "center_node_id": "central_square",
+            "radius_m": 400,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        central_square_landmark,
+        center_node_id="central_square",
+        radius_m=400,
+        category="landmark",
+    )
+    assert central_square_landmark["metadata"]["nearby"]["center_name"] == "苏州大学天赐庄校区中心广场"
+    assert central_square_landmark["metadata"]["nearby"]["calibration_stage"] == "M31B_SUDA"
+    assert central_square_landmark["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 400.0
+    assert central_square_landmark["metadata"]["nearby"]["calibration_profile"]["default_category"] == "landmark"
+    assert [item["route_target_node_id"] for item in central_square_landmark["results"][:2]] == [
+        "history_museum",
+        "red_building_complex",
+    ]
+    assert central_square_landmark["results"][0]["nearby_reason"].startswith("距离苏州大学天赐庄校区中心广场 ")
+    print("test_demo_m31b_suda_nearby_queries_use_calibrated_center_name_and_scope passed.")
+
+
 def test_demo_m31b_ouc_bootstrap_nearby_profiles():
     service = DemoUIService("OUC")
     payload = service.get_bootstrap_payload()
@@ -10848,6 +10925,8 @@ def run_all_tests():
     test_demo_m31b_hust_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_scut_bootstrap_nearby_profiles()
     test_demo_m31b_scut_nearby_queries_use_calibrated_center_name_and_scope()
+    test_demo_m31b_suda_bootstrap_nearby_profiles()
+    test_demo_m31b_suda_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_ouc_bootstrap_nearby_profiles()
     test_demo_m31b_ouc_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_main_query_recommend_route_chains_remain_available()
