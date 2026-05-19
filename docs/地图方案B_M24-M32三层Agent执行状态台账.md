@@ -15,9 +15,9 @@
 - `current_manager`: `L2-07`
 - `last_completed_manager`: `L2-06`
 - `next_manager`: `L2-07`
-- `last_commit`: `0e4d8e5`
-- `last_verification`: `py -m pytest -q`，305 passed；L2-07 复核 M31B SYSU 通过，暂存区只包含聚焦实现提交后续台账变更
-- `last_update_note`: `L2-07 已完成 M31B SYSU 10/20；下一步调用 M31B SCU`
+- `last_commit`: `b80ce6e`
+- `last_verification`: `py -m pytest -q`，307 passed；L2-07 复核 M31B SCU 通过，暂存区只包含聚焦实现提交后续台账变更
+- `last_update_note`: `L2-07 已完成 M31B SCU 11/20；下一步调用 M31B HNU`
 
 ## 二级经理状态总表
 
@@ -29,7 +29,7 @@
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
-| L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `in_progress` | `10/20` | `0e4d8e5` | 20 校查附近；已完成至 SYSU，下一步 SCU |
+| L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `in_progress` | `11/20` | `b80ce6e` | 20 校查附近；已完成至 SCU，下一步 HNU |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
 
@@ -37,8 +37,8 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05,L2-06`
-- `current_action`: `L2-07 调用 M31B SCU`
-- `next_action`: `等待 L2-07 完成 SCU 后复核`
+- `current_action`: `L2-07 调用 M31B HNU`
+- `next_action`: `等待 L2-07 完成 HNU 后复核`
 - `notes`: `L2-06 已完成 M31A 20 校交通方式校准并通过一级总管复核。L2-07 经理必须按 /fast off 启动并确认分支正确；因 goal CLI 不存在，继续使用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派；简单重复性三级任务可使用 gpt-5.4 xhigh，复杂返修继续使用 gpt-5.5 xhigh。`
 
 ## L2-01 基线模板经理子任务
@@ -147,7 +147,7 @@
 - [x] `M31B TONGJI`
 - [x] `M31B SEU`
 - [x] `M31B SYSU`
-- [ ] `M31B SCU`
+- [x] `M31B SCU`
 - [ ] `M31B HNU`
 - [ ] `M31B SDU`
 - [ ] `M31B HUST`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 20:44] manager=L2-07 child=M31B SCU status=completed commit=b80ce6e verify=`py -m pytest tests/test_ui_demo.py -k "m31b_scu or SCU or scu" -q` 10 passed; `py -m pytest -q` 307 passed note=通过本地串行原子执行完成 SCU 附近查询校准；SCU outdoor 增加 M31B_SCU 元数据、200/300/400/500/800 半径选项和 8 个高频中心 profile，覆盖图书馆、基础教学楼、学生食堂、西区学生宿舍、北区学生公寓、南门、学生事务服务中心与体育馆；专项测试确认西区学生宿舍 200m 餐饮命中学生食堂、南门 800m 地标按钟楼文化地标与四川大学博物馆排序，并回填中心中文名、校准阶段与附近理由；L2 复核确认实现提交只包含 SCU 数据和测试，台账改动独立提交；未调用 OSMnx、Overpass、explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未提交无关脏文件
 - [2026-05-19 20:36] manager=L2-07 child=M31B SYSU status=completed commit=0e4d8e5 verify=`py -m pytest -q` 305 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 SYSU 附近查询校准；SYSU outdoor 增加 M31B_SYSU 元数据、200/300/400/500/800 半径选项和 8 个高频中心 profile，覆盖图书馆、教学楼、西区食堂、西区宿舍、北区公寓、南门、学生事务服务中心与体育馆；专项测试确认西区宿舍 200m 餐饮命中西区食堂、南门 800m 地标按怀士堂与孙中山先生铜像排序，并回填中心中文名、校准阶段与附近理由；L2 复核确认实现提交只包含 SYSU 数据和测试，L3 越界台账改动未纳入实现提交并已由 L2 修正为独立台账提交；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 20:26] manager=L2-07 child=M31B SEU status=completed commit=cb632d8 verify=`py -m pytest -q` 303 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 SEU 附近查询校准；SEU outdoor 增加 M31B_SEU 元数据、200/300/400/600/800 半径选项和 8 个高频中心 profile，覆盖图书馆、教学楼、食堂、桃园宿舍、梅园公寓、南门、学生事务服务中心与体育馆；专项测试确认桃园宿舍 300m 餐饮命中桃园食堂、南门 800m 地标按九龙湖景观区与大学生活动中心排序，并回填中心中文名、校准阶段与附近理由；L2 复核确认暂存区只包含 SEU 数据和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
 - [2026-05-19 20:16] manager=L2-07 child=M31B TONGJI status=completed commit=6936b3a verify=`py -m pytest -q` 301 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 TONGJI 附近查询校准；TONGJI outdoor 增加 M31B_TONGJI 元数据、200/300/400/500/800 半径选项和 8 个高频中心 profile，覆盖图书馆、教学楼、食堂、西区宿舍、东区宿舍、南门、学生事务服务中心与体育馆；专项测试确认西区宿舍 300m 餐饮命中北苑餐厅、南门 500m 地标按大礼堂与樱花大道排序，并回填中心中文名、校准阶段与附近理由；L2 复核确认暂存区只包含 TONGJI 数据和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
