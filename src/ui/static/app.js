@@ -341,6 +341,12 @@ function bindForms() {
     await runQuery("/api/search/places", buildPlaceSearchPayload());
   });
 
+  document.querySelector("#place-center-node").addEventListener("change", (event) => {
+    const centerNodeId = event.target.value;
+    state.nearbyCenterNodeId = centerNodeId;
+    applyNearbyProfile(centerNodeId);
+  });
+
   document.querySelector("#catering-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     await runQuery("/api/recommend/catering", {
@@ -1622,6 +1628,36 @@ function handlePlacePreset(preset) {
   }));
 }
 
+function getNearbyProfile(centerNodeId) {
+  if (!centerNodeId) {
+    return null;
+  }
+  return state.bootstrap?.controls?.nearby_profiles?.[centerNodeId] || null;
+}
+
+function applyNearbyProfile(centerNodeId, overrides = {}) {
+  if (!centerNodeId) {
+    return;
+  }
+
+  const profile = getNearbyProfile(centerNodeId);
+  if (!profile) {
+    return;
+  }
+
+  const radiusValue = overrides.radius_m ?? profile.default_radius_m;
+  const categoryValue = overrides.category !== undefined
+    ? overrides.category
+    : (profile.default_category ?? "");
+
+  if (radiusValue !== undefined && radiusValue !== null && radiusValue !== "") {
+    setSelectValue("#place-radius", String(radiusValue));
+  }
+  if (categoryValue !== undefined) {
+    setSelectValue("#place-category", categoryValue);
+  }
+}
+
 function buildPlaceSearchPayload(overrides = {}) {
   const centerNodeId = overrides.center_node_id ?? document.querySelector("#place-center-node").value;
   const radiusM = overrides.radius_m ?? document.querySelector("#place-radius").value;
@@ -1649,21 +1685,27 @@ async function runNearbySearch(centerNodeId, options = {}) {
     return;
   }
 
+  const profile = getNearbyProfile(centerNodeId);
+  const currentRadiusValue = document.querySelector("#place-radius").value || 500;
+  const currentCategoryValue = document.querySelector("#place-category").value || "";
+  const nextRadiusValue = options.radius_m ?? profile?.default_radius_m ?? currentRadiusValue;
+  const nextCategoryValue = options.category !== undefined
+    ? options.category
+    : (profile ? (profile.default_category ?? "") : currentCategoryValue);
+
   state.nearbyCenterNodeId = centerNodeId;
   switchTab("place");
   setSelectValue("#place-center-node", centerNodeId);
-  setSelectValue("#place-radius", String(options.radius_m || document.querySelector("#place-radius").value || 500));
+  setSelectValue("#place-radius", String(nextRadiusValue));
   document.querySelector("#place-keyword").value = options.keyword || "";
   document.querySelector("#place-sort").value = "distance_m";
-  if (options.category !== undefined) {
-    setSelectValue("#place-category", options.category);
-  }
+  setSelectValue("#place-category", nextCategoryValue);
 
   await runQuery("/api/search/places", buildPlaceSearchPayload({
     center_node_id: centerNodeId,
-    radius_m: options.radius_m,
+    radius_m: nextRadiusValue,
     keyword: options.keyword || "",
-    category: options.category ?? document.querySelector("#place-category").value,
+    category: nextCategoryValue,
     sort_field: "distance_m",
   }));
 }

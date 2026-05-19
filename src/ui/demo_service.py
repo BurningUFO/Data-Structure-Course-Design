@@ -339,6 +339,7 @@ OSM_LAYER_FILES = {
 
 OSM_METADATA_FILE = "osm_extract_metadata.json"
 OSM_EDGE_MATCHES_FILE = "edge_osm_geometry_matches.json"
+DEFAULT_NEARBY_RADIUS_OPTIONS = (200, 500, 800, 1200)
 
 
 def normalize_text(value: Any) -> str:
@@ -360,6 +361,7 @@ class DemoUIService:
         self.diary_service = DiaryService(records=self.diary_records)
         self.users = load_users(site_id=self.site_id)
         self.outdoor_graph_source = self._load_outdoor_graph_source(self.site_id)
+        self.outdoor_metadata = self._load_outdoor_metadata()
         self.map_nodes = self._build_map_nodes(self.outdoor_graph_source)
         self.map_node_index = {node["id"]: node for node in self.map_nodes}
         self.osm_edge_matches, self.osm_edge_match_warnings = self._load_osm_edge_geometry_matches()
@@ -387,6 +389,8 @@ class DemoUIService:
         self.start_nodes = self._build_start_nodes()
         self.default_start_node = self._resolve_default_start_node()
         self.route_targets = self._build_route_targets()
+        self.nearby_radius_options = self._build_nearby_radius_options()
+        self.nearby_profiles = self._build_nearby_profiles()
         self.scenic_categories = self._build_scenic_categories()
         self.aigc_samples = self._load_aigc_samples()
 
@@ -444,12 +448,8 @@ class DemoUIService:
                     {"value": "created_at", "label": "按发布时间"},
                 ],
                 "interest_options": collect_interest_options(self.users),
-                "nearby_radius_options": [
-                    {"value": 200, "label": "200 m"},
-                    {"value": 500, "label": "500 m"},
-                    {"value": 800, "label": "800 m"},
-                    {"value": 1200, "label": "1200 m"},
-                ],
+                "nearby_radius_options": self.nearby_radius_options,
+                "nearby_profiles": self.nearby_profiles,
                 "route_strategies": [
                     {"value": "shortest_distance", "label": "最短距离"},
                     {"value": "shortest_time", "label": "最短时间"},
@@ -1648,6 +1648,62 @@ class DemoUIService:
         if not outdoor_path.exists():
             return {"nodes": [], "edges": []}
         return json.loads(outdoor_path.read_text(encoding="utf-8"))
+
+    def _load_outdoor_metadata(self) -> dict[str, Any]:
+        metadata = self.outdoor_graph_source.get("metadata")
+        return metadata if isinstance(metadata, dict) else {}
+
+    def _build_nearby_radius_options(self) -> list[dict[str, Any]]:
+        raw_options = self.outdoor_metadata.get("nearby_radius_options")
+        source_options = raw_options if isinstance(raw_options, list) and raw_options else list(DEFAULT_NEARBY_RADIUS_OPTIONS)
+        options: list[dict[str, Any]] = []
+
+        for item in source_options:
+            value = item.get("value") if isinstance(item, dict) else item
+            label = normalize_text(item.get("label")) if isinstance(item, dict) else ""
+            try:
+                radius_value = int(float(value))
+            except (TypeError, ValueError):
+                continue
+            if radius_value <= 0 or any(existing["value"] == radius_value for existing in options):
+                continue
+            options.append(
+                {
+                    "value": radius_value,
+                    "label": label or f"{radius_value} m",
+                }
+            )
+
+        if options:
+            return options
+        return [{"value": value, "label": f"{value} m"} for value in DEFAULT_NEARBY_RADIUS_OPTIONS]
+
+    def _build_nearby_profiles(self) -> dict[str, dict[str, Any]]:
+        raw_profiles = self.outdoor_metadata.get("nearby_profiles")
+        if not isinstance(raw_profiles, list):
+            return {}
+
+        profiles: dict[str, dict[str, Any]] = {}
+        for item in raw_profiles:
+            if not isinstance(item, dict):
+                continue
+            center_node_id = normalize_text(item.get("center_node_id"))
+            if not center_node_id or center_node_id not in self.graph.nodes:
+                continue
+
+            default_category = normalize_text(item.get("default_category"))
+            if default_category and default_category not in PLACE_CATEGORY_SET:
+                default_category = ""
+
+            profiles[center_node_id] = {
+                "center_node_id": center_node_id,
+                "center_name": self._resolve_node_name(center_node_id) or center_node_id,
+                "default_radius_m": float(self._normalize_radius_m(item.get("default_radius_m"))),
+                "default_category": default_category,
+                "notes": normalize_text(item.get("notes")),
+            }
+
+        return profiles
 
     def _osm_geo_dir(self) -> Path:
         return Path(__file__).resolve().parents[2] / "data" / "sites" / self.site_id / "geo"
@@ -2914,6 +2970,55 @@ class DemoUIService:
                 1 for item in decorated_items if item.get("has_map_location")
             ),
         }
+        if source == "place_search":
+            return self._decorate_nearby_place_response(decorated)
+        return decorated
+
+    def _decorate_nearby_place_response(self, response: dict[str, Any]) -> dict[str, Any]:
+        metadata = dict(response.get("metadata") or {})
+        nearby = metadata.get("nearby")
+        if not isinstance(nearby, dict):
+            return response
+
+        filters = response.get("filters") or {}
+        center_node_id = normalize_text(filters.get("center_node_id") or nearby.get("center_node_id"))
+        if not center_node_id:
+            return response
+
+        center_name = self._resolve_node_name(center_node_id) or normalize_text(nearby.get("center_name")) or center_node_id
+        decorated_nearby = dict(nearby)
+        decorated_nearby["center_name"] = center_name
+
+        calibration_stage = normalize_text(self.outdoor_metadata.get("nearby_calibration_stage"))
+        if calibration_stage:
+            decorated_nearby["calibration_stage"] = calibration_stage
+
+        profile = self.nearby_profiles.get(center_node_id)
+        if profile:
+            decorated_nearby["calibration_profile"] = profile
+
+        radius_m = decorated_nearby.get("radius_m")
+        decorated_items: list[dict[str, Any]] = []
+        for item in response.get("results", response.get("data", [])):
+            copied = item.copy()
+            if normalize_text(copied.get("nearby_center_node_id")) == center_node_id:
+                copied["nearby_center_name"] = center_name
+                try:
+                    nearby_distance_m = float(copied.get("nearby_distance_m", copied.get("distance_m", 0.0)))
+                    nearby_radius_m = float(copied.get("nearby_radius_m", radius_m or 0.0))
+                except (TypeError, ValueError):
+                    pass
+                else:
+                    copied["nearby_reason"] = (
+                        f"距离{center_name} {nearby_distance_m:.1f} m，在 {nearby_radius_m:.0f} m 范围内。"
+                    )
+            decorated_items.append(copied)
+
+        decorated = response.copy()
+        decorated["metadata"] = metadata
+        decorated["metadata"]["nearby"] = decorated_nearby
+        decorated["data"] = decorated_items
+        decorated["results"] = decorated_items
         return decorated
 
     def _decorate_diary_management_response(

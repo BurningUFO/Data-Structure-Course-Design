@@ -9074,6 +9074,66 @@ def test_demo_m22_fixed_nearby_facility_scenarios():
     print("test_demo_m22_fixed_nearby_facility_scenarios passed.")
 
 
+def test_demo_m31b_thu_bootstrap_nearby_profiles():
+    service = DemoUIService("THU")
+    payload = service.get_bootstrap_payload()
+    profiles = payload["controls"]["nearby_profiles"]
+
+    assert payload["site"]["id"] == "THU"
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 300, 400, 500, 800]
+    assert profiles["library"]["default_radius_m"] == 300.0
+    assert profiles["library"]["default_category"] == "service"
+    assert profiles["dormitory_1"]["center_name"] == "紫荆学生公寓"
+    assert profiles["dormitory_1"]["default_radius_m"] == 400.0
+    assert profiles["second_gate"]["default_radius_m"] == 800.0
+    assert profiles["second_gate"]["default_category"] == "restroom"
+    print("test_demo_m31b_thu_bootstrap_nearby_profiles passed.")
+
+
+def test_demo_m31b_thu_nearby_queries_use_calibrated_center_name_and_scope():
+    service = DemoUIService("THU")
+
+    dorm_shopping = service.place_search(
+        {
+            "keyword": "",
+            "category": "shopping",
+            "center_node_id": "dormitory_1",
+            "radius_m": 400,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        dorm_shopping,
+        center_node_id="dormitory_1",
+        radius_m=400,
+        category="shopping",
+    )
+    assert dorm_shopping["metadata"]["nearby"]["center_name"] == "紫荆学生公寓"
+    assert dorm_shopping["metadata"]["nearby"]["calibration_stage"] == "M31B_THU"
+    assert dorm_shopping["metadata"]["nearby"]["calibration_profile"]["default_category"] == "shopping"
+    assert dorm_shopping["results"][0]["route_target_node_id"] == "convenience_store"
+    assert dorm_shopping["results"][0]["nearby_reason"].startswith("距离紫荆学生公寓 ")
+
+    second_gate_restrooms = service.place_search(
+        {
+            "keyword": "",
+            "category": "restroom",
+            "center_node_id": "second_gate",
+            "radius_m": 800,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        second_gate_restrooms,
+        center_node_id="second_gate",
+        radius_m=800,
+        category="restroom",
+    )
+    assert second_gate_restrooms["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 800.0
+    assert second_gate_restrooms["results"][0]["route_target_node_id"] == "restroom_main"
+    print("test_demo_m31b_thu_nearby_queries_use_calibrated_center_name_and_scope passed.")
+
+
 def test_demo_main_query_recommend_route_chains_remain_available():
     service = DemoUIService("PKU")
 
@@ -9531,6 +9591,21 @@ def test_demo_static_m22_nearby_place_search_controls():
     print("test_demo_static_m22_nearby_place_search_controls passed.")
 
 
+def test_demo_static_m31b_nearby_profiles_are_used_by_ui():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert "nearby_profiles" in script
+    assert "getNearbyProfile" in script
+    assert "applyNearbyProfile" in script
+    assert "profile.default_radius_m" in script
+    assert "profile.default_category" in script
+    print("test_demo_static_m31b_nearby_profiles_are_used_by_ui passed.")
+
+
 def test_demo_aigc_preview_returns_template_storyboard():
     service = DemoUIService("PKU")
     response = service.aigc_preview(
@@ -9757,6 +9832,8 @@ def run_all_tests():
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()
     test_demo_m22_fixed_nearby_facility_scenarios()
+    test_demo_m31b_thu_bootstrap_nearby_profiles()
+    test_demo_m31b_thu_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()
@@ -9767,6 +9844,7 @@ def run_all_tests():
     test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks()
     test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly()
     test_demo_static_m22_nearby_place_search_controls()
+    test_demo_static_m31b_nearby_profiles_are_used_by_ui()
     test_demo_aigc_preview_returns_template_storyboard()
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()
