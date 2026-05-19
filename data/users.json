@@ -392,6 +392,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_hust_001",
+    "name": "华科学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "东九楼"],
+    "home_site_id": "HUST",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_hust_002",
+    "name": "华科喻家山访客",
+    "role": "tourist",
+    "interests": ["喻家山", "校史", "摄影"],
+    "home_site_id": "HUST",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_hust_003",
+    "name": "华科韵苑生活访客",
+    "role": "student",
+    "interests": ["食堂", "韵苑", "校园生活"],
+    "home_site_id": "HUST",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
