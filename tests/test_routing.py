@@ -649,6 +649,156 @@ class TestRouting(unittest.TestCase):
         self.assertEqual(len(bike_only_edges), 8)
         self.assertTrue(any(edge["type"] == "bike_lane" for edge in bike_only_edges))
 
+    def test_m31a_hit_transport_calibration_walk_bike_and_mixed(self):
+        router = Router(GraphLoader.load_site_graph("HIT"))
+
+        walk_to_sports = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="walk",
+            site_id="HIT",
+        )
+        bike_to_sports = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="bike",
+            site_id="HIT",
+        )
+        mixed_to_sports = router.query_routing(
+            "gate_south",
+            "sports_ground",
+            strategy="shortest_time",
+            transport_mode="mixed",
+            site_id="HIT",
+        )
+
+        self.assertTrue(walk_to_sports["success"])
+        self.assertTrue(bike_to_sports["success"])
+        self.assertTrue(mixed_to_sports["success"])
+        self.assertLess(bike_to_sports["total_weight"], walk_to_sports["total_weight"])
+        self.assertLess(mixed_to_sports["total_weight"], bike_to_sports["total_weight"])
+        self.assertEqual(
+            {step["transport_mode_used"] for step in walk_to_sports["path_steps"]},
+            {"walk"},
+        )
+        self.assertEqual(
+            {step["transport_mode_used"] for step in bike_to_sports["path_steps"]},
+            {"bike"},
+        )
+        mixed_modes = [step["transport_mode_used"] for step in mixed_to_sports["path_steps"]]
+        self.assertIn("walk", mixed_modes)
+        self.assertIn("bike", mixed_modes)
+        self.assertEqual(mixed_modes[0], "walk")
+        self.assertEqual(bike_to_sports["path_steps"][0]["edge_type"], "bike_lane")
+        self.assertEqual(bike_to_sports["path_steps"][-1]["edge_type"], "bike_lane")
+        self.assertEqual(mixed_to_sports["path_steps"][0]["allowed_transports"], ["walk"])
+        self.assertTrue(
+            any(
+                "哈尔滨工业大学一校区步骑共享主路示范段" in step["description"]
+                for step in mixed_to_sports["path_steps"]
+            )
+        )
+
+    def test_m31a_hit_transport_keeps_indoor_segments_walk_only(self):
+        router = Router(GraphLoader.load_site_graph("HIT"))
+
+        mixed_indoor = router.query_routing(
+            "gate_south",
+            "lib_reading_room_2",
+            strategy="shortest_time",
+            transport_mode="mixed",
+            site_id="HIT",
+        )
+        bike_indoor = router.query_routing(
+            "gate_south",
+            "lib_reading_room_2",
+            strategy="shortest_time",
+            transport_mode="bike",
+            site_id="HIT",
+        )
+
+        self.assertTrue(mixed_indoor["success"])
+        self.assertFalse(bike_indoor["success"])
+        self.assertEqual(bike_indoor["message"], "无法从起点到达终点。")
+        self.assertIn("bike", [step["transport_mode_used"] for step in mixed_indoor["path_steps"]])
+        indoor_steps = [
+            step for step in mixed_indoor["path_steps"]
+            if step["edge_type"] in {"gate_link", "indoor_path", "stairs", "elevator"}
+        ]
+        self.assertTrue(indoor_steps)
+        self.assertEqual({step["transport_mode_used"] for step in indoor_steps}, {"walk"})
+
+    def test_m31a_hit_outdoor_data_declares_transport_semantics(self):
+        outdoor_path = Path(__file__).resolve().parents[1] / "data" / "sites" / "HIT" / "outdoor.json"
+        with outdoor_path.open("r", encoding="utf-8") as f:
+            outdoor = json.load(f)
+
+        edges = outdoor["edges"]
+        calibration_source = "m31a_hit_transport_calibration"
+        expected_semantics = {
+            "pedestrian_gate_shortcut",
+            "shared_walk_bike",
+            "bike_only",
+            "bike_dismount_connector",
+        }
+        semantic_edges = [
+            edge for edge in edges
+            if edge.get("transport_semantics") in expected_semantics
+        ]
+        shared_edges = [
+            edge for edge in semantic_edges
+            if edge.get("transport_semantics") == "shared_walk_bike"
+        ]
+        bike_only_edges = [
+            edge for edge in semantic_edges
+            if edge.get("transport_semantics") == "bike_only"
+        ]
+        pedestrian_gate_edges = [
+            edge for edge in semantic_edges
+            if edge.get("transport_semantics") == "pedestrian_gate_shortcut"
+        ]
+        bike_dismount_edges = [
+            edge for edge in semantic_edges
+            if edge.get("transport_semantics") == "bike_dismount_connector"
+        ]
+
+        self.assertEqual(outdoor["metadata"]["transport_calibration_stage"], "M31A_HIT")
+        self.assertEqual(outdoor["metadata"]["transport_modes"], ["walk", "bike", "mixed"])
+        self.assertEqual(len(semantic_edges), 16)
+        self.assertEqual(len(shared_edges), 8)
+        self.assertEqual(len(bike_only_edges), 2)
+        self.assertEqual(len(pedestrian_gate_edges), 2)
+        self.assertEqual(len(bike_dismount_edges), 4)
+        self.assertTrue(all(edge.get("source") == calibration_source for edge in semantic_edges))
+        self.assertTrue(all(set(edge.get("allowed_transports", [])) == {"walk", "bike"} for edge in shared_edges))
+        self.assertTrue(all(edge.get("vehicle_access") == "all" for edge in shared_edges))
+        self.assertEqual(
+            {edge.get("type") for edge in shared_edges},
+            {
+                "campus_learning_road",
+                "campus_catering_road",
+                "campus_south_road",
+                "campus_sports_road",
+            },
+        )
+        self.assertTrue(all(edge.get("allowed_transports") == ["walk"] for edge in pedestrian_gate_edges))
+        self.assertTrue(all(edge.get("vehicle_access") == "pedestrian_only" for edge in pedestrian_gate_edges))
+        self.assertTrue(all(edge.get("type") == "campus_gate_link" for edge in pedestrian_gate_edges))
+        self.assertTrue(all(edge.get("allowed_transports") == ["bike"] for edge in bike_only_edges))
+        self.assertTrue(all(edge.get("vehicle_access") == "vehicle_only" for edge in bike_only_edges))
+        self.assertTrue(all(edge.get("type") == "bike_lane" for edge in bike_only_edges))
+        self.assertTrue(all(edge.get("allowed_transports") == ["bike"] for edge in bike_dismount_edges))
+        self.assertTrue(all(edge.get("vehicle_access") == "vehicle_only" for edge in bike_dismount_edges))
+        self.assertTrue(all(edge.get("type") == "bike_lane" for edge in bike_dismount_edges))
+        self.assertTrue(
+            all("哈尔滨工业大学" in f"{edge.get('name', '')}{edge.get('description', '')}" for edge in bike_only_edges)
+        )
+        self.assertTrue(
+            all("骑行落客接驳" in f"{edge.get('name', '')}{edge.get('description', '')}" for edge in bike_dismount_edges)
+        )
+
     def test_m31a_thu_transport_calibration_walk_bike_and_mixed(self):
         router = Router(GraphLoader.load_site_graph("THU"))
 
