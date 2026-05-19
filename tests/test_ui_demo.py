@@ -3339,6 +3339,58 @@ def test_m31a_sjtu_transport_summary_and_step_copy():
     )
 
 
+def test_m31a_tongji_transport_summary_and_step_copy():
+    service = DemoUIService("TONGJI")
+
+    walk_route = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "teaching_building",
+            "strategy": "shortest_time",
+            "transport_mode": "walk",
+        }
+    )
+    bike_route = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "teaching_building",
+            "strategy": "shortest_time",
+            "transport_mode": "bike",
+        }
+    )
+    mixed_route = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "teaching_building",
+            "strategy": "shortest_time",
+            "transport_mode": "mixed",
+        }
+    )
+
+    assert walk_route["success"] is True
+    assert bike_route["success"] is True
+    assert mixed_route["success"] is True
+    assert bike_route["total_weight"] < walk_route["total_weight"]
+    assert mixed_route["total_weight"] < bike_route["total_weight"]
+    assert mixed_route["summary"]["transport_text"] == "步行 + 自行车最短时间"
+    assert mixed_route["summary"]["strategy_text"] == "最短时间"
+    assert mixed_route["site_id"] == "TONGJI"
+    assert mixed_route["ui"]["route_geojson"] is not None
+
+    mixed_modes = [step["transport_mode_used"] for step in mixed_route["path_steps"]]
+    assert "walk" in mixed_modes
+    assert "bike" in mixed_modes
+    assert mixed_modes[0] == "walk"
+    assert bike_route["path_steps"][0]["edge_type"] == "bike_lane"
+    assert "南门非机动车绕行接驳" in bike_route["path_steps"][0]["edge_name"]
+    assert mixed_route["path_steps"][0]["allowed_transports"] == ["walk"]
+    assert "同济大学四平路校区南门步行短接" in mixed_route["path_steps"][0]["description"]
+    assert any(
+        "同济大学四平路校区步骑共享主路" in step["description"]
+        for step in mixed_route["path_steps"]
+    )
+
+
 def test_m29x_whu_indoor_templates_entry_mapping_and_route_views():
     service = DemoUIService("WHU")
     bootstrap = service.get_bootstrap_payload()
