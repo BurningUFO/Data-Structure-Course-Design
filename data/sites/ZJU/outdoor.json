@@ -20,6 +20,58 @@
       "南大门与西门保留步行短接，并补充非机动车绕行接驳，便于展示 walk、bike、mixed 的可解释路线差异。",
       "求是广场、求是大讲堂和公共洗手间等近距离参观点继续按步行进入；室内与入楼 gate_link 保持步行语义。"
     ],
+    "nearby_calibration_stage": "M31B_ZJU",
+    "nearby_radius_options": [200, 300, 400, 600, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "图书信息中心查附近优先命中自助借还、咨询台和馆内近侧洗手间。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "东教学楼周边优先命中教学服务台、学习角和近侧洗手间。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "临湖餐厅查附近优先展示取餐、回收和就餐服务等餐饮配套设施。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 300,
+        "default_category": "catering",
+        "notes": "丹青学园默认扩到 300 m 以稳定覆盖银泉餐厅，贴合西北生活区宿舍场景。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 200,
+        "default_category": "catering",
+        "notes": "蓝田学园默认先查 200 m 内餐饮，保证北侧生活区能直接命中临湖餐厅。"
+      },
+      {
+        "center_node_id": "qiushi_square",
+        "default_radius_m": 200,
+        "default_category": "landmark",
+        "notes": "求是广场作为校园游览中心时，优先命中求是大讲堂等近侧地标。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 600,
+        "default_category": "education",
+        "notes": "南大门作为主入口时，默认放大到 600 m 以覆盖图书信息中心，避免到校首站查询为空。"
+      },
+      {
+        "center_node_id": "sports_ground",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "紫金港体育馆查附近优先展示更衣、票务和训练等运动配套设施。"
+      }
+    ],
     "scope": "M27X ZJU outdoor batch graph: Zijingang campus gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. M29X adds representative indoor template graphs for selected buildings.",
     "capabilities": [
       "leaflet_geojson",
