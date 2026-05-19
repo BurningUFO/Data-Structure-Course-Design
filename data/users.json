@@ -512,6 +512,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_ynu_001",
+    "name": "云大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "教学楼", "生命科学"],
+    "home_site_id": "YNU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_ynu_002",
+    "name": "云大会泽院访客",
+    "role": "tourist",
+    "interests": ["会泽院", "校史", "摄影"],
+    "home_site_id": "YNU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_ynu_003",
+    "name": "云大北区生活访客",
+    "role": "student",
+    "interests": ["食堂", "北区餐厅", "校园生活"],
+    "home_site_id": "YNU",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
