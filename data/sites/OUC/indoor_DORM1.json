@@ -1,0 +1,1328 @@
+{
+  "graph_id": "OUC_indoor_DORM1",
+  "graph_type": "indoor",
+  "building_id": "dormitory_1",
+  "building_name": "中国海洋大学崂山校区学生宿舍区",
+  "template_id": "dormitory_v1",
+  "floor": "1F",
+  "default_floor_id": "F1",
+  "floor_ids": [
+    "F1",
+    "F2",
+    "F3"
+  ],
+  "nodes": [
+    {
+      "id": "dorm1_entrance",
+      "name": "宿舍入口大厅",
+      "type": "hall",
+      "is_gate": true,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍",
+        "大厅",
+        "入口"
+      ],
+      "description": "学生宿舍31楼入口大厅，连接宿舍区室外道路。",
+      "category": "hall",
+      "facilities": [
+        "公告栏",
+        "信箱",
+        "门禁系统"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 56,
+        "y": 240
+      },
+      "location": {
+        "lat": 36.1661,
+        "lng": 120.4982
+      }
+    },
+    {
+      "id": "dorm1_corridor",
+      "name": "一楼走廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "走廊"
+      ],
+      "description": "宿舍一楼主走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "dorm1_room_101",
+      "name": "101 宿舍",
+      "type": "dormitory",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍"
+      ],
+      "description": "一楼 101 宿舍，四人间。",
+      "category": "dormitory",
+      "facilities": [
+        "床",
+        "书桌",
+        "衣柜"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "dorm1_room_102",
+      "name": "102 宿舍",
+      "type": "dormitory",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍"
+      ],
+      "description": "一楼 102 宿舍，四人间。",
+      "category": "dormitory",
+      "facilities": [
+        "床",
+        "书桌",
+        "衣柜"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_room_103",
+      "name": "103 宿舍",
+      "type": "dormitory",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍"
+      ],
+      "description": "一楼 103 宿舍，四人间。",
+      "category": "dormitory",
+      "facilities": [
+        "床",
+        "书桌",
+        "衣柜"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "dorm1_room_104",
+      "name": "104 宿舍",
+      "type": "dormitory",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍"
+      ],
+      "description": "一楼 104 宿舍，四人间。",
+      "category": "dormitory",
+      "facilities": [
+        "床",
+        "书桌",
+        "衣柜"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    },
+    {
+      "id": "dorm1_staircase",
+      "name": "楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "楼梯"
+      ],
+      "description": "宿舍主楼梯，连接各楼层。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 332,
+        "y": 96
+      }
+    },
+    {
+      "id": "dorm1_elevator",
+      "name": "电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "电梯"
+      ],
+      "description": "宿舍无障碍电梯。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 332,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_laundry",
+      "name": "洗衣房",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "洗衣"
+      ],
+      "description": "公共洗衣房。",
+      "category": "service",
+      "facilities": [
+        "洗衣机",
+        "烘干机"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 244,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_toilet",
+      "name": "一楼公共卫生间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "洗手间"
+      ],
+      "description": "一楼公共卫生间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 332,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "学生宿舍31楼"
+    },
+    {
+      "id": "dorm1_common_room",
+      "name": "公共活动室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "活动室"
+      ],
+      "description": "一楼公共活动室。",
+      "category": "service",
+      "facilities": [
+        "电视",
+        "桌椅"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 244,
+        "y": 304
+      }
+    },
+    {
+      "id": "dorm1_corridor_f2",
+      "name": "二楼走廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "走廊"
+      ],
+      "description": "宿舍二楼主走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "dorm1_room_201",
+      "name": "201 宿舍",
+      "type": "dormitory",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍"
+      ],
+      "description": "二楼 201 宿舍。",
+      "category": "dormitory",
+      "facilities": [
+        "床",
+        "书桌",
+        "衣柜"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "dorm1_room_202",
+      "name": "202 宿舍",
+      "type": "dormitory",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍"
+      ],
+      "description": "二楼 202 宿舍。",
+      "category": "dormitory",
+      "facilities": [
+        "床",
+        "书桌",
+        "衣柜"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_staircase_f2",
+      "name": "二楼楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "楼梯"
+      ],
+      "description": "宿舍二楼楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 332,
+        "y": 96
+      }
+    },
+    {
+      "id": "dorm1_elevator_f2",
+      "name": "二楼电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "电梯"
+      ],
+      "description": "宿舍二楼电梯。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 332,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_restroom_f2",
+      "name": "二楼公共卫生间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "洗手间"
+      ],
+      "description": "二楼公共卫生间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 332,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "学生宿舍31楼"
+    },
+    {
+      "id": "dorm1_pantry_f2",
+      "name": "二楼开水间",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "开水间"
+      ],
+      "description": "二楼开水与便民服务区。",
+      "category": "service",
+      "facilities": [
+        "开水器"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 244,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_lounge_f2",
+      "name": "二楼休息区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "休息"
+      ],
+      "description": "二楼休息区。",
+      "category": "service",
+      "facilities": [
+        "沙发"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 244,
+        "y": 304
+      }
+    },
+    {
+      "id": "dorm1_corridor_f3",
+      "name": "三楼走廊",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "走廊"
+      ],
+      "description": "宿舍三楼主走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "dorm1_room_301",
+      "name": "301 宿舍",
+      "type": "dormitory",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍"
+      ],
+      "description": "三楼 301 宿舍。",
+      "category": "dormitory",
+      "facilities": [
+        "床",
+        "书桌",
+        "衣柜"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "dorm1_room_302",
+      "name": "302 宿舍",
+      "type": "dormitory",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "宿舍"
+      ],
+      "description": "三楼 302 宿舍。",
+      "category": "dormitory",
+      "facilities": [
+        "床",
+        "书桌",
+        "衣柜"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_staircase_f3",
+      "name": "三楼楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "楼梯"
+      ],
+      "description": "宿舍三楼楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 332,
+        "y": 96
+      }
+    },
+    {
+      "id": "dorm1_elevator_f3",
+      "name": "三楼电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "电梯"
+      ],
+      "description": "宿舍三楼电梯。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 332,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_restroom_f3",
+      "name": "三楼公共卫生间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "洗手间"
+      ],
+      "description": "三楼公共卫生间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 332,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "学生宿舍31楼"
+    },
+    {
+      "id": "dorm1_study_room_f3",
+      "name": "三楼学习角",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "学习"
+      ],
+      "description": "三楼共享学习角。",
+      "category": "service",
+      "facilities": [
+        "桌椅"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 244,
+        "y": 176
+      }
+    },
+    {
+      "id": "dorm1_duty_room_f3",
+      "name": "值班室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "值班"
+      ],
+      "description": "宿舍值班室。",
+      "category": "service",
+      "facilities": [
+        "值班台"
+      ],
+      "floor_id": "F3",
+      "floor_label": "3F",
+      "layout": {
+        "x": 244,
+        "y": 304
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "dorm1_entrance",
+      "to": "dorm1_corridor",
+      "distance": 5,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 一楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_entrance",
+      "distance": 5,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "入口 -> 一楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_room_101",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 101 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_room_101",
+      "to": "dorm1_corridor",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 101 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_room_102",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 102 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_room_102",
+      "to": "dorm1_corridor",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 102 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_room_103",
+      "distance": 18,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 103 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_room_103",
+      "to": "dorm1_corridor",
+      "distance": 18,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 103 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_room_104",
+      "distance": 22,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 104 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_room_104",
+      "to": "dorm1_corridor",
+      "distance": 22,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 104 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_staircase",
+      "distance": 15,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase",
+      "to": "dorm1_corridor",
+      "distance": 15,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_elevator",
+      "distance": 13,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "一楼走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator",
+      "to": "dorm1_corridor",
+      "distance": 13,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "一楼走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_laundry",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 洗衣房",
+      "description": ""
+    },
+    {
+      "from": "dorm1_laundry",
+      "to": "dorm1_corridor",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 洗衣房",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_toilet",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 公共卫生间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_toilet",
+      "to": "dorm1_corridor",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 公共卫生间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor",
+      "to": "dorm1_common_room",
+      "distance": 20,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 公共活动室",
+      "description": ""
+    },
+    {
+      "from": "dorm1_common_room",
+      "to": "dorm1_corridor",
+      "distance": 20,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "一楼走廊 -> 公共活动室",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_room_201",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 201 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_room_201",
+      "to": "dorm1_corridor_f2",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 201 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_room_202",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 202 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_room_202",
+      "to": "dorm1_corridor_f2",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 202 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_staircase_f2",
+      "distance": 15,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase_f2",
+      "to": "dorm1_corridor_f2",
+      "distance": 15,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_elevator_f2",
+      "distance": 13,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator_f2",
+      "to": "dorm1_corridor_f2",
+      "distance": 13,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_restroom_f2",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 公共卫生间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_restroom_f2",
+      "to": "dorm1_corridor_f2",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 公共卫生间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_pantry_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 开水间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_pantry_f2",
+      "to": "dorm1_corridor_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 开水间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_lounge_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 休息区",
+      "description": ""
+    },
+    {
+      "from": "dorm1_lounge_f2",
+      "to": "dorm1_corridor_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼走廊 -> 休息区",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_room_301",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 301 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_room_301",
+      "to": "dorm1_corridor_f3",
+      "distance": 8,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 301 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_room_302",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 302 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_room_302",
+      "to": "dorm1_corridor_f3",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 302 宿舍",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_staircase_f3",
+      "distance": 15,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase_f3",
+      "to": "dorm1_corridor_f3",
+      "distance": 15,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_elevator_f3",
+      "distance": 13,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator_f3",
+      "to": "dorm1_corridor_f3",
+      "distance": 13,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_restroom_f3",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 公共卫生间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_restroom_f3",
+      "to": "dorm1_corridor_f3",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 公共卫生间",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_study_room_f3",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 学习角",
+      "description": ""
+    },
+    {
+      "from": "dorm1_study_room_f3",
+      "to": "dorm1_corridor_f3",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 学习角",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_duty_room_f3",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 值班室",
+      "description": ""
+    },
+    {
+      "from": "dorm1_duty_room_f3",
+      "to": "dorm1_corridor_f3",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼走廊 -> 值班室",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase_f2",
+      "to": "dorm1_corridor_f2",
+      "distance": 4,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼楼梯间 -> 二楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_staircase_f2",
+      "distance": 4,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "二楼楼梯间 -> 二楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator_f2",
+      "to": "dorm1_corridor_f2",
+      "distance": 4,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼电梯 -> 二楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f2",
+      "to": "dorm1_elevator_f2",
+      "distance": 4,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "二楼电梯 -> 二楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase_f3",
+      "to": "dorm1_corridor_f3",
+      "distance": 4,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼楼梯间 -> 三楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_staircase_f3",
+      "distance": 4,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "三楼楼梯间 -> 三楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator_f3",
+      "to": "dorm1_corridor_f3",
+      "distance": 4,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼电梯 -> 三楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_corridor_f3",
+      "to": "dorm1_elevator_f3",
+      "distance": 4,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "三楼电梯 -> 三楼走廊",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase",
+      "to": "dorm1_staircase_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase_f2",
+      "to": "dorm1_staircase",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase_f2",
+      "to": "dorm1_staircase_f3",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F2 -> F3 楼梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_staircase_f3",
+      "to": "dorm1_staircase_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F2 -> F3 楼梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator",
+      "to": "dorm1_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator_f2",
+      "to": "dorm1_elevator",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator_f2",
+      "to": "dorm1_elevator_f3",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F2 -> F3 电梯",
+      "description": ""
+    },
+    {
+      "from": "dorm1_elevator_f3",
+      "to": "dorm1_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F2 -> F3 电梯",
+      "description": ""
+    }
+  ],
+  "metadata": {
+    "stage": "M30X",
+    "site_id": "OUC",
+    "site_name": "中国海洋大学",
+    "source_template_site": "PKU",
+    "source_template_mode": "reusable_indoor_floorplan_and_navigation",
+    "representative_building": true,
+    "notes": "Template indoor graph for course demonstration; not a real building survey."
+  }
+}
