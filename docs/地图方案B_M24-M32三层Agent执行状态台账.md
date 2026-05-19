@@ -15,9 +15,9 @@
 - `current_manager`: `L2-06`
 - `last_completed_manager`: `L2-05`
 - `next_manager`: `L2-06`
-- `last_commit`: `99717f6`
-- `last_verification`: `py -m pytest -q`，208 passed；M31A THU L2 复核通过，暂存区已在提交前确认只包含 THU 相关实现与测试
-- `last_update_note`: `M31A THU 已完成，L2-06 继续按顺序调用 M31A WHU；后续子 agent 调用必须先执行 /fast off`
+- `last_commit`: `e844a91`
+- `last_verification`: `py -m pytest -q`，212 passed；M31A WHU L2 复核通过，暂存区已在提交前确认只包含 WHU 相关实现与测试
+- `last_update_note`: `M31A WHU 已完成，L2-06 继续按顺序调用 M31A XMU；后续子 agent 调用必须先执行 /fast off`
 
 ## 二级经理状态总表
 
@@ -28,7 +28,7 @@
 | L2-03 | `docs/地图方案B_M28全量室外扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `fed3f4e` | 剩余 15 校室外接入与 M28Y 20 校室外总回归已完成；SCU/HNU/TONGJI 已完成三层结构合规独立复核 |
 | L2-04 | `docs/地图方案B_M29首批室内经理Agent_Goal提示词.md` | `completed` | `6/6` | `40fe989` | 首批 5 校室内与 M29Y 回归已完成 |
 | L2-05 | `docs/地图方案B_M30全量室内扩展经理Agent_Goal提示词.md` | `completed` | `16/16` | `3888144` | M30X FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 与 M30Y 20 校室内总回归已完成；M30Y 回归测试已提交 |
-| L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `in_progress` | `1/20` | `99717f6` | M31A THU 已完成；继续 WHU 交通方式校准 |
+| L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `in_progress` | `2/20` | `e844a91` | M31A THU/WHU 已完成；继续 XMU 交通方式校准 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校查附近 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `pending` | `0/20` | `none` | 20 校兴趣推荐与文案 |
 | L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `pending` | `0/4` | `none` | M31D + M32A/B/C |
@@ -37,7 +37,7 @@
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05`
-- `current_action`: `L2-06 调用 M31A WHU`
+- `current_action`: `L2-06 调用 M31A XMU`
 - `next_action`: `等待 L2-06 完成后复核`
 - `notes`: `L2-05 已完成 M30Y 20 校室内总回归并通过一级总管复核。L2-06 经理已按 /fast off 启动并确认分支正确；因 goal CLI 不存在，改用本环境可用的 codex exec 作为 L2 调用 L3 的等价入口，L3 提示仍必须以 /fast off 开头且禁止任何四层委派。`
 
@@ -115,7 +115,7 @@
 ## L2-06 交通方式校准经理子任务
 
 - [x] `M31A THU`
-- [ ] `M31A WHU`
+- [x] `M31A WHU`
 - [ ] `M31A XMU`
 - [ ] `M31A ZJU`
 - [ ] `M31A NJU`
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-19 11:34] manager=L2-06 child=M31A WHU status=completed commit=e844a91 verify=`py -m pytest -q` 212 passed note=通过 codex exec 串行调用三级原子执行 agent 完成 WHU 交通方式校准；WHU outdoor 增加 M31A_WHU 元数据、珞珈山步骑共享速度、牌楼正门/南侧入口步行短接与非机动车绕行接驳，补充 walk/bike/mixed 路由、室内步行约束与 UI 摘要回归；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 11:19] manager=L2-06 child=M31A THU status=completed commit=99717f6 verify=`py -m pytest -q` 208 passed note=通过 codex exec 串行调用三级原子执行 agent 完成 THU 交通方式校准；THU outdoor 增加 M31A_THU 元数据、步骑共享速度、南区/东南门步行短接与自行车绕行接驳，补充 walk/bike/mixed 路由与 UI 摘要回归；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件
 - [2026-05-19 10:59] manager=top child=L2-06-recovery status=in_progress commit=5140b84 verify=`codex exec --help` available note=确认本机无 goal CLI，但存在 codex exec；一级总管恢复 L2-06 为 in_progress，并指示 L2-06 使用 codex exec 串行调用三级原子 agent，L3 提示首行必须为 /fast off，且禁止任何四层委派
 - [2026-05-19 10:59] manager=L2-06 child=startup status=blocked commit=none verify=`git status --short --branch`; `git branch --show-current`; L2 reported `Get-Command goal -ErrorAction SilentlyContinue` no result and visible tools exclude spawn_agent/send_input note=L2-06 已按 /fast off 启动且分支为 experiment/map-plan-b；但二级经理 agent 无法创建/调用三级原子执行 agent。为保持三层结构，未执行 M31A THU，未改实现文件，等待用户授权替代执行模式或提供 L2 可用子 agent 调度能力
