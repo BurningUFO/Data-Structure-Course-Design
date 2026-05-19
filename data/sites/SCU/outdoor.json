@@ -56,6 +56,58 @@
       "walk",
       "bike",
       "mixed"
+    ],
+    "nearby_calibration_stage": "M31B_SCU",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "望江校区图书馆查附近优先命中借还、咨询和学习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "基础教学楼查附近优先展示教学服务台、共享学习区和教师支持空间。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "学生食堂查附近优先命中取餐、调料和餐盘回收等就餐配套服务。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 200,
+        "default_category": "catering",
+        "notes": "西区学生宿舍查附近优先命中学生食堂，贴合生活区下楼即就餐的校园动线。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 500,
+        "default_category": "shopping",
+        "notes": "北区学生公寓查附近优先命中便利补给与快递服务，贴合宿舍区日常生活需求。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 800,
+        "default_category": "landmark",
+        "notes": "望江校区南门查附近优先展示钟楼文化地标和四川大学博物馆，方便访客快速建立校园地标感知。"
+      },
+      {
+        "center_node_id": "service_center",
+        "default_radius_m": 200,
+        "default_category": "catering",
+        "notes": "学生事务服务中心查附近优先命中东区食堂，贴合办事后顺路就餐的校园动线。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "体育馆查附近优先展示更衣、训练和观赛等运动设施。"
+      }
     ]
   },
   "nodes": [
