@@ -52,7 +52,65 @@
     "indoor_scope": "M30X HNU representative indoor templates and gate_link entry mapping; no real indoor survey data.",
     "indoor_source_template_site": "PKU",
     "transport_calibration_stage": "M31A_HNU",
-    "transport_modes": ["walk", "bike", "mixed"]
+    "transport_modes": ["walk", "bike", "mixed"],
+    "nearby_calibration_stage": "M31B_HNU",
+    "nearby_radius_options": [200, 300, 400, 500, 800],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "湖南大学图书馆查附近优先命中借还、自助和咨询等学习支持服务。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "教学楼群查附近优先展示教学服务台、学习角和近侧教学配套。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 200,
+        "default_category": "service",
+        "notes": "德智园学生食堂查附近优先命中取餐、调料和餐盘回收等就餐配套服务。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 300,
+        "default_category": "catering",
+        "notes": "天马学生公寓查附近优先命中天马园区食堂和生活区餐饮，贴合宿舍就餐动线。"
+      },
+      {
+        "center_node_id": "dormitory_2",
+        "default_radius_m": 500,
+        "default_category": "sports",
+        "notes": "北侧学生宿舍区查附近优先展示田径场和体育馆，贴合北侧运动片区步行可达范围。"
+      },
+      {
+        "center_node_id": "gate_south",
+        "default_radius_m": 500,
+        "default_category": "education",
+        "notes": "岳麓山校区南门查附近优先命中教学楼群，适合访客从南侧进入后快速定位教学区。"
+      },
+      {
+        "center_node_id": "gate_east",
+        "default_radius_m": 300,
+        "default_category": "service",
+        "notes": "岳麓山校区东门查附近优先命中学生事务服务中心和行政服务楼，贴合主入口办事到达场景。"
+      },
+      {
+        "center_node_id": "yuelu_academy",
+        "default_radius_m": 400,
+        "default_category": "landmark",
+        "notes": "岳麓书院查附近优先展示东方红广场和校史展示点，突出校园游览与历史文化动线。"
+      },
+      {
+        "center_node_id": "gymnasium",
+        "default_radius_m": 200,
+        "default_category": "sports",
+        "notes": "体育馆查附近优先展示更衣、球场和训练等运动设施。"
+      }
+    ]
   },
   "nodes": [
     {"id": "gate_west", "name": "湖南大学岳麓山校区西门", "type": "entrance", "is_gate": true, "sub_graph_id": null, "tags": ["校门", "西门", "入口", "岳麓山"], "keywords": ["湖南大学西门", "湖大西门", "西门", "校门", "入口"], "description": "湖南大学岳麓山校区西侧入口，连接岳麓书院与山麓游览片区。", "category": "entrance", "facilities": ["安保"], "open_hours": "24/7", "heat": 86, "rating": 4.6, "source": "m28x_manual_hnu_yuelu_axis_estimate", "needs_review": true, "location": {"lat": 28.1823, "lng": 112.9365}},
