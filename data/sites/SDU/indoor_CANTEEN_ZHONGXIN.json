@@ -1,0 +1,799 @@
+{
+  "graph_id": "SDU_indoor_CANTEEN_ZHONGXIN",
+  "graph_type": "indoor",
+  "building_id": "canteen",
+  "building_name": "山东大学中心校区学生食堂",
+  "template_id": "canteen_service_v1",
+  "floor": "1F",
+  "default_floor_id": "F1",
+  "floor_ids": [
+    "F1",
+    "F2"
+  ],
+  "nodes": [
+    {
+      "id": "sdu_canteen_entrance",
+      "name": "山东大学中心校区学生食堂入口大厅",
+      "type": "hall",
+      "is_gate": true,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "入口",
+        "1F"
+      ],
+      "description": "山东大学中心校区学生食堂 的主入口大厅，连接室外主门。",
+      "category": "hall",
+      "facilities": [
+        "导览牌"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 56,
+        "y": 240
+      },
+      "location": {
+        "lat": 36.6702,
+        "lng": 117.0585
+      }
+    },
+    {
+      "id": "sdu_canteen_corridor_f1",
+      "name": "1F餐厅主通道",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "1F",
+        "餐厅主通道"
+      ],
+      "description": "山东大学中心校区学生食堂1F 的主通行走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "sdu_canteen_stairs_f1",
+      "name": "1F楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "1F",
+        "楼梯"
+      ],
+      "description": "山东大学中心校区学生食堂1F 楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 96
+      }
+    },
+    {
+      "id": "sdu_canteen_elevator_f1",
+      "name": "1F电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "1F",
+        "电梯"
+      ],
+      "description": "山东大学中心校区学生食堂1F 电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 176
+      }
+    },
+    {
+      "id": "sdu_canteen_restroom_f1",
+      "name": "1F洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "1F",
+        "洗手间"
+      ],
+      "description": "山东大学中心校区学生食堂1F 公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 330,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "山东大学中心校区学生食堂"
+    },
+    {
+      "id": "sdu_canteen_service_counter_a",
+      "name": "山东大学中心校区学生食堂一层窗口 A",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "1F",
+        "一层窗口 A"
+      ],
+      "description": "山东大学中心校区学生食堂1F 的一层窗口 A。",
+      "category": "catering",
+      "facilities": [
+        "一层窗口 A"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "sdu_canteen_service_counter_b",
+      "name": "山东大学中心校区学生食堂一层窗口 B",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "1F",
+        "一层窗口 B"
+      ],
+      "description": "山东大学中心校区学生食堂1F 的一层窗口 B。",
+      "category": "catering",
+      "facilities": [
+        "一层窗口 B"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "sdu_canteen_tray_return_1f",
+      "name": "山东大学中心校区学生食堂餐盘回收区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "1F",
+        "餐盘回收区"
+      ],
+      "description": "山东大学中心校区学生食堂1F 的餐盘回收区。",
+      "category": "service",
+      "facilities": [
+        "餐盘回收区"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "sdu_canteen_condiment_area_1f",
+      "name": "山东大学中心校区学生食堂调料自助区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "1F",
+        "调料自助区"
+      ],
+      "description": "山东大学中心校区学生食堂1F 的调料自助区。",
+      "category": "service",
+      "facilities": [
+        "调料自助区"
+      ],
+      "floor_id": "F1",
+      "floor_label": "1F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    },
+    {
+      "id": "sdu_canteen_corridor_f2",
+      "name": "2F餐厅主通道",
+      "type": "hall",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "2F",
+        "餐厅主通道"
+      ],
+      "description": "山东大学中心校区学生食堂2F 的主通行走廊。",
+      "category": "passage",
+      "facilities": [],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 170,
+        "y": 240
+      }
+    },
+    {
+      "id": "sdu_canteen_stairs_f2",
+      "name": "2F楼梯间",
+      "type": "staircase",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "2F",
+        "楼梯"
+      ],
+      "description": "山东大学中心校区学生食堂2F 楼梯间。",
+      "category": "passage",
+      "facilities": [
+        "楼梯扶手"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 96
+      }
+    },
+    {
+      "id": "sdu_canteen_elevator_f2",
+      "name": "2F电梯",
+      "type": "elevator",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "2F",
+        "电梯"
+      ],
+      "description": "山东大学中心校区学生食堂2F 电梯厅。",
+      "category": "passage",
+      "facilities": [
+        "电梯",
+        "盲文按钮"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 176
+      }
+    },
+    {
+      "id": "sdu_canteen_restroom_f2",
+      "name": "2F洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "2F",
+        "洗手间"
+      ],
+      "description": "山东大学中心校区学生食堂2F 公共洗手间。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间",
+        "洗手池"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 330,
+        "y": 304
+      },
+      "is_indoor": true,
+      "indoor_building": "山东大学中心校区学生食堂"
+    },
+    {
+      "id": "sdu_canteen_dining_area_2f",
+      "name": "山东大学中心校区学生食堂二层用餐区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "2F",
+        "二层用餐区"
+      ],
+      "description": "山东大学中心校区学生食堂2F 的二层用餐区。",
+      "category": "catering",
+      "facilities": [
+        "二层用餐区"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 96
+      }
+    },
+    {
+      "id": "sdu_canteen_coffee_corner_2f",
+      "name": "山东大学中心校区学生食堂咖啡休息角",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "2F",
+        "咖啡休息角"
+      ],
+      "description": "山东大学中心校区学生食堂2F 的咖啡休息角。",
+      "category": "catering",
+      "facilities": [
+        "咖啡休息角"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 176
+      }
+    },
+    {
+      "id": "sdu_canteen_self_service_2f",
+      "name": "山东大学中心校区学生食堂自助取餐区",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "2F",
+        "自助取餐区"
+      ],
+      "description": "山东大学中心校区学生食堂2F 的自助取餐区。",
+      "category": "service",
+      "facilities": [
+        "自助取餐区"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 112,
+        "y": 304
+      }
+    },
+    {
+      "id": "sdu_canteen_office_2f",
+      "name": "山东大学中心校区学生食堂后勤办公室",
+      "type": "service",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "山东大学中心校区学生食堂",
+        "2F",
+        "后勤办公室"
+      ],
+      "description": "山东大学中心校区学生食堂2F 的后勤办公室。",
+      "category": "service",
+      "facilities": [
+        "后勤办公室"
+      ],
+      "floor_id": "F2",
+      "floor_label": "2F",
+      "layout": {
+        "x": 244,
+        "y": 96
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "sdu_canteen_entrance",
+      "to": "sdu_canteen_corridor_f1",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "山东大学中心校区学生食堂1F 主走廊",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f1",
+      "to": "sdu_canteen_entrance",
+      "distance": 6,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "山东大学中心校区学生食堂1F 主走廊",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f1",
+      "to": "sdu_canteen_stairs_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_stairs_f1",
+      "to": "sdu_canteen_corridor_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f1",
+      "to": "sdu_canteen_elevator_f1",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "1F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_elevator_f1",
+      "to": "sdu_canteen_corridor_f1",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "1F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f1",
+      "to": "sdu_canteen_restroom_f1",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_restroom_f1",
+      "to": "sdu_canteen_corridor_f1",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f1",
+      "to": "sdu_canteen_service_counter_a",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 一层窗口 A",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_service_counter_a",
+      "to": "sdu_canteen_corridor_f1",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 一层窗口 A",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f1",
+      "to": "sdu_canteen_service_counter_b",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 一层窗口 B",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_service_counter_b",
+      "to": "sdu_canteen_corridor_f1",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 一层窗口 B",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f1",
+      "to": "sdu_canteen_tray_return_1f",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 餐盘回收区",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_tray_return_1f",
+      "to": "sdu_canteen_corridor_f1",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 餐盘回收区",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f1",
+      "to": "sdu_canteen_condiment_area_1f",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 调料自助区",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_condiment_area_1f",
+      "to": "sdu_canteen_corridor_f1",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "1F走廊 -> 调料自助区",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f2",
+      "to": "sdu_canteen_stairs_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_stairs_f2",
+      "to": "sdu_canteen_corridor_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 楼梯间",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f2",
+      "to": "sdu_canteen_elevator_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "2F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_elevator_f2",
+      "to": "sdu_canteen_corridor_f2",
+      "distance": 9,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "2F走廊 -> 电梯",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f2",
+      "to": "sdu_canteen_restroom_f2",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_restroom_f2",
+      "to": "sdu_canteen_corridor_f2",
+      "distance": 11,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 洗手间",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f2",
+      "to": "sdu_canteen_dining_area_2f",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 二层用餐区",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_dining_area_2f",
+      "to": "sdu_canteen_corridor_f2",
+      "distance": 10,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 二层用餐区",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f2",
+      "to": "sdu_canteen_coffee_corner_2f",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 咖啡休息角",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_coffee_corner_2f",
+      "to": "sdu_canteen_corridor_f2",
+      "distance": 12,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 咖啡休息角",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f2",
+      "to": "sdu_canteen_self_service_2f",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 自助取餐区",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_self_service_2f",
+      "to": "sdu_canteen_corridor_f2",
+      "distance": 14,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 自助取餐区",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_corridor_f2",
+      "to": "sdu_canteen_office_2f",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 后勤办公室",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_office_2f",
+      "to": "sdu_canteen_corridor_f2",
+      "distance": 16,
+      "type": "indoor_path",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "2F走廊 -> 后勤办公室",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_stairs_f1",
+      "to": "sdu_canteen_stairs_f2",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_stairs_f2",
+      "to": "sdu_canteen_stairs_f1",
+      "distance": 16,
+      "type": "stairs",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "pedestrian_only",
+      "name": "F1 -> F2 楼梯",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_elevator_f1",
+      "to": "sdu_canteen_elevator_f2",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    },
+    {
+      "from": "sdu_canteen_elevator_f2",
+      "to": "sdu_canteen_elevator_f1",
+      "distance": 12,
+      "type": "elevator",
+      "congestion": 1.0,
+      "ideal_speed": 1.5,
+      "vehicle_access": "all",
+      "name": "F1 -> F2 电梯",
+      "description": ""
+    }
+  ],
+  "metadata": {
+    "stage": "M30X",
+    "site_id": "SDU",
+    "site_name": "山东大学",
+    "source_template_site": "PKU",
+    "source_template_mode": "reusable_indoor_floorplan_and_navigation",
+    "representative_building": true,
+    "notes": "Template indoor graph for course demonstration; not a real building survey."
+  }
+}
