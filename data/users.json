@@ -344,6 +344,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_hnu_001",
+    "name": "湖大学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "教学楼群"],
+    "home_site_id": "HNU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_hnu_002",
+    "name": "湖大书院游访客",
+    "role": "tourist",
+    "interests": ["岳麓书院", "东方红广场", "校史"],
+    "home_site_id": "HNU",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_hnu_003",
+    "name": "湖大德智生活访客",
+    "role": "student",
+    "interests": ["食堂", "德智园食堂", "校园生活"],
+    "home_site_id": "HNU",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
