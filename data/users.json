@@ -416,6 +416,30 @@
     "created_at": "2026-05-20"
   },
   {
+    "id": "user_scut_001",
+    "name": "华工学习访客",
+    "role": "student",
+    "interests": ["图书馆", "自习", "工科教学科研区"],
+    "home_site_id": "SCUT",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_scut_002",
+    "name": "华工西湖游访客",
+    "role": "tourist",
+    "interests": ["西湖", "校史", "摄影"],
+    "home_site_id": "SCUT",
+    "created_at": "2026-05-20"
+  },
+  {
+    "id": "user_scut_003",
+    "name": "华工东区生活访客",
+    "role": "student",
+    "interests": ["食堂", "东区饭堂", "校园生活"],
+    "home_site_id": "SCUT",
+    "created_at": "2026-05-20"
+  },
+  {
     "id": "user_hzau_001",
     "name": "华农学习访客",
     "role": "student",
