@@ -10197,6 +10197,78 @@ def test_demo_m31b_ouc_nearby_queries_use_calibrated_center_name_and_scope():
     print("test_demo_m31b_ouc_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
+def test_demo_m31b_hit_bootstrap_nearby_profiles():
+    service = DemoUIService("HIT")
+    payload = service.get_bootstrap_payload()
+    profiles = payload["controls"]["nearby_profiles"]
+
+    assert payload["site"]["id"] == "HIT"
+    assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 300, 400, 500, 800]
+    assert profiles["library"]["default_radius_m"] == 200.0
+    assert profiles["library"]["default_category"] == "service"
+    assert profiles["canteen"]["default_category"] == "service"
+    assert profiles["dormitory_1"]["center_name"] == "哈尔滨工业大学一校区学生宿舍区"
+    assert profiles["dormitory_1"]["default_radius_m"] == 200.0
+    assert profiles["dormitory_1"]["default_category"] == "shopping"
+    assert profiles["gate_east"]["default_radius_m"] == 300.0
+    assert profiles["gate_east"]["default_category"] == "service"
+    assert profiles["central_square"]["default_category"] == "landmark"
+    assert profiles["gymnasium"]["default_category"] == "sports"
+    print("test_demo_m31b_hit_bootstrap_nearby_profiles passed.")
+
+
+def test_demo_m31b_hit_nearby_queries_use_calibrated_center_name_and_scope():
+    service = DemoUIService("HIT")
+
+    dorm_shopping = service.place_search(
+        {
+            "keyword": "",
+            "category": "shopping",
+            "center_node_id": "dormitory_1",
+            "radius_m": 200,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        dorm_shopping,
+        center_node_id="dormitory_1",
+        radius_m=200,
+        category="shopping",
+    )
+    assert dorm_shopping["metadata"]["nearby"]["center_name"] == "哈尔滨工业大学一校区学生宿舍区"
+    assert dorm_shopping["metadata"]["nearby"]["calibration_stage"] == "M31B_HIT"
+    assert dorm_shopping["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 200.0
+    assert dorm_shopping["metadata"]["nearby"]["calibration_profile"]["default_category"] == "shopping"
+    assert [item["route_target_node_id"] for item in dorm_shopping["results"]] == ["convenience_store"]
+    assert dorm_shopping["results"][0]["nearby_reason"].startswith("距离哈尔滨工业大学一校区学生宿舍区 ")
+
+    gate_east_service = service.place_search(
+        {
+            "keyword": "",
+            "category": "service",
+            "center_node_id": "gate_east",
+            "radius_m": 300,
+            "limit": 10,
+        }
+    )
+    assert_nearby_place_response(
+        gate_east_service,
+        center_node_id="gate_east",
+        radius_m=300,
+        category="service",
+    )
+    assert gate_east_service["metadata"]["nearby"]["center_name"] == "哈尔滨工业大学一校区东门"
+    assert gate_east_service["metadata"]["nearby"]["calibration_stage"] == "M31B_HIT"
+    assert gate_east_service["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 300.0
+    assert gate_east_service["metadata"]["nearby"]["calibration_profile"]["default_category"] == "service"
+    assert [item["route_target_node_id"] for item in gate_east_service["results"][:2]] == [
+        "service_center",
+        "innovation_center",
+    ]
+    assert gate_east_service["results"][0]["nearby_reason"].startswith("距离哈尔滨工业大学一校区东门 ")
+    print("test_demo_m31b_hit_nearby_queries_use_calibrated_center_name_and_scope passed.")
+
+
 def test_demo_main_query_recommend_route_chains_remain_available():
     service = DemoUIService("PKU")
 
@@ -10929,6 +11001,8 @@ def run_all_tests():
     test_demo_m31b_suda_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_m31b_ouc_bootstrap_nearby_profiles()
     test_demo_m31b_ouc_nearby_queries_use_calibrated_center_name_and_scope()
+    test_demo_m31b_hit_bootstrap_nearby_profiles()
+    test_demo_m31b_hit_nearby_queries_use_calibrated_center_name_and_scope()
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()
