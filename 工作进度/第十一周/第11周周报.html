@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>第十一周工作周报</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: 0 auto; }
+        h1, h2, h3 { color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
+        blockquote { border-left: 4px solid #ccc; margin: 10px 0; padding-left: 15px; color: #666; background: #fafafa; padding: 10px 15px; }
+        ul { margin-top: 5px; margin-bottom: 15px; }
+        li { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>第十一周工作周报（5月11日 - 5月17日）</h1>
+
+<blockquote>
+<p><strong>项目名称</strong>：智能校园/景区导览系统<br>
+<strong>汇报人</strong>：项目大总管 (Member A)</p>
+</blockquote>
+
+<p>本周团队核心目标为“课程硬指标补齐与正式产品骨架锁定”。在第十周完成全文检索、压缩、统一输出深化和最小可演示 Web UI 后，本周工作重心已经切换到“第13周正式产品倒计时”：一方面补齐课程要求中的用户样例、数据规模、日记管理和 AIGC 轻量演示底座，另一方面将浏览器端升级为统一主入口，并开始执行路径与业务接口第一轮冻结。当前系统已经从“可演示原型”进一步推进到“正式产品骨架 + 课程硬指标核验入口 + 主链路联调可复用”的阶段。</p>
+
+<p>以下是本周各成员的工作总结、验收结论及后续计划：</p>
+
+<hr>
+
+<h2>1. 团队整体进展概览</h2>
+
+<ul>
+    <li><strong>Member A (算法与图结构)</strong>：✅ 已完成 <code>query_routing(...)</code>、<code>query_distance(...)</code>、<code>query_multi_target(...)</code> 第一轮冻结口径确认，补齐多目标路径 Web 展示字段，完成 PKU 58 节点 / 200 边标准图性能验证，并补强路由与联调测试。</li>
+    <li><strong>Member B (业务、推荐与 Web 主入口)</strong>：✅ 已完成正式 Web 主入口骨架、站点状态与统一反馈、多目标路径页面接入、日记 CRUD 与日记中心、AIGC 轻量演示入口，以及第十一周测试与回归收口。</li>
+    <li><strong>Member C (数据、检索、压缩、测试与文档)</strong>：✅ 已完成 <code>&gt;=10</code> 用户样例、日记作者扩充、208 条推荐 / 查询对象、PKU 58 节点 / 200 边数据补齐、课程要求核验脚本升级与文档同步。</li>
+</ul>
+
+<hr>
+
+<h2>2. 本周核心收口成果</h2>
+
+<ol>
+    <li><strong>第13周正式产品倒计时已经启动</strong>：团队本周不再以零散原型补丁为目标，而是围绕“正式产品骨架、课程硬指标、接口冻结”三条线推进统一收口。</li>
+    <li><strong>浏览器主入口升级为统一骨架</strong>：本地 Web 页面已具备首页、站点选择、主导航、帮助入口和核心功能跳转，不再依赖 CLI 才能串起主链路。</li>
+    <li><strong>课程硬指标进入可核验状态</strong>：当前已补齐 10 个用户样例、12 篇日记中的 10 个独立作者、208 条扩展推荐 / 查询对象、53 个服务设施口径节点、58 个标准图节点和 200 条原始边，并通过 <code>tests/test_course_requirements.py</code> 固化核验入口。</li>
+    <li><strong>日记管理从“仅查询”升级为“可操作入口”</strong>：系统已补齐创建、编辑、删除、评分、图片占位、视频占位等业务接口和 Web 日记中心展示入口，并保留从日记目的地进入路径规划的主链路。</li>
+    <li><strong>AIGC 轻量演示从计划项转为可见入口</strong>：当前已具备“图片占位 + 文字描述 -&gt; 模板化分镜预览”的轻量演示模式，可作为第十一周到第十二周之间的过渡产品形态。</li>
+    <li><strong>路径接口开始第一轮冻结</strong>：Member A 已明确多目标路径优先展示字段，包括 <code>visit_order</code>、<code>visit_order_names</code>、<code>path_node_names</code>、<code>total_distance_m</code>、<code>estimated_time_s</code>、<code>segments</code> 和 <code>leg_results</code>，供 Member B 稳定接入 Web 页面。</li>
+    <li><strong>第十周新增能力未回退</strong>：全文检索、压缩 / 解压、查询 / 推荐、单目标 / 多目标路径和 UI Demo 在第十一周继续保持可运行，说明产品骨架扩展没有破坏已有主链路。</li>
+</ol>
+
+<hr>
+
+<h2>3. 成员详细工作汇报</h2>
+
+<h3>【Member A：图结构与路径规划】</h3>
+
+<p><strong>本周主要成果：</strong></p>
+<ol>
+    <li><strong>统筹清单与冻结边界整理完成</strong>：对齐第十一周任务要求、课程覆盖清单、接口文档和三人协作方式，形成 <code>memberA第11周统筹清单.md</code>，将课程硬指标缺口、接口冻结项和主链路风险统一收口。</li>
+    <li><strong>路径接口第一轮冻结完成</strong>：围绕 <code>query_routing(...)</code>、<code>query_distance(...)</code>、<code>query_multi_target(...)</code> 补齐字段口径确认，明确 Web 展示优先消费的路径、访问顺序、总距离、总时间和分段结果字段。</li>
+    <li><strong>路由测试与联调断言补强</strong>：更新 <code>tests/test_routing.py</code>，补充单目标、多目标和冻结字段断言，并配合 <code>tests/test_integration.py</code> 确认业务链路接入后接口仍稳定可用。</li>
+    <li><strong>200 边规模性能验证完成</strong>：基于 Member C 扩充后的 PKU 标准分层图完成典型路径压力验证。单目标路径平均耗时约 <code>0.09 ~ 0.13 ms</code>，多目标回路平均耗时约 <code>1.12 ~ 1.79 ms</code>，满足当前 Web 展示和答疑演示需要。</li>
+    <li><strong>协作支持明确</strong>：已将 <code>/api/route/multi</code> 需要的展示字段稳定下来，为 Member B 的多目标路径页面接入和后续第十二周产品化展示奠定接口基础。</li>
+</ol>
+
+<h3>【Member B：查询、排序、推荐业务与 Web 展示】</h3>
+
+<p><strong>本周主要成果：</strong></p>
+<ol>
+    <li><strong>正式 Web 主入口骨架落地</strong>：将第十周临时演示页升级为统一主入口，补齐首页、站点选择、导航结构、功能卡片和帮助说明。</li>
+    <li><strong>站点状态与统一反馈补齐</strong>：完成站点切换后的结果、路径、地图高亮和表单状态重置，避免第十一周页面继续依赖控制台输出作为主要反馈手段。</li>
+    <li><strong>多目标路径页面接入完成</strong>：消费 Member A 冻结后的 <code>query_multi_target(...)</code> 结果，在浏览器中可展示访问顺序、总距离、总时间、分段摘要和关键路径步骤。</li>
+    <li><strong>日记管理业务与日记中心完成</strong>：补齐创建、编辑、删除、评分、图片占位和视频占位接口，并在 Web 日记中心中支持全文检索、载入编辑、更新、删除和从日记目的地进入路线规划。</li>
+    <li><strong>AIGC 轻量演示入口接入完成</strong>：基于 <code>data/aigc_media_samples.json</code> 增加模板化演示入口，支持“图片占位 + 文字描述 -&gt; 分镜预览”的最小闭环。</li>
+    <li><strong>测试与回归收口完成</strong>：更新 <code>tests/test_diary.py</code>、<code>tests/test_ui_demo.py</code> 等脚本，并完成 <code>app.js</code> 语法检查与 Python 模块编译校验，确认第十一周新增 Web 与业务能力没有引入新的回归问题。</li>
+</ol>
+
+<h3>【Member C：数据、检索、压缩、测试与文档】</h3>
+
+<p><strong>本周主要成果：</strong></p>
+<ol>
+    <li><strong>课程硬指标数据底座补齐</strong>：新增 <code>data/users.json</code> 10 个用户样例，并将 <code>data/diary_data.json</code> 调整为 12 篇日记、10 个独立作者，满足课程要求的基础口径。</li>
+    <li><strong>媒体占位与 AIGC 样例准备完成</strong>：新增 <code>data/aigc_media_samples.json</code>，并补齐日记中的图片占位路径，为 Member B 的日记中心和 AIGC 页面提供可接入数据。</li>
+    <li><strong>数据规模扩展完成</strong>：将扩展推荐 / 查询对象池补至 208 条，并将 PKU 标准分层图扩展到 58 个节点、200 条原始边、53 个服务设施口径节点。</li>
+    <li><strong>课程要求核验脚本升级完成</strong>：新增并强化 <code>tests/test_course_requirements.py</code>，将用户数、作者数、对象规模、服务设施数量、边数和必要文档项纳入强断言。</li>
+    <li><strong>文档底座同步完成</strong>：更新 <code>docs/课程要求覆盖清单.md</code>、<code>docs/数据字典.md</code>、<code>docs/项目代码骨架与职责划分.md</code> 等文档，确保课程要求、字段说明和代码职责口径保持一致。</li>
+</ol>
+
+<hr>
+
+<h2>4. 验证结果</h2>
+
+<p>由于当前环境未识别 <code>py -3 -B</code> 启动器，本周正式核验统一采用 <code>python -B</code>。收口时已完成以下测试与校验：</p>
+
+<pre><code>python -B tests/test_course_requirements.py
+python -B tests/test_graph_load.py
+python -B tests/test_routing.py
+python -B tests/test_search.py
+python -B tests/test_recommend.py
+python -B tests/test_diary.py
+python -B tests/test_integration.py
+python -B tests/test_fulltext.py
+python -B tests/test_compress.py
+python -B tests/test_ui_demo.py
+node --check src\ui\static\app.js
+python -B -m py_compile src/ui/demo_service.py src/ui/demo_server.py src/diary/diary_service.py src/diary/__init__.py</code></pre>
+
+<p><strong>验证结论：</strong></p>
+<ul>
+    <li>课程硬指标核验通过，当前标准数据已满足 10+ 用户、10+ 日记作者、208 条扩展对象、53 个服务设施节点和 200 条原始边等第十一周承诺项。</li>
+    <li>图加载与路由测试通过，说明 PKU 58 节点 / 200 边标准分层图能够稳定加载，单目标、跨层、交通方式过滤和多目标路径结果均可返回。</li>
+    <li>路径性能验证记录完成，单目标 Dijkstra 查询平均耗时维持在毫秒以下，多目标状态压缩 DP 场景平均耗时约 1 至 2 ms，可支撑当前产品展示和课程答疑。</li>
+    <li>搜索、推荐、日记和集成测试通过，说明“查询 / 推荐 -&gt; 路径规划”“日记全文检索 -&gt; 目的地节点 -&gt; 路径规划”等主链路没有因第十一周 Web 和数据扩展而退化。</li>
+    <li>全文检索与压缩测试通过，说明第十周新增的检索、离线索引草稿和哈夫曼压缩 / 解压能力在第十一周继续保持可用。</li>
+    <li>UI Demo 测试、前端脚本语法检查和 Python 模块编译检查通过，说明正式 Web 主入口骨架、日记中心、多目标路径和 AIGC 轻量演示入口已具备稳定的本地演示条件。</li>
+</ul>
+
+<hr>
+
+<h2>5. 当前限制与处理口径</h2>
+
+<ol>
+    <li><strong>日记管理当前仍为 <code>memory_only</code> 演示口径</strong>：创建、编辑、删除和评分不会写回 <code>data/diary_data.json</code>，服务刷新后恢复标准样例数据。</li>
+    <li><strong>AIGC 当前仍为 <code>template_preview</code> 轻量原型</strong>：现阶段不调用真实生成模型，主要用于冻结输入、输出和页面入口形态。</li>
+    <li><strong>208 条扩展对象并非全部进入导航图</strong>：当前只有部分对象保留可路由映射样例，若后续需要扩大“推荐对象 -&gt; 路径规划”直连范围，还需继续补数据映射策略。</li>
+    <li><strong>接口冻结仍处于第一轮</strong>：后续如需新增路径或业务字段，必须采用追加方式并同步更新文档，避免在第十二周全量接入前再次破坏 Web 展示契约。</li>
+    <li><strong>性能验证当前以记录材料为主</strong>：耗时数据已完成实测和文档沉淀，但暂未写入自动化测试断言，避免不同机器环境带来的波动误判。</li>
+    <li><strong>Web 主入口已具备产品骨架，但体验仍需打磨</strong>：第十一周优先解决结构、入口和联调问题，第十二周仍需继续补页面细节、异常提示和展示体验优化。</li>
+</ol>
+
+<hr>
+
+<h2>6. 下周工作计划（第十二周）</h2>
+
+<ol>
+    <li><strong>继续推进正式产品页面细化</strong>：由 Member B 持续完善 Web 主入口，把第十一周骨架推进到更接近第十三周正式产品的可交付形态。</li>
+    <li><strong>决定日记管理是否进入受控持久化</strong>：评估是否在当前接口上增加受控写回机制或独立用户数据文件，以满足后续课程验收需要。</li>
+    <li><strong>继续稳定路径接口与页面展示</strong>：由 Member A 配合 Member B 调试多目标路径、跨层步骤、总距离 / 总时间和异常提示，继续坚持追加字段策略。</li>
+    <li><strong>扩展 AIGC 样例与预览表达能力</strong>：由 Member C 和 Member B 协同补充更多样例、模板和展示字段，为第十三周正式产品提供更完整的演示方案。</li>
+    <li><strong>把课程要求核验脚本固化为全量联调入口</strong>：继续使用 <code>tests/test_course_requirements.py</code> 作为第十二周固定检查项，并围绕第十三周产品冻结准备统一验收材料和答辩路径。</li>
+</ol>
+
+</body>
+</html>

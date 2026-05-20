@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第11周地图道路展示优化方案对比</title>
+    <style>
+      :root {
+        --ink: #1f2933;
+        --muted: #52606d;
+        --line: #d9e2ec;
+        --soft: #f5f7fa;
+        --accent: #102a43;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Microsoft YaHei", "SimSun", sans-serif;
+        color: var(--ink);
+        background: #eef2f6;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        padding: 16mm 18mm;
+        background: #ffffff;
+      }
+
+      h1,
+      h2,
+      h3,
+      p,
+      li {
+        margin: 0;
+      }
+
+      .hero {
+        text-align: center;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 10mm;
+        margin-bottom: 8mm;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+        line-height: 1.35;
+        color: var(--accent);
+        margin-bottom: 4mm;
+      }
+
+      .hero p {
+        font-size: 11px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .section {
+        margin-top: 7mm;
+      }
+
+      .section h2 {
+        font-size: 15px;
+        color: var(--accent);
+        margin-bottom: 3.5mm;
+      }
+
+      .section p {
+        font-size: 10.5px;
+        line-height: 1.8;
+        margin-bottom: 2.4mm;
+      }
+
+      .callout {
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-left: 4px solid #486581;
+        padding: 4mm 4.5mm;
+        margin-top: 3mm;
+      }
+
+      .callout strong {
+        color: var(--accent);
+      }
+
+      ul {
+        margin: 2mm 0 0 0;
+        padding-left: 4.8mm;
+      }
+
+      li {
+        font-size: 10px;
+        line-height: 1.75;
+        margin-bottom: 1.4mm;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-top: 3mm;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--line);
+        vertical-align: top;
+        text-align: left;
+        padding: 2.4mm 2.6mm;
+        font-size: 9.3px;
+        line-height: 1.6;
+      }
+
+      th {
+        background: #edf2f7;
+        color: var(--accent);
+      }
+
+      .mini {
+        font-size: 8.8px;
+        color: var(--muted);
+      }
+
+      .score {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4mm;
+        margin-top: 3mm;
+      }
+
+      .score-card {
+        border: 1px solid var(--line);
+        background: #fbfcfe;
+        padding: 4mm;
+      }
+
+      .score-card h3 {
+        font-size: 12px;
+        color: var(--accent);
+        margin-bottom: 2mm;
+      }
+
+      .score-card p {
+        font-size: 9.8px;
+        line-height: 1.7;
+        margin-bottom: 1.4mm;
+      }
+
+      .footer-note {
+        margin-top: 8mm;
+        padding-top: 4mm;
+        border-top: 1px solid var(--line);
+        font-size: 8.8px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+        }
+
+        .page {
+          margin: 0;
+          width: 210mm;
+          min-height: 297mm;
+          page-break-after: always;
+        }
+
+        .page:last-child {
+          page-break-after: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <h1>第11周地图道路展示优化方案对比</h1>
+        <p>目标：在不牺牲主链路稳定性和课程验收确定性的前提下，选择一条最有利于冲刺高分的地图展示升级路径。</p>
+        <p>背景：当前 Web UI 地图层仍基于 SVG 简图，室外边按节点之间的直线绘制。本规划聚焦“道路看起来是否更像真实校园道路”这一问题。</p>
+      </section>
+
+      <section class="section">
+        <h2>一、结论先行</h2>
+        <p>如果目标是冲刺极高课程分数，主建议不是直接押注最高难度，而是选 <strong>方案 A：geometry 折线道路渲染</strong> 作为正式实施方案。它能明显提升视觉可信度，且不会把第 14-15 周的时间窗口变成地图层重构工程。</p>
+        <div class="callout">
+          <p><strong>推荐结论：</strong>方案 A 的综合得分最高。方案 B 的天花板更高，但风险集中在底图校准、路网表达、交互回归和时间失控，对课程项目最后两周来说过重。</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>二、两种方案总览</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 14%;">方案</th>
+              <th style="width: 28%;">核心改法</th>
+              <th style="width: 12%;">预计工作量</th>
+              <th style="width: 10%;">难度</th>
+              <th style="width: 11%;">成功概率</th>
+              <th style="width: 25%;">对高分价值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>方案 A<br />中高难度</strong></td>
+              <td>保留现有 SVG 简图框架；给室外 edge 增加可选 geometry 折线点；边和路线都按折线绘制。</td>
+              <td>约 4 到 6 人日</td>
+              <td>中高</td>
+              <td>约 80%</td>
+              <td>高。能明显改善观感，且不破坏现有主链路。</td>
+            </tr>
+            <tr>
+              <td><strong>方案 B<br />高难度</strong></td>
+              <td>把简图升级成准真实地图层；引入底图或 GeoJSON 式路网渲染、坐标校准、分层地图表现。</td>
+              <td>约 8 到 14 人日</td>
+              <td>高</td>
+              <td>约 50%</td>
+              <td>最高。展示冲击力最强，但极易挤压测试和验收收口。</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>三、方案 A：中高难度 geometry 折线方案</h2>
+        <ul>
+          <li>数据层：在 outdoor edge 上新增可选 geometry 字段，例如 <code>geometry=[{lat,lng}, ...]</code>，允许两点以上形成折线。</li>
+          <li>服务层：继续读取 <code>outdoor.json</code>，但 <code>_build_map_edges()</code> 需要把 geometry 一并透传给前端。</li>
+          <li>前端层：把当前的 SVG <code>&lt;line&gt;</code> 改成 <code>&lt;polyline&gt;</code> 或 <code>&lt;path&gt;</code>；路径高亮尽量沿 edge geometry 拼接。</li>
+          <li>测试层：补 UI demo 测试，断言 geometry 存在时走折线渲染；同时保留 geometry 缺失时的直线回退。</li>
+          <li>实施重点：先只做室外图；室内仍保持现有步骤展示和节点高亮，不在第 14-15 周引入室内道路精绘。</li>
+        </ul>
+        <div class="callout">
+          <p><strong>推荐改动计划：</strong>第 14 周前半先完成数据结构设计和 20-30 条代表性主路 geometry 样例；第 14 周后半扩展到全部室外主干 edge；第 15 周只做视觉收口、路径贴路修正和回归测试。</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>四、方案 B：高难度准真实地图层方案</h2>
+        <ul>
+          <li>数据层：不仅要补 geometry，还要考虑底图或 GeoJSON 式路网表达，最好形成更规范的 outdoor 展示数据契约。</li>
+          <li>服务层：bootstrap 的 map 数据结构可能需要升级为多图层，例如 <code>base_image</code>、<code>roads</code>、<code>nodes</code>、<code>route_overlay</code>。</li>
+          <li>前端层：现有 SVG 简图逻辑需要明显扩展，甚至要重写渲染方式，处理底图缩放、拖动、坐标校准、站点切换和图层顺序。</li>
+          <li>交互层：路线高亮必须准确贴路；否则视觉越真实，误差越显眼，反而降低可信度。</li>
+          <li>验收层：测试不仅要保功能通，还要保证地图缩放、拖动、路径高亮和多目标展示都不回归。</li>
+        </ul>
+        <div class="callout">
+          <p><strong>推荐改动计划：</strong>只有在第 13 周前主链路、文档、报告、演示脚本都已经非常稳定时，才应进入此方案。若选此方案，建议拆成两个小版本：先做底图校准和道路层，再做贴路路径和分层表现。</p>
+        </div>
+      </section>
+    </main>
+
+    <main class="page">
+      <section class="section">
+        <h2>五、风险评估</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 18%;">风险点</th>
+              <th style="width: 12%;">主要影响方案</th>
+              <th style="width: 10%;">概率</th>
+              <th style="width: 10%;">影响</th>
+              <th style="width: 50%;">说明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>道路 geometry 数据补齐工作量被低估</td>
+              <td>A / B</td>
+              <td>高</td>
+              <td>高</td>
+              <td>当前 outdoor edge 有 162 条，现有数据没有折线点，最大成本在数据而不是前端代码。</td>
+            </tr>
+            <tr>
+              <td>路线高亮与道路折线拼接不稳定</td>
+              <td>A / B</td>
+              <td>中</td>
+              <td>中高</td>
+              <td>需要把 route.path 节点序列稳定映射到 edge geometry；否则会出现跳线、断线。</td>
+            </tr>
+            <tr>
+              <td>底图与节点坐标校准误差</td>
+              <td>B</td>
+              <td>高</td>
+              <td>高</td>
+              <td>一旦底图坐标系和节点经纬度不完全对齐，整张图会“看起来更真实、实际上更错”。</td>
+            </tr>
+            <tr>
+              <td>地图层重构引起 UI 回归</td>
+              <td>B</td>
+              <td>中高</td>
+              <td>高</td>
+              <td>会影响缩放、拖动、节点高亮、站点切换、多目标路径展示和测试断言。</td>
+            </tr>
+            <tr>
+              <td>第 14-15 周时间被地图层吞掉</td>
+              <td>B</td>
+              <td>高</td>
+              <td>高</td>
+              <td>如果高难度方案推进不顺，会直接挤压最终报告、彩排、体验修边和高优 bug 修复。</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>六、推荐实施路径</h2>
+        <ul>
+          <li><strong>正式决策：</strong>选方案 A 作为第 14-15 周正式实施方案，把“真实道路感”做扎实，而不是把地图层做大做重。</li>
+          <li><strong>技术预埋：</strong>在第 13 周结束前，先把 edge geometry 设计成可选字段；这样方案 A 能落地，方案 B 未来也还能往上叠。</li>
+          <li><strong>执行顺序：</strong>先数据后渲染。优先补 geometry 样例和渲染回退机制，再优化视觉细节；不要先做漂亮底图后补道路数据。</li>
+          <li><strong>验收标准：</strong>老师至少能一眼看到道路不再是机械直线；路径高亮大体贴路；功能、测试、演示链路全部保持稳定。</li>
+          <li><strong>止损规则：</strong>如果第 14 周中段还没把主要主干 edge 画顺，就立刻停止向方案 B 漂移，只收口方案 A。</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>七、Codex 5.5 xhigh 的推荐用法</h2>
+        <p>最有价值的用法不是“让它凭空做真实地图”，而是让它承担高认知负荷但可验证的工作：</p>
+        <ul>
+          <li>根据现有 node 经纬度和 edge 名称，批量生成 geometry 初稿，再由人工快速校正。</li>
+          <li>生成 geometry 字段迁移脚本、前端 polyline / path 渲染代码和回退逻辑。</li>
+          <li>补充 route 几何拼接测试、站点切换回归测试和视觉 QA checklist。</li>
+          <li>如果尝试方案 B，可先让它做底图校准原型，但最终仍需人工验证每条主路和关键节点位置。</li>
+        </ul>
+        <div class="callout">
+          <p><strong>现实判断：</strong>Codex 5.5 xhigh 可以明显提高方案 A 的成功率，也能帮助方案 B 做原型验证，但它不能消除方案 B 的坐标校准和时间管理风险。</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>八、最终建议</h2>
+        <div class="score">
+          <article class="score-card">
+            <h3>推荐选择：方案 A</h3>
+            <p>综合“展示提升幅度 / 风险 / 时间可控性 / 验收稳定性”四个维度，方案 A 的总分最高。</p>
+            <p>它足以把当前“校园简图 + 直线边”升级成“更接近真实道路的校园导览图”，并且符合第 14-15 周应以体验优化和验收收口为主的节奏。</p>
+          </article>
+          <article class="score-card">
+            <h3>不建议直接选择：方案 B</h3>
+            <p>它的视觉天花板最高，但风险也最高。对课程项目来说，最糟糕的情况不是“不够炫”，而是最后两周为地图层重构牺牲稳定性和收口质量。</p>
+            <p>如果最终时间比预期更充裕，可以只从方案 B 中挑一个低风险加分项，例如叠加一张经过校准的淡化底图，而不是全面切换路线。</p>
+          </article>
+        </div>
+      </section>
+
+      <p class="footer-note">备注：本规划基于当前仓库实现形态评估。当前地图层仍采用 SVG 简图，室外边通过节点投影后直接连线。若后续 outdoor 数据契约发生变化，应同步修订本规划中的工作量和风险预估。</p>
+    </main>
+  </body>
+</html>
