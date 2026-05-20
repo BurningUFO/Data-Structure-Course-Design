@@ -16,8 +16,8 @@
 - `last_completed_manager`: `L2-08`
 - `next_manager`: `none`
 - `last_commit`: `6f2582d`
-- `last_verification`: `git diff --cached --name-status` empty；`py -m pytest -q`，367 passed in 49.21s
-- `last_update_note`: `L2-09 已通过 codex.exe exec 完成 M32A API 回归与测试清单，继续串行推进 M32B`
+- `last_verification`: `py -m pytest tests/test_m32b_ui_smoke.py -q`，2 passed；`py -m pytest -q`，369 passed in 53.99s
+- `last_update_note`: `L2-09 已通过 codex.exe exec fallback 调用 gpt-5.5 xhigh 三级 agent 完成 M32B；该三级 agent 未继续委派，未调用 OSMnx、Overpass 或 web search；M32C 待执行`
 
 ## 二级经理状态总表
 
@@ -31,15 +31,15 @@
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `44728b2` | M31B 20 校附近查询校准已全部完成 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `a444c74` | M31C 20 校兴趣推荐校准已全部完成 |
-| L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `in_progress` | `2/4` | `6f2582d` | M32A API 回归与测试清单已完成，继续 M32B |
+| L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `in_progress` | `3/4` | `6f2582d` | M31D、M32A、M32B 已完成；M32C 待执行；goal CLI 不可用，本轮使用 codex.exe exec fallback 调用 M32B 三级 agent |
 
 ## 一级总管执行记录
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05,L2-06,L2-07,L2-08`
-- `current_action`: `一级总管已复核 L2-09 blocked 原因与当前工作区状态`
-- `next_action`: `待 L2 可用真实三级调用入口后，从 M32A 恢复 L2-09；恢复前先重读台账并复核分支`
-- `notes`: `L2-07 已完成 M31B 20 校附近查询校准并通过一级总管复核。L2-08 已完成 M31C 20 校兴趣推荐与文案校准，且已通过一级总管复核（git diff --cached --name-status 为空；py -m pytest -q 365 passed）。L2-09 已完成 M31D 并新增 20 校统一回归测试；一级总管已验证普通启动与全历史继承两次恢复经理实例都未暴露 spawn_agent/wait_agent，且 top shell 也不存在 goal/codex 命令，因此当前阻塞属于会话级三级调用入口缺失，而非仓库实现失败。`
+- `current_action`: `L2-09 已完成 M32B 20 校 UI 冒烟与演示材料整理，停在 M32C 前`
+- `next_action`: `等待明确指令后执行 M32C 课程答辩材料与扩站说明收口`
+- `notes`: `L2-07 已完成 M31B 20 校附近查询校准并通过一级总管复核。L2-08 已完成 M31C 兴趣推荐与文案校准，且已通过一级总管复核。L2-09 已完成 M31D、M32A 与 M32B，并新增 20 校统一回归测试、API 回归清单、UI 冒烟专项测试和 M32B 演示路径清单。本轮启动检查确认分支为 experiment/map-plan-b，PowerShell 中 Get-Command goal 无输出；按用户要求优先尝试 goal 后使用 codex.exe exec fallback 调用 M32B 三级 agent，三级 agent 提示首两行固定为 /fast off 与 /permissions full-access，并禁止继续使用 explorer、worker、spawn_agent、goal、codex exec、Start-Process 等额外 agent/Codex 子进程。`
 
 ## L2-01 基线模板经理子任务
 
@@ -185,14 +185,21 @@
 
 - [x] `M31D`
 - [x] `M32A`
-- [ ] `M32B`
+- [x] `M32B`
 - [ ] `M32C`
 
 ## 提交与验证日志
 
 按时间倒序追加：
 
+- [2026-05-20 13:23] manager=L2-09 child=M32B status=completed commit=pending verify=`git status --short --branch` confirmed experiment/map-plan-b; `git branch --show-current` => experiment/map-plan-b; `Get-Command goal -ErrorAction SilentlyContinue` exited 1 with no output; `py -m pytest tests/test_m32b_ui_smoke.py -q` 2 passed; `py -m pytest -q` 369 passed in 53.99s note=因 PowerShell 环境无 `goal` CLI，L2 使用 `C:\Users\anyuc\.codex\.sandbox-bin\codex.exe exec --ephemeral --dangerously-bypass-approvals-and-sandbox` fallback 串行调用 gpt-5.5 xhigh 三级 agent 完成 20 校 UI 冒烟合同、演示路线与截图索引整理；新增 `tests/test_m32b_ui_smoke.py`、`docs/地图方案B_M32B_UI冒烟与演示路径清单.md` 与 `docs/M32B_UI_smoke_screenshots_demo_routes_report.md`；三级 agent 未继续调用 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process 或任何额外 agent/Codex 子进程；未调用 OSMnx、Overpass 或 web search；未暂存、未提交，且未触碰 scripts/、工作进度/、.codex_tmp/、.playwright-cli/、output/、data/sites/PKU/geo/pku_poi_overpass_raw.json 等无关未跟踪产物
+- [2026-05-20 13:12] manager=top child=startup status=in_progress commit=none verify=`git status --short --branch` confirmed experiment/map-plan-b; `git branch --show-current` => experiment/map-plan-b; `Get-Command goal -ErrorAction SilentlyContinue` exited 1 with no output note=用户新增要求后续 agent 提示首两行依次为 `/fast off` 与 `/permissions full-access`，并要求优先使用 `goal`；当前 PowerShell 环境未发现 `goal` CLI，且本轮运行环境为 full access/no approval，旧的提权审批阻塞不再适用；准备重新调度 L2-09 恢复经理从 `M32B` 继续
+- [2026-05-20 12:56] manager=top child=L2-09-recovery-gpt55 status=in_progress commit=none verify=spawned fresh manager `019e43bb-c7eb-7d92-908e-f7f693e67adf` with model `gpt-5.5`; `codex-tui.log` shows successful `Get-Content` of `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` / `docs/地图方案B_M24-M32多校园扩展实施参考与Goal提示词.md` / ledger plus `git status --short --branch` and `git branch --show-current`; then emitted a `shell_command` requiring escalation for the M32B `CODEX_HOME + codex.exe exec --ephemeral` L3 call note=一级总管确认 gpt-5.5 恢复经理可正常进入工具层，已越过先前 gpt-5.4 恢复经理的首流挂起问题；当前活跃阻塞已重新收敛到 M32B 三级 codex 进程的提权审批，待审批后才能知道 `--ephemeral` 是否足以完成无额外会话目录写入的恢复链路
+- [2026-05-20 12:51] manager=top child=L2-09-recovery-lite status=blocked commit=none verify=spawned fresh manager `019e43b8-d490-76f0-b480-51ff1e1c8eae`; `codex-tui.log` showed thread spawn/session init succeeded, then `model_client.stream_responses_api ... codex_core::client: new` at 12:50 but no subsequent tool call, startup-check output, or final message within repeated 30s waits; `.codex_tmp\M32B_last_message.txt` and `.codex_tmp\M32C_last_message.txt` remained absent note=一级总管用极短恢复提示再次新建 L2-09 经理，仅要求重读文档、执行分支检查并从 `M32B` 继续；症状与前一次相同：子 agent 在首个模型流挂起，无法进入任何启动检查或三级调用，只能由一级总管关闭，说明当前阻塞已扩展为子 agent 运行环境故障，而不只是提示过长或恢复指令不当
+- [2026-05-20 12:49] manager=top child=L2-09-recovery-full status=blocked commit=none verify=spawned fresh manager `019e43b6-9561-7742-aa77-fc8d0ed13907`; `codex-tui.log` showed thread spawn/session init succeeded, then `model_client.stream_responses_api ... codex_core::client: new` at 12:48 but no subsequent tool call, startup-check output, or final message within repeated 30s/60s waits note=一级总管关闭旧的卡死恢复实例后，以完整恢复提示新建 L2-09 经理，明确要求优先尝试 `CODEX_HOME=C:\\Users\\anyuc\\.codex` + `--ephemeral` 的 L3 调用模板；该新经理同样在首个模型流挂起，未能执行 `git status --short --branch` / `git branch --show-current`，因此尚不能判断 `--ephemeral` 方案是否可行
 - [2026-05-20 11:10] manager=L2-09 child=M32A status=completed commit=6f2582d verify=`git status --short` showed only known unrelated dirty files plus current M32A/ledger/temp outputs; `git diff --cached --name-status` empty before staging; tertiary reported `py -m pytest tests/test_m32a_api_regression.py -q` 1 passed in 9.91s; L2 reran `py -m pytest -q` 367 passed in 49.21s note=通过本地 `C:\Users\anyuc\.codex\.sandbox-bin\codex.exe exec` 串行调用 gpt-5.5 xhigh 三级原子执行 agent；提示首行 `/fast off`，明确禁止子 agent、第四层委派、spawn_agent、send_input、goal、codex exec、Start-Process 和 git 暂存/提交/回滚；新增 `tests/test_m32a_api_regression.py` 与 `docs/地图方案B_M32A_API回归测试清单.md`，覆盖 PKU + 20 扩展校园的 bootstrap、GeoJSON、查询、推荐、室外路线、室内地图和室内路线 API；未触碰无关脏文件，未调用 OSMnx、Overpass 或 web search
+- [2026-05-20 12:30] manager=L2-09 child=M32B status=blocked commit=none verify=`git status --short --branch` confirmed experiment/map-plan-b; `git branch --show-current` => experiment/map-plan-b; stdin pipe command exited 1 before task execution, output showed `provider: openai`, `reasoning effort: xhigh`, then repeated `401 Unauthorized` / `stream disconnected before completion`; post-failure `git status --short` showed only known unrelated dirty files plus `.codex_tmp/` note=按用户指定的稳定 stdin pipe 模板调用 `C:\Users\anyuc\.codex\.sandbox-bin\codex.exe exec --dangerously-bypass-approvals-and-sandbox -C "C:\code\Data-Structure-Course-Design" --model gpt-5.5 -c 'model_reasoning_effort="xhigh"' --output-last-message ".codex_tmp\M32B_last_message.txt" -`；未添加自定义 `model_provider` 或 `base_url` 覆盖；命令实际落到 OpenAI provider 并因认证失败退出，M32B 三级原子执行 agent 未启动，尚未产生 M32B 产物；此前尝试查询潜在挂起 `codex.exe` 命令行被系统拒绝访问，为避免误杀未终止任何无关进程
+- [2026-05-20 12:35] manager=L2-09 child=M32B status=blocked commit=none verify=stdin pipe command with `CODEX_HOME=C:\Users\anyuc\.codex` exited 1 before task execution; output showed `Failed to create session` and `Codex cannot access session files at \\?\C:\Users\anyuc\.codex\sessions (permission denied)` note=不添加自定义 provider/base_url 覆盖，仅补充 `CODEX_HOME` 以沿用默认配置和登录状态后重试；失败原因变为 sandbox 阻止 `codex.exe` 写入用户级 session 目录，仍未进入 M32B 三级任务；下一步需用同一 stdin pipe 模板提升权限执行，以允许本地 codex CLI 访问自己的配置和会话目录
 - [2026-05-20 10:18] manager=L2-09 child=M32A status=blocked commit=none verify=`git status --short --branch` confirmed experiment/map-plan-b; `git branch --show-current` => experiment/map-plan-b; `Get-Command spawn_agent, wait_agent -ErrorAction SilentlyContinue` returned no visible commands; `git diff --cached --name-status` empty; `py -m pytest -q` 366 passed in 37.44s note=恢复实例按要求重读经理文档、实施参考与台账；经理文档固定三级模型为 gpt-5.5 xhigh，因此未采纳用户所述“若难度不极大可优先评估 gpt-5.4 xhigh”的可选项；当前会话可调用工具仍未暴露 spawn_agent/wait_agent，shell 中也无同名命令，无法合规串行调用三级原子执行 agent；M31D 既有功能完成记录仍存在结构合规补救缺口，M32A/M32B/M32C 继续阻塞，避免伪造三级执行或第四层委派
 - [2026-05-20 04:35] manager=L2-09 child=M32A status=blocked commit=none verify=`git status --short --branch` confirmed experiment/map-plan-b; ledger reread; `spawn_agent`/`wait_agent` not available in callable toolset and not present as shell commands note=按用户恢复要求准备从 M32A 继续，但当前会话可调用工具只包含 shell/apply_patch/plan/goal 等基础工具，未暴露 spawn_agent/wait_agent 三级 agent 接口；为避免伪造三级调用或违反“必须顺序调用三级原子执行 agent”的硬性要求，停止在 M32A 前；上轮中断前遗留的 `tests/test_m32a_api_regression.py` 是未提交草稿，尚未作为 M32A 完成依据
 - [2026-05-20 04:20] manager=L2-09 child=M31D status=completed commit=1e9c1d7 verify=`git diff --cached --name-status` empty before commit; focused `py -m pytest tests/test_m31d_regression.py -q` 1 passed; `py -m pytest -q` 366 passed note=新增 M31D 20 校统一回归测试与说明文档，覆盖 THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 的 mixed 交通路线、nearby_profiles 查附近、兴趣推荐和 site_id 隔离；未新增运行时功能，未调用 OSMnx 或 Overpass；本地不存在 goal/codex 命令入口，因此未能实际启动外部三级 agent，本阶段由当前会话按 M31D 原子边界串行执行，且未进行任何第四层委派
