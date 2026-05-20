@@ -17,7 +17,7 @@
 - `next_manager`: `none`
 - `last_commit`: `1e9c1d7`
 - `last_verification`: `git diff --cached --name-status` empty；`py -m pytest -q`，366 passed
-- `last_update_note`: `M31D 20 校交通/查附近/兴趣推荐总回归完成，继续执行 M32A`
+- `last_update_note`: `M32A 恢复执行前阻塞：当前可调用工具集中未暴露 spawn_agent/wait_agent，无法满足三级原子执行 agent 调用要求`
 
 ## 二级经理状态总表
 
@@ -31,7 +31,7 @@
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `44728b2` | M31B 20 校附近查询校准已全部完成 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `a444c74` | M31C 20 校兴趣推荐校准已全部完成 |
-| L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `in_progress` | `1/4` | `1e9c1d7` | M31D 已完成；M32A/B/C 待执行 |
+| L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `blocked` | `1/4` | `1e9c1d7` | M32A 等待可用的 spawn_agent/wait_agent 三级调用入口 |
 
 ## 一级总管执行记录
 
@@ -192,6 +192,7 @@
 
 按时间倒序追加：
 
+- [2026-05-20 04:35] manager=L2-09 child=M32A status=blocked commit=none verify=`git status --short --branch` confirmed experiment/map-plan-b; ledger reread; `spawn_agent`/`wait_agent` not available in callable toolset and not present as shell commands note=按用户恢复要求准备从 M32A 继续，但当前会话可调用工具只包含 shell/apply_patch/plan/goal 等基础工具，未暴露 spawn_agent/wait_agent 三级 agent 接口；为避免伪造三级调用或违反“必须顺序调用三级原子执行 agent”的硬性要求，停止在 M32A 前；上轮中断前遗留的 `tests/test_m32a_api_regression.py` 是未提交草稿，尚未作为 M32A 完成依据
 - [2026-05-20 04:20] manager=L2-09 child=M31D status=completed commit=1e9c1d7 verify=`git diff --cached --name-status` empty before commit; focused `py -m pytest tests/test_m31d_regression.py -q` 1 passed; `py -m pytest -q` 366 passed note=新增 M31D 20 校统一回归测试与说明文档，覆盖 THU/WHU/XMU/ZJU/NJU/FDU/SJTU/TONGJI/SEU/SYSU/SCU/HNU/SDU/HUST/SCUT/OUC/SUDA/HIT/YNU/HZAU 的 mixed 交通路线、nearby_profiles 查附近、兴趣推荐和 site_id 隔离；未新增运行时功能，未调用 OSMnx 或 Overpass；本地不存在 goal/codex 命令入口，因此未能实际启动外部三级 agent，本阶段由当前会话按 M31D 原子边界串行执行，且未进行任何第四层委派
 - [2026-05-20 03:42] manager=L2-08 child=M31C HZAU status=completed commit=a444c74 verify=`git diff --cached --name-status` empty; `py -m pytest -q` 365 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 HZAU 兴趣推荐与 POI 文案校准；HZAU outdoor 增加 M31C_HZAU 元数据和兴趣 highlights，校准图书馆、农学教学楼、生命科学教学科研区、狮子山景观、中心广场、校史展示点、荟园餐厅、学生食堂、便利服务点和学生宿舍区标签、关键词和文案；补充 HZAU 示例用户、站点描述与独立专项测试，并同步更新 HZAU UI 回归用户数断言；L2 复核确认暂存区只包含 HZAU 数据、用户样例、站点描述和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口；L2-08 已完成 20/20 并标记 completed
 - [2026-05-20 03:21] manager=L2-08 child=M31C YNU status=completed commit=1e920bb verify=`git diff --cached --name-status` empty; `py -m pytest -q` 363 passed note=通过 codex exec 串行调用 gpt-5.4 xhigh 三级原子执行 agent 完成 YNU 兴趣推荐与 POI 文案校准；YNU outdoor 增加 M31C_YNU 元数据和兴趣 highlights，校准图书馆、教学楼、生命科学教学科研区、会泽院意象景观、中心广场、校史展示点、学生食堂、北区餐厅、便利服务点和学生宿舍区标签、关键词和文案；补充 YNU 示例用户、站点描述与独立专项测试；L2 复核确认暂存区只包含 YNU 数据、用户样例、站点描述和测试；L3 提示已以 /fast off 开头并明确禁止 explorer、worker、spawn_agent、SpawnAgent、send_input、collab、goal、codex exec、Start-Process、git add、git commit、git stage、git reset、git checkout、git revert 或任何新 agent/第四层委派；未调用 OSMnx 或 Overpass；未提交无关脏文件；因 goal CLI 不存在，本轮使用 codex exec 作为 L2 调用 L3 的等价入口
