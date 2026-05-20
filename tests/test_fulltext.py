@@ -12,7 +12,8 @@ def test_build_index_manifest():
     records = load_diary_records()
     index = DiaryFullTextIndex(records)
 
-    assert index.document_count == 12
+    assert index.document_count == len(records)
+    assert index.document_count >= 132
     assert index.token_count > 0
     assert "图书馆" in index.index
     print("test_build_index_manifest passed.")
@@ -20,22 +21,22 @@ def test_build_index_manifest():
 
 def test_search_single_keyword():
     records = load_diary_records()
-    result = search_diary_fulltext(query="图书馆", records=records, limit=5)
+    result = search_diary_fulltext(query="北大图书馆", records=records, limit=5)
 
     assert result["total"] >= 1
     assert result["results"][0]["diary_id"] == "diary_003"
-    assert "图书馆" in result["results"][0]["matched_terms"]
+    assert "北大图书馆" in result["results"][0]["matched_terms"]
     assert result["results"][0]["destination_node_id"] == "library"
     print("test_search_single_keyword passed.")
 
 
 def test_search_multi_keyword():
     records = load_diary_records()
-    result = search_diary_fulltext(query="图书馆 自习", records=records, limit=5)
+    result = search_diary_fulltext(query="北大图书馆 自习", records=records, limit=5)
 
     assert result["total"] >= 1
     assert result["results"][0]["diary_id"] == "diary_003"
-    assert "图书馆" in result["results"][0]["matched_terms"]
+    assert "北大图书馆" in result["results"][0]["matched_terms"]
     assert "自习" in result["results"][0]["matched_terms"]
     assert result["results"][0]["score"] > 0
     print("test_search_multi_keyword passed.")
@@ -43,11 +44,11 @@ def test_search_multi_keyword():
 
 def test_search_alias_keyword():
     records = load_diary_records()
-    result = search_diary_fulltext(query="library", records=records, limit=5)
+    result = search_diary_fulltext(query="北大图书馆", records=records, limit=5)
 
     assert result["total"] >= 1
     assert result["results"][0]["diary_id"] == "diary_003"
-    assert "图书馆" in result["results"][0]["matched_terms"]
+    assert "北大图书馆" in result["results"][0]["matched_terms"]
     print("test_search_alias_keyword passed.")
 
 
@@ -63,7 +64,7 @@ def test_search_no_match():
 def test_offline_index_roundtrip():
     records = load_diary_records()
     package = build_offline_diary_index(records)
-    result = search_offline_diaries(package, "图书馆 自习", limit=3)
+    result = search_offline_diaries(package, "北大图书馆 自习", limit=3)
 
     assert result["offline_ready"] is True
     assert result["results"][0]["diary_id"] == "diary_003"

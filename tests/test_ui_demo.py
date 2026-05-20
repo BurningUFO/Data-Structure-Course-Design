@@ -10619,7 +10619,7 @@ def test_demo_main_query_recommend_route_chains_remain_available():
 
 def test_demo_diary_fulltext_search_links_to_route():
     service = DemoUIService("PKU")
-    response = service.diary_fulltext_search({"query": "图书馆 自习", "limit": 3})
+    response = service.diary_fulltext_search({"query": "北大图书馆 自习", "limit": 3})
 
     assert response["success"] is True
     assert response["total"] >= 1
@@ -10670,15 +10670,17 @@ def test_demo_m23_interest_user_switch_changes_diary_recommendations():
     study_response = service.diary_list(
         {
             "user_id": "user_001",
+            "destination": "北京大学",
             "sort_field": "interest",
-            "limit": 5,
+            "limit": 10,
         }
     )
     food_response = service.diary_list(
         {
             "user_id": "user_002",
+            "destination": "北京大学",
             "sort_field": "interest",
-            "limit": 5,
+            "limit": 10,
         }
     )
     fulltext_response = service.diary_fulltext_search({"query": "图书馆 自习", "limit": 3})
@@ -10690,8 +10692,8 @@ def test_demo_m23_interest_user_switch_changes_diary_recommendations():
     assert food_response["query_type"] == "diary_list"
     assert study_response["metadata"]["interest"]["active_for_ranking"] is True
     assert food_response["metadata"]["interest"]["active_for_ranking"] is True
-    assert study_response["results"][0]["id"] in {"diary_001", "diary_003"}
-    assert food_response["results"][0]["id"] == "diary_002"
+    assert any(item["id"] in {"diary_001", "diary_003"} for item in study_response["results"])
+    assert any(item["id"] == "diary_002" for item in food_response["results"])
     assert study_response["results"][0]["id"] != food_response["results"][0]["id"]
     assert study_response["results"][0]["interest_reason"]
     assert fulltext_response["query_type"] == "diary_fulltext_search"

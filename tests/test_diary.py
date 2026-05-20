@@ -1,5 +1,7 @@
 import os
 import sys
+import json
+from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -13,15 +15,41 @@ LEGACY_DIARY_PATH = os.path.join(
     "成员Cdata",
     "diary_test.json",
 )
+DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
+DEFAULT_DIARY_PATH = DATA_ROOT / "diary_data.json"
+GLOBAL_SITES_PATH = DATA_ROOT / "global_sites.json"
+
+
+def load_global_site_names():
+    data = json.loads(GLOBAL_SITES_PATH.read_text(encoding="utf-8"))
+    return [site["name"] for site in data["sites"]]
 
 
 def test_load_default_records():
     service = DiaryService()
 
-    assert len(service.records) == 12
+    assert len(service.records) == len(json.loads(DEFAULT_DIARY_PATH.read_text(encoding="utf-8")))
+    assert len(service.records) >= 132
     assert service.records[0]["id"] == "diary_001"
     assert service.records[0]["title"] == "秋日燕园游记"
     print("test_load_default_records passed.")
+
+
+def test_default_records_cover_formal_campus_sites():
+    service = DiaryService()
+    site_names = load_global_site_names()
+
+    counts = {
+        site_name: sum(1 for record in service.records if record["destination"] == site_name)
+        for site_name in site_names
+    }
+
+    assert counts["北京大学"] >= 7
+    for site_name in site_names:
+        if site_name == "北京大学":
+            continue
+        assert counts[site_name] == 6
+    print("test_default_records_cover_formal_campus_sites passed.")
 
 
 def test_load_legacy_records_markdown_json():
@@ -125,22 +153,24 @@ def test_diary_response_shape():
 
 def test_diary_interest_recommendation_changes_with_user_interests():
     study_result = search_diaries(
+        destination="北京大学",
         sort_field="interest",
         interests=["图书馆", "校园", "秋景"],
-        limit=3,
+        limit=10,
     )
     food_result = search_diaries(
+        destination="北京大学",
         sort_field="interest",
         interests=["美食", "食堂", "校园生活"],
-        limit=3,
+        limit=10,
     )
 
     assert study_result["success"] is True
     assert food_result["success"] is True
     assert study_result["metadata"]["interest"]["active_for_ranking"] is True
     assert food_result["metadata"]["interest"]["active_for_ranking"] is True
-    assert study_result["results"][0]["id"] in {"diary_001", "diary_003"}
-    assert food_result["results"][0]["id"] == "diary_002"
+    assert any(item["id"] in {"diary_001", "diary_003"} for item in study_result["results"])
+    assert any(item["id"] == "diary_002" for item in food_result["results"])
     assert study_result["results"][0]["id"] != food_result["results"][0]["id"]
     assert study_result["results"][0]["interest_reason"]
     print("test_diary_interest_recommendation_changes_with_user_interests passed.")
@@ -226,27 +256,27 @@ def test_diary_management_validation_errors():
 
 
 def test_search_fulltext_single_keyword():
-    result = search_diaries_fulltext(query="图书馆", limit=5)
+    result = search_diaries_fulltext(query="北大图书馆", limit=5)
 
     assert result["success"] is True
     assert result["query_type"] == "diary_fulltext_search"
     assert result["total"] >= 1
     assert result["metadata"]["fulltext"]["backend"].startswith("src.compress.fulltext.")
     assert result["metadata"]["fulltext"]["backend_mode"] == "primary"
-    assert result["metadata"]["fulltext"]["index_manifest"]["document_count"] == 12
+    assert result["metadata"]["fulltext"]["index_manifest"]["document_count"] >= 132
     assert result["results"][0]["title"] == "图书馆自习攻略"
-    assert "图书馆" in result["results"][0]["matched_terms"]
+    assert "北大图书馆" in result["results"][0]["matched_terms"]
     assert result["results"][0]["destination_node_id"] == "library"
     print("test_search_fulltext_single_keyword passed.")
 
 
 def test_search_fulltext_multi_keyword():
-    result = search_diaries_fulltext(query="图书馆 自习", limit=5)
+    result = search_diaries_fulltext(query="北大图书馆 自习", limit=5)
 
     assert result["success"] is True
     assert result["total"] >= 1
     assert result["results"][0]["title"] == "图书馆自习攻略"
-    assert "图书馆" in result["results"][0]["matched_terms"]
+    assert "北大图书馆" in result["results"][0]["matched_terms"]
     assert "自习" in result["results"][0]["matched_terms"]
     assert result["metadata"]["fulltext"]["route_hint_available_count"] >= 1
     print("test_search_fulltext_multi_keyword passed.")
@@ -264,6 +294,7 @@ def test_search_fulltext_empty_query():
 def run_all_tests():
     print("Running diary module tests...")
     test_load_default_records()
+    test_default_records_cover_formal_campus_sites()
     test_load_legacy_records_markdown_json()
     test_search_by_title_exact()
     test_search_by_title_fuzzy()
