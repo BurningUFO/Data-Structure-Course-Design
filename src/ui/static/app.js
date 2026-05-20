@@ -114,7 +114,7 @@ async function init() {
     await loadSiteBootstrap("");
     switchTab("route");
     setStatus(
-      "先在地图上点击图书馆、教学楼、宿舍等建筑，再点击“进入室内导航”；也可以直接使用左侧快捷入口。",
+      "先在地图上点击图书馆、教学楼、宿舍等建筑，再点击“进入室内导航”；也可以直接使用顶部功能入口。",
       "info",
     );
   } catch (error) {
@@ -161,20 +161,6 @@ function bindPageShell() {
 
     switchPage(pageButton.dataset.page);
   });
-
-  const sidebarToggle = document.querySelector("#sidebar-toggle");
-  if (sidebarToggle) {
-    sidebarToggle.addEventListener("click", () => {
-      const layout = document.querySelector("#app-layout");
-      const isCollapsed = layout.classList.toggle("sidebar-collapsed");
-      sidebarToggle.setAttribute("aria-expanded", String(!isCollapsed));
-      sidebarToggle.querySelector(".collapse-icon").textContent = isCollapsed ? "›" : "‹";
-      const label = sidebarToggle.querySelector(".side-label");
-      if (label) {
-        label.textContent = isCollapsed ? "展开侧边栏" : "收起侧边栏";
-      }
-    });
-  }
 
   document.addEventListener("click", (event) => {
     const expandButton = event.target.closest("[data-expand-panel]");
@@ -288,8 +274,14 @@ function closeExpandedPanel() {
 
 function syncExpandButtons(panelName, isExpanded) {
   document.querySelectorAll(`[data-expand-panel="${panelName}"]`).forEach((button) => {
-    button.textContent = isExpanded ? "还原" : "放大";
-    button.setAttribute("aria-label", isExpanded ? "还原面板" : "放大面板");
+    const collapsedLabels = {
+      control: "展开表单",
+      map: "展开地图",
+      result: "展开结果",
+    };
+    const collapsedLabel = collapsedLabels[panelName] || "展开";
+    button.textContent = isExpanded ? "还原" : collapsedLabel;
+    button.setAttribute("aria-label", isExpanded ? "还原面板" : collapsedLabel);
     button.classList.toggle("active", isExpanded);
   });
 }
@@ -2408,7 +2400,7 @@ function renderResults(response) {
 
   if (!items.length) {
     container.className = "card-list empty-state";
-    container.textContent = response.message || "暂无结果，请在左侧选择功能并输入关键词。";
+    container.textContent = response.message || "暂无结果，请在顶部选择功能并输入关键词。";
     meta.textContent = "0 条结果";
     return;
   }

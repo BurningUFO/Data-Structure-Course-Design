@@ -10,65 +10,55 @@
   </head>
   <body>
     <div class="app-layout" id="app-layout">
-      <aside class="side-rail" aria-label="左侧功能菜单">
-        <div class="brand-panel">
-          <span class="brand-logo">
-            <img src="/assets/logo.png" alt="智能校园导览系统 Logo" />
-          </span>
-          <div class="brand-copy">
-            <strong>TourGraph</strong>
-            <span>智能校园导览</span>
-          </div>
-        </div>
-
-        <nav class="side-menu" aria-label="功能导航">
-          <span class="menu-section">功能</span>
-          <button class="side-link active" type="button" data-tab="scenic">
-            <span class="side-icon">01</span>
-            <span class="side-label">综合查询</span>
-          </button>
-          <button class="side-link" type="button" data-tab="place">
-            <span class="side-icon">02</span>
-            <span class="side-label">场所查询</span>
-          </button>
-          <button class="side-link" type="button" data-tab="catering">
-            <span class="side-icon">03</span>
-            <span class="side-label">美食推荐</span>
-          </button>
-          <button class="side-link" type="button" data-tab="route">
-            <span class="side-icon">04</span>
-            <span class="side-label">导航规划</span>
-          </button>
-          <button class="side-link" type="button" data-tab="diary">
-            <span class="side-icon">05</span>
-            <span class="side-label">日记中心</span>
-          </button>
-          <button class="side-link" type="button" data-tab="aigc">
-            <span class="side-icon">06</span>
-            <span class="side-label">AIGC 演示</span>
-          </button>
-          <button class="side-link" type="button" data-tab="help">
-            <span class="side-icon">07</span>
-            <span class="side-label">帮助说明</span>
-          </button>
-        </nav>
-
-        <button class="collapse-button" id="sidebar-toggle" type="button" aria-expanded="true">
-          <span class="collapse-icon">‹</span>
-          <span class="side-label">收起侧边栏</span>
-        </button>
-      </aside>
-
       <div class="main-shell">
         <header class="top-bar">
-          <div class="top-status">
-            <span class="status-dot"></span>
-            <span id="product-stage" class="product-stage">正在加载产品阶段...</span>
+          <div class="top-navigation" aria-label="顶部功能导航">
+            <div class="brand-panel">
+              <span class="brand-logo">
+                <img src="/assets/logo.png" alt="智能校园导览系统 Logo" />
+              </span>
+              <div class="brand-copy">
+                <strong>TourGraph</strong>
+                <span>智能校园导览</span>
+              </div>
+            </div>
+
+            <nav class="side-menu" aria-label="功能导航">
+              <span class="menu-section">功能</span>
+              <button class="side-link active" type="button" data-tab="scenic">
+                <span class="side-label">综合查询</span>
+              </button>
+              <button class="side-link" type="button" data-tab="place">
+                <span class="side-label">场所查询</span>
+              </button>
+              <button class="side-link" type="button" data-tab="catering">
+                <span class="side-label">美食推荐</span>
+              </button>
+              <button class="side-link" type="button" data-tab="route">
+                <span class="side-label">导航规划</span>
+              </button>
+              <button class="side-link" type="button" data-tab="diary">
+                <span class="side-label">日记中心</span>
+              </button>
+              <button class="side-link" type="button" data-tab="aigc">
+                <span class="side-label">AIGC 演示</span>
+              </button>
+              <button class="side-link" type="button" data-tab="help">
+                <span class="side-label">帮助说明</span>
+              </button>
+            </nav>
           </div>
-          <nav class="page-switcher" aria-label="页面切换">
-            <button class="page-tab active" type="button" data-page="home">首页</button>
-            <button class="page-tab" type="button" data-page="app">工作区</button>
-          </nav>
+
+          <div class="top-meta">
+            <div class="top-status">
+              <span class="status-dot"></span>
+              <span id="product-stage" class="product-stage">正在加载产品阶段...</span>
+            </div>
+            <nav class="page-switcher" aria-label="页面切换">
+              <button class="page-tab active" type="button" data-page="home">首页</button>
+              <button class="page-tab" type="button" data-page="app">工作区</button>
+            </nav>
+          </div>
         </header>
 
         <main class="content-shell">
@@ -134,7 +124,7 @@
           <section class="page-view" data-page-panel="app" aria-label="主要网站">
             <section class="app-toolbar panel">
               <div>
-                <p class="eyebrow">当前功能</p>
+                <p class="eyebrow">工作区</p>
                 <h1 id="workspace-title">综合查询</h1>
                 <p id="workspace-description">搜索地点后可直接定位或规划路线。</p>
               </div>
@@ -165,8 +155,8 @@
                     <h2>操作</h2>
                     <span id="active-feature-caption" class="panel-subtitle">当前起点统一生效</span>
                   </div>
-                  <button class="panel-expand-button" type="button" data-expand-panel="control" aria-label="放大功能表单">
-                    放大
+                  <button class="panel-expand-button" type="button" data-expand-panel="control" aria-label="展开功能表单">
+                    展开表单
                   </button>
                 </div>
 
@@ -469,8 +459,8 @@
                       <button class="panel-reset-button" id="map-reset-view" type="button">
                         重置视图
                       </button>
-                      <button class="panel-expand-button" type="button" data-expand-panel="map" aria-label="放大校园简图">
-                        放大
+                      <button class="panel-expand-button" type="button" data-expand-panel="map" aria-label="展开校园地图">
+                        展开地图
                       </button>
                     </div>
                   </div>
@@ -548,10 +538,6 @@
                       普通道路
                     </span>
                     <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-osm-match"></span>
-                      OSM 匹配课程边
-                    </span>
-                    <span class="map-legend-item">
                       <span class="legend-swatch legend-swatch-route"></span>
                       当前路线
                     </span>
@@ -563,6 +549,10 @@
                   <details class="map-debug-legend">
                     <summary>补充图例</summary>
                     <div class="map-legend map-legend-secondary" aria-label="地图调试图例">
+                      <span class="map-legend-item">
+                        <span class="legend-swatch legend-swatch-osm-match"></span>
+                        OSM 匹配课程边
+                      </span>
                       <span class="map-legend-item">
                         <span class="legend-swatch legend-swatch-waypoint"></span>
                         弱化路网点
@@ -624,12 +614,12 @@
                     <h2>结果与步骤</h2>
                     <span class="panel-subtitle">优先使用规划路线和定位按钮，管理操作已收起</span>
                   </div>
-                  <button class="panel-expand-button" type="button" data-expand-panel="result" aria-label="放大结果与步骤">
-                    放大
+                  <button class="panel-expand-button" type="button" data-expand-panel="result" aria-label="展开结果与步骤">
+                    展开结果
                   </button>
                 </div>
                 <div id="status-banner" class="status-banner status-info" role="status" aria-live="polite">
-                  选择左侧入口开始演示。
+                  选择顶部功能入口开始演示。
                 </div>
 
                 <section class="result-section">
