@@ -15,9 +15,9 @@
 - `current_manager`: `L2-09`
 - `last_completed_manager`: `L2-08`
 - `next_manager`: `none`
-- `last_commit`: `1e9c1d7`
+- `last_commit`: `a95653b`
 - `last_verification`: `git diff --cached --name-status` empty；`py -m pytest -q`，366 passed in 37.44s
-- `last_update_note`: `L2-09 恢复实例复核：spawn_agent/wait_agent 仍不可见；M31D 结构合规补救与 M32A-M32C 均继续阻塞`
+- `last_update_note`: `一级总管复核确认 L2-09 blocked：两次恢复经理实例均未暴露 spawn_agent/wait_agent；M31D 已完成并通过 py -m pytest -q 366 passed 验证，M32A-M32C 待具备真实三级调用入口后继续`
 
 ## 二级经理状态总表
 
@@ -31,15 +31,15 @@
 | L2-06 | `docs/地图方案B_M31A交通方式校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `cfac93c` | M31A 20 校交通方式校准已全部完成 |
 | L2-07 | `docs/地图方案B_M31B附近查询校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `44728b2` | M31B 20 校附近查询校准已全部完成 |
 | L2-08 | `docs/地图方案B_M31C兴趣推荐校准经理Agent_Goal提示词.md` | `completed` | `20/20` | `a444c74` | M31C 20 校兴趣推荐校准已全部完成 |
-| L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `blocked` | `1/4` | `1e9c1d7` | M31D 功能完成但结构补救待可用三级入口；M32A-M32C 继续等待 spawn_agent/wait_agent |
+| L2-09 | `docs/地图方案B_M31D-M32总验收经理Agent_Goal提示词.md` | `blocked` | `1/4` | `a95653b` | M31D 功能完成但结构补救待可用三级入口；M32A-M32C 继续等待 spawn_agent/wait_agent |
 
 ## 一级总管执行记录
 
 - `status`: `in_progress`
 - `completed_managers`: `L2-01,L2-02,L2-03,L2-04,L2-05,L2-06,L2-07,L2-08`
-- `current_action`: `准备调用 L2-09 执行 M31D 与 M32A-M32C`
-- `next_action`: `等待 L2-09 完成后执行最终总复核与收口`
-- `notes`: `L2-07 已完成 M31B 20 校附近查询校准并通过一级总管复核。L2-08 已完成 M31C 20 校兴趣推荐与文案校准，且已通过一级总管复核（git diff --cached --name-status 为空；py -m pytest -q 365 passed）；因 goal CLI 不存在，本阶段继续使用本环境可用的 sub-agent 能力作为 L1/L2 调用入口，并要求各层提示以 /fast off 开头且禁止任何四层委派。`
+- `current_action`: `一级总管已复核 L2-09 blocked 原因与当前工作区状态`
+- `next_action`: `待 L2 可用真实三级调用入口后，从 M32A 恢复 L2-09；恢复前先重读台账并复核分支`
+- `notes`: `L2-07 已完成 M31B 20 校附近查询校准并通过一级总管复核。L2-08 已完成 M31C 20 校兴趣推荐与文案校准，且已通过一级总管复核（git diff --cached --name-status 为空；py -m pytest -q 365 passed）。L2-09 已完成 M31D 并新增 20 校统一回归测试；一级总管已验证普通启动与全历史继承两次恢复经理实例都未暴露 spawn_agent/wait_agent，且 top shell 也不存在 goal/codex 命令，因此当前阻塞属于会话级三级调用入口缺失，而非仓库实现失败。`
 
 ## L2-01 基线模板经理子任务
 
