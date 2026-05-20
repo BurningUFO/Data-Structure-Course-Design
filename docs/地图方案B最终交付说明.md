@@ -3,131 +3,66 @@
 ## 1. 交付基线
 
 - 当前分支：`experiment/map-plan-b`
-- 当前阶段：M12 精细化真实地图打磨
-- 启动命令：
+- 当前阶段：`M32C` 课程答辩材料与扩站说明收口。
+- 站点范围：`PKU` 基线站点 + 20 个扩展校园，共 21 个可用站点。
+- 启动命令：`py -m src.ui.demo_server`
+- 默认访问地址：`http://127.0.0.1:8765`
+- 最终验证命令：`py -m pytest -q`
 
-```powershell
-py -B -m src.ui.demo_server
-```
+## 2. 当前可演示能力
 
-- 默认访问地址：
+| 模块 | 能力 | 演示方式 |
+| --- | --- | --- |
+| 多校园 | 站点选择器切换 `PKU`、`THU`、`WHU` 等 21 个站点 | 切换后地图、候选点、查询、推荐、路线均使用当前 `site_id` |
+| 室外地图 | Leaflet + GeoJSON，保留 `simple_svg` fallback | 展示节点、道路、路线高亮和本地 Leaflet 资源 |
+| 室内导航 | 每个扩展校园 5 个室内建筑入口 | 从图书馆等建筑进入楼层平面图和室内路线视图 |
+| 路线规划 | 步行、自行车、混合交通；距离/时间两类策略 | 演示校门到图书馆、图书馆到食堂、室内目标路线 |
+| 多目标路线 | 支持多个目标串联 | 演示“校门 -> 图书馆 -> 食堂” |
+| 查询推荐 | 综合查询、查附近、餐饮推荐、兴趣推荐 | 切换用户和兴趣偏好，展示本校化结果与推荐理由 |
+| 日记与离线能力 | 保留全文检索、日记推荐和哈夫曼压缩模块 | 作为课程要求覆盖项展示 |
 
-```text
-http://127.0.0.1:8765
-```
+## 3. M32 验收结果
 
-Web UI 运行时只读取本地 JSON / GeoJSON 数据，不调用高德 API、OSMnx、Overpass 或外部路网下载服务。路线算法、图加载语义、搜索、推荐、日记和 AIGC 模块保持原有职责边界。
+| 阶段 | 产物 | 结论 |
+| --- | --- | --- |
+| `M31D` | `docs/地图方案B_M31D_20校推荐附近交通总回归.md`、`tests/test_m31d_regression.py` | 20 校交通、附近、兴趣推荐总回归通过 |
+| `M32A` | `docs/地图方案B_M32A_API回归测试清单.md`、`tests/test_m32a_api_regression.py` | 21 站点核心 API 回归通过 |
+| `M32B` | `docs/地图方案B_M32B_UI冒烟与演示路径清单.md`、`docs/M32B_UI_smoke_screenshots_demo_routes_report.md`、`tests/test_m32b_ui_smoke.py` | 20 校 UI 冒烟、演示路径和截图索引通过 |
+| `M32C` | `docs/地图方案B_M32C_课程答辩材料与扩站说明.md`、`docs/地图方案B_M32_多校园总验收收口报告.md` | 答辩材料、扩站说明和最终交付说明已收口 |
 
-M10-M12 阶段记录：
+## 4. 答辩演示脚本
 
-```text
-docs/地图方案B第十阶段真实数据重制记录.md
-docs/地图方案B第十一阶段穿楼边清理与真实路口绕行记录.md
-docs/地图方案B第十二阶段精细化真实地图打磨记录.md
-```
+1. 介绍项目定位：面向校园/景区的智能导览、查询推荐和室内外一体化路线。
+2. 展示系统架构：`data/global_sites.json` 注册站点，`data/sites/<SITE_ID>/` 存放每校分层图数据，`DemoUIService(site_id)` 负责站点隔离。
+3. 讲解课程算法：分层图、Dijkstra、状态压缩 DP、Top-K 排序、倒排索引和哈夫曼压缩。
+4. 演示 PKU 基线：Leaflet 地图、路线规划、室内楼层和多目标路线。
+5. 演示 20 校扩展：切换 `THU`、`WHU`、`HZAU`，重复查询、推荐、路线和室内入口。
+6. 展示验收材料：打开 M31D/M32A/M32B/M32C 文档，说明 `py -m pytest -q` 全量回归。
 
-## 2. 当前能力
+## 5. 现场演示建议
 
-地图方案 B 在 M12 具备以下演示能力：
+- 演示前先执行 `netstat -ano | findstr :8765`，避免浏览器命中旧服务。
+- 若端口空闲，执行 `py -m src.ui.demo_server` 并打开 `http://127.0.0.1:8765`。
+- 优先展示 `PKU`、`THU`、`WHU`、`HZAU` 四个站点，兼顾基线真实地图、首批试点、景观校园和最后一所扩展校。
+- 每个扩展校固定演示“校门 -> 图书馆 -> 食堂”，再进入图书馆室内视图。
+- 截图材料索引见 `docs/M32B_UI_smoke_screenshots_demo_routes_report.md`；截图目录 `output/` 是未跟踪验证产物，不作为代码提交内容。
 
-1. 默认使用 `leaflet_geo` 渲染器展示 Leaflet 真实瓦片底图和本地 GeoJSON 地图层。
-2. 保留 `simple_svg` 渲染器，可手动切换，也可作为 Leaflet 或 GeoJSON 加载失败时的回退。
-3. `GET /api/map/geojson?site_id=PKU` 输出 M12 室外节点和道路 `FeatureCollection`。
-4. `GET /api/map/osm-layers?site_id=PKU` 输出本地 OSM-derived roads / buildings / water_landuse 图层。
-5. `/api/bootstrap` 保留旧字段，并新增或保留地图 renderer、capabilities、basemap 和 geometry 覆盖统计。
-6. `/api/route` 和 `/api/route/multi` 返回 `route_geojson`、`route_line_coordinates`、`route_geometry_stats`。
-7. UI 弱化 `road` / waypoint 节点显示，普通搜索和 route target 列表不展示内部路网点。
-8. 本地 Leaflet runtime 继续使用 `src/ui/static/vendor/leaflet/`，核心地图渲染不依赖 CDN。
+## 6. 课程覆盖索引
 
-## 3. M12 数据状态
-
-M10 已消除旧 `campus_service_*` 虚拟网格 id，替换为语义化 `road_*` waypoint。M11 删除穿楼、穿非真实通行区域或缺少真实路口的直连边。M12 不继续扩密路网，而是精修名称、tags、description、GeoJSON 展示字段和 UI 显示规则。
-
-当前核心统计：
-
-```text
-outdoor nodes: 42
-POI nodes: 14
-waypoint nodes: 28
-directed edges: 84
-undirected map edges: 42
-GeoJSON features: 84
-osm matched edges: 40
-manual geometry edges: 2
-fallback edges: 0
-geometry coverage ratio: 1.0000
-osm matched coverage ratio: 0.9524
-```
-
-补充审计文件：
-
-```text
-data/sites/PKU/geo/node_rebuild_decisions.json
-data/sites/PKU/geo/m11_blocked_edge_audit.json
-data/sites/PKU/geo/m11_removed_edges.json
-data/sites/PKU/geo/m11_added_waypoints.json
-data/sites/PKU/geo/M12_visual_audit.json
-```
-
-这些文件记录旧虚拟节点替换关系、M11 全量 edge 审计、删除直连边、替代绕行路径、M11 新增 waypoint 和 M12 视觉审计。运行时 `outdoor.json` 和 `edge_osm_geometry_matches.json` 不包含旧 `campus_service_*` id；当前 42 条无向 edge 均有 geometry 和 match 记录，`fallback_edge_count=0`。
-
-## 4. 架构说明
-
-方案 B 采用“课程图仍为算法权威、地图表现层增强”的结构：
-
-1. `outdoor.json` 的节点和边仍是路径规划输入。
-2. 本地 OSM roads/buildings/water/landuse 是视觉层和离线校准参考。
-3. `edge_osm_geometry_matches.json` 提供路线覆盖层 geometry，匹配失败时按 edge 自带 manual geometry 或 fallback line 处理。
-4. 前端通过 `renderMap()` 在 `leaflet_geo` 和 `simple_svg` 间分发。
-5. Route overlay 由 `syncLeafletRouteLayer()` 同步，优先渲染后端返回的 `route_geojson`。
-
-## 5. 答辩演示脚本
-
-建议现场按以下顺序操作：
-
-1. 启动服务：`py -B -m src.ui.demo_server`。
-2. 打开 `http://127.0.0.1:8765`，进入主要网站。
-3. 查看地图状态条，确认 renderer 为 Leaflet 真实地图，并显示 14 个 POI、28 个路网点、42 条道路、40 条 OSM matched、2 条 manual、0 条 fallback。
-4. 打开本地 OSM roads/buildings/water_landuse 图层，说明本地图层来自离线 OSM 抽取。
-5. 点击“演示单目标”，规划 `gate_north -> library`，说明路线经西门内侧步道口、未名湖东南步道和图书馆南侧步道口，5/5 段为 `osm_matched`。
-6. 规划 `gate_north -> canteen`、`gate_east -> canteen`、`gate_south -> teaching_building_1`，确认 route stats 均为 fallback 0。
-7. 点击“演示多目标”，规划 `library + canteen`，说明多段 leg 仍返回各自 geometry stats。
-8. 切换“无底图”模式，确认本地 OSM 图层、项目道路和路线仍可显示。
-9. 点击 `SVG`，展示 `simple_svg` 稳定回退；再切回 `Leaflet`。
-10. 可选：综合查询“图书馆”、场所查询“洗手间”、美食推荐、日记全文检索，分别从结果发起路线规划，证明业务链路未被地图改动破坏。
-
-## 6. API 验证清单
-
-合并前至少验证：
-
-| 接口 | 验证重点 |
+| 课程点 | 对应模块 |
 | --- | --- |
-| `GET /api/bootstrap` | 保留旧字段，返回 `map_renderer=leaflet_geo`、`fallback_renderer=simple_svg` |
-| `GET /api/map/geojson?site_id=PKU` | 返回 84 个 feature、14 个 POI、28 个 waypoint、42 条 edge、40 条 `osm_matched`、2 条 manual、0 条 fallback |
-| `GET /api/map/osm-layers?site_id=PKU` | 返回 roads / buildings / water_landuse 本地图层和 stats |
-| `POST /api/route` `gate_north -> library` | 5 段 route geometry，fallback 0 |
-| `POST /api/route` `gate_north -> canteen` | route geometry 正常，fallback 0 |
-| `POST /api/route` `gate_east -> canteen` | route geometry 正常，fallback 0 |
-| `POST /api/route/multi` `gate_north + library + canteen` | 多目标 leg geometry stats 正常，fallback 0 |
-| `POST /api/search/scenic` | 查询“图书馆”可返回 route target |
-| `POST /api/search/places` | 查询“洗手间”可返回 route target 并按距离排序 |
-| `POST /api/recommend/catering` | 餐饮推荐可返回 route target |
-| `POST /api/diaries/fulltext` | 日记全文检索可返回可规划目标 |
+| 图结构 | `src/graph/loader.py`、`data/sites/<SITE_ID>/outdoor.json`、`data/sites/<SITE_ID>/indoor_*.json` |
+| 最短路径 | `src/routing/router.py` 的 Dijkstra 路线查询 |
+| 多目标规划 | `/api/route/multi` 与 `query_multi_target` |
+| 排序与推荐 | `src/search/`、`src/recommend/`、兴趣推荐和餐饮推荐 |
+| 全文检索 | `src/diary/`、`src/compress/fulltext.py` 的倒排索引能力 |
+| 数据压缩 | `src/compress/huffman.py` 的哈夫曼编码实现 |
+| 工程测试 | `tests/test_m31d_regression.py`、`tests/test_m32a_api_regression.py`、`tests/test_m32b_ui_smoke.py` 与全量 pytest |
 
-## 7. 测试建议
+## 7. 后续边界
 
-M12 合并前建议执行：
+- M32C 不新增功能，只做最终文档、答辩材料和扩站说明收口。
+- 运行时 UI/API 不直接调用 OSMnx、Overpass 或外部地图服务。
+- 后续若继续提升 20 校真实道路几何覆盖，应使用离线准备脚本产出本地文件，并放入 `data/sites/<SITE_ID>/geo/` 后再接入。
+- 不删除、不移动、不暂存无关未跟踪文件，尤其是 `scripts/`、`工作进度/`、`.codex_tmp/`、`.playwright-cli/`、`output/` 和 `data/sites/PKU/geo/pku_poi_overpass_raw.json`。
 
-```powershell
-py -m pytest tests/test_ui_demo.py -q
-py -m pytest tests/test_routing.py -q
-py -m pytest tests/test_search.py -q
-py -m pytest tests/test_course_requirements.py -q
-py -m pytest
-```
-
-## 8. 后续边界
-
-1. 当前 M12 仍是课程设计演示数据，不把完整 OSM 路网作为运行时 routing graph。
-2. 真实底图瓦片依赖网络；无底图模式、本地 OSM 图层和 SVG fallback 可继续支持现场演示。
-3. 后续扩展前不做路网扩密、核心 POI route matrix、通用质量脚本或多景区模板。
