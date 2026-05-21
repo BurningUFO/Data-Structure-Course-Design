@@ -10751,6 +10751,16 @@ def test_demo_diary_management_flow_links_to_route():
     print("test_demo_diary_management_flow_links_to_route passed.")
 
 
+def test_demo_diary_search_results_expose_destination_node_for_route_entry():
+    service = DemoUIService("PKU")
+    response = service.diary_fulltext_search({"query": "图书馆 自习", "limit": 5})
+
+    assert response["success"] is True
+    assert response["query_type"] == "diary_fulltext_search"
+    assert any(item.get("destination_node_id") or item.get("route_target_node_id") for item in response["results"])
+    print("test_demo_diary_search_results_expose_destination_node_for_route_entry passed.")
+
+
 def test_demo_static_diary_center_contains_management_controls():
     repo_root = os.path.join(os.path.dirname(__file__), "..")
     html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
