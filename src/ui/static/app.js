@@ -126,7 +126,7 @@ async function loadSiteBootstrap(siteId) {
   const query = siteId ? `?site_id=${encodeURIComponent(siteId)}` : "";
   const bootstrap = await apiGet(`/api/bootstrap${query}`);
   state.bootstrap = bootstrap;
-  state.mapRenderer = bootstrap.map_renderer || bootstrap.map_capabilities?.default_renderer || "simple_svg";
+  state.mapRenderer = "leaflet_geo";
   state.basemapMode = defaultBasemapMode(bootstrap);
   state.basemapError = "";
   state.mapGeoJson = null;
@@ -1566,18 +1566,15 @@ function updateWorkspaceHeading() {
   }
 
   const feature = state.bootstrap.navigation.find((item) => item.id === state.activeTab);
-  const customDescription = state.activeTab === "route"
-    ? "先点建筑进入室内导航，再选楼层、功能区并规划路线。高级路线和多目标选项已折叠。"
-    : "";
   const title = document.querySelector("#workspace-title");
   const description = document.querySelector("#workspace-description");
   if (title) {
     title.textContent = feature ? feature.label : "工作区";
   }
   if (description) {
-    description.textContent = customDescription || (feature
-      ? feature.description
-      : "完成查询、推荐、路径和日记演示。");
+    description.textContent = state.activeTab === "route"
+      ? ""
+      : (feature ? feature.description : "完成查询、推荐、路径和日记演示。");
   }
 }
 
@@ -3557,7 +3554,7 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
   }
 
   const svg = document.querySelector("#campus-map");
-  const caption = document.querySelector("#map-caption");
+  const caption = document.querySelector("#map-caption") || { textContent: '' };
   setMapRendererVisibility("simple_svg");
 
   if (!state.bootstrap) {
@@ -3664,7 +3661,7 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
 }
 
 async function renderLeafletMap(renderToken = state.mapRenderToken) {
-  const caption = document.querySelector("#map-caption");
+  const caption = document.querySelector("#map-caption") || { textContent: '' };
   if (renderToken !== state.mapRenderToken) {
     return;
   }
@@ -3703,7 +3700,7 @@ async function renderLeafletMap(renderToken = state.mapRenderToken) {
 }
 
 function syncLeafletCaption() {
-  const caption = document.querySelector("#map-caption");
+  const caption = document.querySelector("#map-caption") || { textContent: '' };
   if (!caption || selectedMapRenderer() !== "leaflet_geo") {
     return;
   }
@@ -4366,12 +4363,6 @@ function setMapRendererVisibility(renderer) {
 function syncMapDemoPanel() {
   const renderer = selectedMapRenderer();
   const rendererLabel = renderer === "leaflet_geo" ? "Leaflet 真实地图" : "SVG 稳定简图";
-  const subtitle = document.querySelector("#map-renderer-subtitle");
-  if (subtitle) {
-    subtitle.textContent = renderer === "leaflet_geo"
-      ? "默认展示真实地图；调试和图层开关已收起"
-      : "当前使用 SVG 稳定简图；可在调试区切回真实地图";
-  }
 
   document.querySelectorAll("[data-map-renderer]").forEach((button) => {
     const isActive = button.dataset.mapRenderer === renderer;

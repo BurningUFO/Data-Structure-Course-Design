@@ -10795,38 +10795,11 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'href="/vendor/leaflet/leaflet.css"' in html
     assert 'src="/vendor/leaflet/leaflet.js"' in html
     assert 'id="leaflet-map"' in html
-    assert 'id="map-renderer-controls"' in html
-    assert 'id="map-basemap-controls"' in html
-    assert 'id="map-osm-layer-controls"' in html
-    assert 'id="map-osm-status"' in html
-    assert 'id="map-basemap-status"' in html
-    assert 'id="white-road-role-controls"' in html
-    assert 'id="white-road-edge-toggle"' in html
-    assert 'id="path-node-toggle"' in html
-    assert 'data-map-renderer="leaflet_geo"' in html
-    assert 'data-map-renderer="simple_svg"' in html
-    assert 'data-map-basemap="real_map"' in html
-    assert 'data-map-basemap="none"' in html
-    assert 'data-osm-layer="roads"' in html
-    assert 'data-osm-layer="buildings"' in html
-    assert 'data-osm-layer="water_landuse"' in html
-    assert 'data-white-road-role="junction"' in html
-    assert 'data-white-road-role="bend"' in html
-    assert 'data-white-road-role="endpoint"' in html
-    assert 'data-white-road-role="poi_access"' in html
+    assert 'id="map-reset-view"' in html
     assert 'data-demo-action="single-route"' in html
     assert 'data-demo-action="multi-route"' in html
     assert 'id="help-map-acceptance"' in html
-    assert 'class="map-legend"' in html
     assert "校园真实地图" in html
-    assert "fallback 直线段" in html
-    assert "OSM 匹配课程边" in html
-    assert "POI 标记" in html
-    assert "弱化路网点" in html
-    assert "白线骨架点" in html
-    assert "POI 接驳点" in html
-    assert "OSM 道路" in html
-    assert "水域 / 绿地" in html
     assert "renderSvgMap" in script
     assert "renderLeafletMap" in script
     assert "ensureLeafletMap" in script
@@ -10851,6 +10824,7 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "switchMapRenderer" in script
     assert "runMapDemoAction" in script
     assert "syncMapDemoPanel" in script
+    assert 'state.mapRenderer = "leaflet_geo";' in script
     assert "routeGeometrySummaryText" in script
     assert "appendRouteGeometryCaption" in script
     assert "display_role" in script
@@ -10930,8 +10904,9 @@ def test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly():
     assert "室内导航最快入口" in html
     assert "高级路线选项" in html
     assert "多目标路线（高级）" in html
-    assert "高级地图调试选项" in html
-    assert "补充图例" in html
+    assert "地图快捷操作" in html
+    assert "GeoJSON 待加载" in html
+    assert "路线未规划" in html
     assert "renderIndoorQuickStart" in script
     assert 'data-show-supported-indoor' in script
     assert 'switchTab("route")' in script

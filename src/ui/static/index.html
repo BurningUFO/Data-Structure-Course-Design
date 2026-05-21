@@ -442,20 +442,9 @@
 
               <section class="center-column">
                 <section class="panel map-panel" data-expandable-panel="map">
-                  <div class="panel-title-row">
-                    <div>
-                      <h2>校园真实地图</h2>
-                      <span id="map-renderer-subtitle" class="panel-subtitle">路线、地点和校园道路在这里统一展示</span>
-                    </div>
+                  <div class="panel-title-row" style="align-items: center;">
+                    <h2 style="margin: 0;">校园真实地图</h2>
                     <div class="panel-actions">
-                      <div id="map-renderer-controls" class="renderer-toggle map-mode-toggle" role="group" aria-label="地图模式">
-                        <button class="renderer-toggle-button" type="button" data-map-renderer="leaflet_geo">
-                          真实地图
-                        </button>
-                        <button class="renderer-toggle-button" type="button" data-map-renderer="simple_svg">
-                          简图
-                        </button>
-                      </div>
                       <button class="panel-reset-button" id="map-reset-view" type="button">
                         重置视图
                       </button>
@@ -475,117 +464,10 @@
                       <button class="ghost-button" type="button" data-demo-action="clear-route">清空</button>
                     </div>
                   </div>
-                  <details class="map-debug-panel" id="map-debug-panel">
-                    <summary>高级地图调试选项</summary>
-                    <div class="map-debug-content">
-                      <div class="map-debug-status">
-                        <span id="map-renderer-status" class="status-pill">渲染器加载中</span>
-                        <span id="map-basemap-status" class="status-pill">底图待加载</span>
-                        <span id="map-osm-status" class="status-pill">本地 OSM 待加载</span>
-                      </div>
-                      <div class="map-debug-controls">
-                        <div id="map-basemap-controls" class="renderer-toggle compact-toggle" role="group" aria-label="Leaflet 底图模式切换">
-                          <button class="renderer-toggle-button" type="button" data-map-basemap="real_map">
-                            真实底图
-                          </button>
-                          <button class="renderer-toggle-button" type="button" data-map-basemap="none">
-                            无底图
-                          </button>
-                        </div>
-                        <div id="map-osm-layer-controls" class="renderer-toggle compact-toggle" role="group" aria-label="本地 OSM 图层切换">
-                          <button class="renderer-toggle-button" type="button" data-osm-layer="roads">
-                            OSM 道路
-                          </button>
-                          <button class="renderer-toggle-button" type="button" data-osm-layer="buildings">
-                            建筑
-                          </button>
-                          <button class="renderer-toggle-button" type="button" data-osm-layer="water_landuse">
-                            水域/绿地
-                          </button>
-                        </div>
-                        <div id="white-road-role-controls" class="inspection-toggle" role="group" aria-label="白线节点角色筛选">
-                          <button class="inspection-toggle-button" type="button" data-white-road-role="junction">
-                            junction
-                          </button>
-                          <button class="inspection-toggle-button" type="button" data-white-road-role="bend">
-                            bend
-                          </button>
-                          <button class="inspection-toggle-button" type="button" data-white-road-role="endpoint">
-                            endpoint
-                          </button>
-                          <button class="inspection-toggle-button" type="button" data-white-road-role="poi_access">
-                            poi_access
-                          </button>
-                        </div>
-                        <label class="inspection-check">
-                          <input id="path-node-toggle" type="checkbox" />
-                          <span>显示路径节点</span>
-                        </label>
-                        <label class="inspection-check">
-                          <input id="white-road-edge-toggle" type="checkbox" checked />
-                          <span>白线边</span>
-                        </label>
-                      </div>
-                    </div>
-                  </details>
                   <div class="map-stage">
                     <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
                     <div id="leaflet-map" class="leaflet-map" aria-label="Leaflet GeoJSON 校园地图" hidden></div>
                   </div>
-                  <div class="map-legend" aria-label="地图图例">
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-road"></span>
-                      普通道路
-                    </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-route"></span>
-                      当前路线
-                    </span>
-                    <span class="map-legend-item">
-                      <span class="legend-swatch legend-swatch-node"></span>
-                      POI 标记
-                    </span>
-                  </div>
-                  <details class="map-debug-legend">
-                    <summary>补充图例</summary>
-                    <div class="map-legend map-legend-secondary" aria-label="地图调试图例">
-                      <span class="map-legend-item">
-                        <span class="legend-swatch legend-swatch-osm-match"></span>
-                        OSM 匹配课程边
-                      </span>
-                      <span class="map-legend-item">
-                        <span class="legend-swatch legend-swatch-waypoint"></span>
-                        弱化路网点
-                      </span>
-                      <span class="map-legend-item">
-                        <span class="legend-swatch legend-swatch-white-road"></span>
-                        白线骨架点
-                      </span>
-                      <span class="map-legend-item">
-                        <span class="legend-swatch legend-swatch-poi-access"></span>
-                        POI 接驳点
-                      </span>
-                      <span class="map-legend-item">
-                        <span class="legend-swatch legend-swatch-fallback"></span>
-                        fallback 直线段
-                      </span>
-                      <span class="map-legend-item">
-                        <span class="legend-swatch legend-swatch-osm-road"></span>
-                        OSM 道路
-                      </span>
-                      <span class="map-legend-item">
-                        <span class="legend-swatch legend-swatch-osm-building"></span>
-                        建筑
-                      </span>
-                      <span class="map-legend-item">
-                        <span class="legend-swatch legend-swatch-osm-landuse"></span>
-                        水域 / 绿地
-                      </span>
-                    </div>
-                  </details>
-                  <p id="map-caption" class="map-caption">
-                    地图加载完成后会在这里显示高亮说明。
-                  </p>
                 </section>
 
                 <section class="panel route-panel">
