@@ -2397,19 +2397,19 @@ function renderResults(response) {
 
   if (!items.length) {
     container.className = "card-list empty-state";
-    container.textContent = response.message || "暂无结果，请在顶部选择功能并输入关键词。";
+    container.textContent = response.message || "暂无结果，请在顶部功能入口选择功能并输入关键词。";
     meta.textContent = "0 条结果";
     return;
   }
 
   container.className = "card-list";
-  meta.textContent = resultMetaText(response.total, queryType);
+  meta.textContent = resultMetaText(response.total, queryType, response.ui);
   container.innerHTML = items
     .map((item, index) => renderResultCard(item, index, queryType))
     .join("");
 }
 
-function resultMetaText(total, queryType) {
+function resultMetaText(total, queryType, ui = {}) {
   const labelMap = {
     scenic_search: "综合查询",
     place_search: "场所查询",
@@ -2422,7 +2422,71 @@ function resultMetaText(total, queryType) {
     diary_delete: "日记删除",
     aigc_preview: "AIGC 预览",
   };
-  return `${total} 条结果 · ${labelMap[queryType] || queryType}`;
+  const parts = [`${total} 条结果`, labelMap[queryType] || queryType];
+  const routeableCount = Number(ui?.routeable_result_count) || 0;
+  if (routeableCount > 0) {
+    parts.push(`${routeableCount} 条可直接规划路线`);
+  }
+  return parts.join(" · ");
+}
+
+function resolveResultRouteTargetId(item) {
+  if (!item || typeof item !== "object") {
+    return "";
+  }
+  return (
+    item.route_target_node_id
+    || item.destination_node_id
+    || item.target_node_id
+    || item.node_id
+    || item.map_node_id
+    || ""
+  );
+}
+
+function renderMoreActionsMarkup(buttonsMarkup, summaryLabel = "更多操作") {
+  if (!buttonsMarkup) {
+    return "";
+  }
+
+  return `
+    <details class="card-secondary-actions result-more-actions">
+      <summary>${escapeHtml(summaryLabel)}</summary>
+      <div class="card-actions card-actions-secondary">${buttonsMarkup}</div>
+    </details>
+  `;
+}
+
+function renderRouteDetails(geometrySummary) {
+  if (!geometrySummary) {
+    return "";
+  }
+
+  return `
+    <details class="route-summary-details">
+      <summary>路线细节</summary>
+      <div class="route-summary-details-body">
+        <p class="technical-note">${escapeHtml(geometrySummary)}</p>
+      </div>
+    </details>
+  `;
+}
+
+function renderAigcDetails(pipeline) {
+  if (!pipeline.length) {
+    return "";
+  }
+
+  return `
+    <details class="aigc-preview-details">
+      <summary>生成链路</summary>
+      <div class="aigc-preview-details-body">
+        <div class="pipeline-list">
+          ${pipeline.map((step) => `<span>${escapeHtml(step)}</span>`).join("")}
+        </div>
+      </div>
+    </details>
+  `;
 }
 
 function renderResultCard(item, index, queryType = "") {
@@ -2432,8 +2496,9 @@ function renderResultCard(item, index, queryType = "") {
     : escapeHtml(item.content || item.text_prompt || item.description || "可从该结果继续规划路线。");
   const distanceText = formatDistance(item.distance_m, item.distance_status);
   const scoreText = item.score !== undefined ? `相关度 ${item.score}` : "";
-  const routeTarget = item.route_target_node_id || "";
-  const focusNode = item.route_target_node_id || "";
+  const routeTarget = resolveResultRouteTargetId(item);
+  const routeTargetName = routeTarget ? getNodeName(routeTarget) : "";
+  const focusNode = item.has_map_location ? routeTarget : "";
   const indoorContext = routeTarget ? resolveIndoorContextForTarget(routeTarget) : null;
   const isDiary = isDiaryResult(item, queryType);
   const isAigc = isAigcResult(item, queryType);
@@ -2445,6 +2510,7 @@ function renderResultCard(item, index, queryType = "") {
     : "";
 
   const metrics = [
+    routeTargetName ? `<span class="metric-pill metric-pill-strong">目的地 ${escapeHtml(routeTargetName)}</span>` : "",
     item.interest_match_score !== undefined ? `<span class="metric-pill metric-pill-strong">兴趣 ${Number(item.interest_match_score).toFixed(1)}</span>` : "",
     item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
     distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
@@ -2463,48 +2529,29 @@ function renderResultCard(item, index, queryType = "") {
     .slice(0, PRIORITY_METRIC_LIMIT)
     .join("");
 
-  const primaryButtons = [
-    routeTarget
-      ? `<button class="route-button" type="button" data-route-target="${escapeHtml(routeTarget)}">规划路线</button>`
-      : "",
-    focusNode
-      ? `<button class="ghost-button" type="button" data-focus-node="${escapeHtml(focusNode)}">定位</button>`
-      : "",
-    routeTarget
-      ? `<button class="ghost-button" type="button" data-nearby-center="${escapeHtml(routeTarget)}">查附近设施</button>`
-      : "",
-    indoorContext
-      ? `<button class="ghost-button" type="button" data-enter-indoor="${escapeHtml(indoorContext.buildingId)}" data-indoor-floor="${escapeHtml(indoorContext.floorId || "")}" data-indoor-zone-target="${escapeHtml(indoorContext.targetNodeId)}">进入室内导航</button>`
-      : "",
-  ]
-    .filter(Boolean)
-    .join("");
-
-  const diaryButtons = [
-    isDiary && queryType !== "diary_delete"
-      ? `<button class="ghost-button" type="button" data-diary-edit-id="${escapeHtml(diaryId)}">编辑</button>`
-      : "",
-    isDiary && queryType !== "diary_delete"
-      ? `<button class="ghost-button" type="button" data-diary-rate-id="${escapeHtml(diaryId)}">评 5 分</button>`
-      : "",
-    isDiary && queryType !== "diary_delete"
-      ? `<button class="danger-button" type="button" data-diary-delete-id="${escapeHtml(diaryId)}">删除</button>`
-      : "",
-    isDiary && queryType === "diary_delete"
-      ? `<span class="deleted-badge">已从内存态移除</span>`
-      : "",
-  ]
-    .filter(Boolean)
-    .join("");
-
-  const secondaryActions = diaryButtons
-    ? `
-      <details class="card-secondary-actions">
-        <summary>日记管理</summary>
-        <div class="card-actions card-actions-secondary">${diaryButtons}</div>
-      </details>
-    `
+  const primaryButtons = routeTarget
+    ? `<button class="route-button" type="button" data-route-target="${escapeHtml(routeTarget)}">规划路线</button>`
     : "";
+
+  const secondaryButtons = [];
+  if (focusNode) {
+    secondaryButtons.push(`<button class="ghost-button" type="button" data-focus-node="${escapeHtml(focusNode)}">定位</button>`);
+  }
+  if (routeTarget) {
+    secondaryButtons.push(`<button class="ghost-button" type="button" data-nearby-center="${escapeHtml(routeTarget)}">查附近设施</button>`);
+  }
+  if (indoorContext) {
+    secondaryButtons.push(`<button class="ghost-button" type="button" data-enter-indoor="${escapeHtml(indoorContext.buildingId)}" data-indoor-floor="${escapeHtml(indoorContext.floorId || "")}" data-indoor-zone-target="${escapeHtml(indoorContext.targetNodeId)}">进入室内导航</button>`);
+  }
+  if (isDiary && queryType !== "diary_delete") {
+    secondaryButtons.push(`<button class="ghost-button" type="button" data-diary-edit-id="${escapeHtml(diaryId)}">编辑</button>`);
+    secondaryButtons.push(`<button class="ghost-button" type="button" data-diary-rate-id="${escapeHtml(diaryId)}">评 5 分</button>`);
+    secondaryButtons.push(`<button class="danger-button" type="button" data-diary-delete-id="${escapeHtml(diaryId)}">删除</button>`);
+  }
+
+  const secondaryActions = queryType === "diary_delete" && isDiary
+    ? `<span class="deleted-badge">已从内存态移除</span>`
+    : renderMoreActionsMarkup(secondaryButtons.join(""), isDiary ? "日记管理" : "更多操作");
 
   return `
     <article class="result-card" style="animation-delay: ${index * 0.04}s">
@@ -2567,9 +2614,19 @@ function isAigcResult(item, queryType) {
 function renderAigcPreview(item) {
   const frames = Array.isArray(item.storyboard_frames) ? item.storyboard_frames : [];
   const pipeline = Array.isArray(item.generation_pipeline) ? item.generation_pipeline : [];
+  const previewSummary = item.prompt_summary || item.text_prompt || "";
+  const previewMetrics = [
+    `<span class="metric-pill metric-pill-strong">模板分镜</span>`,
+    item.style_label ? `<span class="metric-pill">${escapeHtml(item.style_label)}</span>` : "",
+    item.duration_s !== undefined ? `<span class="metric-pill">${item.duration_s} 秒</span>` : "",
+  ]
+    .filter(Boolean)
+    .join("");
   return `
     <div class="aigc-preview-block">
       <p class="prototype-notice">${escapeHtml(item.prototype_notice || "")}</p>
+      ${previewMetrics ? `<div class="aigc-preview-meta">${previewMetrics}</div>` : ""}
+      ${previewSummary ? `<p class="aigc-preview-summary">${escapeHtml(previewSummary)}</p>` : ""}
       <div class="storyboard-grid">
         ${frames
           .map((frame) => `
@@ -2581,9 +2638,7 @@ function renderAigcPreview(item) {
           `)
           .join("")}
       </div>
-      <div class="pipeline-list">
-        ${pipeline.map((step) => `<span>${escapeHtml(step)}</span>`).join("")}
-      </div>
+      ${renderAigcDetails(pipeline)}
     </div>
   `;
 }
@@ -2619,19 +2674,20 @@ function renderRoute(route, emptyMessage = "暂无路径") {
     <article class="summary-card">
       <span class="summary-kicker">当前路线</span>
       <h4>${escapeHtml(route.start_node_name)} -> ${escapeHtml(route.target_node_name)}</h4>
+      <p>${escapeHtml(routePrimarySentence(route))}</p>
       <div class="summary-grid summary-grid-priority">
         ${renderMetricPill(summary.distance_text, "metric-pill-strong")}
         ${renderMetricPill(summary.time_text, "metric-pill-strong")}
         ${renderMetricPill(crossLayerText)}
         ${renderMetricPill(summary.strategy_text)}
       </div>
-      <p>${escapeHtml(routePrimarySentence(route))}</p>
-      ${geometrySummary ? `<p class="technical-note">${escapeHtml(geometrySummary)}</p>` : ""}
+      ${renderRouteDetails(geometrySummary)}
     </article>
   `;
 
   const steps = route.path_steps || [];
-  routeMeta.textContent = `${steps.length} 步 · ${route.path_node_names.length} 个路径点`;
+  const pathNodeCount = Array.isArray(route.path_node_names) ? route.path_node_names.length : 0;
+  routeMeta.textContent = `${steps.length} 步 · ${pathNodeCount} 个路径点`;
   stepsContainer.className = "step-list";
   stepsContainer.innerHTML = renderStepDetails(
     `${steps.length} 个详细步骤`,
@@ -2648,14 +2704,14 @@ function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
     <article class="summary-card">
       <span class="summary-kicker">多目标路线</span>
       <h4>${escapeHtml(summary.visit_order_text || "多目标路径")}</h4>
+      <p>${escapeHtml(routePrimarySentence(route))}</p>
       <div class="summary-grid summary-grid-priority">
         ${renderMetricPill(summary.distance_text, "metric-pill-strong")}
         ${renderMetricPill(summary.time_text, "metric-pill-strong")}
         ${renderMetricPill(`${summary.target_count || 0} 个目标`)}
         ${renderMetricPill(summary.return_to_start_text || "")}
       </div>
-      <p>${escapeHtml(routePrimarySentence(route))}</p>
-      ${geometrySummary ? `<p class="technical-note">${escapeHtml(geometrySummary)}</p>` : ""}
+      ${renderRouteDetails(geometrySummary)}
     </article>
   `;
 
@@ -3377,12 +3433,12 @@ function renderStepDetails(label, contentMarkup) {
 function routePrimarySentence(route) {
   if (route.route_type === "multi_target") {
     const summary = route.summary || {};
-    return `地图已按访问顺序高亮路线，共 ${summary.leg_count || 0} 段，可展开查看每段细节。`;
+    return `已按访问顺序完成 ${summary.leg_count || 0} 段路线。`;
   }
 
   const names = route.path_node_names || [];
   const via = names.length > 2 ? `，途经 ${names.slice(1, -1).slice(0, 3).join("、")}` : "";
-  return `已在地图上高亮从 ${route.start_node_name} 到 ${route.target_node_name} 的路线${via}。`;
+  return `已完成从 ${route.start_node_name} 到 ${route.target_node_name} 的路线${via}。`;
 }
 
 function routeGeometryStats(route = state.currentRoute) {
@@ -4692,11 +4748,17 @@ function colorForCategory(category) {
 }
 
 function firstMappableNodeId(items) {
-  return (
-    items.find((item) => item.has_map_location && item.route_target_node_id)?.route_target_node_id ||
-    items.find((item) => item.route_target_node_id)?.route_target_node_id ||
-    ""
-  );
+  if (!Array.isArray(items)) {
+    return "";
+  }
+
+  const mappableItem = items.find((item) => item.has_map_location && resolveResultRouteTargetId(item));
+  if (mappableItem) {
+    return resolveResultRouteTargetId(mappableItem);
+  }
+
+  const fallbackItem = items.find((item) => resolveResultRouteTargetId(item));
+  return fallbackItem ? resolveResultRouteTargetId(fallbackItem) : "";
 }
 
 function getNodeName(nodeId) {

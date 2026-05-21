@@ -1031,6 +1031,10 @@ select[multiple] {
   border-top: 1px solid rgba(35, 51, 63, 0.08);
 }
 
+.result-more-actions {
+  width: 100%;
+}
+
 .card-secondary-actions summary {
   cursor: pointer;
   padding-top: 10px;
@@ -1038,6 +1042,34 @@ select[multiple] {
   font-size: 0.84rem;
   font-weight: 900;
   list-style-position: inside;
+}
+
+.route-summary-details,
+.aigc-preview-details {
+  margin-top: 12px;
+  border: 1px solid rgba(35, 51, 63, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.route-summary-details summary,
+.aigc-preview-details summary {
+  cursor: pointer;
+  padding: 10px 14px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 900;
+  list-style-position: inside;
+}
+
+.route-summary-details[open] summary,
+.aigc-preview-details[open] summary {
+  border-bottom: 1px solid rgba(35, 51, 63, 0.08);
+}
+
+.route-summary-details-body,
+.aigc-preview-details-body {
+  padding: 12px 14px;
 }
 
 .map-demo-actions {
@@ -1976,6 +2008,19 @@ select[multiple] {
   color: #8a5c08;
   background: var(--amber-soft);
   font-weight: 900;
+}
+
+.aigc-preview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.aigc-preview-summary {
+  margin-top: 12px;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .storyboard-grid {
