@@ -2,10 +2,10 @@
 
 ## Project Context
 
-This repository is a data structure course design project for an intelligent campus/scenic-area guide system. The current experimental branch for map work is:
+This repository is a data structure course design project for an intelligent campus/scenic-area guide system. The former `experiment/map-plan-b` work has been merged, and current map work now continues on:
 
 ```text
-experiment/map-plan-b
+main
 ```
 
 The map experiment is intentionally staged. Do not attempt the full real-road-map rewrite in one pass.
@@ -36,10 +36,10 @@ git branch --show-current
 Expected branch:
 
 ```text
-experiment/map-plan-b
+main
 ```
 
-If the branch is not `experiment/map-plan-b`, stop and report the mismatch before making changes.
+If the branch is not `main`, stop and report the mismatch before making changes.
 
 ## Dirty Worktree Rules
 
@@ -260,7 +260,7 @@ Confirm no unrelated untracked files are staged.
 
 Stop and report instead of expanding the task if:
 
-1. The branch is not `experiment/map-plan-b`.
+1. The branch is not `main`.
 2. Bootstrap compatibility breaks.
 3. Existing SVG map cannot be restored.
 4. Route endpoints require core algorithm rewrites.
