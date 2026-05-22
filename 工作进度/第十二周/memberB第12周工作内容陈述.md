@@ -255,7 +255,7 @@ python -B tests/test_ui_demo.py
 
 本次材料收口检查结论：通过。
 
-1. 当前工作区仍停留在 `experiment/map-plan-b`，与本轮地图演示收口一致。
+1. 当前工作区已统一到 `main`，与 `experiment/map-plan-b` 合并后的正式主线一致。
 2. 已通过 `node --check src/ui/static/app.js`、`python -B tests/test_ui_demo.py`、`python -B tests/test_integration.py`、`python -B tests/test_course_requirements.py`。
 3. 第十二周两份材料已与当前主入口收口、三条关键演示流精修和测试结果对齐。
 4. 仓库中未检出 `项目交接说明.md`，因此没有需要删除的交接说明残留。

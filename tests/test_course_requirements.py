@@ -1,9 +1,10 @@
 """
-第十一周课程硬指标核验入口。
+第十二周课程硬指标与联调核验入口。
 
 本脚本采用课程硬指标强断言：
 - 10+ 用户、10+ 日记作者、必要文档、AIGC / 媒体占位样例。
-- 200+ 扩展推荐 / 查询对象、50+ 服务设施、M13B 白线道路骨架审查后节点。
+- 200+ 扩展推荐 / 查询对象、50+ 服务设施、当前 PKU 全量快照中的关键规模项。
+- 第十二周成员 C 的核验记录与工作陈述已落盘，可作为正式产品冻结前书面证据。
 
 使用说明：
   python -B tests/test_course_requirements.py
@@ -20,6 +21,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / "data"
 DOCS_DIR = PROJECT_ROOT / "docs"
 WEEK11_DIR = PROJECT_ROOT / "工作进度" / "第十一周"
+WEEK12_DIR = PROJECT_ROOT / "工作进度" / "第十二周"
 
 USERS_PATH = DATA_DIR / "users.json"
 DIARY_PATH = DATA_DIR / "diary_data.json"
@@ -35,6 +37,9 @@ REQUIRED_DOC_PATHS = [
     DOCS_DIR / "AI辅助开发能力分析.md",
     WEEK11_DIR / "memberC第11周课程硬指标核验记录.md",
     WEEK11_DIR / "memberC第11周工作内容陈述.md",
+    WEEK12_DIR / "memberC第12周课程核验与联调记录.md",
+    WEEK12_DIR / "memberC第12周工作内容陈述.md",
+    WEEK12_DIR / "第12周周报.md",
 ]
 
 SERVICE_CATEGORY_SET = {
@@ -121,6 +126,8 @@ def test_aigc_and_media_placeholders_ready():
         assert diary_id in diaries_by_id
         assert sample.get("image_placeholder")
         assert sample.get("text_prompt")
+        assert sample.get("output_type") in {"storyboard", "template_animation", "gif_preview"}
+        assert int(sample.get("duration_s", 0)) > 0
         assert sample.get("preview_placeholder")
         assert sample.get("status") == "placeholder_ready"
         assert sample["image_placeholder"] in diaries_by_id[diary_id].get("images", [])
@@ -139,7 +146,7 @@ def test_required_course_documents_exist():
     print(f"test_required_course_documents_exist passed: docs={len(REQUIRED_DOC_PATHS)}")
 
 
-def test_current_scale_snapshot_for_m14_white_road_audit_tracking():
+def test_current_scale_snapshot_for_week12_full_entry_regression():
     nodes, edges = collect_pku_nodes_and_edges()
     outdoor_payload = load_json(PKU_SITE_DIR / "outdoor.json")
     outdoor_nodes = outdoor_payload.get("nodes", [])
@@ -212,7 +219,7 @@ def test_current_scale_snapshot_for_m14_white_road_audit_tracking():
         assert isinstance(record.get("tags", []), list)
         assert isinstance(record.get("keywords", []), list)
 
-    print("test_current_scale_snapshot_for_m14_white_road_audit_tracking passed:")
+    print("test_current_scale_snapshot_for_week12_full_entry_regression passed:")
     print(f"  pku_nodes={len(nodes)}")
     print(f"  pku_edges={len(edges)}")
     print(f"  white_road_nodes={len(white_road_nodes)}")
@@ -229,7 +236,7 @@ def run_all_tests():
     test_user_samples_reach_course_minimum()
     test_aigc_and_media_placeholders_ready()
     test_required_course_documents_exist()
-    test_current_scale_snapshot_for_m14_white_road_audit_tracking()
+    test_current_scale_snapshot_for_week12_full_entry_regression()
     print("All course requirement checks passed.")
 
 
