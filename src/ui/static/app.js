@@ -112,9 +112,10 @@ async function init() {
 
   try {
     await loadSiteBootstrap("");
-    switchTab("route");
+    applyActiveTabState(state.activeTab);
+    switchPage("home");
     setStatus(
-      "先在地图上点击图书馆、教学楼、宿舍等建筑，再点击“进入室内导航”；也可以直接使用顶部功能入口。",
+      "从首页进入工作区后，可直接按推荐路径开始答辩演示。",
       "info",
     );
   } catch (error) {
@@ -148,7 +149,9 @@ async function loadSiteBootstrap(siteId) {
   state.currentStartNodeId = bootstrap.default_start_node;
   hydrateBootstrap(bootstrap);
   resetInteractionState({ clearForms: true });
-  renderMap();
+  if (state.activePage === "app") {
+    renderMap();
+  }
   return bootstrap;
 }
 
@@ -197,7 +200,11 @@ function switchPage(page) {
   });
 
   if (page === "app") {
-    renderMap();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        renderMap();
+      });
+    });
   }
 }
 
@@ -311,7 +318,7 @@ function bindTabSwitching() {
       return;
     }
 
-    switchTab(button.dataset.tab);
+    switchTab(button.dataset.tab, { openPage: true });
   });
 }
 
@@ -747,13 +754,13 @@ function resetMapViewState() {
   state.mapView.isPanning = false;
 }
 
-function switchTab(tab) {
+function applyActiveTabState(tab) {
   if (!tab) {
     return;
   }
 
-  switchPage("app");
   state.activeTab = tab;
+  document.body.dataset.activeTab = tab;
 
   document.querySelectorAll("[data-tab]").forEach((item) => {
     item.classList.toggle("active", item.dataset.tab === tab);
@@ -766,6 +773,18 @@ function switchTab(tab) {
   updateActiveFeatureCaption();
   updateWorkspaceHeading();
   renderFeatureGrid(state.bootstrap?.navigation || []);
+}
+
+function switchTab(tab, options = {}) {
+  if (!tab) {
+    return;
+  }
+
+  applyActiveTabState(tab);
+
+  if (options.openPage !== false) {
+    switchPage("app");
+  }
 
   if (tab === "help") {
     setStatus("已打开帮助说明，可按推荐链路完成系统演示。", "info");
@@ -796,7 +815,9 @@ function resetInteractionState(options = {}) {
   updateActiveFeatureCaption();
   updateWorkspaceHeading();
   renderFeatureGrid(state.bootstrap?.navigation || []);
-  renderMap();
+  if (state.activePage === "app") {
+    renderMap();
+  }
 }
 
 function clearUserInputs() {
@@ -918,11 +939,19 @@ function hydrateBootstrap(bootstrap) {
   document.querySelector("#hero-title").textContent = `${bootstrap.site.name} 导览演示台`;
   document.querySelector("#hero-description").textContent = [
     bootstrap.site.description,
-    bootstrap.site.location ? `地点：${bootstrap.site.location}` : "",
-    "当前页面覆盖首页、站点、导航、帮助和核心功能入口。",
+    "当前答辩重点：路线规划、室内导航、查询结果联动。",
   ]
     .filter(Boolean)
     .join(" ");
+  const heroSiteSummary = document.querySelector("#hero-site-summary");
+  if (heroSiteSummary) {
+    heroSiteSummary.textContent = [
+      bootstrap.site.location ? `地点：${bootstrap.site.location}` : "",
+      `当前支持 ${bootstrap.stats.route_target_count} 个可规划目标`,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+  }
 
   document.querySelector("#stat-map-nodes").textContent = String(bootstrap.map.node_count);
   document.querySelector("#stat-route-targets").textContent = String(
@@ -1512,7 +1541,13 @@ function renderFeatureGrid(navigation) {
   }
   container.innerHTML = navigation
     .map((item) => {
-      const statusLabel = item.status === "ready" ? "可使用" : "功能扩展";
+      const statusLabel = item.id === "route"
+        ? "答辩主线"
+        : item.id === "help"
+          ? "演示说明"
+          : item.status === "ready"
+            ? "可使用"
+            : "功能扩展";
       return `
         <button class="feature-card${item.id === state.activeTab ? " active" : ""}" type="button" data-tab="${escapeHtml(item.id)}">
           <span class="feature-status">${escapeHtml(statusLabel)}</span>
@@ -1543,6 +1578,18 @@ function renderHelpPanel(help) {
       .map((item) => `<li>${escapeHtml(item)}</li>`)
       .join("");
   }
+  renderHomeFlow(help.demo_flow || []);
+}
+
+function renderHomeFlow(flowItems) {
+  const flow = document.querySelector("#home-flow");
+  if (!flow) {
+    return;
+  }
+  flow.innerHTML = (flowItems || [])
+    .slice(0, 4)
+    .map((item) => `<li>${escapeHtml(item)}</li>`)
+    .join("");
 }
 
 function updateActiveFeatureCaption() {
@@ -1568,13 +1615,21 @@ function updateWorkspaceHeading() {
   const feature = state.bootstrap.navigation.find((item) => item.id === state.activeTab);
   const title = document.querySelector("#workspace-title");
   const description = document.querySelector("#workspace-description");
+  const descriptionByTab = {
+    scenic: "先做地点检索，再从结果卡片直接进入地图定位与路线规划。",
+    place: "围绕附近设施和范围筛选做答辩展示，结果优先支持定位和继续规划。",
+    catering: "展示推荐排序、兴趣偏好和路径联动，适合从生活场景切入。",
+    route: "地图优先展示当前路线、建筑入口和室内导航状态。",
+    diary: "用全文检索和管理操作证明结果面板与路线入口可以互相联动。",
+    aigc: "保留轻量预览能力，强调系统具备多媒体扩展接口。",
+    help: "这里汇总推荐演示链路、启动方式和当前验收检查点。",
+  };
   if (title) {
-    title.textContent = feature ? feature.label : "工作区";
+    title.textContent = feature ? `${feature.label}工作区` : "工作区";
   }
   if (description) {
-    description.textContent = state.activeTab === "route"
-      ? ""
-      : (feature ? feature.description : "完成查询、推荐、路径和日记演示。");
+    description.textContent = descriptionByTab[state.activeTab]
+      || (feature ? feature.description : "完成查询、推荐、路径和日记演示。");
   }
 }
 
@@ -2249,6 +2304,7 @@ async function runQuery(url, payload) {
     query_type: "loading",
     results: [],
   });
+  revealResultPanel();
   renderRoute(null, "查询执行中，路线会在规划后显示。");
 
   try {
@@ -2257,6 +2313,7 @@ async function runQuery(url, payload) {
     state.currentRoute = null;
     state.focusedNodeId = firstMappableNodeId(state.currentResults);
     renderResults(response);
+    revealResultPanel();
     renderRoute(null);
     renderMap();
 
@@ -2286,6 +2343,7 @@ async function runQuery(url, payload) {
       query_type: "query_error",
       results: [],
     });
+    revealResultPanel();
     renderRoute(null, "查询失败，请调整条件后重试。");
     renderMap();
     setStatus(`查询失败：${error.message}`, "error");
@@ -2407,6 +2465,28 @@ function renderResults(response) {
   container.innerHTML = items
     .map((item, index) => renderResultCard(item, index, queryType))
     .join("");
+}
+
+function revealResultPanel() {
+  if (state.activePage !== "app") {
+    return;
+  }
+
+  const panel = document.querySelector('[data-expandable-panel="result"]');
+  if (!panel) {
+    return;
+  }
+
+  if (!window.matchMedia("(max-width: 1180px)").matches) {
+    return;
+  }
+
+  requestAnimationFrame(() => {
+    panel.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  });
 }
 
 function resultMetaText(total, queryType, ui = {}) {
@@ -3594,6 +3674,9 @@ function osmLayerLabel(layerId) {
 }
 
 function renderMap() {
+  if (state.activePage !== "app") {
+    return;
+  }
   const renderToken = state.mapRenderToken + 1;
   state.mapRenderToken = renderToken;
   syncMapDemoPanel();
@@ -3708,10 +3791,10 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
   const captionText = state.currentRoute
     ? appendRouteGeometryCaption(state.currentRoute.ui.caption)
     : state.focusedNodeId
-      ? `当前定位：${getNodeName(state.focusedNodeId)}。`
+      ? `当前已定位 ${getNodeName(state.focusedNodeId)}，可继续规划路线或进入楼内视图。`
       : state.pathNodesVisible
-        ? `当前展示的是室外 POI 与弱化路网点；缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`
-        : `当前只显示地点节点，路径节点已收起；可在地图调试中打开。缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`;
+        ? `当前展示室外地点与路网点；缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`
+        : `当前优先展示可导航地点，路径节点默认收起；缩放 ${Math.round(state.mapView.scale * 100)}%，可拖动查看细节。`;
   caption.textContent = fallbackMessage ? `${fallbackMessage} ${captionText}` : captionText;
   syncMapDemoPanel();
 }
@@ -3765,9 +3848,10 @@ function syncLeafletCaption() {
   const osmText = osmLayerCaptionText();
   const poiCount = stats.poi_node_count ?? 0;
   const waypointCount = stats.waypoint_node_count ?? 0;
+  const siteName = state.bootstrap?.site?.name || "当前站点";
   const defaultCaption = state.pathNodesVisible
-    ? `已加载 ${poiCount} 个 POI、${waypointCount} 个弱化路网点和 ${stats.edge_feature_count || 0} 条道路，geometry 覆盖 ${formatRatioPercent(stats.geometry_coverage_ratio || 0)}。${basemapCaptionPrefix()} ${osmText}`
-    : `已加载 ${poiCount} 个 POI，路径节点已收起（共 ${waypointCount} 个），可在地图调试中打开。${basemapCaptionPrefix()} ${osmText}`;
+    ? `当前已进入 ${siteName} 主地图，展示 ${poiCount} 个地点与 ${waypointCount} 个路网点。${basemapCaptionPrefix()} ${osmText}`
+    : `当前已进入 ${siteName} 主地图，优先展示 ${poiCount} 个可导航地点。${basemapCaptionPrefix()} ${osmText}`;
   caption.textContent = state.currentRoute
     ? `${appendRouteGeometryCaption(state.currentRoute.ui.caption)} ${basemapCaptionPrefix()} ${osmText}`
     : state.focusedNodeId
@@ -4516,7 +4600,8 @@ function syncMapDemoPanel() {
   const coverageRatio = stats.geometry_coverage_ratio ?? mapData.geometry_coverage_ratio ?? 0;
   const dataStatus = document.querySelector("#map-data-status");
   if (dataStatus) {
-    dataStatus.textContent = `地点 ${poiCount || nodeCount} · 道路 ${edgeCount} · 线形覆盖 ${formatRatioPercent(coverageRatio)}`;
+    const siteName = state.bootstrap?.site?.name || "当前站点";
+    dataStatus.textContent = `已载入 ${siteName} 主地图 · ${poiCount || nodeCount} 个地点`;
     dataStatus.title = `路网点 ${waypointCount}，OSM ${osmMatchedCount}，manual ${manualCount}，fallback ${fallbackCount}`;
   }
 

@@ -25,7 +25,7 @@
 
             <nav class="side-menu" aria-label="功能导航">
               <span class="menu-section">功能</span>
-              <button class="side-link active" type="button" data-tab="scenic">
+              <button class="side-link" type="button" data-tab="scenic">
                 <span class="side-label">综合查询</span>
               </button>
               <button class="side-link" type="button" data-tab="place">
@@ -34,7 +34,7 @@
               <button class="side-link" type="button" data-tab="catering">
                 <span class="side-label">美食推荐</span>
               </button>
-              <button class="side-link" type="button" data-tab="route">
+              <button class="side-link active" type="button" data-tab="route">
                 <span class="side-label">导航规划</span>
               </button>
               <button class="side-link" type="button" data-tab="diary">
@@ -65,19 +65,37 @@
           <section class="page-view active" data-page-panel="home" aria-label="首页">
             <section class="home-hero panel">
               <div class="home-copy">
-                <p class="eyebrow">Campus Guide Platform</p>
+                <p class="eyebrow">答辩演示入口</p>
                 <h1 id="product-title">智能校园导览系统</h1>
                 <p id="hero-description" class="home-description">正在加载站点信息...</p>
                 <div class="home-actions">
-                  <button class="primary-button" type="button" data-page="app">进入主要网站</button>
-                  <button class="secondary-button" type="button" data-tab="help">查看演示说明</button>
+                  <button class="primary-button" type="button" data-page="app" data-tab="route">进入工作区</button>
+                  <button class="secondary-button" type="button" data-page="app" data-demo-action="single-route">开始导航演示</button>
+                </div>
+                <div class="hero-signal-grid" aria-label="当前演示重点">
+                  <article class="signal-card signal-card-strong">
+                    <span>当前站点</span>
+                    <strong id="hero-title">校园导览演示台</strong>
+                    <p id="hero-site-summary">当前站点信息加载中...</p>
+                  </article>
+                  <article class="signal-card">
+                    <span>答辩主线</span>
+                    <strong>路线规划优先</strong>
+                    <p>从地图和路径摘要切入，再串联查询结果、室内导航和推荐功能。</p>
+                  </article>
                 </div>
               </div>
               <div class="home-card-stack">
                 <div class="overview-card highlight-card">
-                  <span class="overview-label">当前站点</span>
-                  <strong id="hero-title">校园导览演示台</strong>
-                  <p>统一展示查询、推荐、路径规划、日记管理和 AIGC 轻量预览。</p>
+                  <span class="overview-label">正式演示状态</span>
+                  <strong>当前已接入完整业务闭环</strong>
+                  <p>支持路线规划、场所搜索、美食推荐、室内导航、日记结果和 AIGC 轻量预览。</p>
+                </div>
+                <div class="overview-card flow-card">
+                  <span class="overview-label">推荐演示顺序</span>
+                  <ol id="home-flow" class="hero-flow-list">
+                    <li>正在加载演示顺序...</li>
+                  </ol>
                 </div>
                 <div class="stat-grid">
                   <div class="stat-card">
@@ -98,19 +116,19 @@
 
             <section class="home-grid">
               <article class="panel intro-panel">
-                <span class="section-kicker">项目定位</span>
-                <h2>面向校园和景区的综合导览系统</h2>
+                <span class="section-kicker">演示亮点</span>
+                <h2>一条主线讲清地图、路径和结果联动</h2>
                 <p>
-                  系统以图结构和分层数据为基础，整合路径规划、业务查询推荐、
-                  数据检索与多媒体预览能力，形成可演示的完整业务闭环。
+                  这一版首页重点服务答辩展示：先进入路线规划，再用查询结果、
+                  室内导航和推荐能力证明整套图结构系统是可交互、可扩展、可演示的。
                 </p>
               </article>
               <article class="panel intro-panel">
-                <span class="section-kicker">核心能力</span>
-                <h2>业务层、交互层和 Web 演示入口</h2>
+                <span class="section-kicker">当前能力</span>
+                <h2>真实地图、楼内导航和结果面板统一到一个工作区</h2>
                 <p>
-                  当前页面统一组织查询、排序、推荐、日记管理、路径摘要和 AIGC 预览，
-                  让后端数据结构能力能被用户直接使用。
+                  页面优先突出地图与当前路线，同时保留查询推荐、日记管理和 AIGC
+                  演示入口，适合现场讲解和操作切换。
                 </p>
               </article>
               <article class="panel intro-panel wide-panel">
@@ -123,8 +141,8 @@
 
           <section class="page-view" data-page-panel="app" aria-label="主要网站">
             <section class="app-toolbar panel">
-              <div>
-                <p class="eyebrow">工作区</p>
+              <div class="workspace-heading-block">
+                <p class="eyebrow">答辩工作区</p>
                 <h1 id="workspace-title">综合查询</h1>
                 <p id="workspace-description">搜索地点后可直接定位或规划路线。</p>
               </div>
@@ -442,8 +460,11 @@
 
               <section class="center-column">
                 <section class="panel map-panel" data-expandable-panel="map">
-                  <div class="panel-title-row" style="align-items: center;">
-                    <h2 style="margin: 0;">校园真实地图</h2>
+                  <div class="panel-title-row">
+                    <div>
+                      <h2>校园真实地图</h2>
+                      <span class="panel-subtitle">答辩优先突出当前路线、关键建筑和室内入口</span>
+                    </div>
                     <div class="panel-actions">
                       <button class="panel-reset-button" id="map-reset-view" type="button">
                         重置视图
@@ -468,6 +489,25 @@
                     <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
                     <div id="leaflet-map" class="leaflet-map" aria-label="Leaflet GeoJSON 校园地图" hidden></div>
                   </div>
+                  <p id="map-caption" class="map-caption">地图状态将在这里更新。</p>
+                  <details class="map-debug-panel map-inspection-panel">
+                    <summary>查看地图状态与渲染信息</summary>
+                    <div class="map-debug-content">
+                      <div class="map-debug-status">
+                        <span id="map-renderer-status" class="status-pill">渲染器待加载</span>
+                        <span id="map-basemap-status" class="status-pill">底图待加载</span>
+                        <span id="map-osm-status" class="status-pill">本地 OSM 待加载</span>
+                      </div>
+                      <div id="map-renderer-controls" class="renderer-toggle" aria-label="地图渲染器切换">
+                        <button class="renderer-toggle-button" type="button" data-map-renderer="leaflet_geo">Leaflet</button>
+                        <button class="renderer-toggle-button" type="button" data-map-renderer="simple_svg">SVG</button>
+                      </div>
+                      <div id="map-basemap-controls" class="renderer-toggle" aria-label="底图切换">
+                        <button class="renderer-toggle-button" type="button" data-map-basemap="real_map">真实底图</button>
+                        <button class="renderer-toggle-button" type="button" data-map-basemap="none">无底图</button>
+                      </div>
+                    </div>
+                  </details>
                 </section>
 
                 <section class="panel route-panel">
@@ -488,40 +528,39 @@
                     </div>
                   </div>
                 </section>
-              </section>
+                <section class="panel result-panel" data-expandable-panel="result">
+                  <div class="panel-title-row">
+                    <div>
+                      <h2>结果与步骤</h2>
+                      <span class="panel-subtitle">展示查询卡片、路线步骤和当前操作状态</span>
+                    </div>
+                    <button class="panel-expand-button" type="button" data-expand-panel="result" aria-label="展开结果与步骤">
+                      展开结果
+                    </button>
+                  </div>
+                  <div id="status-banner" class="status-banner status-info" role="status" aria-live="polite">
+                    从首页进入工作区后，可直接按推荐路径开始演示。
+                  </div>
 
-              <section class="panel result-panel" data-expandable-panel="result">
-                <div class="panel-title-row">
-                  <div>
-                    <h2>结果与步骤</h2>
-                    <span class="panel-subtitle">优先使用规划路线和定位按钮，管理操作已收起</span>
-                  </div>
-                  <button class="panel-expand-button" type="button" data-expand-panel="result" aria-label="展开结果与步骤">
-                    展开结果
-                  </button>
-                </div>
-                <div id="status-banner" class="status-banner status-info" role="status" aria-live="polite">
-                  选择顶部功能入口开始演示。
-                </div>
+                  <section class="result-section">
+                    <div class="section-heading">
+                      <h3>查询结果</h3>
+                      <span id="result-meta" class="meta-text">尚未执行查询</span>
+                    </div>
+                    <div id="results-list" class="card-list empty-state">
+                      暂无结果
+                    </div>
+                  </section>
 
-                <section class="result-section">
-                  <div class="section-heading">
-                    <h3>查询结果</h3>
-                    <span id="result-meta" class="meta-text">尚未执行查询</span>
-                  </div>
-                  <div id="results-list" class="card-list empty-state">
-                    暂无结果
-                  </div>
-                </section>
-
-                <section class="result-section">
-                  <div class="section-heading">
-                    <h3>路径步骤</h3>
-                    <span class="meta-text">展开后查看逐步说明</span>
-                  </div>
-                  <div id="route-steps" class="step-list empty-state">
-                    暂无步骤
-                  </div>
+                  <section class="result-section">
+                    <div class="section-heading">
+                      <h3>路径步骤</h3>
+                      <span class="meta-text">展开后查看逐步说明</span>
+                    </div>
+                    <div id="route-steps" class="step-list empty-state">
+                      暂无步骤
+                    </div>
+                  </section>
                 </section>
               </section>
             </main>
