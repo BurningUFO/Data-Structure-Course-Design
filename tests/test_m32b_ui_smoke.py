@@ -129,14 +129,11 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
         "multi-route-form",
         "multi-route-targets",
         "map-renderer-controls",
-        "map-data-status",
-        "map-route-status",
         "map-renderer-status",
         "map-basemap-status",
         "map-osm-status",
         "campus-map",
         "leaflet-map",
-        "map-caption",
         "route-summary",
         "route-steps",
         "indoor-panel",
@@ -147,7 +144,7 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
     assert {"scenic", "place", "catering", "route", "diary", "aigc", "help"} <= parser.data_tabs
     assert parser.map_renderers == {"leaflet_geo", "simple_svg"}
     assert parser.map_basemaps == {"real_map", "none"}
-    assert parser.demo_actions == {"single-route", "multi-route", "clear-route"}
+    assert parser.demo_actions == {"single-route"}
 
     assert "/vendor/leaflet/leaflet.css" in html
     assert "/vendor/leaflet/leaflet.js" in html

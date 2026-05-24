@@ -10807,7 +10807,6 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'id="leaflet-map"' in html
     assert 'id="map-reset-view"' in html
     assert 'data-demo-action="single-route"' in html
-    assert 'data-demo-action="multi-route"' in html
     assert 'id="help-map-acceptance"' in html
     assert "校园真实地图" in html
     assert "renderSvgMap" in script
@@ -10914,9 +10913,6 @@ def test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly():
     assert "室内导航最快入口" in html
     assert "高级路线选项" in html
     assert "多目标路线（高级）" in html
-    assert "地图快捷操作" in html
-    assert "GeoJSON 待加载" in html
-    assert "路线未规划" in html
     assert "renderIndoorQuickStart" in script
     assert 'data-show-supported-indoor' in script
     assert 'switchTab("route")' in script

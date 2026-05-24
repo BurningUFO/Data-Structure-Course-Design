@@ -274,9 +274,9 @@ button {
 
 .home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(360px, 0.8fr);
-  gap: 28px;
-  min-height: 480px;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  min-height: calc(100vh - 124px);
   padding: clamp(30px, 4vw, 56px);
   overflow: hidden;
   color: #f7fbff;
@@ -312,6 +312,7 @@ button {
 .home-copy {
   align-self: center;
   max-width: 780px;
+  margin: 0 auto;
   position: relative;
   z-index: 1;
 }
@@ -694,6 +695,7 @@ button {
   background: var(--blue-soft);
   font-size: 0.86rem;
   font-weight: 900;
+  white-space: nowrap;
   transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
@@ -1096,20 +1098,6 @@ select[multiple] {
   background: var(--primary-soft);
 }
 
-.map-demo-toolbar {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  margin-top: 12px;
-  padding: 12px 14px;
-  border: 1px solid rgba(17, 32, 49, 0.08);
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(247, 251, 254, 0.98), rgba(241, 247, 251, 0.86));
-}
-
-.map-demo-status,
-.map-demo-actions,
 .map-debug-status,
 .map-debug-controls {
   display: flex;
@@ -1170,10 +1158,6 @@ select[multiple] {
 .route-summary-details-body,
 .aigc-preview-details-body {
   padding: 12px 14px;
-}
-
-.map-demo-actions {
-  justify-content: flex-end;
 }
 
 .map-mode-toggle {
@@ -1388,8 +1372,8 @@ select[multiple] {
 .map-stage {
   position: relative;
   overflow: hidden;
-  height: clamp(520px, 62vh, 760px);
-  min-height: 520px;
+  height: clamp(260px, 30vh, 340px);
+  min-height: 260px;
   margin-top: 12px;
   border: 1px solid var(--line);
   border-radius: 22px;
@@ -1447,16 +1431,6 @@ select[multiple] {
 
 .leaflet-popup-button {
   margin-top: 8px;
-}
-
-.map-caption {
-  margin: 14px 0 0;
-  padding: 12px 14px;
-  border: 1px solid rgba(17, 32, 49, 0.07);
-  border-radius: 16px;
-  color: var(--muted);
-  background: rgba(244, 249, 252, 0.9);
-  line-height: 1.65;
 }
 
 .route-panel .route-summary {
@@ -1952,6 +1926,7 @@ select[multiple] {
 
 .map-panel.panel-expanded .map-stage {
   flex: 1 1 auto;
+  height: auto;
   min-height: 0;
 }
 
@@ -2246,7 +2221,7 @@ select[multiple] {
 }
 
 @media (min-width: 1181px) {
-  body[data-active-tab]:not([data-active-tab="route"]) .center-column {
+  body[data-active-tab] .center-column {
     grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
     grid-template-areas:
       "map result"
@@ -2254,44 +2229,44 @@ select[multiple] {
     align-items: start;
   }
 
-  body[data-active-tab]:not([data-active-tab="route"]) .map-panel {
+  body[data-active-tab] .map-panel {
     grid-area: map;
   }
 
-  body[data-active-tab]:not([data-active-tab="route"]) .route-panel {
+  body[data-active-tab] .route-panel {
     grid-area: route;
   }
 
-  body[data-active-tab]:not([data-active-tab="route"]) .result-panel {
+  body[data-active-tab] .result-panel {
     grid-area: result;
   }
 
-  body[data-active-tab]:not([data-active-tab="route"]) .result-panel:not(.panel-expanded) {
+  body[data-active-tab] .result-panel:not(.panel-expanded) {
     position: sticky;
     top: 72px;
     max-height: calc(100vh - 92px);
     overflow: hidden;
   }
 
-  body[data-active-tab]:not([data-active-tab="route"]) .result-panel:not(.panel-expanded) .card-list {
+  body[data-active-tab] .result-panel:not(.panel-expanded) .card-list {
     max-height: min(48vh, 560px);
   }
 
-  body[data-active-tab]:not([data-active-tab="route"]) .result-panel:not(.panel-expanded) .step-list {
+  body[data-active-tab] .result-panel:not(.panel-expanded) .step-list {
     max-height: min(22vh, 260px);
   }
 }
 
 @media (max-width: 1180px) {
-  body[data-active-tab]:not([data-active-tab="route"]) .map-panel {
+  body[data-active-tab] .map-panel {
     order: 1;
   }
 
-  body[data-active-tab]:not([data-active-tab="route"]) .result-panel {
+  body[data-active-tab] .result-panel {
     order: 2;
   }
 
-  body[data-active-tab]:not([data-active-tab="route"]) .route-panel {
+  body[data-active-tab] .route-panel {
     order: 3;
   }
 
@@ -2540,15 +2515,6 @@ select[multiple] {
     font-size: 0.84rem;
   }
 
-  .map-demo-toolbar {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .map-demo-actions {
-    justify-content: flex-start;
-  }
-
   .indoor-toolbar,
   .indoor-selection-card {
     flex-direction: column;
@@ -2574,11 +2540,15 @@ select[multiple] {
     font-size: 0.92rem;
   }
 
-  .map-stage,
+  .map-stage {
+    min-height: 240px;
+    height: clamp(240px, 34vh, 320px);
+  }
+
   #campus-map,
   .leaflet-map {
-    min-height: 400px;
-    height: 400px;
+    min-height: 0;
+    height: 100%;
   }
 
   .indoor-zone-list {
@@ -2589,6 +2559,14 @@ select[multiple] {
     inset: 12px !important;
     max-height: calc(100vh - 24px) !important;
     border-radius: 22px;
+  }
+
+  .map-panel.panel-expanded {
+    overflow-y: auto !important;
+  }
+
+  .map-panel.panel-expanded .map-stage {
+    min-height: min(420px, 52vh);
   }
 
   .control-panel:not(.panel-expanded) .tab-panel.active {

@@ -283,32 +283,42 @@ function syncExpandButtons(panelName, isExpanded) {
   document.querySelectorAll(`[data-expand-panel="${panelName}"]`).forEach((button) => {
     const collapsedLabels = {
       control: "展开表单",
-      map: "展开地图",
+      map: "展开大地图",
       result: "展开结果",
     };
+    const expandedLabels = {
+      control: "还原",
+      map: "还原地图",
+      result: "还原",
+    };
     const collapsedLabel = collapsedLabels[panelName] || "展开";
-    button.textContent = isExpanded ? "还原" : collapsedLabel;
-    button.setAttribute("aria-label", isExpanded ? "还原面板" : collapsedLabel);
+    const expandedLabel = expandedLabels[panelName] || "还原";
+    button.textContent = isExpanded ? expandedLabel : collapsedLabel;
+    button.setAttribute("aria-label", isExpanded ? expandedLabel : collapsedLabel);
     button.classList.toggle("active", isExpanded);
   });
 }
 
 function refreshMapAfterLayoutChange() {
-  if (selectedMapRenderer() === "leaflet_geo") {
-    if (!state.leaflet.map) {
-      renderMap();
-      return;
-    }
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (selectedMapRenderer() === "leaflet_geo") {
+        if (!state.leaflet.map) {
+          renderMap();
+          return;
+        }
 
-    invalidateLeafletSize();
-    fitLeafletToData();
-    syncLeafletRouteLayer();
-    syncLeafletCaption();
-    syncMapDemoPanel();
-    return;
-  }
+        invalidateLeafletSize();
+        fitLeafletToData();
+        syncLeafletRouteLayer();
+        syncLeafletCaption();
+        syncMapDemoPanel();
+        return;
+      }
 
-  renderSvgMap();
+      renderSvgMap();
+    });
+  });
 }
 
 function bindTabSwitching() {
@@ -953,11 +963,18 @@ function hydrateBootstrap(bootstrap) {
       .join(" · ");
   }
 
-  document.querySelector("#stat-map-nodes").textContent = String(bootstrap.map.node_count);
-  document.querySelector("#stat-route-targets").textContent = String(
-    bootstrap.stats.route_target_count,
-  );
-  document.querySelector("#stat-diaries").textContent = String(bootstrap.stats.diary_count);
+  const statMapNodes = document.querySelector("#stat-map-nodes");
+  if (statMapNodes) {
+    statMapNodes.textContent = String(bootstrap.map.node_count);
+  }
+  const statRouteTargets = document.querySelector("#stat-route-targets");
+  if (statRouteTargets) {
+    statRouteTargets.textContent = String(bootstrap.stats.route_target_count);
+  }
+  const statDiaries = document.querySelector("#stat-diaries");
+  if (statDiaries) {
+    statDiaries.textContent = String(bootstrap.stats.diary_count);
+  }
 
   populateSelect(
     document.querySelector("#site-selector"),
@@ -2048,8 +2065,9 @@ function clearDiaryManagementForm() {
 
 function syncDiaryStats(response) {
   const recordCount = response.ui ? response.ui.record_count : undefined;
-  if (recordCount !== undefined) {
-    document.querySelector("#stat-diaries").textContent = String(recordCount);
+  const statDiaries = document.querySelector("#stat-diaries");
+  if (recordCount !== undefined && statDiaries) {
+    statDiaries.textContent = String(recordCount);
   }
 }
 

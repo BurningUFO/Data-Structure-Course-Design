@@ -85,57 +85,6 @@
                   </article>
                 </div>
               </div>
-              <div class="home-card-stack">
-                <div class="overview-card highlight-card">
-                  <span class="overview-label">正式演示状态</span>
-                  <strong>当前已接入完整业务闭环</strong>
-                  <p>支持路线规划、场所搜索、美食推荐、室内导航、日记结果和 AIGC 轻量预览。</p>
-                </div>
-                <div class="overview-card flow-card">
-                  <span class="overview-label">推荐演示顺序</span>
-                  <ol id="home-flow" class="hero-flow-list">
-                    <li>正在加载演示顺序...</li>
-                  </ol>
-                </div>
-                <div class="stat-grid">
-                  <div class="stat-card">
-                    <span id="stat-map-nodes" class="stat-value">0</span>
-                    <span class="stat-label">地图节点</span>
-                  </div>
-                  <div class="stat-card">
-                    <span id="stat-route-targets" class="stat-value">0</span>
-                    <span class="stat-label">可规划目标</span>
-                  </div>
-                  <div class="stat-card">
-                    <span id="stat-diaries" class="stat-value">0</span>
-                    <span class="stat-label">日记样本</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section class="home-grid">
-              <article class="panel intro-panel">
-                <span class="section-kicker">演示亮点</span>
-                <h2>一条主线讲清地图、路径和结果联动</h2>
-                <p>
-                  这一版首页重点服务答辩展示：先进入路线规划，再用查询结果、
-                  室内导航和推荐能力证明整套图结构系统是可交互、可扩展、可演示的。
-                </p>
-              </article>
-              <article class="panel intro-panel">
-                <span class="section-kicker">当前能力</span>
-                <h2>真实地图、楼内导航和结果面板统一到一个工作区</h2>
-                <p>
-                  页面优先突出地图与当前路线，同时保留查询推荐、日记管理和 AIGC
-                  演示入口，适合现场讲解和操作切换。
-                </p>
-              </article>
-              <article class="panel intro-panel wide-panel">
-                <span class="section-kicker">功能入口</span>
-                <h2>从首页进入主功能区</h2>
-                <section class="feature-grid" id="feature-grid" aria-label="功能入口概览"></section>
-              </article>
             </section>
           </section>
 
@@ -469,27 +418,15 @@
                       <button class="panel-reset-button" id="map-reset-view" type="button">
                         重置视图
                       </button>
-                      <button class="panel-expand-button" type="button" data-expand-panel="map" aria-label="展开校园地图">
-                        展开地图
+                      <button class="panel-expand-button" type="button" data-expand-panel="map" aria-label="展开大地图">
+                        展开大地图
                       </button>
-                    </div>
-                  </div>
-                  <div class="map-demo-toolbar" aria-label="地图快捷操作">
-                    <div class="map-demo-status">
-                      <span id="map-data-status" class="status-pill">GeoJSON 待加载</span>
-                      <span id="map-route-status" class="status-pill">路线未规划</span>
-                    </div>
-                    <div class="map-demo-actions">
-                      <button class="route-button" type="button" data-demo-action="single-route">去图书馆</button>
-                      <button class="ghost-button" type="button" data-demo-action="multi-route">图书馆 + 食堂</button>
-                      <button class="ghost-button" type="button" data-demo-action="clear-route">清空</button>
                     </div>
                   </div>
                   <div class="map-stage">
                     <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
                     <div id="leaflet-map" class="leaflet-map" aria-label="Leaflet GeoJSON 校园地图" hidden></div>
                   </div>
-                  <p id="map-caption" class="map-caption">地图状态将在这里更新。</p>
                   <details class="map-debug-panel map-inspection-panel">
                     <summary>查看地图状态与渲染信息</summary>
                     <div class="map-debug-content">
