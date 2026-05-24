@@ -415,6 +415,9 @@
                       <span class="panel-subtitle">答辩优先突出当前路线、关键建筑和室内入口</span>
                     </div>
                     <div class="panel-actions">
+                      <button class="panel-reset-button map-view-toggle" id="map-view-toggle" type="button" data-map-view-toggle hidden>
+                        室内视图
+                      </button>
                       <button class="panel-reset-button" id="map-reset-view" type="button">
                         重置视图
                       </button>
@@ -426,6 +429,7 @@
                   <div class="map-stage">
                     <svg id="campus-map" viewBox="0 0 1000 720" aria-label="校园简图"></svg>
                     <div id="leaflet-map" class="leaflet-map" aria-label="Leaflet GeoJSON 校园地图" hidden></div>
+                    <div id="indoor-map-view" class="indoor-map-view" aria-label="室内平面图" hidden></div>
                   </div>
                   <details class="map-debug-panel map-inspection-panel">
                     <summary>查看地图状态与渲染信息</summary>

@@ -714,6 +714,11 @@ button {
   background: var(--blue);
 }
 
+.panel-reset-button.active {
+  color: #fff;
+  background: var(--primary);
+}
+
 .renderer-toggle {
   display: inline-flex;
   align-items: center;
@@ -1415,6 +1420,71 @@ select[multiple] {
   display: block;
 }
 
+.indoor-map-view {
+  display: none;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 250, 247, 0.82));
+}
+
+.indoor-map-view[hidden] {
+  display: none !important;
+}
+
+.map-stage.map-view-indoor #campus-map,
+.map-stage.map-view-indoor #leaflet-map {
+  display: none !important;
+}
+
+.map-stage.map-view-indoor #indoor-map-view {
+  display: grid !important;
+}
+
+.map-stage.map-view-outdoor #indoor-map-view {
+  display: none !important;
+}
+
+.indoor-map-inner {
+  display: grid;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+.indoor-map-view .indoor-floorplan,
+.indoor-map-view .indoor-floorplan-empty {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.indoor-map-view .indoor-floorplan-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5;
+}
+
+.indoor-map-view .indoor-floorplan.is-realistic {
+  min-height: 0;
+}
+
+.indoor-map-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  padding: 18px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
 #campus-map {
   display: block;
   width: 100%;
@@ -1525,6 +1595,15 @@ select[multiple] {
   grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.85fr);
   gap: 14px;
   align-items: start;
+}
+
+.indoor-panel-controls {
+  display: grid;
+  gap: 14px;
+}
+
+.indoor-zone-list.is-compact {
+  max-height: 320px;
 }
 
 .indoor-svg-shell {
@@ -2505,6 +2584,23 @@ select[multiple] {
 
   .site-actions .field-label {
     font-size: 0.76rem;
+  }
+
+  .map-panel .panel-title-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .map-panel .panel-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .map-panel .panel-actions .panel-reset-button,
+  .map-panel .panel-actions .panel-expand-button {
+    padding: 7px 10px;
+    font-size: 0.8rem;
   }
 
   .site-actions select,

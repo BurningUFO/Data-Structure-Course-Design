@@ -10805,6 +10805,8 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert 'href="/vendor/leaflet/leaflet.css"' in html
     assert 'src="/vendor/leaflet/leaflet.js"' in html
     assert 'id="leaflet-map"' in html
+    assert 'id="indoor-map-view"' in html
+    assert 'id="map-view-toggle"' in html
     assert 'id="map-reset-view"' in html
     assert 'data-demo-action="single-route"' in html
     assert 'id="help-map-acceptance"' in html
@@ -10878,6 +10880,9 @@ def test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks():
     assert "进入室内导航" in script
     assert "createDefaultIndoorState" in script
     assert "renderIndoorPanel" in script
+    assert "syncIndoorMapStage" in script
+    assert "toggleIndoorOutdoorMapView" in script
+    assert "selectedMapViewMode" in script
     assert "renderIndoorFloorplan" in script
     assert "renderIndoorSvgFloorplan" in script
     assert "renderIndoorNetworkFloorplan" in script
@@ -10890,6 +10895,7 @@ def test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks():
     assert "hydrateIndoorBootstrap" in script
     assert "syncIndoorStateFromRoute" in script
     assert "data-enter-indoor" in script
+    assert "data-map-view-toggle" in html
     assert "data-route-view" in script
     assert "data-indoor-floor" in script
     assert "data-indoor-zone" in script

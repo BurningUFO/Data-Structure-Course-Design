@@ -28,6 +28,8 @@ function createDefaultIndoorState() {
     activePayload: null,
     selectedZoneNodeId: "",
     currentRouteViewId: "",
+    mapMode: "outdoor",
+    lastIndoorRouteViewId: "",
     loading: null,
     error: "",
   };
@@ -564,6 +566,11 @@ function bindForms() {
     const focusEntryButton = event.target.closest("[data-indoor-entry-focus]");
     if (focusEntryButton) {
       state.focusedNodeId = focusEntryButton.dataset.indoorEntryFocus || "";
+      state.indoor.mapMode = "outdoor";
+      if (currentRouteHasView("outdoor")) {
+        state.indoor.currentRouteViewId = "outdoor";
+      }
+      renderIndoorPanel();
       renderMap();
       setStatus(`已在室外地图中定位 ${getNodeName(state.focusedNodeId)}。`, "info");
       return;
@@ -588,6 +595,7 @@ function bindForms() {
 function bindMapInteractions() {
   const svg = document.querySelector("#campus-map");
   const resetButton = document.querySelector("#map-reset-view");
+  const mapViewToggle = document.querySelector("#map-view-toggle");
   if (!svg) {
     return;
   }
@@ -638,8 +646,15 @@ function bindMapInteractions() {
 
   if (resetButton) {
     resetButton.addEventListener("click", () => {
+      const wasIndoorView = selectedMapViewMode() === "indoor";
       resetMapView();
-      setStatus("校园简图已还原到原始比例。", "info");
+      setStatus(wasIndoorView ? "室内平面图已刷新。" : "校园简图已还原到原始比例。", "info");
+    });
+  }
+
+  if (mapViewToggle) {
+    mapViewToggle.addEventListener("click", () => {
+      toggleIndoorOutdoorMapView();
     });
   }
 }
@@ -666,6 +681,11 @@ function zoomMapAt(offsetX, offsetY, deltaY) {
 }
 
 function resetMapView() {
+  if (selectedMapViewMode() === "indoor") {
+    syncIndoorMapStage();
+    setMapRendererVisibility(selectedMapRenderer());
+    return;
+  }
   resetMapViewState();
   if (selectedMapRenderer() === "leaflet_geo") {
     fitLeafletToData();
@@ -1423,6 +1443,7 @@ async function enterIndoorNavigation(buildingId, options = {}) {
     buildingId,
     floorId: requestedFloorId,
   };
+  state.indoor.mapMode = options.routeViewId === "outdoor" ? "outdoor" : "indoor";
   state.indoor.error = "";
   renderIndoorPanel();
 
@@ -1435,6 +1456,16 @@ async function enterIndoorNavigation(buildingId, options = {}) {
     state.indoor.activeFloorId = activeFloorId;
     state.indoor.activePayload = payload;
     state.indoor.currentRouteViewId = nextRouteViewId;
+    if (nextRouteViewId === "outdoor") {
+      const rememberedView = parseIndoorRouteViewId(state.indoor.lastIndoorRouteViewId);
+      if (rememberedView?.buildingId !== buildingId) {
+        state.indoor.lastIndoorRouteViewId = indoorRouteViewId(buildingId, activeFloorId);
+      }
+      state.indoor.mapMode = "outdoor";
+    } else {
+      state.indoor.mapMode = "indoor";
+      rememberIndoorRouteViewId(nextRouteViewId);
+    }
     state.indoor.error = "";
     state.indoor.selectedZoneNodeId = resolveIndoorSelectedZoneId(
       payload,
@@ -1486,7 +1517,9 @@ async function switchIndoorRouteView(viewId) {
   }
   state.indoor.currentRouteViewId = viewId;
   if (viewId === "outdoor") {
+    state.indoor.mapMode = "outdoor";
     renderIndoorPanel();
+    renderMap();
     setStatus("当前优先查看室外路线，可切换到室内楼层查看楼内段。", "info");
     return;
   }
@@ -1497,12 +1530,18 @@ async function switchIndoorRouteView(viewId) {
     return;
   }
 
-  await enterIndoorNavigation(parsed.buildingId, {
+  const payload = await enterIndoorNavigation(parsed.buildingId, {
     floorId: parsed.floorId,
     routeViewId: viewId,
     selectedZoneNodeId: state.currentRoute?.target_node_id || "",
     silentStatus: true,
   });
+  if (!payload) {
+    return;
+  }
+  state.indoor.mapMode = "indoor";
+  rememberIndoorRouteViewId(viewId);
+  renderMap();
   setStatus(
     `已切换到 ${indoorBuildingRecord(parsed.buildingId)?.building_name || getNodeName(parsed.buildingId)} ${floorLabelForId(parsed.floorId)} 室内路线视图。`,
     "info",
@@ -2860,6 +2899,51 @@ function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
   );
 }
 
+function syncIndoorMapStage() {
+  const container = document.querySelector("#indoor-map-view");
+  if (!container) {
+    syncMapViewToggle();
+    return;
+  }
+
+  if (state.indoor.loading) {
+    const loadingBuilding = indoorBuildingRecord(state.indoor.loading.buildingId);
+    container.innerHTML = `
+      <div class="indoor-map-empty">
+        ${escapeHtml(loadingBuilding?.building_name || state.indoor.loading.buildingId)} ${escapeHtml(floorLabelForId(state.indoor.loading.floorId || ""))} 室内平面图加载中
+      </div>
+    `;
+    setMapRendererVisibility(selectedMapRenderer());
+    return;
+  }
+
+  if (!hasIndoorMapContext()) {
+    container.innerHTML = "";
+    state.indoor.mapMode = "outdoor";
+    setMapRendererVisibility(selectedMapRenderer());
+    return;
+  }
+
+  const activeBuilding = indoorBuildingRecord(state.indoor.activeBuildingId);
+  const payload = state.indoor.activePayload;
+  const activeFloorId = state.indoor.activeFloorId || indoorPayloadFloorId(payload);
+  const currentViewId = selectedMapViewMode() === "indoor"
+    ? resolveActiveIndoorRouteViewId()
+    : (state.indoor.currentRouteViewId || state.currentRoute?.ui?.default_route_view || indoorRouteViewId(activeBuilding.building_id, activeFloorId));
+  const routeContext = findIndoorRouteView(state.currentRoute, activeBuilding.building_id, activeFloorId);
+
+  container.innerHTML = `
+    <div class="indoor-map-inner">
+      ${renderIndoorFloorplan(payload, {
+        routeContext,
+        currentViewId,
+        selectedZoneNodeId: state.indoor.selectedZoneNodeId,
+      })}
+    </div>
+  `;
+  setMapRendererVisibility(selectedMapRenderer());
+}
+
 function renderIndoorPanel() {
   const meta = document.querySelector("#indoor-panel-meta");
   const body = document.querySelector("#indoor-panel-body");
@@ -2867,6 +2951,7 @@ function renderIndoorPanel() {
     return;
   }
   renderIndoorQuickStart();
+  syncIndoorMapStage();
 
   const supportedBuildings = state.indoor.buildings || [];
   if (!supportedBuildings.length) {
@@ -2931,15 +3016,8 @@ function renderIndoorPanel() {
       ${renderIndoorFloorSwitcher(payload, activeFloorId)}
       <div class="indoor-callout">${escapeHtml(routeNotice)}</div>
       ${renderIndoorSelectedZone(selectedZone)}
-      <div class="indoor-floor-layout">
-        <div class="indoor-svg-shell">
-          ${renderIndoorFloorplan(payload, {
-            routeContext,
-            currentViewId,
-            selectedZoneNodeId: state.indoor.selectedZoneNodeId,
-          })}
-        </div>
-        <div class="indoor-zone-list">
+      <div class="indoor-panel-controls">
+        <div class="indoor-zone-list is-compact">
           ${renderIndoorZoneList(payload, routeContext, state.indoor.selectedZoneNodeId)}
         </div>
       </div>
@@ -3583,6 +3661,106 @@ function selectedMapRenderer() {
   return renderers.includes(renderer) ? renderer : "simple_svg";
 }
 
+function hasIndoorMapContext() {
+  const payload = state.indoor.activePayload;
+  return Boolean(
+    state.indoor.activeBuildingId
+    && payload
+    && payload.building_id === state.indoor.activeBuildingId,
+  );
+}
+
+function selectedMapViewMode() {
+  return hasIndoorMapContext() && state.indoor.mapMode === "indoor" ? "indoor" : "outdoor";
+}
+
+function currentRouteHasView(viewId) {
+  return Boolean((state.currentRoute?.ui?.available_route_views || []).some((view) => view.id === viewId));
+}
+
+function rememberIndoorRouteViewId(viewId) {
+  if (!viewId || viewId === "outdoor" || !parseIndoorRouteViewId(viewId)) {
+    return;
+  }
+  state.indoor.lastIndoorRouteViewId = viewId;
+}
+
+function resolveActiveIndoorRouteViewId() {
+  if (!hasIndoorMapContext()) {
+    return "";
+  }
+
+  const activeBuildingId = state.indoor.activeBuildingId;
+  const activeFloorId = state.indoor.activeFloorId || indoorPayloadFloorId(state.indoor.activePayload);
+  const fallbackViewId = indoorRouteViewId(activeBuildingId, activeFloorId);
+  const candidates = [
+    state.indoor.currentRouteViewId,
+    state.indoor.lastIndoorRouteViewId,
+    state.currentRoute?.ui?.default_route_view,
+    fallbackViewId,
+  ];
+
+  for (const viewId of candidates) {
+    const parsed = parseIndoorRouteViewId(viewId);
+    if (parsed?.buildingId === activeBuildingId && parsed.floorId === activeFloorId) {
+      return viewId;
+    }
+  }
+  return fallbackViewId;
+}
+
+function switchIndoorOutdoorMapView(mode, options = {}) {
+  if (mode === "indoor") {
+    if (!hasIndoorMapContext()) {
+      if (!options.silentStatus) {
+        setStatus("请先进入支持建筑的室内导航。", "error");
+      }
+      syncMapViewToggle();
+      return;
+    }
+
+    const indoorViewId = resolveActiveIndoorRouteViewId();
+    state.indoor.mapMode = "indoor";
+    state.indoor.currentRouteViewId = indoorViewId;
+    rememberIndoorRouteViewId(indoorViewId);
+    renderIndoorPanel();
+    renderMap();
+    if (!options.silentStatus) {
+      setStatus("已切换到室内视图。", "info");
+    }
+    return;
+  }
+
+  state.indoor.mapMode = "outdoor";
+  if (currentRouteHasView("outdoor")) {
+    state.indoor.currentRouteViewId = "outdoor";
+  }
+  renderIndoorPanel();
+  renderMap();
+  if (!options.silentStatus) {
+    setStatus("已切换到室外视图。", "info");
+  }
+}
+
+function toggleIndoorOutdoorMapView() {
+  switchIndoorOutdoorMapView(selectedMapViewMode() === "indoor" ? "outdoor" : "indoor");
+}
+
+function syncMapViewToggle() {
+  const button = document.querySelector("#map-view-toggle");
+  if (!button) {
+    return;
+  }
+
+  const hasIndoorContext = hasIndoorMapContext();
+  const isIndoorView = selectedMapViewMode() === "indoor";
+  button.hidden = !hasIndoorContext;
+  button.textContent = isIndoorView ? "室外视图" : "室内视图";
+  button.setAttribute("aria-label", isIndoorView ? "切换到室外视图" : "切换到室内视图");
+  button.setAttribute("aria-pressed", String(isIndoorView));
+  button.classList.toggle("active", isIndoorView);
+}
+
 function availableMapRenderers() {
   const capabilities = state.bootstrap?.map_capabilities || {};
   return Array.isArray(capabilities.renderers) ? capabilities.renderers : ["simple_svg"];
@@ -3698,6 +3876,11 @@ function renderMap() {
   const renderToken = state.mapRenderToken + 1;
   state.mapRenderToken = renderToken;
   syncMapDemoPanel();
+  syncIndoorMapStage();
+  if (selectedMapViewMode() === "indoor") {
+    setMapRendererVisibility(selectedMapRenderer());
+    return;
+  }
   if (selectedMapRenderer() === "leaflet_geo") {
     void renderLeafletMap(renderToken);
     return;
@@ -4498,24 +4681,36 @@ function setMapRendererVisibility(renderer) {
   const stage = document.querySelector(".map-stage");
   const svg = document.querySelector("#campus-map");
   const leaflet = document.querySelector("#leaflet-map");
+  const indoor = document.querySelector("#indoor-map-view");
+  const mapViewMode = selectedMapViewMode();
 
   if (stage) {
     stage.classList.toggle("map-renderer-simple-svg", renderer === "simple_svg");
     stage.classList.toggle("map-renderer-leaflet", renderer === "leaflet_geo");
+    stage.classList.toggle("map-view-outdoor", mapViewMode === "outdoor");
+    stage.classList.toggle("map-view-indoor", mapViewMode === "indoor");
     stage.dataset.renderer = renderer;
+    stage.dataset.mapView = mapViewMode;
   }
   if (svg) {
-    const showSvg = renderer === "simple_svg";
+    const showSvg = mapViewMode === "outdoor" && renderer === "simple_svg";
     svg.hidden = !showSvg;
     svg.style.display = showSvg ? "block" : "none";
     svg.setAttribute("aria-hidden", String(!showSvg));
   }
   if (leaflet) {
-    const showLeaflet = renderer === "leaflet_geo";
+    const showLeaflet = mapViewMode === "outdoor" && renderer === "leaflet_geo";
     leaflet.hidden = !showLeaflet;
     leaflet.style.display = showLeaflet ? "block" : "none";
     leaflet.setAttribute("aria-hidden", String(!showLeaflet));
   }
+  if (indoor) {
+    const showIndoor = mapViewMode === "indoor";
+    indoor.hidden = !showIndoor;
+    indoor.style.display = showIndoor ? "grid" : "none";
+    indoor.setAttribute("aria-hidden", String(!showIndoor));
+  }
+  syncMapViewToggle();
 }
 
 function syncMapDemoPanel() {
