@@ -367,7 +367,7 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["help"]["launch_command"] == "py -B -m src.ui.demo_server"
     assert payload["help"]["fallback_launch_command"] == "python -B -m src.ui.demo_server"
     assert payload["help"]["browser_url"] == "http://127.0.0.1:8765"
-    assert payload["help"]["stage"] == "正式产品演示版 · 地图方案 B M14"
+    assert payload["help"]["stage"] == "第13周正式产品冻结版 · 地图方案 B M14"
     assert len(payload["help"]["demo_flow"]) >= 3
     assert any("Leaflet / SVG" in item for item in payload["help"]["demo_flow"])
     assert any("[lng, lat]" in item for item in payload["help"]["map_acceptance"])

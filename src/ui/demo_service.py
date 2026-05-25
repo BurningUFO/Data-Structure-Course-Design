@@ -214,7 +214,7 @@ FEATURE_NAVIGATION = [
 ]
 
 HELP_CONTENT = {
-    "stage": "正式产品演示版 · 地图方案 B M14",
+    "stage": "第13周正式产品冻结版 · 地图方案 B M14",
     "launch_command": "py -B -m src.ui.demo_server",
     "fallback_launch_command": "python -B -m src.ui.demo_server",
     "browser_url": "http://127.0.0.1:8765",
@@ -229,7 +229,7 @@ HELP_CONTENT = {
         "进入 AIGC 演示，选择图片占位并输入文字描述，查看模板化分镜预览。",
     ],
     "checks": [
-        "站点选择器已出现在主入口，当前远端数据只有 PKU 一个站点。",
+        "站点选择器已出现在主入口，PKU 为深度导航核心站点，扩展校园用于站点切换和课程规模演示。",
         "主导航已固定为正式产品的页面结构。",
         "查询、推荐、路径、日记和 AIGC 轻量预览保持主链路可演示。",
     ],
