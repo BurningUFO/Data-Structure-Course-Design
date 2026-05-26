@@ -114,7 +114,7 @@ async function init() {
 
   try {
     await loadSiteBootstrap("");
-    applyActiveTabState(state.activeTab);
+    applyActiveTabState("route");
     switchPage("home");
     setStatus(
       "从首页进入工作区后，可直接按推荐路径开始答辩演示。",
@@ -791,9 +791,15 @@ function applyActiveTabState(tab) {
 
   state.activeTab = tab;
   document.body.dataset.activeTab = tab;
+  const visibleNavigationTab = tab === "aigc" ? "help" : tab;
 
   document.querySelectorAll("[data-tab]").forEach((item) => {
-    item.classList.toggle("active", item.dataset.tab === tab);
+    const isPrimaryEntry = item.classList.contains("side-link")
+      || item.classList.contains("feature-card");
+    item.classList.toggle(
+      "active",
+      item.dataset.tab === (isPrimaryEntry ? visibleNavigationTab : tab),
+    );
   });
 
   document.querySelectorAll(".tab-panel").forEach((panel) => {
@@ -1595,6 +1601,7 @@ function renderFeatureGrid(navigation) {
   if (!container) {
     return;
   }
+  const visibleNavigationTab = state.activeTab === "aigc" ? "help" : state.activeTab;
   container.innerHTML = navigation
     .map((item) => {
       const statusLabel = item.id === "route"
@@ -1605,7 +1612,7 @@ function renderFeatureGrid(navigation) {
             ? "可使用"
             : "功能扩展";
       return `
-        <button class="feature-card${item.id === state.activeTab ? " active" : ""}" type="button" data-tab="${escapeHtml(item.id)}">
+        <button class="feature-card${item.id === visibleNavigationTab ? " active" : ""}" type="button" data-tab="${escapeHtml(item.id)}">
           <span class="feature-status">${escapeHtml(statusLabel)}</span>
           <strong>${escapeHtml(item.label)}</strong>
           <span>${escapeHtml(item.description)}</span>
@@ -1668,17 +1675,23 @@ function updateWorkspaceHeading() {
     return;
   }
 
-  const feature = state.bootstrap.navigation.find((item) => item.id === state.activeTab);
+  const secondaryFeatures = {
+    aigc: {
+      label: "AIGC 轻量预览",
+      description: "保留模板化轻量预览能力，强调系统具备多媒体扩展接口。",
+    },
+  };
+  const feature = state.bootstrap.navigation.find((item) => item.id === state.activeTab)
+    || secondaryFeatures[state.activeTab];
   const title = document.querySelector("#workspace-title");
   const description = document.querySelector("#workspace-description");
   const descriptionByTab = {
     scenic: "先做地点检索，再从结果卡片直接进入地图定位与路线规划。",
-    place: "围绕附近设施和范围筛选做答辩展示，结果优先支持定位和继续规划。",
-    catering: "展示推荐排序、兴趣偏好和路径联动，适合从生活场景切入。",
+    place: "围绕附近设施和餐饮推荐做答辩展示，结果优先支持定位和继续规划。",
     route: "地图优先展示当前路线、建筑入口和室内导航状态。",
     diary: "用全文检索和管理操作证明结果面板与路线入口可以互相联动。",
-    aigc: "保留轻量预览能力，强调系统具备多媒体扩展接口。",
-    help: "这里汇总推荐演示链路、启动方式和当前验收检查点。",
+    aigc: "保留模板化轻量预览能力，强调系统具备多媒体扩展接口。",
+    help: "这里汇总推荐演示链路、启动方式、帮助说明和冻结版口径。",
   };
   if (title) {
     title.textContent = feature ? `${feature.label}工作区` : "工作区";

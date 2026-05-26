@@ -355,7 +355,6 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["users"][0]["interests"]
     assert len(payload["aigc_samples"]) == 3
     assert payload["aigc_samples"][0]["sample_id"] == "aigc_sample_001"
-    assert any(item["id"] == "aigc" for item in payload["navigation"])
     assert any(item["value"] == "warm_storyboard" for item in payload["controls"]["aigc_styles"])
     assert payload["state_policy"]["site_switch_supported"] is True
     assert "current_route" in payload["state_policy"]["reset_on_site_change"]
@@ -364,12 +363,15 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert any(item["id"] == "help" for item in payload["navigation"])
     assert any(item["id"] == "route" for item in payload["navigation"])
     assert next(item for item in payload["navigation"] if item["id"] == "diary")["status"] == "ready"
+    assert [item["id"] for item in payload["navigation"]] == ["scenic", "route", "place", "diary", "help"]
     assert payload["help"]["launch_command"] == "py -B -m src.ui.demo_server"
     assert payload["help"]["fallback_launch_command"] == "python -B -m src.ui.demo_server"
     assert payload["help"]["browser_url"] == "http://127.0.0.1:8765"
     assert payload["help"]["stage"] == "第13周正式产品冻结版 · 地图方案 B M14"
     assert len(payload["help"]["demo_flow"]) >= 3
     assert any("Leaflet / SVG" in item for item in payload["help"]["demo_flow"])
+    assert any("AIGC" in item and "样例" in item for item in payload["help"]["demo_flow"])
+    assert any("场所与美食" in item for item in payload["help"]["checks"])
     assert any("[lng, lat]" in item for item in payload["help"]["map_acceptance"])
     assert any("真实瓦片" in item for item in payload["help"]["map_acceptance"])
     assert any("M14 只沿本地 OSM 白线道路相邻节点" in item for item in payload["help"]["map_acceptance"])
@@ -11020,6 +11022,19 @@ def test_demo_static_aigc_entry_contains_controls():
     assert 'id="aigc-style"' in html
     assert '"/api/aigc/preview"' in script
     assert "renderAigcPreview" in script
+    side_menu = html.split('<nav class="side-menu"', 1)[1].split("</nav>", 1)[0]
+    place_panel = html.split('data-panel="place"', 1)[1].split('data-panel="diary"', 1)[0]
+    assert 'data-tab="aigc"' not in side_menu
+    assert 'data-panel="catering"' not in html
+    assert 'id="catering-form"' in place_panel
+    assert place_panel.find('id="place-form"') < place_panel.find('id="catering-form"')
+    assert 'data-tab="help"' in html
+    assert 'data-tab="aigc"' in html
+    assert 'data-tab="route"' in html
+    assert '场所与美食' in html
+    assert '帮助与演示' in html
+    assert '打开 AIGC 演示' in html
+    assert '第十三周冻结版仅保留可见演示闭环' in html
     print("test_demo_static_aigc_entry_contains_controls passed.")
 
 

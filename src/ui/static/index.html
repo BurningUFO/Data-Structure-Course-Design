@@ -28,23 +28,17 @@
               <button class="side-link" type="button" data-tab="scenic">
                 <span class="side-label">综合查询</span>
               </button>
-              <button class="side-link" type="button" data-tab="place">
-                <span class="side-label">场所查询</span>
-              </button>
-              <button class="side-link" type="button" data-tab="catering">
-                <span class="side-label">美食推荐</span>
-              </button>
               <button class="side-link active" type="button" data-tab="route">
                 <span class="side-label">导航规划</span>
+              </button>
+              <button class="side-link" type="button" data-tab="place">
+                <span class="side-label">场所与美食</span>
               </button>
               <button class="side-link" type="button" data-tab="diary">
                 <span class="side-label">日记中心</span>
               </button>
-              <button class="side-link" type="button" data-tab="aigc">
-                <span class="side-label">AIGC 演示</span>
-              </button>
               <button class="side-link" type="button" data-tab="help">
-                <span class="side-label">帮助说明</span>
+                <span class="side-label">帮助与演示</span>
               </button>
             </nav>
           </div>
@@ -127,7 +121,7 @@
                   </button>
                 </div>
 
-                <section class="tab-panel active" data-panel="scenic">
+                <section class="tab-panel" data-panel="scenic">
                   <form id="scenic-form" class="stack-form">
                     <label class="field">
                       <span class="field-label">关键字</span>
@@ -153,6 +147,10 @@
 
                 <section class="tab-panel" data-panel="place">
                   <form id="place-form" class="stack-form">
+                    <div class="form-section-heading">
+                      <h3>场所查询</h3>
+                      <span>按真实路径距离查找附近设施</span>
+                    </div>
                     <label class="field">
                       <span class="field-label">关键字</span>
                       <input id="place-keyword" type="text" placeholder="例如：洗手间 / 便利店 / 教学楼" />
@@ -181,30 +179,34 @@
                       </div>
                     </details>
                   </form>
-                </section>
-
-                <section class="tab-panel" data-panel="catering">
-                  <form id="catering-form" class="stack-form">
-                    <label class="field">
-                      <span class="field-label">关键字</span>
-                      <input id="catering-keyword" type="text" placeholder="例如：食堂 / 咖啡 / 餐厅" />
-                    </label>
-                    <button class="primary-button form-primary-action" type="submit">推荐美食</button>
-                    <div class="quick-row compact-presets" id="catering-presets"></div>
-                    <details class="form-advanced">
-                      <summary>筛选和排序</summary>
-                      <div class="form-advanced-grid">
-                        <label class="field">
-                          <span class="field-label">菜系 / 筛选词</span>
-                          <input id="catering-cuisine" type="text" placeholder="例如：咖啡 / 轻食 / 清真" />
-                        </label>
-                        <label class="field">
-                          <span class="field-label">排序</span>
-                          <select id="catering-sort"></select>
-                        </label>
+                  <details class="form-advanced separated-form management-details">
+                    <summary>美食推荐</summary>
+                    <form id="catering-form" class="stack-form nested-form">
+                      <div class="form-section-heading">
+                        <h3>美食推荐</h3>
+                        <span>按热度、评分、距离和菜系筛选餐饮地点</span>
                       </div>
-                    </details>
-                  </form>
+                      <label class="field">
+                        <span class="field-label">关键字</span>
+                        <input id="catering-keyword" type="text" placeholder="例如：食堂 / 咖啡 / 餐厅" />
+                      </label>
+                      <button class="primary-button form-primary-action" type="submit">推荐美食</button>
+                      <div class="quick-row compact-presets" id="catering-presets"></div>
+                      <details class="form-advanced inner-advanced">
+                        <summary>菜系和排序</summary>
+                        <div class="form-advanced-grid">
+                          <label class="field">
+                            <span class="field-label">菜系 / 筛选词</span>
+                            <input id="catering-cuisine" type="text" placeholder="例如：咖啡 / 轻食 / 清真" />
+                          </label>
+                          <label class="field">
+                            <span class="field-label">排序</span>
+                            <select id="catering-sort"></select>
+                          </label>
+                        </div>
+                      </details>
+                    </form>
+                  </details>
                 </section>
 
                 <section class="tab-panel" data-panel="diary">
@@ -388,7 +390,7 @@
                       </div>
                     </details>
                     <p class="form-hint">
-                      当前只返回模板化预览结构，不调用真实生成模型；第十二周可在此基础上继续增强。
+                      当前只返回模板化预览结构，不调用真实生成模型；第十三周冻结版仅保留可见演示闭环。
                     </p>
                   </form>
                 </section>
@@ -399,6 +401,7 @@
                     <p id="help-launch" class="help-copy">启动命令加载中...</p>
                     <h4>推荐演示链路</h4>
                     <ol id="help-flow" class="help-list"></ol>
+                    <button class="secondary-button compact-button" type="button" data-tab="aigc">打开 AIGC 演示</button>
                     <h4>当前骨架检查点</h4>
                     <ul id="help-checks" class="help-list"></ul>
                     <h4>地图验收说明</h4>
