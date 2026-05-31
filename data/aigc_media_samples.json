@@ -2,34 +2,34 @@
   {
     "sample_id": "aigc_sample_001",
     "diary_id": "diary_001",
-    "image_placeholder": "media/placeholders/pku_autumn_yanyuan.jpg",
+    "image_placeholder": "/assets/pku_autumn_yanyuan.jpg",
     "text_prompt": "秋日燕园银杏、未名湖和图书馆广场串成一段校园漫游动画。",
     "style": "warm_storyboard",
     "duration_s": 8,
     "output_type": "storyboard",
-    "preview_placeholder": "media/previews/aigc_sample_001_storyboard.gif",
-    "status": "placeholder_ready"
+    "preview_placeholder": "/assets/aigc/aigc_sample_001_storyboard.gif",
+    "status": "ready"
   },
   {
     "sample_id": "aigc_sample_002",
     "diary_id": "diary_002",
-    "image_placeholder": "media/placeholders/pku_canteen_food.jpg",
+    "image_placeholder": "/assets/pku_canteen_food.jpg",
     "text_prompt": "从农园食堂窗口到餐盘特写，生成一段校园美食推荐预览。",
     "style": "food_review",
     "duration_s": 6,
     "output_type": "template_animation",
-    "preview_placeholder": "media/previews/aigc_sample_002_food.gif",
-    "status": "placeholder_ready"
+    "preview_placeholder": "/assets/aigc/aigc_sample_002_storyboard.gif",
+    "status": "ready"
   },
   {
     "sample_id": "aigc_sample_003",
     "diary_id": "diary_003",
-    "image_placeholder": "media/placeholders/pku_library_study.jpg",
+    "image_placeholder": "/assets/pku_library_study.jpg",
     "text_prompt": "图书馆入口、阅览室座位和自习提醒组成一段学习攻略动画。",
     "style": "study_guide",
     "duration_s": 7,
     "output_type": "storyboard",
-    "preview_placeholder": "media/previews/aigc_sample_003_library.gif",
-    "status": "placeholder_ready"
+    "preview_placeholder": "/assets/aigc/aigc_sample_003_storyboard.gif",
+    "status": "ready"
   }
 ]

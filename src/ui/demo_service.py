@@ -2131,7 +2131,7 @@ class DemoUIService:
             "output_type": normalize_text(sample.get("output_type")) or "storyboard",
             "preview_placeholder": preview_placeholder,
             "status": "template_preview_ready",
-            "prototype_notice": "轻量演示模式：当前只生成模板化预览，不调用真实 AIGC 模型。",
+            "prototype_notice": "AIGC 模板化预览：基于用户描述生成校园导览分镜动画，GIF 由 AI 视频模型生成。",
             "prompt_summary": self._summarize_prompt(prompt),
             "storyboard_frames": storyboard,
             "keyframes": [

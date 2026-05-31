@@ -2746,12 +2746,20 @@ function renderMediaPlaceholders(item) {
   return `
     <div class="media-strip">
       ${mediaItems
-        .map((media) => `
-          <span class="media-chip">
+        .map((media) => {
+          const isImage = /\.(jpe?g|png|gif|webp|bmp)$/i.test(media.value);
+          const src = media.value;
+          if (isImage) {
+            return `<span class="media-chip media-chip-image">
+              <span>${escapeHtml(media.kind)}</span>
+              <img src="${escapeHtml(src)}" alt="${escapeHtml(media.kind)}" loading="lazy" style="max-width:360px;max-height:200px;border-radius:6px;object-fit:cover;" />
+            </span>`;
+          }
+          return `<span class="media-chip">
             <span>${escapeHtml(media.kind)}</span>
             <strong>${escapeHtml(media.value)}</strong>
-          </span>
-        `)
+          </span>`;
+        })
         .join("")}
     </div>
   `;
@@ -2772,11 +2780,15 @@ function renderAigcPreview(item) {
   ]
     .filter(Boolean)
     .join("");
+  const previewImg = item.preview_placeholder && /\.(gif|jpe?g|png|webp)$/i.test(item.preview_placeholder)
+    ? `<div class="aigc-preview-image"><img src="${escapeHtml(item.preview_placeholder)}" alt="AIGC Preview" loading="lazy" style="max-width:480px;max-height:270px;border-radius:8px;object-fit:cover;" /></div>`
+    : "";
   return `
     <div class="aigc-preview-block">
       <p class="prototype-notice">${escapeHtml(item.prototype_notice || "")}</p>
       ${previewMetrics ? `<div class="aigc-preview-meta">${previewMetrics}</div>` : ""}
       ${previewSummary ? `<p class="aigc-preview-summary">${escapeHtml(previewSummary)}</p>` : ""}
+      ${previewImg}
       <div class="storyboard-grid">
         ${frames
           .map((frame) => `
