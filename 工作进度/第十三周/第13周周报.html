@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第十三周工作周报（5月25日 - 5月31日）</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 2rem; }
+        h1, h2, h3 { color: #2c3e50; margin-top: 1.5em; }
+        h1 { border-bottom: 2px solid #eee; padding-bottom: 0.3em; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+        blockquote { border-left: 4px solid #42b983; padding: 0.5em 1em; margin: 1em 0; background: #f8f9fa; color: #666; }
+        code { background-color: #f8f9fa; padding: 0.2em 0.4em; border-radius: 3px; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.9em; }
+        pre { background-color: #f8f9fa; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        pre code { background-color: transparent; padding: 0; }
+        ul, ol { padding-left: 2em; }
+        li { margin-bottom: 0.5em; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 2em 0; }
+    </style>
+</head>
+<body>
+    <h1>第十三周工作周报（5月25日 - 5月31日）</h1>
+    <blockquote>
+        <p><strong>项目名称</strong>：智能校园/景区导览系统<br>
+        <strong>汇报人</strong>：项目大总管（Member A）</p>
+    </blockquote>
+    <p>本周团队核心目标为“正式产品冻结周”。相较第十二周的“全量功能接入周”，第十三周不再追求继续扩功能，而是围绕 Web 主入口、路径接口、真实地图展示、课程核验快照和交付文档完成冻结、回归、收口与统一说明。当前仓库工作流已完成启动核对：本地分支为 <code>main</code>，执行 <code>git fetch</code> 后 <code>main...origin/main</code> 未显示 ahead/behind 差异，说明截至 2026-05-31 没有新的远端提交需要同步。</p>
+    <p>结合三位成员周材料和当前仓库复核结果，可以确认第十三周已经基本形成“可运行、可使用、页面结构稳定、文档口径统一”的正式产品冻结版；但在 2026-05-31 的当前仓库复跑中，静态 UI 合约仍存在 1 个待收口的 P1 级测试不一致问题，需要在第十四周作为冻结后修正项继续处理。</p>
+    <p>以下是本周各成员的工作总结、冻结结论、验证结果与后续计划：</p>
+    <hr>
+    <h2>1. 团队整体进展概览</h2>
+    <ul>
+        <li><strong>Member A（算法与图结构 / 冻结统筹）</strong>：✅ 冻结 <code>/api/route</code>、<code>/api/route/multi</code> 的核心展示字段，固定单目标、多目标、跨层、交通方式对比和异常输入五类演示样例，维护第13周高优问题清单并统一冻结周对外口径。</li>
+        <li><strong>Member B（业务交互 / Web 主入口）</strong>：✅ 冻结正式产品主入口结构，固定“综合查询、导航规划、场所与美食、日记中心、帮助与演示”五大入口，收口帮助说明、AIGC 轻量预览文案和页面阶段标签。</li>
+        <li><strong>Member C（数据与验证 / 文档证据链）</strong>：✅ 固定第13周课程核验快照，补齐冻结版课程核验与回归记录，继续维护《课程要求覆盖清单》《数据字典》《用户使用说明》《评价和改进意见》《AI辅助开发能力分析》等交付文档。</li>
+    </ul>
+    <hr>
+    <h2>2. 本周核心冻结成果</h2>
+    <ol>
+        <li><strong>正式产品冻结口径基本形成</strong>：Web 主入口页面结构、地图展示方式、主要功能入口顺序及帮助说明已完成冻结，后续第14-15周仅允许做体验优化和验收材料润色。</li>
+        <li><strong>固定五条正式演示链路</strong>：
+            <ul>
+                <li>综合查询 / 推荐 -&gt; 路线规划</li>
+                <li>多目标路径规划</li>
+                <li>日记浏览 / 全文检索 -&gt; 目的地路线规划</li>
+                <li>AIGC 模板化轻量预览</li>
+                <li>室内导航 / 楼层切换 / 室内路径展示</li>
+            </ul>
+        </li>
+        <li><strong>路径接口与演示字段冻结</strong>：<code>visit_order</code>、<code>visit_order_names</code>、<code>segments</code>、<code>leg_results</code>、<code>path_steps</code>、<code>layer_sequence</code>、<code>estimated_time_s</code> 等当前 Web 已依赖字段继续保留，冻结周不允许改名、删字段或改变语义。</li>
+        <li><strong>课程规模与产品边界统一</strong>：当前冻结版统一采用 <code>users=70</code>、<code>diary_authors=70</code>、<code>extension_objects=208</code>、<code>mapped_extension_objects=5</code>、<code>pku_nodes=1565</code>、<code>pku_edges=3550</code> 的书面快照，同时明确日记为 <code>memory_only</code>，AIGC 为 <code>template_preview</code> / <code>placeholder_ready</code> 轻量演示能力。</li>
+        <li><strong>文档与页面口径完成同步</strong>：当前仓库中的《数据字典》《课程要求覆盖清单》《评价和改进意见》《AI辅助开发能力分析》等文档，已从“第12周继续增强”口径切换到“第13周正式产品冻结版”口径。</li>
+    </ol>
+    <hr>
+    <h2>3. 成员详细工作汇报</h2>
+    <h3>【Member A：图结构与路径规划 / 协作统筹】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>执行接口冻结</strong>：锁定 <code>/api/route</code> 与 <code>/api/route/multi</code> 当前 Web 依赖字段，明确冻结周只允许非破坏性修复，不允许删除、重命名或改动字段语义。</li>
+        <li><strong>固定答辩演示路线</strong>：整理 <code>gate_north -&gt; library</code>、<code>gate_north -&gt; [library, canteen]</code>、<code>library -&gt; lib_reading_room_1</code>、<code>gate_north -&gt; lib_reading_room_1</code>、<code>gate_south -&gt; sports_ground</code> 等典型样例，统一最短距离、最短时间、跨层衔接和异常输入的讲解口径。</li>
+        <li><strong>维护冻结风险台账</strong>：输出《第13周高优问题清单》，把页面结构冻结、<code>pytest</code> 入口稳定性、轻量演示边界和扩展对象导航承诺纳入本周 P1 观察项。</li>
+        <li><strong>收口冻结周对外说明</strong>：统一“当前规模快照”“路径性能基准”“扩展对象不等于全量可导航对象”“AIGC / 日记为轻量能力”等答辩口径。</li>
+    </ol>
+    <h3>【Member B：业务交互与 Web 主入口】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>冻结主入口结构</strong>：把顶层正式入口收口为“综合查询、导航规划、场所与美食、日记中心、帮助与演示”五项，AIGC 保留在帮助与演示下的二级入口中。</li>
+        <li><strong>统一页面帮助与阶段文案</strong>：把页面内“继续增强”类旧表述改为“第13周正式产品冻结版”口径，降低验收者被调试信息或旧周次说明误导的风险。</li>
+        <li><strong>维持主链路可演示性</strong>：继续保障查询推荐转路线、多目标路径、日记转路线和 AIGC 轻量预览入口可直接进入并可重复演示。</li>
+        <li><strong>收口体验边界</strong>：保留轻量能力提示，避免把 AIGC 和日记演示包装成完整生产能力。</li>
+    </ol>
+    <h3>【Member C：数据、检索、测试与文档】</h3>
+    <p><strong>本周主要成果：</strong></p>
+    <ol>
+        <li><strong>锁定冻结版课程快照</strong>：继续以 <code>tests/test_course_requirements.py</code> 为课程核验入口，固定 70 用户、70 作者、208 扩展对象、5 个稳定映射样例、1565 节点、3550 边的第13周冻结快照。</li>
+        <li><strong>补齐冻结版证据链</strong>：新增《memberC第13周冻结版课程核验与回归记录》，集中记录回归入口、端口检查流程、关键 API 冒烟结果和轻量能力边界。</li>
+        <li><strong>推进文档口径收口</strong>：同步更新《课程要求覆盖清单》《数据字典》《评价和改进意见》《AI辅助开发能力分析》等材料，使其与冻结版产品边界一致。</li>
+        <li><strong>明确统一验证入口</strong>：推动回归记录从“<code>python</code> 可能不可用”转为“优先使用 <code>py -3</code>”，降低临近验收时的环境歧义。</li>
+    </ol>
+    <hr>
+    <h2>4. 验证结果</h2>
+    <h3>4.1 工作流与远端同步检查</h3>
+    <p>本次周报汇总前已完成以下检查：</p>
+    <pre><code>git status --short --branch
+git branch --show-current
+git fetch</code></pre>
+    <p>当前结果为：</p>
+    <ul>
+        <li><strong>当前分支</strong>：<code>main</code></li>
+        <li><strong>远端同步状态</strong>：<code>main...origin/main</code> 未显示 ahead/behind 差异</li>
+        <li><strong>结论</strong>：截至 2026-05-31 当前仓库无新的上游提交需要同步，但本地工作区存在既有未提交文档/测试改动，本次周报未触碰这些无关改动</li>
+    </ul>
+    <h3>4.2 当前仓库复核结果</h3>
+    <p>本次实际复核执行了以下命令：</p>
+    <pre><code>node --check src/ui/static/app.js
+py -3 -m pytest -q</code></pre>
+    <p><strong>验证结论：</strong></p>
+    <ul>
+        <li><strong>前端脚本</strong>：<code>node --check src/ui/static/app.js</code> 通过。</li>
+        <li><strong>全量测试</strong>：<code>py -3 -m pytest -q</code> 结果为 <code>1 failed, 372 passed in 65.94s</code>。</li>
+        <li><strong>失败用例</strong>：<code>tests/test_m32b_ui_smoke.py::test_m32b_static_shell_exposes_multicampus_ui_contract</code></li>
+        <li><strong>失败原因定位</strong>：当前 <code>src/ui/static/index.html</code> 顶层 <code>data-tab</code> 已冻结为 <code>scenic / route / place / diary / help</code>，其中 <code>catering</code> 被收入口径为“场所与美食”页内的嵌套表单，AIGC 则作为帮助页中的二级演示入口；但现有静态 UI 合约测试仍要求顶层包含 <code>catering</code> tab，导致测试断言与当前冻结版页面结构不一致。</li>
+    </ul>
+    <h3>4.3 冻结周验证判断</h3>
+    <p>综合成员周材料与本次复核，冻结版主链路并未出现大面积回退，当前问题更接近<strong>页面结构冻结后，测试契约未同步收口</strong>。因此本周整体结论为：</p>
+    <ul>
+        <li>主体冻结目标已完成</li>
+        <li>当前存在 1 个需要在第14周优先收口的 P1 级验证不一致问题</li>
+        <li>不建议在冻结周末尾重新扩展功能面，只应在后续做测试同步或最小页面契约修正</li>
+    </ul>
+    <hr>
+    <h2>5. 当前遗留风险与处理口径</h2>
+    <ol>
+        <li><strong>静态 UI 合约与冻结版结构不一致</strong>：当前 <code>catering</code> 不再是顶层 tab，但测试仍按旧契约断言。<strong>口径</strong>：列为第14周优先收口项，避免继续扩大 UI 结构变更。</li>
+        <li><strong>解释器入口存在歧义</strong>：仓库材料已多次表明 <code>python</code> 与 <code>py -3</code> 的命中环境可能不同。<strong>口径</strong>：冻结版及后续材料统一使用 <code>py -3</code> 作为 Windows 本机推荐入口。</li>
+        <li><strong>轻量能力边界必须持续显式说明</strong>：日记新增 / 编辑仍为 <code>memory_only</code>，AIGC 仍为 <code>template_preview</code>。<strong>口径</strong>：页面、文档和答辩统一说法，不包装成完整生产服务。</li>
+        <li><strong>扩展对象导航承诺范围有限</strong>：<code>extension_objects=208</code> 用于课程规模与推荐 / 查询对象池核验，不等于 208 个对象都已完成深度路径映射。<strong>口径</strong>：继续保护现有 <code>mapped_extension_objects=5</code> 样例，不扩大承诺。</li>
+    </ol>
+    <hr>
+    <h2>6. 下周工作计划（第十四周）</h2>
+    <p>第十四周进入“冻结后收口与验收准备周”，重点不再是新增能力，而是消化第十三周残留问题并完成答辩材料打磨：</p>
+    <ol>
+        <li><strong>优先修复 P1 级验证不一致</strong>：同步静态 UI 合约测试与当前冻结版页面结构，或在不破坏冻结口径前提下做最小契约修正。</li>
+        <li><strong>继续做体验微调</strong>：只允许针对错误提示、空状态、帮助说明、响应式细节和演示预设做小范围优化。</li>
+        <li><strong>巩固答辩演示链路</strong>：围绕五条固定演示流反复彩排，确保每次演示的输入、输出和讲解口径一致。</li>
+        <li><strong>完善验收材料</strong>：继续收口周报、用户说明、课程覆盖清单、测试记录和答辩材料，确保代码、页面、文档三者表述一致。</li>
+    </ol>
+</body>
+</html>
