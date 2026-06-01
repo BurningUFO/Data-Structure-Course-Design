@@ -111,6 +111,8 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
     app_js = (STATIC_DIR / "app.js").read_text(encoding="utf-8")
     parser = StaticUiContractParser()
     parser.feed(html)
+    side_menu = html.split('<nav class="side-menu"', 1)[1].split("</nav>", 1)[0]
+    place_panel = html.split('data-panel="place"', 1)[1].split('data-panel="diary"', 1)[0]
 
     required_ids = {
         "site-selector",
@@ -141,7 +143,14 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
     }
     assert required_ids <= parser.ids
     assert {"home", "app"} <= parser.data_pages
-    assert {"scenic", "place", "catering", "route", "diary", "aigc", "help"} <= parser.data_tabs
+    assert {"scenic", "place", "route", "diary", "aigc", "help"} <= parser.data_tabs
+    for tab in ["scenic", "route", "place", "diary", "help"]:
+        assert f'data-tab="{tab}"' in side_menu
+    assert 'data-tab="aigc"' not in side_menu
+    assert 'data-tab="catering"' not in html
+    assert 'data-panel="catering"' not in html
+    assert 'id="catering-form"' in place_panel
+    assert place_panel.find('id="place-form"') < place_panel.find('id="catering-form"')
     assert parser.map_renderers == {"leaflet_geo", "simple_svg"}
     assert parser.map_basemaps == {"real_map", "none"}
     assert parser.demo_actions == {"single-route"}
