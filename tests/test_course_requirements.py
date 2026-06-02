@@ -29,6 +29,7 @@ DIARY_PATH = DATA_DIR / "diary_data.json"
 AIGC_SAMPLES_PATH = DATA_DIR / "aigc_media_samples.json"
 MEMBER_C_SCENIC_PATH = DATA_DIR / "成员Cdata" / "scenic_spots.json"
 PKU_SITE_DIR = DATA_DIR / "sites" / "PKU"
+STATIC_DIR = PROJECT_ROOT / "src" / "ui" / "static"
 
 REQUIRED_DOC_PATHS = [
     DOCS_DIR / "课程要求覆盖清单.md",
@@ -70,6 +71,12 @@ SERVICE_CATEGORY_SET = {
 def load_json(path: Path):
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def static_asset_exists(asset_path: str) -> bool:
+    if not asset_path.startswith("/"):
+        return False
+    return (STATIC_DIR / asset_path.lstrip("/")).is_file()
 
 
 def load_pku_graph_payloads() -> list[dict]:
@@ -133,8 +140,10 @@ def test_aigc_and_media_placeholders_ready():
         assert sample.get("output_type") in {"storyboard", "template_animation", "gif_preview"}
         assert int(sample.get("duration_s", 0)) > 0
         assert sample.get("preview_placeholder")
-        assert sample.get("status") == "placeholder_ready"
-        assert sample["image_placeholder"] in diaries_by_id[diary_id].get("images", [])
+        assert sample.get("status") == "ready"
+        assert static_asset_exists(sample["image_placeholder"])
+        assert static_asset_exists(sample["preview_placeholder"])
+        assert diaries_by_id[diary_id].get("images", [])
 
     print(
         "test_aigc_and_media_placeholders_ready passed: "

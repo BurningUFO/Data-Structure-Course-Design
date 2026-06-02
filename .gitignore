@@ -1,2 +1,9 @@
 __pycache__/
 *.py[cod]
+.env.local
+.env.aigc.local
+src/ui/static/generated/aigc/*.gif
+src/ui/static/generated/aigc/*.jpg
+src/ui/static/generated/aigc/*.jpeg
+src/ui/static/generated/aigc/*.png
+src/ui/static/generated/aigc/*.webp

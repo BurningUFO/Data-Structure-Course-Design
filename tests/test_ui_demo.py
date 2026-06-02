@@ -10,8 +10,9 @@ from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
+import src.ui.demo_service as demo_service_module
 from src.ui.demo_service import DemoUIService
-from src.ui.demo_server import build_handler
+from src.ui.demo_server import build_handler, load_local_env_files
 
 
 def assert_close_coordinate(left, right, tolerance=0.00035):
@@ -362,8 +363,10 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert payload["feedback_messages"]["route_unreachable"]
     assert any(item["id"] == "help" for item in payload["navigation"])
     assert any(item["id"] == "route" for item in payload["navigation"])
+    assert any(item["id"] == "aigc" for item in payload["navigation"])
     assert next(item for item in payload["navigation"] if item["id"] == "diary")["status"] == "ready"
-    assert [item["id"] for item in payload["navigation"]] == ["scenic", "route", "place", "diary", "help"]
+    assert next(item for item in payload["navigation"] if item["id"] == "aigc")["status"] == "ready"
+    assert [item["id"] for item in payload["navigation"]] == ["scenic", "route", "place", "diary", "aigc", "help"]
     assert payload["help"]["launch_command"] == "py -B -m src.ui.demo_server"
     assert payload["help"]["fallback_launch_command"] == "python -B -m src.ui.demo_server"
     assert payload["help"]["browser_url"] == "http://127.0.0.1:8765"
@@ -10991,7 +10994,224 @@ def test_demo_aigc_preview_returns_template_storyboard():
     assert preview["duration_s"] == 9
     assert len(preview["storyboard_frames"]) == 4
     assert preview["source"]["real_model_called"] is False
+    assert preview["generation_mode"] == "template_preview"
+    assert preview["fallback_used"] is False
+    assert preview["generated_images"] == []
     print("test_demo_aigc_preview_returns_template_storyboard passed.")
+
+
+def test_demo_aigc_live_image_without_key_falls_back_to_template():
+    old_key = os.environ.pop("OPENAI_API_KEY", None)
+    try:
+        service = DemoUIService("PKU")
+        response = service.aigc_preview(
+            {
+                "sample_id": "aigc_sample_001",
+                "prompt": "生成一组未名湖到图书馆的导览分镜。",
+                "style": "warm_storyboard",
+                "duration_s": 8,
+                "mode": "live_image",
+                "frame_count": 3,
+            }
+        )
+    finally:
+        if old_key is not None:
+            os.environ["OPENAI_API_KEY"] = old_key
+
+    assert response["success"] is True
+    assert response["metadata"]["generation_mode"] == "template_fallback"
+    assert response["metadata"]["fallback_used"] is True
+    assert response["filters"]["mode"] == "live_image"
+    assert response["filters"]["frame_count"] == 3
+    preview = response["results"][0]
+    assert preview["generation_mode"] == "template_fallback"
+    assert preview["fallback_used"] is True
+    assert preview["fallback_reason"] == "missing OPENAI_API_KEY"
+    assert preview["preview_placeholder"].endswith("aigc_sample_001_storyboard.gif")
+    assert preview["generated_images"] == []
+    assert len(preview["storyboard_frames"]) == 3
+    assert preview["source"]["real_model_called"] is False
+    print("test_demo_aigc_live_image_without_key_falls_back_to_template passed.")
+
+
+def test_demo_aigc_live_image_stub_success_returns_generated_frames():
+    old_key = os.environ.get("OPENAI_API_KEY")
+    old_model = os.environ.get("OPENAI_IMAGE_MODEL")
+    old_static_dir = demo_service_module.AIGC_GENERATED_STATIC_DIR
+    with tempfile.TemporaryDirectory() as tmpdir:
+        try:
+            os.environ["OPENAI_API_KEY"] = "test-key"
+            os.environ["OPENAI_IMAGE_MODEL"] = "gpt-image-1"
+            demo_service_module.AIGC_GENERATED_STATIC_DIR = Path(tmpdir)
+            service = DemoUIService("PKU")
+            service._call_openai_image_generation = lambda **kwargs: [
+                "/generated/aigc/test_frame_01.png",
+                "/generated/aigc/test_frame_02.png",
+            ]
+
+            response = service.aigc_preview(
+                {
+                    "sample_id": "aigc_sample_002",
+                    "prompt": "食堂窗口、餐盘和校园路牌组成两张实时分镜。",
+                    "style": "food_review",
+                    "duration_s": 6,
+                    "mode": "live_image",
+                    "frame_count": 2,
+                }
+            )
+        finally:
+            demo_service_module.AIGC_GENERATED_STATIC_DIR = old_static_dir
+            if old_key is None:
+                os.environ.pop("OPENAI_API_KEY", None)
+            else:
+                os.environ["OPENAI_API_KEY"] = old_key
+            if old_model is None:
+                os.environ.pop("OPENAI_IMAGE_MODEL", None)
+            else:
+                os.environ["OPENAI_IMAGE_MODEL"] = old_model
+
+    assert response["success"] is True
+    assert response["metadata"]["generation_mode"] == "live_image"
+    assert response["metadata"]["real_model_called"] is True
+    assert response["metadata"]["fallback_used"] is False
+    preview = response["results"][0]
+    assert preview["generation_mode"] == "live_image"
+    assert preview["provider"] == "openai"
+    assert preview["fallback_used"] is False
+    assert preview["generated_images"] == [
+        "/generated/aigc/test_frame_01.png",
+        "/generated/aigc/test_frame_02.png",
+    ]
+    assert preview["preview_placeholder"] == "/generated/aigc/test_frame_01.png"
+    assert len(preview["storyboard_frames"]) == 2
+    assert preview["storyboard_frames"][0]["image_url"].endswith("test_frame_01.png")
+    assert preview["source"]["real_model_called"] is True
+    print("test_demo_aigc_live_image_stub_success_returns_generated_frames passed.")
+
+
+def test_demo_aigc_live_image_requests_frames_one_by_one():
+    service = DemoUIService("PKU")
+    sample = service._resolve_aigc_sample("aigc_sample_001")
+    calls = []
+
+    def fake_request_batch(**kwargs):
+        calls.append(kwargs)
+        return [f"/generated/aigc/test_frame_{kwargs['start_index']:02d}.png"]
+
+    service._request_openai_image_batch = fake_request_batch
+
+    generated_images = service._call_openai_image_generation(
+        api_key="test-key",
+        model="gpt-image-1",
+        sample=sample,
+        prompt="三张实时分镜",
+        style="warm_storyboard",
+        duration_s=8,
+        frame_count=3,
+    )
+
+    assert generated_images == [
+        "/generated/aigc/test_frame_01.png",
+        "/generated/aigc/test_frame_02.png",
+        "/generated/aigc/test_frame_03.png",
+    ]
+    ordered_calls = sorted(calls, key=lambda call: call["start_index"])
+    assert [call["batch_count"] for call in ordered_calls] == [1, 1, 1]
+    assert [call["start_index"] for call in ordered_calls] == [1, 2, 3]
+    assert [call["frame_count"] for call in ordered_calls] == [3, 3, 3]
+    print("test_demo_aigc_live_image_requests_frames_one_by_one passed.")
+
+
+def test_demo_aigc_live_image_keeps_partial_frames_after_later_error():
+    service = DemoUIService("PKU")
+    sample = service._resolve_aigc_sample("aigc_sample_001")
+    calls = []
+
+    def fake_request_batch(**kwargs):
+        calls.append(kwargs)
+        if kwargs["start_index"] == 2:
+            raise RuntimeError("OpenAI image request failed with 502: Bad gateway")
+        return [f"/generated/aigc/test_frame_{kwargs['start_index']:02d}.png"]
+
+    service._request_openai_image_batch = fake_request_batch
+
+    generated_images = service._call_openai_image_generation(
+        api_key="test-key",
+        model="gpt-image-1",
+        sample=sample,
+        prompt="多张实时分镜",
+        style="warm_storyboard",
+        duration_s=8,
+        frame_count=4,
+    )
+
+    assert generated_images == [
+        "/generated/aigc/test_frame_01.png",
+        "/generated/aigc/test_frame_03.png",
+        "/generated/aigc/test_frame_04.png",
+    ]
+    assert sorted(call["start_index"] for call in calls) == [1, 2, 2, 3, 4]
+    assert {call["batch_count"] for call in calls} == {1}
+    print("test_demo_aigc_live_image_keeps_partial_frames_after_later_error passed.")
+
+
+def test_demo_aigc_openai_base_url_resolves_image_endpoint():
+    old_base_url = os.environ.get("OPENAI_BASE_URL")
+    old_image_url = os.environ.get("OPENAI_IMAGE_API_URL")
+    try:
+        os.environ["OPENAI_BASE_URL"] = "https://ai.maok.shop"
+        os.environ.pop("OPENAI_IMAGE_API_URL", None)
+        assert (
+            DemoUIService._resolve_openai_image_endpoint()
+            == "https://ai.maok.shop/v1/images/generations"
+        )
+
+        os.environ["OPENAI_IMAGE_API_URL"] = "https://example.test/custom/images"
+        assert DemoUIService._resolve_openai_image_endpoint() == "https://example.test/custom/images"
+    finally:
+        if old_base_url is None:
+            os.environ.pop("OPENAI_BASE_URL", None)
+        else:
+            os.environ["OPENAI_BASE_URL"] = old_base_url
+        if old_image_url is None:
+            os.environ.pop("OPENAI_IMAGE_API_URL", None)
+        else:
+            os.environ["OPENAI_IMAGE_API_URL"] = old_image_url
+
+    print("test_demo_aigc_openai_base_url_resolves_image_endpoint passed.")
+
+
+def test_demo_server_loads_untracked_local_aigc_env_file():
+    keys = ["OPENAI_API_KEY", "OPENAI_IMAGE_MODEL", "OPENAI_BASE_URL"]
+    old_values = {key: os.environ.get(key) for key in keys}
+    with tempfile.TemporaryDirectory() as tmpdir:
+        try:
+            for key in keys:
+                os.environ.pop(key, None)
+            env_file = Path(tmpdir) / ".env.aigc.local"
+            env_file.write_text(
+                "\n".join(
+                    [
+                        "OPENAI_API_KEY=test-local-key",
+                        "OPENAI_IMAGE_MODEL=Image-2",
+                        "OPENAI_BASE_URL=https://ai.maok.shop",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            loaded = load_local_env_files(Path(tmpdir))
+            assert loaded == [env_file]
+            assert os.environ["OPENAI_API_KEY"] == "test-local-key"
+            assert os.environ["OPENAI_IMAGE_MODEL"] == "Image-2"
+            assert os.environ["OPENAI_BASE_URL"] == "https://ai.maok.shop"
+        finally:
+            for key, value in old_values.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
+
+    print("test_demo_server_loads_untracked_local_aigc_env_file passed.")
 
 
 def test_demo_aigc_preview_validation_error():
@@ -11020,11 +11240,21 @@ def test_demo_static_aigc_entry_contains_controls():
     assert 'id="aigc-sample"' in html
     assert 'id="aigc-prompt"' in html
     assert 'id="aigc-style"' in html
+    assert 'id="aigc-mode-controls"' in html
+    assert 'id="aigc-frame-count"' in html
+    assert 'id="aigc-preview-panel"' in html
+    assert 'data-aigc-mode="template"' in html
+    assert 'data-aigc-mode="live_image"' in html
+    assert 'id="aigc-frame-count" type="number" min="1" max="4" step="1" value="4"' in html
     assert '"/api/aigc/preview"' in script
     assert "renderAigcPreview" in script
+    assert "renderAigcLivePreview" in script
+    assert "renderAigcGeneratedPlayer" in script
+    assert "generation_mode" in script
+    assert "generated_images" in script
     side_menu = html.split('<nav class="side-menu"', 1)[1].split("</nav>", 1)[0]
     place_panel = html.split('data-panel="place"', 1)[1].split('data-panel="diary"', 1)[0]
-    assert 'data-tab="aigc"' not in side_menu
+    assert 'data-tab="aigc"' in side_menu
     assert 'data-panel="catering"' not in html
     assert 'id="catering-form"' in place_panel
     assert place_panel.find('id="place-form"') < place_panel.find('id="catering-form"')
@@ -11032,9 +11262,12 @@ def test_demo_static_aigc_entry_contains_controls():
     assert 'data-tab="aigc"' in html
     assert 'data-tab="route"' in html
     assert '场所与美食' in html
+    assert 'AIGC 预览' in html
     assert '帮助与演示' in html
     assert '打开 AIGC 演示' in html
-    assert '第十三周冻结版仅保留可见演示闭环' in html
+    assert '模板预览' in html
+    assert '实时生成' in html
+    assert 'OPENAI_API_KEY' in html
     print("test_demo_static_aigc_entry_contains_controls passed.")
 
 
@@ -11261,6 +11494,12 @@ def run_all_tests():
     test_demo_static_m22_nearby_place_search_controls()
     test_demo_static_m31b_nearby_profiles_are_used_by_ui()
     test_demo_aigc_preview_returns_template_storyboard()
+    test_demo_aigc_live_image_without_key_falls_back_to_template()
+    test_demo_aigc_live_image_stub_success_returns_generated_frames()
+    test_demo_aigc_live_image_requests_frames_one_by_one()
+    test_demo_aigc_live_image_keeps_partial_frames_after_later_error()
+    test_demo_aigc_openai_base_url_resolves_image_endpoint()
+    test_demo_server_loads_untracked_local_aigc_env_file()
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()
     test_demo_route_overlay_contains_indoor_note()

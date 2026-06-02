@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
+import os
 import sys
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -24,6 +25,37 @@ STATIC_FILES = {
     "/app.js": "app.js",
     "/styles.css": "styles.css",
 }
+
+LOCAL_ENV_FILES = (
+    ".env.local",
+    ".env.aigc.local",
+)
+
+
+def load_local_env_files(root_dir: Path | None = None) -> list[Path]:
+    """Load untracked local KEY=VALUE files before the demo service starts."""
+    repo_root = root_dir or Path(__file__).resolve().parents[2]
+    loaded: list[Path] = []
+    for file_name in LOCAL_ENV_FILES:
+        env_path = repo_root / file_name
+        if not env_path.is_file():
+            continue
+        _load_env_file(env_path)
+        loaded.append(env_path)
+    return loaded
+
+
+def _load_env_file(env_path: Path) -> None:
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if not key:
+            continue
+        value = value.strip().strip('"').strip("'")
+        os.environ.setdefault(key, value)
 
 
 def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
@@ -158,6 +190,13 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
                 if vendor_root not in file_path.parents and file_path != vendor_root:
                     self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
                     return
+            elif path.startswith("/generated/"):
+                generated_name = path.removeprefix("/generated/")
+                file_path = (static_root / "generated" / generated_name).resolve()
+                generated_root = (static_root / "generated").resolve()
+                if generated_root not in file_path.parents and file_path != generated_root:
+                    self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
+                    return
             else:
                 self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
                 return
@@ -280,12 +319,16 @@ def main() -> None:
     parser.add_argument("--site", default=None, help="site id, default uses global_sites.json")
     args = parser.parse_args()
 
+    loaded_env_files = load_local_env_files()
     service = DemoUIService(site_id=args.site)
     handler_class = build_handler(service)
     server = ThreadingHTTPServer((args.host, args.port), handler_class)
 
     print(f"Member B minimal demo UI running at http://{args.host}:{args.port}")
     print(f"Site: {service.site_meta['name']} ({service.site_id})")
+    if loaded_env_files:
+        names = ", ".join(path.name for path in loaded_env_files)
+        print(f"Loaded local env file(s): {names}")
     print("Press Ctrl+C to stop.")
 
     try:

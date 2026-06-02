@@ -8,7 +8,13 @@ This module keeps the web demo thin:
 
 from __future__ import annotations
 
+import base64
+import concurrent.futures
 import json
+import os
+import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -194,6 +200,12 @@ FEATURE_NAVIGATION = [
         "status": "ready",
     },
     {
+        "id": "aigc",
+        "label": "AIGC 预览",
+        "description": "选择本地图片样例并输入文字描述，直接浏览 GIF 分镜预览。",
+        "status": "ready",
+    },
+    {
         "id": "help",
         "label": "帮助与演示",
         "description": "查看系统演示链路、启动方式、页面操作提示和冻结版口径。",
@@ -218,7 +230,7 @@ HELP_CONTENT = {
     ],
     "checks": [
         "站点选择器已出现在主入口，PKU 为深度导航核心站点，扩展校园用于站点切换和课程规模演示。",
-        "主导航已固定为正式产品的页面结构，入口顺序以综合查询、导航规划、场所与美食、日记中心、帮助与演示为准。",
+        "主导航已固定为正式产品的页面结构，入口顺序以综合查询、导航规划、场所与美食、日记中心、AIGC 预览、帮助与演示为准。",
         "查询、推荐、路径、日记和 AIGC 轻量预览保持主链路可演示。",
     ],
     "map_acceptance": [
@@ -328,6 +340,12 @@ OSM_LAYER_FILES = {
 OSM_METADATA_FILE = "osm_extract_metadata.json"
 OSM_EDGE_MATCHES_FILE = "edge_osm_geometry_matches.json"
 DEFAULT_NEARBY_RADIUS_OPTIONS = (200, 500, 800, 1200)
+AIGC_GENERATED_STATIC_DIR = Path(__file__).resolve().parent / "static" / "generated" / "aigc"
+AIGC_GENERATED_URL_PREFIX = "/generated/aigc"
+AIGC_MAX_FRAME_COUNT = 4
+AIGC_OPENAI_IMAGE_ENDPOINT = "https://api.openai.com/v1/images/generations"
+AIGC_OPENAI_IMAGE_TIMEOUT_S = 45
+DEFAULT_OPENAI_IMAGE_MODEL = "gpt-image-1"
 
 
 def normalize_text(value: Any) -> str:
@@ -1497,12 +1515,15 @@ class DemoUIService:
         request = payload or {}
         sample_id = normalize_text(request.get("sample_id"))
         sample = self._resolve_aigc_sample(sample_id)
+        mode = self._normalize_aigc_mode(request.get("mode"))
+        provider = self._normalize_aigc_provider(request.get("provider"))
+        frame_count = self._normalize_aigc_frame_count(request.get("frame_count"))
         if sample is None:
             return build_error_response(
                 f"aigc sample not found: {sample_id}",
                 query_type="aigc_preview",
                 filters={"sample_id": sample_id},
-                metadata=self._build_aigc_metadata(),
+                metadata=self._build_aigc_metadata(generation_mode=mode),
             )
 
         prompt = normalize_text(request.get("prompt")) or normalize_text(sample.get("text_prompt"))
@@ -1511,23 +1532,51 @@ class DemoUIService:
                 "aigc prompt cannot be empty",
                 query_type="aigc_preview",
                 filters={"sample_id": sample_id},
-                metadata=self._build_aigc_metadata(),
+                metadata=self._build_aigc_metadata(generation_mode=mode),
             )
 
         style = normalize_text(request.get("style")) or normalize_text(sample.get("style")) or "warm_storyboard"
         duration_s = self._normalize_duration(request.get("duration_s"), sample.get("duration_s"))
-        preview = self._build_aigc_preview(sample, prompt, style, duration_s)
+        preview = self._build_aigc_preview(
+            sample,
+            prompt,
+            style,
+            duration_s,
+            frame_count=frame_count,
+        )
+        message = "aigc preview generated"
+        metadata = self._build_aigc_metadata(generation_mode=preview["generation_mode"])
+
+        if mode == "live_image":
+            preview, message = self._build_aigc_live_image_preview(
+                preview,
+                sample,
+                prompt,
+                style,
+                duration_s,
+                frame_count,
+                provider,
+            )
+            metadata = self._build_aigc_metadata(
+                generation_mode=preview["generation_mode"],
+                provider=provider,
+                real_model_called=preview["source"]["real_model_called"],
+                fallback_used=preview["fallback_used"],
+            )
 
         return build_success_response(
             data=[preview],
-            message="aigc preview generated",
+            message=message,
             query_type="aigc_preview",
             filters={
                 "sample_id": preview["sample_id"],
                 "style": preview["style"],
                 "duration_s": preview["duration_s"],
+                "mode": mode,
+                "provider": provider,
+                "frame_count": frame_count,
             },
-            metadata=self._build_aigc_metadata(),
+            metadata=metadata,
         )
 
     def plan_route(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -2110,13 +2159,20 @@ class DemoUIService:
         prompt: str,
         style: str,
         duration_s: int,
+        *,
+        frame_count: int | None = None,
     ) -> dict[str, Any]:
         sample_id = normalize_text(sample.get("sample_id"))
         image_placeholder = normalize_text(sample.get("image_placeholder"))
         preview_placeholder = normalize_text(sample.get("preview_placeholder"))
         style_label = self._aigc_style_label(style)
         title = f"{style_label} · {self._aigc_sample_label(sample)}"
-        storyboard = self._build_aigc_storyboard(prompt, style, duration_s)
+        storyboard = self._build_aigc_storyboard(
+            prompt,
+            style,
+            duration_s,
+            frame_count=frame_count or AIGC_MAX_FRAME_COUNT,
+        )
 
         return {
             "id": f"preview_{sample_id}",
@@ -2131,7 +2187,13 @@ class DemoUIService:
             "output_type": normalize_text(sample.get("output_type")) or "storyboard",
             "preview_placeholder": preview_placeholder,
             "status": "template_preview_ready",
-            "prototype_notice": "AIGC 模板化预览：基于用户描述生成校园导览分镜动画，GIF 由 AI 视频模型生成。",
+            "generation_mode": "template_preview",
+            "provider": "local_template",
+            "fallback_used": False,
+            "fallback_reason": "",
+            "generated_images": [],
+            "frame_count": len(storyboard),
+            "prototype_notice": "AIGC 模板化预览：基于用户描述生成校园导览分镜动画，使用本地 JPG / GIF 可见输出。",
             "prompt_summary": self._summarize_prompt(prompt),
             "storyboard_frames": storyboard,
             "keyframes": [
@@ -2153,22 +2215,342 @@ class DemoUIService:
             },
         }
 
+    def _build_aigc_live_image_preview(
+        self,
+        preview: dict[str, Any],
+        sample: dict[str, Any],
+        prompt: str,
+        style: str,
+        duration_s: int,
+        frame_count: int,
+        provider: str,
+    ) -> tuple[dict[str, Any], str]:
+        api_key = normalize_text(os.environ.get("OPENAI_API_KEY"))
+        if not api_key:
+            return self._mark_aigc_template_fallback(preview, "missing OPENAI_API_KEY")
+
+        if provider != "openai":
+            return self._mark_aigc_template_fallback(preview, f"unsupported provider: {provider}")
+
+        model = normalize_text(os.environ.get("OPENAI_IMAGE_MODEL")) or DEFAULT_OPENAI_IMAGE_MODEL
+        try:
+            generated_images = self._call_openai_image_generation(
+                api_key=api_key,
+                model=model,
+                sample=sample,
+                prompt=prompt,
+                style=style,
+                duration_s=duration_s,
+                frame_count=frame_count,
+            )
+        except Exception as error:  # pragma: no cover - exercised through focused stubs
+            return self._mark_aigc_template_fallback(
+                preview,
+                f"{type(error).__name__}: {error}",
+            )
+
+        if not generated_images:
+            return self._mark_aigc_template_fallback(preview, "OpenAI returned no generated images")
+
+        storyboard = self._build_aigc_storyboard(
+            prompt,
+            style,
+            duration_s,
+            frame_count=len(generated_images),
+            image_urls=generated_images,
+        )
+        live_preview = preview.copy()
+        live_preview.update(
+            {
+                "id": f"live_{preview['sample_id']}_{int(time.time())}",
+                "preview_placeholder": generated_images[0],
+                "output_type": "live_image_storyboard",
+                "status": "live_image_ready",
+                "generation_mode": "live_image",
+                "provider": provider,
+                "fallback_used": False,
+                "fallback_reason": "",
+                "generated_images": generated_images,
+                "frame_count": len(generated_images),
+                "prototype_notice": "AIGC 实时分镜：已调用 OpenAI 图片生成 API，生成图片由前端轻量动画播放。",
+                "storyboard_frames": storyboard,
+                "keyframes": [
+                    {
+                        "time_s": frame["time_s"],
+                        "visual": frame["visual"],
+                        "image_url": frame.get("image_url", ""),
+                    }
+                    for frame in storyboard
+                ],
+                "generation_pipeline": [
+                    "读取本地输入图片样例和用户文字描述",
+                    f"调用 OpenAI 图片生成模型 {model}",
+                    f"生成 {len(generated_images)} 张实时分镜图",
+                    "保存到本地静态生成目录并返回前端播放",
+                ],
+                "source": {
+                    "sample_file": str(self._aigc_sample_path()),
+                    "real_model_called": True,
+                    "provider": provider,
+                    "model": model,
+                },
+            }
+        )
+        return live_preview, "aigc live image preview generated"
+
+    def _mark_aigc_template_fallback(
+        self,
+        preview: dict[str, Any],
+        reason: str,
+    ) -> tuple[dict[str, Any], str]:
+        fallback = preview.copy()
+        fallback.update(
+            {
+                "status": "template_fallback_ready",
+                "generation_mode": "template_fallback",
+                "provider": "openai",
+                "fallback_used": True,
+                "fallback_reason": reason,
+                "generated_images": [],
+                "prototype_notice": (
+                    "AIGC 实时分镜已回退到模板预览：保留本地 JPG / GIF 可见输出，"
+                    f"原因：{reason}。"
+                ),
+                "generation_pipeline": [
+                    "请求实时图片分镜",
+                    f"实时生成不可用：{reason}",
+                    "自动回退到第十三周模板预览",
+                    "返回可在 Web 中展示的本地 GIF 和分镜结构",
+                ],
+                "source": {
+                    **fallback.get("source", {}),
+                    "real_model_called": False,
+                    "fallback_used": True,
+                    "fallback_reason": reason,
+                },
+            }
+        )
+        return fallback, "aigc live image fallback to template preview"
+
+    def _call_openai_image_generation(
+        self,
+        *,
+        api_key: str,
+        model: str,
+        sample: dict[str, Any],
+        prompt: str,
+        style: str,
+        duration_s: int,
+        frame_count: int,
+    ) -> list[str]:
+        generated_by_index: dict[int, str] = {}
+        errors: list[BaseException] = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(frame_count, AIGC_MAX_FRAME_COUNT)) as executor:
+            futures = {
+                executor.submit(
+                    self._request_openai_image_batch_with_retry,
+                    api_key=api_key,
+                    model=model,
+                    sample=sample,
+                    prompt=prompt,
+                    style=style,
+                    duration_s=duration_s,
+                    frame_count=frame_count,
+                    batch_count=1,
+                    start_index=frame_index,
+                ): frame_index
+                for frame_index in range(1, frame_count + 1)
+            }
+            for future in concurrent.futures.as_completed(futures):
+                frame_index = futures[future]
+                try:
+                    image_urls = future.result()
+                except Exception as error:  # pragma: no cover - network edge path
+                    errors.append(error)
+                    continue
+                for offset, image_url in enumerate(image_urls):
+                    generated_by_index[frame_index + offset] = image_url
+
+        generated_images = [
+            generated_by_index[index]
+            for index in range(1, frame_count + 1)
+            if index in generated_by_index
+        ]
+        if generated_images:
+            return generated_images[:frame_count]
+        if errors:
+            raise errors[0]
+        return []
+
+    def _request_openai_image_batch_with_retry(self, **kwargs: Any) -> list[str]:
+        last_error: BaseException | None = None
+        for attempt in range(2):
+            try:
+                return self._request_openai_image_batch(**kwargs)
+            except (RuntimeError, TimeoutError, urllib.error.URLError, OSError) as error:
+                last_error = error
+                if attempt == 0:
+                    time.sleep(1)
+                    continue
+        if isinstance(last_error, RuntimeError):
+            raise last_error
+        raise RuntimeError(f"OpenAI image request failed: {type(last_error).__name__}: {last_error}") from last_error
+
+    def _request_openai_image_batch(
+        self,
+        *,
+        api_key: str,
+        model: str,
+        sample: dict[str, Any],
+        prompt: str,
+        style: str,
+        duration_s: int,
+        frame_count: int,
+        batch_count: int,
+        start_index: int,
+    ) -> list[str]:
+        request_body = {
+            "model": model,
+            "prompt": self._build_openai_image_prompt(sample, prompt, style, duration_s, frame_count),
+            "n": batch_count,
+            "size": "1024x1024",
+        }
+        request = urllib.request.Request(
+            self._resolve_openai_image_endpoint(),
+            data=json.dumps(request_body, ensure_ascii=False).encode("utf-8"),
+            headers=self._build_openai_request_headers(api_key),
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=self._openai_image_timeout_s()) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as error:
+            body = error.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"OpenAI image request failed with {error.code}: {body[:180]}") from error
+
+        data = payload.get("data") if isinstance(payload, dict) else None
+        if not isinstance(data, list):
+            raise RuntimeError("OpenAI image response missing data list")
+
+        generated_images: list[str] = []
+        for index, item in enumerate(data[:batch_count], start=start_index):
+            if not isinstance(item, dict):
+                continue
+            image_bytes = self._extract_openai_image_bytes(item)
+            if not image_bytes:
+                continue
+            generated_images.append(self._save_aigc_generated_image(image_bytes, index))
+        return generated_images
+
+    def _build_openai_image_prompt(
+        self,
+        sample: dict[str, Any],
+        prompt: str,
+        style: str,
+        duration_s: int,
+        frame_count: int,
+    ) -> str:
+        return (
+            "Create a campus guide storyboard still image. "
+            f"Scene request: {prompt}. "
+            f"Reference sample: {self._aigc_sample_label(sample)}. "
+            f"Style: {self._aigc_style_label(style)}. "
+            f"Storyboard length: {frame_count} frames across {duration_s} seconds. "
+            "Keep it suitable for a campus/scenic-area guide UI, with clear composition, no text overlays, "
+            "and consistent visual style across frames."
+        )
+
+    @staticmethod
+    def _extract_openai_image_bytes(item: dict[str, Any]) -> bytes:
+        b64_data = normalize_text(item.get("b64_json"))
+        if b64_data:
+            return base64.b64decode(b64_data)
+        image_url = normalize_text(item.get("url"))
+        if image_url:
+            request = urllib.request.Request(
+                image_url,
+                headers={
+                    "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+                    "User-Agent": self._openai_user_agent(),
+                },
+                method="GET",
+            )
+            with urllib.request.urlopen(request, timeout=DemoUIService._openai_image_timeout_s()) as response:
+                return response.read()
+        return b""
+
+    @staticmethod
+    def _build_openai_request_headers(api_key: str) -> dict[str, str]:
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": DemoUIService._openai_user_agent(),
+        }
+        referer = normalize_text(os.environ.get("OPENAI_HTTP_REFERER"))
+        app_title = normalize_text(os.environ.get("OPENAI_APP_TITLE"))
+        if referer:
+            headers["HTTP-Referer"] = referer
+        if app_title:
+            headers["X-Title"] = app_title
+        return headers
+
+    @staticmethod
+    def _openai_user_agent() -> str:
+        return normalize_text(os.environ.get("OPENAI_USER_AGENT")) or (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/125.0.0.0 Safari/537.36"
+        )
+
+    @staticmethod
+    def _openai_image_timeout_s() -> int:
+        try:
+            timeout_s = int(float(os.environ.get("OPENAI_IMAGE_TIMEOUT_S", "")))
+        except (TypeError, ValueError):
+            timeout_s = AIGC_OPENAI_IMAGE_TIMEOUT_S
+        return max(10, min(300, timeout_s))
+
+    def _save_aigc_generated_image(self, image_bytes: bytes, frame_index: int) -> str:
+        AIGC_GENERATED_STATIC_DIR.mkdir(parents=True, exist_ok=True)
+        file_name = f"aigc_{int(time.time() * 1000)}_{frame_index:02d}.png"
+        file_path = AIGC_GENERATED_STATIC_DIR / file_name
+        file_path.write_bytes(image_bytes)
+        return f"{AIGC_GENERATED_URL_PREFIX}/{file_name}"
+
+    @staticmethod
+    def _resolve_openai_image_endpoint() -> str:
+        explicit_endpoint = normalize_text(os.environ.get("OPENAI_IMAGE_API_URL"))
+        if explicit_endpoint:
+            return explicit_endpoint
+
+        base_url = normalize_text(os.environ.get("OPENAI_BASE_URL")).rstrip("/")
+        if not base_url:
+            return AIGC_OPENAI_IMAGE_ENDPOINT
+        if base_url.endswith("/v1"):
+            return f"{base_url}/images/generations"
+        return f"{base_url}/v1/images/generations"
+
     def _build_aigc_storyboard(
         self,
         prompt: str,
         style: str,
         duration_s: int,
+        *,
+        frame_count: int = AIGC_MAX_FRAME_COUNT,
+        image_urls: list[str] | None = None,
     ) -> list[dict[str, Any]]:
         style_label = self._aigc_style_label(style)
-        frame_count = 4
-        step = max(1, round(duration_s / frame_count))
+        normalized_frame_count = max(1, min(AIGC_MAX_FRAME_COUNT, int(frame_count or AIGC_MAX_FRAME_COUNT)))
+        step = max(1, round(duration_s / normalized_frame_count))
         summary = self._summarize_prompt(prompt)
         frame_templates = [
             ("开场", f"用{style_label}建立场景氛围：{summary}"),
             ("推进", "突出地点、人物动作和路线线索，形成可跟随的游览节奏。"),
             ("重点", "放大体验亮点，并补充文字贴片说明推荐理由。"),
             ("收束", "以导览提示和下一步路线建议结束预览。"),
-        ]
+        ][:normalized_frame_count]
+        image_urls = image_urls or []
 
         return [
             {
@@ -2177,14 +2559,26 @@ class DemoUIService:
                 "title": title,
                 "visual": visual,
                 "caption": f"{title}镜头：{visual}",
+                "image_url": image_urls[index - 1] if index <= len(image_urls) else "",
             }
             for index, (title, visual) in enumerate(frame_templates, start=1)
         ]
 
-    def _build_aigc_metadata(self) -> dict[str, Any]:
+    def _build_aigc_metadata(
+        self,
+        *,
+        generation_mode: str = "template_preview",
+        provider: str = "local_template",
+        real_model_called: bool = False,
+        fallback_used: bool = False,
+    ) -> dict[str, Any]:
         return {
-            "prototype_mode": "template_preview",
-            "real_model_called": False,
+            "prototype_mode": generation_mode,
+            "generation_mode": generation_mode,
+            "provider": provider,
+            "real_model_called": real_model_called,
+            "fallback_used": fallback_used,
+            "generated_static_dir": str(AIGC_GENERATED_STATIC_DIR),
             "data_source": {
                 "path": str(self._aigc_sample_path()),
                 "sample_count": len(self.aigc_samples),
@@ -2194,6 +2588,9 @@ class DemoUIService:
                 "prompt",
                 "style",
                 "duration_s",
+                "mode",
+                "provider",
+                "frame_count",
             ],
             "result_fields": [
                 "sample_id",
@@ -2204,8 +2601,31 @@ class DemoUIService:
                 "preview_placeholder",
                 "storyboard_frames",
                 "keyframes",
+                "generation_mode",
+                "provider",
+                "fallback_used",
+                "fallback_reason",
+                "generated_images",
             ],
         }
+
+    @staticmethod
+    def _normalize_aigc_mode(value: Any) -> str:
+        mode = normalize_text(value).casefold()
+        return mode if mode in {"template", "live_image"} else "template"
+
+    @staticmethod
+    def _normalize_aigc_provider(value: Any) -> str:
+        provider = normalize_text(value).casefold()
+        return provider or "openai"
+
+    @staticmethod
+    def _normalize_aigc_frame_count(value: Any) -> int:
+        try:
+            frame_count = int(float(value))
+        except (TypeError, ValueError):
+            frame_count = AIGC_MAX_FRAME_COUNT
+        return max(1, min(AIGC_MAX_FRAME_COUNT, frame_count))
 
     @staticmethod
     def _aigc_style_label(style: str) -> str:

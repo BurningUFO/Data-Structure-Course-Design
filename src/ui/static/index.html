@@ -37,6 +37,9 @@
               <button class="side-link" type="button" data-tab="diary">
                 <span class="side-label">日记中心</span>
               </button>
+              <button class="side-link" type="button" data-tab="aigc">
+                <span class="side-label">AIGC 预览</span>
+              </button>
               <button class="side-link" type="button" data-tab="help">
                 <span class="side-label">帮助与演示</span>
               </button>
@@ -360,7 +363,7 @@
                   <form id="aigc-form" class="stack-form">
                     <div class="form-section-heading">
                       <h3>AIGC 轻量预览</h3>
-                      <span>图片占位 + 文字描述 -> 分镜结果</span>
+                      <span>本地图片样例 + 文字描述 -> GIF 分镜预览</span>
                     </div>
                     <label class="field">
                       <span class="field-label">媒体样例</span>
@@ -370,13 +373,20 @@
                       <span class="field-label">文字描述</span>
                       <textarea id="aigc-prompt" rows="4" placeholder="描述希望生成的校园导览动画内容。"></textarea>
                     </label>
+                    <div class="field">
+                      <span class="field-label">生成模式</span>
+                      <div class="renderer-toggle compact-toggle aigc-mode-toggle" id="aigc-mode-controls" aria-label="AIGC 生成模式切换">
+                        <button class="renderer-toggle-button active" type="button" data-aigc-mode="template">模板预览</button>
+                        <button class="renderer-toggle-button" type="button" data-aigc-mode="live_image">实时生成</button>
+                      </div>
+                    </div>
                     <button class="primary-button form-primary-action" type="submit">生成轻量预览</button>
                     <div class="quick-row compact-presets" id="aigc-presets"></div>
                     <details class="form-advanced">
                       <summary>预览参数</summary>
                       <div class="form-advanced-grid">
                         <label class="field">
-                          <span class="field-label">图片占位</span>
+                          <span class="field-label">输入图片</span>
                           <input id="aigc-image" type="text" placeholder="选择样例后自动填充，可手动修改" />
                         </label>
                         <label class="field">
@@ -387,11 +397,18 @@
                           <span class="field-label">预览时长（秒）</span>
                           <input id="aigc-duration" type="number" min="3" max="15" step="1" value="8" />
                         </label>
+                        <label class="field">
+                          <span class="field-label">实时分镜张数</span>
+                          <input id="aigc-frame-count" type="number" min="1" max="4" step="1" value="4" />
+                        </label>
                       </div>
                     </details>
                     <p class="form-hint">
-                      当前只返回模板化预览结构，不调用真实生成模型；第十三周冻结版仅保留可见演示闭环。
+                      默认使用模板预览；切换到实时生成后会读取本机 OPENAI_API_KEY，失败时自动回退到模板预览。
                     </p>
+                    <section id="aigc-preview-panel" class="aigc-live-preview empty-state" aria-live="polite">
+                      选择样例并生成预览后，在这里直接展示 JPG / GIF 和分镜。
+                    </section>
                   </form>
                 </section>
 

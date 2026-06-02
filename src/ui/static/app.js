@@ -50,6 +50,7 @@ const state = {
   currentResults: [],
   currentRoute: null,
   selectedDiaryId: "",
+  aigcMode: "template",
   mapRenderer: "simple_svg",
   mapRenderToken: 0,
   basemapMode: "real_map",
@@ -393,6 +394,12 @@ function bindForms() {
 
   document.querySelector("#aigc-sample").addEventListener("change", (event) => {
     fillAigcFormFromSample(event.target.value);
+  });
+
+  document.querySelectorAll("[data-aigc-mode]").forEach((button) => {
+    button.addEventListener("click", () => {
+      setAigcMode(button.dataset.aigcMode || "template");
+    });
   });
 
   document.querySelector("#diary-create-form").addEventListener("submit", async (event) => {
@@ -791,14 +798,11 @@ function applyActiveTabState(tab) {
 
   state.activeTab = tab;
   document.body.dataset.activeTab = tab;
-  const visibleNavigationTab = tab === "aigc" ? "help" : tab;
 
   document.querySelectorAll("[data-tab]").forEach((item) => {
-    const isPrimaryEntry = item.classList.contains("side-link")
-      || item.classList.contains("feature-card");
     item.classList.toggle(
       "active",
-      item.dataset.tab === (isPrimaryEntry ? visibleNavigationTab : tab),
+      item.dataset.tab === tab,
     );
   });
 
@@ -1160,6 +1164,7 @@ function hydrateBootstrap(bootstrap) {
     handleMultiRoutePreset,
   );
   renderIndoorQuickStart();
+  setAigcMode("template");
   fillAigcFormFromSample(defaultAigcSampleId());
   renderFeatureGrid(bootstrap.navigation);
   renderHelpPanel(bootstrap.help);
@@ -1601,7 +1606,6 @@ function renderFeatureGrid(navigation) {
   if (!container) {
     return;
   }
-  const visibleNavigationTab = state.activeTab === "aigc" ? "help" : state.activeTab;
   container.innerHTML = navigation
     .map((item) => {
       const statusLabel = item.id === "route"
@@ -1612,7 +1616,7 @@ function renderFeatureGrid(navigation) {
             ? "可使用"
             : "功能扩展";
       return `
-        <button class="feature-card${item.id === visibleNavigationTab ? " active" : ""}" type="button" data-tab="${escapeHtml(item.id)}">
+        <button class="feature-card${item.id === state.activeTab ? " active" : ""}" type="button" data-tab="${escapeHtml(item.id)}">
           <span class="feature-status">${escapeHtml(statusLabel)}</span>
           <strong>${escapeHtml(item.label)}</strong>
           <span>${escapeHtml(item.description)}</span>
@@ -1678,7 +1682,7 @@ function updateWorkspaceHeading() {
   const secondaryFeatures = {
     aigc: {
       label: "AIGC 轻量预览",
-      description: "保留模板化轻量预览能力，强调系统具备多媒体扩展接口。",
+      description: "选择本地图片样例并输入文字描述，直接浏览 GIF 分镜预览。",
     },
   };
   const feature = state.bootstrap.navigation.find((item) => item.id === state.activeTab)
@@ -1690,7 +1694,7 @@ function updateWorkspaceHeading() {
     place: "围绕附近设施和餐饮推荐做答辩展示，结果优先支持定位和继续规划。",
     route: "地图优先展示当前路线、建筑入口和室内导航状态。",
     diary: "用全文检索和管理操作证明结果面板与路线入口可以互相联动。",
-    aigc: "保留模板化轻量预览能力，强调系统具备多媒体扩展接口。",
+    aigc: "选择本地图片样例并输入文字描述，直接浏览 GIF 分镜预览。",
     help: "这里汇总推荐演示链路、启动方式、帮助说明和冻结版口径。",
   };
   if (title) {
@@ -1848,8 +1852,24 @@ function handleAigcPreset(preset) {
   void runAigcPreview();
 }
 
+function setAigcMode(mode) {
+  state.aigcMode = mode === "live_image" ? "live_image" : "template";
+  document.querySelectorAll("[data-aigc-mode]").forEach((button) => {
+    const isActive = button.dataset.aigcMode === state.aigcMode;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+}
+
+function currentAigcMode() {
+  return state.aigcMode === "live_image" ? "live_image" : "template";
+}
+
 async function runAigcPreview() {
-  setStatus("正在生成 AIGC 轻量预览...", "loading");
+  const mode = currentAigcMode();
+  const isLiveMode = mode === "live_image";
+  setStatus(isLiveMode ? "正在调用模型生成 AIGC 实时分镜..." : "正在生成 AIGC 模板预览...", "loading");
+  renderAigcLivePreview(null, "loading", isLiveMode ? "正在调用模型生成实时分镜..." : "正在生成模板预览...");
   renderRoute(null, "AIGC 预览生成中。");
 
   try {
@@ -1858,6 +1878,9 @@ async function runAigcPreview() {
       prompt: document.querySelector("#aigc-prompt").value.trim(),
       style: document.querySelector("#aigc-style").value,
       duration_s: document.querySelector("#aigc-duration").value,
+      mode,
+      provider: "openai",
+      frame_count: document.querySelector("#aigc-frame-count").value,
     });
 
     state.currentResults = response.results || response.data || [];
@@ -1868,13 +1891,20 @@ async function runAigcPreview() {
     renderMap();
 
     if (!response.success) {
+      renderAigcLivePreview(null, "error", response.message || "AIGC 预览生成失败");
       setStatus(response.message || "AIGC 预览生成失败", "error");
       return;
     }
 
     const preview = state.currentResults[0];
+    renderAigcLivePreview(preview, "ready");
+    const statusSource = preview.generation_mode === "live_image"
+      ? "实时生成成功"
+      : preview.generation_mode === "template_fallback"
+        ? `已回退到模板预览：${preview.fallback_reason || "实时生成不可用"}`
+        : "模板预览已生成";
     setStatus(
-      `AIGC 轻量预览已生成：${preview.title}。当前为模板化原型，不调用真实模型。`,
+      `AIGC ${statusSource}：${preview.title}。`,
       "success",
     );
   } catch (error) {
@@ -1888,6 +1918,7 @@ async function runAigcPreview() {
       query_type: "aigc_preview_error",
       results: [],
     });
+    renderAigcLivePreview(null, "error", `AIGC 预览失败：${error.message}`);
     renderRoute(null, "AIGC 预览失败。");
     renderMap();
     setStatus(`AIGC 预览失败：${error.message}`, "error");
@@ -1905,6 +1936,7 @@ function fillAigcFormFromSample(sampleId) {
   document.querySelector("#aigc-prompt").value = sample.text_prompt || "";
   setSelectValue("#aigc-style", sample.style || "");
   document.querySelector("#aigc-duration").value = sample.duration_s || 8;
+  renderAigcLivePreview(sample, "sample");
 }
 
 function findAigcSample(sampleId) {
@@ -2639,6 +2671,119 @@ function renderAigcDetails(pipeline) {
   `;
 }
 
+function renderAigcLivePreview(item, mode = "empty", message = "") {
+  const panel = document.querySelector("#aigc-preview-panel");
+  if (!panel) {
+    return;
+  }
+
+  if (mode === "loading") {
+    panel.className = "aigc-live-preview aigc-live-preview-loading";
+    panel.textContent = message || "正在生成 AIGC 轻量预览...";
+    return;
+  }
+
+  if (mode === "error") {
+    panel.className = "aigc-live-preview aigc-live-preview-error";
+    panel.textContent = message || "AIGC 预览生成失败。";
+    return;
+  }
+
+  if (!item) {
+    panel.className = "aigc-live-preview empty-state";
+    panel.textContent = "选择样例并生成预览后，在这里直接展示 JPG / GIF 和分镜。";
+    return;
+  }
+
+  const isGenerated = mode === "ready" || Array.isArray(item.storyboard_frames);
+  const frames = Array.isArray(item.storyboard_frames) ? item.storyboard_frames : [];
+  const pipeline = Array.isArray(item.generation_pipeline) ? item.generation_pipeline : [];
+  const title = item.title || item.label || item.text_prompt || "AIGC 轻量预览";
+  const sourceImage = item.image_placeholder || "";
+  const outputPreview = item.preview_placeholder || "";
+  const status = item.status || (isGenerated ? "ready" : "sample");
+  const summary = item.prompt_summary || item.text_prompt || "";
+  const generationMode = item.generation_mode || (isGenerated ? "template_preview" : "sample");
+  const sourceLabel = aigcGenerationModeLabel(generationMode);
+  const sourceClass = generationMode === "live_image"
+    ? "status-pill-primary"
+    : generationMode === "template_fallback"
+      ? "status-pill-strong"
+      : "status-pill-muted";
+  const generatedImages = Array.isArray(item.generated_images) ? item.generated_images : [];
+  const liveImages = generatedImages.length
+    ? generatedImages
+    : frames.map((frame) => frame.image_url).filter(Boolean);
+  const imageMarkup = sourceImage && /\.(jpe?g|png|webp|gif)$/i.test(sourceImage)
+    ? `<img src="${escapeHtml(sourceImage)}" alt="AIGC 输入图片" loading="lazy" />`
+    : `<strong>${escapeHtml(sourceImage || "暂无输入图片")}</strong>`;
+  const previewMarkup = outputPreview && /\.(gif|jpe?g|png|webp)$/i.test(outputPreview)
+    ? `<img src="${escapeHtml(outputPreview)}" alt="AIGC 输出预览" loading="lazy" />`
+    : `<strong>${escapeHtml(outputPreview || "生成后显示 GIF 预览")}</strong>`;
+
+  panel.className = `aigc-live-preview${isGenerated ? " aigc-live-preview-ready" : " aigc-live-preview-sample"}`;
+  panel.innerHTML = `
+    <div class="aigc-live-heading">
+      <div>
+        <span class="status-pill ${sourceClass}">${escapeHtml(sourceLabel)}</span>
+        <h4>${escapeHtml(title)}</h4>
+      </div>
+      <div class="aigc-preview-meta">
+        <span class="metric-pill metric-pill-strong">${escapeHtml(status)}</span>
+        ${item.style_label || item.style ? `<span class="metric-pill">${escapeHtml(item.style_label || item.style)}</span>` : ""}
+        ${item.duration_s !== undefined ? `<span class="metric-pill">${item.duration_s} 秒</span>` : ""}
+        ${item.frame_count !== undefined ? `<span class="metric-pill">${item.frame_count} 张分镜</span>` : ""}
+      </div>
+    </div>
+    ${item.fallback_used ? `<p class="aigc-fallback-note">已回退到模板预览：${escapeHtml(item.fallback_reason || "实时生成不可用")}</p>` : ""}
+    ${summary ? `<p class="aigc-preview-summary">${escapeHtml(summary)}</p>` : ""}
+    <div class="aigc-live-media-grid">
+      <figure class="aigc-live-media-card">
+        <figcaption>输入 JPG</figcaption>
+        ${imageMarkup}
+      </figure>
+      <figure class="aigc-live-media-card aigc-live-media-card-primary">
+        <figcaption>${generationMode === "live_image" ? "实时分镜播放" : "输出 GIF 预览"}</figcaption>
+        ${liveImages.length ? renderAigcGeneratedPlayer(liveImages, frames) : previewMarkup}
+      </figure>
+    </div>
+    ${isGenerated ? renderAigcPreview(item) : ""}
+    ${!isGenerated && pipeline.length ? renderAigcDetails(pipeline) : ""}
+  `;
+}
+
+function aigcGenerationModeLabel(mode) {
+  if (mode === "live_image") {
+    return "live_image";
+  }
+  if (mode === "template_fallback") {
+    return "template_fallback";
+  }
+  if (mode === "template_preview") {
+    return "template_preview";
+  }
+  return "当前样例";
+}
+
+function renderAigcGeneratedPlayer(images, frames) {
+  return `
+    <div class="aigc-generated-player" style="--aigc-frame-count:${Math.max(1, images.length)}">
+      ${images
+        .map((src, index) => {
+          const frame = frames[index] || {};
+          const title = frame.title || `分镜 ${index + 1}`;
+          return `
+            <figure class="aigc-generated-frame" style="--aigc-frame-index:${index}">
+              <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" />
+              <figcaption>${escapeHtml(title)}</figcaption>
+            </figure>
+          `;
+        })
+        .join("")}
+    </div>
+  `;
+}
+
 function renderResultCard(item, index, queryType = "") {
   const title = escapeHtml(item.name || item.title || item.route_target_name || "未命名结果");
   const description = item.snippet
@@ -2773,10 +2918,13 @@ function renderAigcPreview(item) {
   const frames = Array.isArray(item.storyboard_frames) ? item.storyboard_frames : [];
   const pipeline = Array.isArray(item.generation_pipeline) ? item.generation_pipeline : [];
   const previewSummary = item.prompt_summary || item.text_prompt || "";
+  const generationMode = item.generation_mode || "template_preview";
+  const generatedImages = Array.isArray(item.generated_images) ? item.generated_images : [];
   const previewMetrics = [
-    `<span class="metric-pill metric-pill-strong">模板分镜</span>`,
+    `<span class="metric-pill metric-pill-strong">${escapeHtml(aigcGenerationModeLabel(generationMode))}</span>`,
     item.style_label ? `<span class="metric-pill">${escapeHtml(item.style_label)}</span>` : "",
     item.duration_s !== undefined ? `<span class="metric-pill">${item.duration_s} 秒</span>` : "",
+    item.frame_count !== undefined ? `<span class="metric-pill">${item.frame_count} 张分镜</span>` : "",
   ]
     .filter(Boolean)
     .join("");
@@ -2787,14 +2935,16 @@ function renderAigcPreview(item) {
     <div class="aigc-preview-block">
       <p class="prototype-notice">${escapeHtml(item.prototype_notice || "")}</p>
       ${previewMetrics ? `<div class="aigc-preview-meta">${previewMetrics}</div>` : ""}
+      ${item.fallback_used ? `<p class="aigc-fallback-note">已回退到模板预览：${escapeHtml(item.fallback_reason || "实时生成不可用")}</p>` : ""}
       ${previewSummary ? `<p class="aigc-preview-summary">${escapeHtml(previewSummary)}</p>` : ""}
-      ${previewImg}
+      ${generatedImages.length ? renderAigcGeneratedPlayer(generatedImages, frames) : previewImg}
       <div class="storyboard-grid">
         ${frames
           .map((frame) => `
             <article class="storyboard-frame">
               <span>${frame.time_s}s</span>
               <strong>${escapeHtml(frame.title)}</strong>
+              ${frame.image_url ? `<img src="${escapeHtml(frame.image_url)}" alt="${escapeHtml(frame.title)}" loading="lazy" />` : ""}
               <p>${escapeHtml(frame.visual || frame.caption || "")}</p>
             </article>
           `)

@@ -1,4 +1,6 @@
 import json
+import os
+import sys
 import threading
 import urllib.error
 import urllib.parse
@@ -7,6 +9,8 @@ from contextlib import contextmanager
 from html.parser import HTMLParser
 from http.server import ThreadingHTTPServer
 from pathlib import Path
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.ui.demo_service import DemoUIService
 from src.ui.demo_server import build_handler
@@ -130,6 +134,8 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
         "route-transport",
         "multi-route-form",
         "multi-route-targets",
+        "aigc-mode-controls",
+        "aigc-frame-count",
         "map-renderer-controls",
         "map-renderer-status",
         "map-basemap-status",
@@ -140,13 +146,13 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
         "route-steps",
         "indoor-panel",
         "results-list",
+        "aigc-preview-panel",
     }
     assert required_ids <= parser.ids
     assert {"home", "app"} <= parser.data_pages
     assert {"scenic", "place", "route", "diary", "aigc", "help"} <= parser.data_tabs
-    for tab in ["scenic", "route", "place", "diary", "help"]:
+    for tab in ["scenic", "route", "place", "diary", "aigc", "help"]:
         assert f'data-tab="{tab}"' in side_menu
-    assert 'data-tab="aigc"' not in side_menu
     assert 'data-tab="catering"' not in html
     assert 'data-panel="catering"' not in html
     assert 'id="catering-form"' in place_panel
@@ -154,6 +160,9 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
     assert parser.map_renderers == {"leaflet_geo", "simple_svg"}
     assert parser.map_basemaps == {"real_map", "none"}
     assert parser.demo_actions == {"single-route"}
+    assert 'data-aigc-mode="template"' in html
+    assert 'data-aigc-mode="live_image"' in html
+    assert "renderAigcGeneratedPlayer" in app_js
 
     assert "/vendor/leaflet/leaflet.css" in html
     assert "/vendor/leaflet/leaflet.js" in html
