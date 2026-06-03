@@ -170,6 +170,165 @@ def test_fuzzy_search_supports_synonyms_and_initials():
     print("test_fuzzy_search_supports_synonyms_and_initials passed.")
 
 
+def test_fuzzy_search_supports_typo_tolerance():
+    records = [
+        {
+            "id": "svc_020",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 98,
+            "rating": 4.9,
+            "tags": ["学习"],
+            "keywords": ["图书馆", "阅览室"],
+            "description": "适合自习和借阅图书。",
+        },
+        {
+            "id": "svc_021",
+            "name": "校园洗手间",
+            "category": "restroom",
+            "heat": 60,
+            "rating": 4.1,
+            "tags": ["公共服务"],
+            "keywords": ["卫生间"],
+            "description": "位于体育场旁边。",
+        },
+    ]
+
+    library_result = fuzzy_search(records, "图书管")
+    restroom_result = fuzzy_search(records, "洗手简")
+
+    assert library_result[0]["id"] == "svc_020"
+    assert restroom_result[0]["id"] == "svc_021"
+    assert library_result[0]["_match_score"] > 0
+    print("test_fuzzy_search_supports_typo_tolerance passed.")
+
+
+def test_fuzzy_search_ignores_spaces_and_punctuation():
+    records = [
+        {
+            "id": "svc_030",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 90,
+            "rating": 4.8,
+            "tags": ["学习"],
+            "keywords": ["图书馆"],
+            "description": "适合阅读。",
+        }
+    ]
+
+    result = fuzzy_search(records, " 图 书-馆！ ")
+
+    assert result[0]["id"] == "svc_030"
+    print("test_fuzzy_search_ignores_spaces_and_punctuation passed.")
+
+
+def test_fuzzy_search_supports_subsequence_abbreviation():
+    records = [
+        {
+            "id": "svc_040",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 90,
+            "rating": 4.8,
+            "tags": ["学习"],
+            "keywords": ["图书馆"],
+            "description": "适合阅读。",
+        },
+        {
+            "id": "svc_041",
+            "name": "体育场",
+            "category": "sports",
+            "heat": 88,
+            "rating": 4.7,
+            "tags": ["运动"],
+            "keywords": ["操场"],
+            "description": "适合跑步。",
+        },
+    ]
+
+    library_result = fuzzy_search(records, "图馆")
+    sports_result = fuzzy_search(records, "体场")
+
+    assert library_result[0]["id"] == "svc_040"
+    assert sports_result[0]["id"] == "svc_041"
+    print("test_fuzzy_search_supports_subsequence_abbreviation passed.")
+
+
+def test_fuzzy_search_rewards_multi_keyword_coverage():
+    records = [
+        {
+            "id": "svc_050",
+            "name": "图书馆自习区",
+            "category": "education",
+            "heat": 80,
+            "rating": 4.8,
+            "tags": ["学习"],
+            "keywords": ["图书馆", "自习"],
+            "description": "适合安静学习。",
+        },
+        {
+            "id": "svc_051",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 99,
+            "rating": 4.9,
+            "tags": ["学习"],
+            "keywords": ["图书馆"],
+            "description": "适合借阅图书。",
+        },
+    ]
+
+    result = fuzzy_search(records, "图书馆 自习")
+
+    assert result[0]["id"] == "svc_050"
+    assert result[0]["_match_score"] > result[1]["_match_score"]
+    print("test_fuzzy_search_rewards_multi_keyword_coverage passed.")
+
+
+def test_fuzzy_search_does_not_split_string_fields_into_characters():
+    records = [
+        {
+            "id": "svc_060",
+            "name": "校园服务点",
+            "category": "service",
+            "heat": 70,
+            "rating": 4.2,
+            "tags": "校园服务",
+            "keywords": "报修服务",
+            "description": {"summary": "处理宿舍报修和生活咨询。"},
+        }
+    ]
+
+    result = fuzzy_search(records, "报修服务")
+
+    assert result[0]["id"] == "svc_060"
+    assert result[0]["_match_score"] >= 85
+    print("test_fuzzy_search_does_not_split_string_fields_into_characters passed.")
+
+
+def test_fuzzy_search_returns_match_details():
+    records = [
+        {
+            "id": "svc_070",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 90,
+            "rating": 4.8,
+            "tags": ["学习"],
+            "keywords": ["图书馆"],
+            "description": "适合阅读。",
+        }
+    ]
+
+    result = fuzzy_search(records, "图书管")
+
+    assert result[0]["_match_detail"]
+    assert result[0]["_match_detail"][0]["field_label"] == "名称"
+    assert result[0]["_match_detail"][0]["match_type"] in {"typo", "subsequence", "contains"}
+    print("test_fuzzy_search_returns_match_details passed.")
+
+
 def test_response_builder():
     success = build_success_response(
         data=[{"id": "poi_001"}],
@@ -272,6 +431,24 @@ def test_default_site_data_query_flow():
     assert response["data"][0]["name"] == "图书馆"
     assert response["data"][0]["node_id"] == "library"
     print("test_default_site_data_query_flow passed.")
+
+
+def test_search_service_fuzzy_mode_supports_typo_tolerance():
+    response = search_and_recommend(
+        keyword="图书管",
+        category="education",
+        match_mode="fuzzy",
+        sort_field="heat",
+        limit=5,
+    )
+
+    assert response["success"] is True
+    assert response["query_type"] == "scenic_search"
+    assert response["total"] >= 1
+    assert response["data"][0]["name"] == "图书馆"
+    assert response["data"][0]["node_id"] == "library"
+    assert response["data"][0]["_match_score"] > 0
+    print("test_search_service_fuzzy_mode_supports_typo_tolerance passed.")
 
 
 def test_search_places_distance_sort():
@@ -666,11 +843,18 @@ def run_all_tests():
     test_fuzzy_search()
     test_fuzzy_search_matches_name_tags_and_description()
     test_fuzzy_search_supports_synonyms_and_initials()
+    test_fuzzy_search_supports_typo_tolerance()
+    test_fuzzy_search_ignores_spaces_and_punctuation()
+    test_fuzzy_search_supports_subsequence_abbreviation()
+    test_fuzzy_search_rewards_multi_keyword_coverage()
+    test_fuzzy_search_does_not_split_string_fields_into_characters()
+    test_fuzzy_search_returns_match_details()
     test_response_builder()
     test_query_and_recommend_flow()
     test_cli_wrapper_distance_response_and_print()
     test_default_site_data_load()
     test_default_site_data_query_flow()
+    test_search_service_fuzzy_mode_supports_typo_tolerance()
     test_search_places_distance_sort()
     test_search_places_keyword_only_scope()
     test_search_places_nearby_radius_uses_graph_distance()

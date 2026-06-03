@@ -5,6 +5,9 @@ const MAP_MIN_SCALE = 0.75;
 const MAP_MAX_SCALE = 4;
 const MAP_ZOOM_STEP = 0.0016;
 const PRIORITY_METRIC_LIMIT = 4;
+const UX_STORAGE_KEY = "tourgraph_ux_state_v1";
+const RECENT_SEARCH_LIMIT = 5;
+const MATCH_SEPARATOR_PATTERN = /[\s,，。.;；:：、/\\|_\-+()（）\[\]【】{}<>《》"'`~!！?？@#$%^&*=]+/u;
 const DEMO_ROUTE_SCENARIOS = {
   single: {
     start_node_id: "gate_north",
@@ -37,7 +40,7 @@ function createDefaultIndoorState() {
 
 const state = {
   bootstrap: null,
-  activePage: "home",
+  activePage: "app",
   activeTab: "route",
   expandedPanel: "",
   expandedPanelElement: null,
@@ -48,9 +51,13 @@ const state = {
   focusedNodeId: "",
   nearbyCenterNodeId: "",
   currentResults: [],
+  currentQueryType: "",
   currentRoute: null,
+  recentSearches: [],
+  selectedResultIndex: -1,
   selectedDiaryId: "",
   aigcMode: "template",
+  aigcCapabilities: {},
   mapRenderer: "simple_svg",
   mapRenderToken: 0,
   basemapMode: "real_map",
@@ -152,6 +159,8 @@ async function loadSiteBootstrap(siteId) {
   state.currentStartNodeId = bootstrap.default_start_node;
   hydrateBootstrap(bootstrap);
   resetInteractionState({ clearForms: true });
+  restoreUserContext();
+  syncUserContextControls();
   if (state.activePage === "app") {
     renderMap();
   }
@@ -160,6 +169,30 @@ async function loadSiteBootstrap(siteId) {
 
 function bindPageShell() {
   document.addEventListener("click", (event) => {
+    const tourRunButton = event.target.closest("[data-tour-run-all]");
+    if (tourRunButton) {
+      void runGuidedTour();
+      return;
+    }
+
+    const tourStepButton = event.target.closest("[data-tour-step]");
+    if (tourStepButton) {
+      void runTourStep(tourStepButton.dataset.tourStep || "");
+      return;
+    }
+
+    const suggestionButton = event.target.closest("[data-empty-suggestion]");
+    if (suggestionButton) {
+      void runEmptySuggestion(suggestionButton.dataset.emptySuggestion || "");
+      return;
+    }
+
+    const recentSearchButton = event.target.closest("[data-recent-search]");
+    if (recentSearchButton) {
+      void runRecentSearch(Number(recentSearchButton.dataset.recentSearch));
+      return;
+    }
+
     const pageButton = event.target.closest("[data-page]");
     if (!pageButton) {
       return;
@@ -438,6 +471,7 @@ function bindForms() {
       clearRoute();
     }
     updateActiveFeatureCaption();
+    persistUserContext();
     setStatus(
       `当前起点已切换为 ${getNodeName(state.currentStartNodeId)}。`,
       "info",
@@ -447,12 +481,14 @@ function bindForms() {
   document.querySelector("#user-selector").addEventListener("change", (event) => {
     applySelectedUser(event.target.value);
     updateActiveFeatureCaption();
+    persistUserContext();
     setStatus(currentInterestStatusText(), "info");
   });
 
   document.querySelector("#interest-tags").addEventListener("change", () => {
     state.currentInterests = readInterestTags();
     updateActiveFeatureCaption();
+    persistUserContext();
     setStatus(currentInterestStatusText(), "info");
   });
 
@@ -483,6 +519,12 @@ function bindForms() {
   bindMapDemoControls();
 
   document.querySelector("#results-list").addEventListener("click", async (event) => {
+    const detailCloseButton = event.target.closest("[data-close-result-detail]");
+    if (detailCloseButton) {
+      closeResultDetailDrawer();
+      return;
+    }
+
     const diaryEditButton = event.target.closest("[data-diary-edit-id]");
     if (diaryEditButton) {
       loadDiaryIntoForm(diaryEditButton.dataset.diaryEditId);
@@ -518,10 +560,59 @@ function bindForms() {
     const routeButton = event.target.closest("[data-route-target]");
     if (routeButton) {
       await planRoute(routeButton.dataset.routeTarget);
+      return;
+    }
+
+    const resultCard = event.target.closest("[data-result-index]");
+    if (resultCard) {
+      selectResultByIndex(Number(resultCard.dataset.resultIndex), { openDetail: true, focusMap: true });
+    }
+  });
+
+  document.querySelector("#results-list").addEventListener("mouseover", (event) => {
+    const resultCard = event.target.closest("[data-result-index]");
+    if (resultCard) {
+      focusResultMapNode(Number(resultCard.dataset.resultIndex), { transient: true });
+    }
+  });
+
+  document.querySelector("#results-list").addEventListener("focusin", (event) => {
+    const resultCard = event.target.closest("[data-result-index]");
+    if (resultCard) {
+      focusResultMapNode(Number(resultCard.dataset.resultIndex), { transient: true });
     }
   });
 
   document.addEventListener("click", async (event) => {
+    const detailCloseButton = event.target.closest("[data-close-result-detail]");
+    if (detailCloseButton) {
+      closeResultDetailDrawer();
+      return;
+    }
+
+    const detailDrawer = event.target.closest("#result-detail-drawer");
+    if (detailDrawer) {
+      const focusButton = event.target.closest("[data-focus-node]");
+      if (focusButton) {
+        state.focusedNodeId = focusButton.dataset.focusNode;
+        renderMap();
+        setStatus(`已在地图中定位 ${getNodeName(state.focusedNodeId)}。`, "info");
+        return;
+      }
+
+      const nearbyButton = event.target.closest("[data-nearby-center]");
+      if (nearbyButton) {
+        await runNearbySearch(nearbyButton.dataset.nearbyCenter);
+        return;
+      }
+
+      const routeButton = event.target.closest("[data-route-target]");
+      if (routeButton) {
+        await planRoute(routeButton.dataset.routeTarget);
+        return;
+      }
+    }
+
     const enterIndoorButton = event.target.closest("[data-enter-indoor]");
     if (enterIndoorButton) {
       const buildingId = enterIndoorButton.dataset.enterIndoor || "";
@@ -611,6 +702,18 @@ function bindMapInteractions() {
     event.preventDefault();
     zoomMapAt(event.offsetX, event.offsetY, event.deltaY);
   }, { passive: false });
+
+  svg.addEventListener("click", (event) => {
+    const nodeElement = event.target.closest("[data-map-node]");
+    if (!nodeElement) {
+      return;
+    }
+    const nodeId = nodeElement.dataset.mapNode || "";
+    if (!selectResultByNodeId(nodeId, { openDetail: true, scrollIntoView: true })) {
+      state.focusedNodeId = nodeId;
+      renderMap();
+    }
+  });
 
   svg.addEventListener("pointerdown", (event) => {
     if (event.button !== 0) {
@@ -837,7 +940,9 @@ function resetInteractionState(options = {}) {
   state.focusedNodeId = "";
   state.nearbyCenterNodeId = "";
   state.currentStartNodeId = state.bootstrap ? state.bootstrap.default_start_node : "";
+  state.selectedResultIndex = -1;
   state.selectedDiaryId = "";
+  closeResultDetailDrawer();
   resetMapViewState();
 
   if (options.clearForms) {
@@ -963,6 +1068,16 @@ function applySelectedUser(userId) {
   if (interestInput) {
     interestInput.value = state.currentInterests.join(", ");
   }
+}
+
+function syncUserContextControls() {
+  setSelectValue("#global-start-node", state.currentStartNodeId);
+  setSelectValue("#user-selector", state.currentUserId);
+  const interestInput = document.querySelector("#interest-tags");
+  if (interestInput) {
+    interestInput.value = state.currentInterests.join(", ");
+  }
+  renderRecentSearches();
 }
 
 function currentInterestStatusText() {
@@ -1164,12 +1279,162 @@ function hydrateBootstrap(bootstrap) {
     handleMultiRoutePreset,
   );
   renderIndoorQuickStart();
+  state.aigcCapabilities = bootstrap.aigc_capabilities || {};
   setAigcMode("template");
+  syncAigcModeAvailability();
   fillAigcFormFromSample(defaultAigcSampleId());
   renderFeatureGrid(bootstrap.navigation);
+  renderDemoTour(bootstrap.demo_tour || []);
   renderHelpPanel(bootstrap.help);
   updateActiveFeatureCaption();
   updateWorkspaceHeading();
+}
+
+function restoreUserContext() {
+  const stored = readStoredUxState();
+  if (!stored) {
+    return;
+  }
+
+  const startIds = startNodeIdSet();
+  if (startIds.has(stored.currentStartNodeId)) {
+    state.currentStartNodeId = stored.currentStartNodeId;
+  }
+
+  if (findBootstrapUser(stored.currentUserId)) {
+    state.currentUserId = stored.currentUserId;
+  }
+  state.currentInterests = Array.isArray(stored.currentInterests)
+    ? stored.currentInterests.filter(Boolean).slice(0, 8)
+    : state.currentInterests;
+  state.recentSearches = Array.isArray(stored.recentSearches)
+    ? stored.recentSearches.slice(0, RECENT_SEARCH_LIMIT)
+    : [];
+}
+
+function readStoredUxState() {
+  try {
+    const raw = window.localStorage.getItem(UX_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw);
+    if (!parsed || parsed.siteId !== currentSiteId()) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function persistUserContext() {
+  if (!state.bootstrap) {
+    return;
+  }
+  try {
+    window.localStorage.setItem(UX_STORAGE_KEY, JSON.stringify({
+      siteId: currentSiteId(),
+      currentStartNodeId: state.currentStartNodeId,
+      currentUserId: state.currentUserId,
+      currentInterests: state.currentInterests,
+      recentSearches: state.recentSearches,
+    }));
+  } catch {
+    // localStorage may be disabled in some browsers; ignore without breaking the demo.
+  }
+}
+
+function rememberSearch(label, queryType, payload = {}, endpoint = "") {
+  const text = label || searchLabelFromPayload(payload);
+  if (!text) {
+    return;
+  }
+  const entry = {
+    label: text,
+    query_type: queryType || "query",
+    endpoint,
+    payload,
+  };
+  state.recentSearches = [
+    entry,
+    ...state.recentSearches.filter((item) => item.label !== entry.label || item.query_type !== entry.query_type),
+  ].slice(0, RECENT_SEARCH_LIMIT);
+  persistUserContext();
+  renderRecentSearches();
+}
+
+function searchLabelFromPayload(payload = {}) {
+  const candidates = [
+    payload.keyword,
+    payload.query,
+    payload.cuisine,
+    payload.category,
+    payload.tag,
+    payload.destination,
+    payload.title,
+  ];
+  return candidates.find((value) => typeof value === "string" && value.trim())?.trim() || "";
+}
+
+function renderRecentSearches() {
+  const container = document.querySelector("#recent-searches");
+  if (!container) {
+    return;
+  }
+  if (!state.recentSearches.length) {
+    container.innerHTML = `<span class="recent-empty">暂无</span>`;
+    return;
+  }
+  container.innerHTML = state.recentSearches
+    .map((item, index) => `
+      <button class="quick-chip" type="button" data-recent-search="${index}">
+        ${escapeHtml(item.label)}
+      </button>
+    `)
+    .join("");
+}
+
+async function runRecentSearch(index) {
+  const entry = state.recentSearches[index];
+  if (!entry) {
+    return;
+  }
+  const tab = tabForQueryType(entry.query_type);
+  switchTab(tab, { openPage: true });
+  applySuggestionToForm({
+    tab,
+    payload: entry.payload || {},
+  });
+  await runQuery(entry.endpoint || endpointForQueryType(entry.query_type), {
+    ...(entry.payload || {}),
+    start_node_id: state.currentStartNodeId,
+    limit: 6,
+    ...(tab === "scenic" ? buildInterestPayload() : {}),
+  });
+}
+
+function tabForQueryType(queryType) {
+  if (queryType === "place_search" || queryType === "catering_recommend") {
+    return "place";
+  }
+  if (queryType === "diary_fulltext_search" || queryType === "diary_list") {
+    return "diary";
+  }
+  return "scenic";
+}
+
+function endpointForQueryType(queryType) {
+  if (queryType === "place_search") {
+    return "/api/search/places";
+  }
+  if (queryType === "catering_recommend") {
+    return "/api/recommend/catering";
+  }
+  if (queryType === "diary_fulltext_search") {
+    return "/api/diaries/fulltext";
+  }
+  return "/api/search/scenic";
 }
 
 function siteOptionLabel(site) {
@@ -1626,6 +1891,140 @@ function renderFeatureGrid(navigation) {
     .join("");
 }
 
+function renderDemoTour(steps = []) {
+  const containers = [
+    document.querySelector("#home-tour-steps"),
+    document.querySelector("#workspace-tour-steps"),
+  ].filter(Boolean);
+  if (!containers.length) {
+    return;
+  }
+
+  const markup = (steps || [])
+    .map((step, index) => `
+      <button class="tour-step" type="button" data-tour-step="${escapeHtml(step.id)}">
+        <span>${index + 1}</span>
+        <strong>${escapeHtml(step.label)}</strong>
+        <small>${escapeHtml(step.description || "")}</small>
+      </button>
+    `)
+    .join("");
+
+  containers.forEach((container) => {
+    container.innerHTML = markup || `<div class="empty-state">暂无演示步骤。</div>`;
+  });
+}
+
+function findTourStep(stepId) {
+  return (state.bootstrap?.demo_tour || []).find((step) => step.id === stepId) || null;
+}
+
+async function runGuidedTour() {
+  const steps = state.bootstrap?.demo_tour || [];
+  if (!steps.length) {
+    setStatus("当前站点没有配置演示向导。", "error");
+    return;
+  }
+
+  for (const step of steps) {
+    await runTourStep(step.id, { quietStart: true });
+  }
+  setStatus("演示向导已完成，可继续查看地图、结果和路径详情。", "success");
+}
+
+async function runTourStep(stepId, options = {}) {
+  const step = findTourStep(stepId);
+  if (!step) {
+    setStatus("演示步骤不存在。", "error");
+    return;
+  }
+
+  if (!options.quietStart) {
+    setStatus(`正在执行演示步骤：${step.label}。`, "loading");
+  }
+  markActiveTourStep(step.id);
+
+  const tab = step.tab || "route";
+  switchTab(tab, { openPage: true });
+
+  if (step.action === "scenic_search") {
+    document.querySelector("#scenic-keyword").value = step.keyword || "";
+    setSelectValue("#scenic-category", step.category || "");
+    await runQuery("/api/search/scenic", {
+      keyword: step.keyword || "",
+      category: step.category || "",
+      sort_field: document.querySelector("#scenic-sort").value,
+      start_node_id: state.currentStartNodeId,
+      limit: 6,
+      ...buildInterestPayload(),
+    });
+    return;
+  }
+
+  if (step.action === "single_route") {
+    const targetNodeId = firstExistingRouteTargetId([
+      step.target_node_id,
+      "library",
+      defaultRouteTargetId(),
+    ]);
+    setSelectValue("#route-target", targetNodeId);
+    setSelectValue("#route-strategy", "shortest_distance");
+    setSelectValue("#route-transport", "mixed");
+    await planRoute(targetNodeId);
+    return;
+  }
+
+  if (step.action === "indoor_route") {
+    const targetNodeId = firstExistingRouteTargetId([
+      step.target_node_id,
+      "lib_reading_room_1",
+      "library",
+      defaultRouteTargetId(),
+    ]);
+    setSelectValue("#route-target", targetNodeId);
+    await planRoute(targetNodeId);
+    return;
+  }
+
+  if (step.action === "nearby_search") {
+    const centerNodeId = firstExistingRouteTargetId([
+      step.center_node_id,
+      "library",
+      defaultRouteTargetId(),
+    ]);
+    await runNearbySearch(centerNodeId, {
+      category: step.category || "restroom",
+      radius_m: step.radius_m || 500,
+      keyword: step.keyword || "",
+    });
+    return;
+  }
+
+  if (step.action === "diary_fulltext") {
+    document.querySelector("#diary-query").value = step.query || "";
+    await runQuery("/api/diaries/fulltext", {
+      query: step.query || "",
+      limit: 6,
+    });
+    return;
+  }
+
+  if (step.action === "aigc_preview") {
+    fillAigcFormFromSample(step.sample_id || defaultAigcSampleId());
+    setAigcMode("template");
+    await runAigcPreview();
+    return;
+  }
+
+  setStatus(`暂不支持的演示动作：${step.action}`, "error");
+}
+
+function markActiveTourStep(stepId) {
+  document.querySelectorAll("[data-tour-step]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.tourStep === stepId);
+  });
+}
+
 function renderHelpPanel(help) {
   document.querySelector("#help-stage").textContent = help.stage;
   const fallbackLaunch = help.fallback_launch_command
@@ -1853,16 +2252,37 @@ function handleAigcPreset(preset) {
 }
 
 function setAigcMode(mode) {
-  state.aigcMode = mode === "live_image" ? "live_image" : "template";
+  state.aigcMode = mode === "live_image" && isAigcLiveAvailable() ? "live_image" : "template";
   document.querySelectorAll("[data-aigc-mode]").forEach((button) => {
     const isActive = button.dataset.aigcMode === state.aigcMode;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", isActive ? "true" : "false");
   });
+  syncAigcModeAvailability();
 }
 
 function currentAigcMode() {
-  return state.aigcMode === "live_image" ? "live_image" : "template";
+  return state.aigcMode === "live_image" && isAigcLiveAvailable() ? "live_image" : "template";
+}
+
+function isAigcLiveAvailable() {
+  return Boolean(state.aigcCapabilities?.live_image);
+}
+
+function syncAigcModeAvailability() {
+  const liveAvailable = isAigcLiveAvailable();
+  const reason = state.aigcCapabilities?.live_image_reason || "当前环境未开启实时生成";
+  const model = state.aigcCapabilities?.live_image_model || "OpenAI image model";
+  document.querySelectorAll("[data-aigc-mode='live_image']").forEach((button) => {
+    button.disabled = !liveAvailable;
+    button.title = liveAvailable ? `实时生成可用：${model}` : reason;
+  });
+  const hint = document.querySelector("#aigc-mode-hint");
+  if (hint) {
+    hint.textContent = liveAvailable
+      ? `实时生成已可用，当前模型：${model}；模板预览仍可离线演示。`
+      : `${reason}，已默认使用模板预览。`;
+  }
 }
 
 async function runAigcPreview() {
@@ -2411,6 +2831,7 @@ async function runQuery(url, payload) {
 
   try {
     const response = await apiPost(url, payload);
+    rememberSearch(searchLabelFromPayload(payload), response.query_type, payload, url);
     state.currentResults = response.results || response.data || [];
     state.currentRoute = null;
     state.focusedNodeId = firstMappableNodeId(state.currentResults);
@@ -2554,11 +2975,14 @@ function renderResults(response) {
   const meta = document.querySelector("#result-meta");
   const items = response.results || response.data || [];
   const queryType = response.query_type || "query";
+  state.currentQueryType = queryType;
 
   if (!items.length) {
+    state.selectedResultIndex = -1;
     container.className = "card-list empty-state";
-    container.textContent = response.message || "暂无结果，请在顶部功能入口选择功能并输入关键词。";
+    container.innerHTML = renderEmptyResultState(response);
     meta.textContent = "0 条结果";
+    closeResultDetailDrawer();
     return;
   }
 
@@ -2567,6 +2991,167 @@ function renderResults(response) {
   container.innerHTML = items
     .map((item, index) => renderResultCard(item, index, queryType))
     .join("");
+  if (state.selectedResultIndex < 0 || state.selectedResultIndex >= items.length) {
+    state.selectedResultIndex = firstSelectableResultIndex(items);
+  }
+  syncResultSelection();
+  if (isResultDetailOpen()) {
+    renderResultDetailDrawer(state.selectedResultIndex);
+  }
+}
+
+function firstSelectableResultIndex(items = state.currentResults) {
+  if (!items.length) {
+    return -1;
+  }
+  const mappableIndex = items.findIndex((item) => resolveResultRouteTargetId(item));
+  return mappableIndex >= 0 ? mappableIndex : 0;
+}
+
+function selectResultByIndex(index, options = {}) {
+  if (!Number.isInteger(index) || index < 0 || index >= state.currentResults.length) {
+    return false;
+  }
+  state.selectedResultIndex = index;
+  if (options.focusMap) {
+    focusResultMapNode(index);
+  }
+  syncResultSelection();
+  if (options.openDetail) {
+    openResultDetailDrawer(index);
+  } else if (isResultDetailOpen()) {
+    renderResultDetailDrawer(index);
+  }
+  if (options.scrollIntoView) {
+    document.querySelector(`[data-result-index="${index}"]`)?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  }
+  return true;
+}
+
+function selectResultByNodeId(nodeId, options = {}) {
+  if (!nodeId) {
+    return false;
+  }
+  const index = state.currentResults.findIndex((item) => resolveResultRouteTargetId(item) === nodeId);
+  if (index < 0) {
+    return false;
+  }
+  return selectResultByIndex(index, {
+    focusMap: options.focusMap !== false,
+    openDetail: options.openDetail !== false,
+    scrollIntoView: options.scrollIntoView !== false,
+  });
+}
+
+function focusResultMapNode(index) {
+  const item = state.currentResults[index];
+  const nodeId = item ? resolveResultRouteTargetId(item) : "";
+  if (!nodeId || state.focusedNodeId === nodeId) {
+    return;
+  }
+  state.focusedNodeId = nodeId;
+  renderMap();
+}
+
+function syncResultSelection() {
+  document.querySelectorAll("[data-result-index]").forEach((card) => {
+    const isSelected = Number(card.dataset.resultIndex) === state.selectedResultIndex;
+    card.classList.toggle("is-selected", isSelected);
+    card.setAttribute("aria-selected", isSelected ? "true" : "false");
+  });
+}
+
+function isResultDetailOpen() {
+  const drawer = document.querySelector("#result-detail-drawer");
+  return Boolean(drawer && !drawer.hidden);
+}
+
+function openResultDetailDrawer(index = state.selectedResultIndex) {
+  const drawer = document.querySelector("#result-detail-drawer");
+  if (!drawer) {
+    return;
+  }
+  renderResultDetailDrawer(index);
+  drawer.hidden = false;
+  drawer.classList.add("is-open");
+}
+
+function closeResultDetailDrawer() {
+  const drawer = document.querySelector("#result-detail-drawer");
+  if (!drawer) {
+    return;
+  }
+  drawer.hidden = true;
+  drawer.classList.remove("is-open");
+}
+
+function renderResultDetailDrawer(index = state.selectedResultIndex) {
+  const content = document.querySelector("#result-detail-content");
+  if (!content) {
+    return;
+  }
+  const item = state.currentResults[index];
+  if (!item) {
+    content.innerHTML = `<p class="empty-detail-text">选择一个结果查看详情。</p>`;
+    return;
+  }
+
+  const matchDetails = matchDetailsForItem(item);
+  const rawTitle = item.name || item.title || item.route_target_name || "未命名结果";
+  const rawDescription = item.snippet || item.content || item.text_prompt || item.description || "暂无更多说明。";
+  const routeTarget = resolveResultRouteTargetId(item);
+  const focusNode = item.has_map_location ? routeTarget : "";
+  const indoorContext = routeTarget ? resolveIndoorContextForTarget(routeTarget) : null;
+  const metrics = renderResultDetailMetrics(item, routeTarget);
+  const mediaMarkup = renderMediaPlaceholders(item);
+  const aigcMarkup = isAigcResult(item, state.currentQueryType) ? renderAigcPreview(item) : "";
+
+  const actions = [
+    focusNode ? `<button class="ghost-button" type="button" data-focus-node="${escapeHtml(focusNode)}">定位</button>` : "",
+    routeTarget ? `<button class="route-button" type="button" data-route-target="${escapeHtml(routeTarget)}">规划路线</button>` : "",
+    routeTarget ? `<button class="ghost-button" type="button" data-nearby-center="${escapeHtml(routeTarget)}">查附近设施</button>` : "",
+    indoorContext ? `<button class="ghost-button" type="button" data-enter-indoor="${escapeHtml(indoorContext.buildingId)}" data-indoor-floor="${escapeHtml(indoorContext.floorId || "")}" data-indoor-zone-target="${escapeHtml(indoorContext.targetNodeId)}">进入室内导航</button>` : "",
+  ].filter(Boolean).join("");
+
+  content.innerHTML = `
+    <div class="detail-kicker">${escapeHtml(item.category_label || resultTypeLabel(state.currentQueryType))}</div>
+    <h3>${highlightMatchedText(rawTitle, matchDetails, ["name", "title"])}</h3>
+    ${metrics ? `<div class="card-metrics detail-metrics">${metrics}</div>` : ""}
+    <p>${highlightMatchedText(rawDescription, matchDetails, ["description", "content"])}</p>
+    ${renderHighlightedFacets(item, matchDetails)}
+    ${renderMatchDetails(item)}
+    ${actions ? `<div class="detail-action-row">${actions}</div>` : ""}
+    ${mediaMarkup}
+    ${aigcMarkup}
+  `;
+}
+
+function renderResultDetailMetrics(item, routeTarget) {
+  const distanceText = formatDistance(item.distance_m, item.distance_status);
+  return [
+    routeTarget ? `<span class="metric-pill metric-pill-strong">目的地 ${escapeHtml(getNodeName(routeTarget))}</span>` : "",
+    distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
+    item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}</span>` : "",
+    item.heat !== undefined ? `<span class="metric-pill">热度 ${item.heat}</span>` : "",
+    item.interest_match_score !== undefined ? `<span class="metric-pill">兴趣 ${Number(item.interest_match_score).toFixed(1)}</span>` : "",
+    item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
+    item.created_at ? `<span class="metric-pill">${escapeHtml(item.created_at)}</span>` : "",
+  ].filter(Boolean).join("");
+}
+
+function resultTypeLabel(queryType) {
+  const labels = {
+    scenic_search: "综合查询",
+    place_search: "场所查询",
+    catering_recommend: "美食推荐",
+    diary_fulltext_search: "日记",
+    diary_list: "日记",
+    aigc_preview: "AIGC",
+  };
+  return labels[queryType] || "结果详情";
 }
 
 function revealResultPanel() {
@@ -2785,21 +3370,25 @@ function renderAigcGeneratedPlayer(images, frames) {
 }
 
 function renderResultCard(item, index, queryType = "") {
-  const title = escapeHtml(item.name || item.title || item.route_target_name || "未命名结果");
-  const description = item.snippet
-    ? escapeHtml(item.snippet)
-    : escapeHtml(item.content || item.text_prompt || item.description || "可从该结果继续规划路线。");
+  const matchDetails = matchDetailsForItem(item);
+  const rawTitle = item.name || item.title || item.route_target_name || "未命名结果";
+  const rawDescription = item.snippet || item.content || item.text_prompt || item.description || "可从该结果继续规划路线。";
+  const title = highlightMatchedText(rawTitle, matchDetails, ["name", "title"]);
+  const description = highlightMatchedText(rawDescription, matchDetails, ["description", "content"]);
   const distanceText = formatDistance(item.distance_m, item.distance_status);
   const scoreText = item.score !== undefined ? `相关度 ${item.score}` : "";
   const routeTarget = resolveResultRouteTargetId(item);
   const routeTargetName = routeTarget ? getNodeName(routeTarget) : "";
   const focusNode = item.has_map_location ? routeTarget : "";
+  const isSelected = index === state.selectedResultIndex;
   const indoorContext = routeTarget ? resolveIndoorContextForTarget(routeTarget) : null;
   const isDiary = isDiaryResult(item, queryType);
   const isAigc = isAigcResult(item, queryType);
   const diaryId = item.id || item.diary_id || "";
   const mediaMarkup = renderMediaPlaceholders(item);
   const aigcMarkup = isAigc ? renderAigcPreview(item) : "";
+  const matchMarkup = renderMatchDetails(item);
+  const facetMarkup = renderHighlightedFacets(item, matchDetails);
   const interestMarkup = item.interest_reason
     ? `<p class="interest-reason">${escapeHtml(item.interest_reason)}</p>`
     : "";
@@ -2849,17 +3438,265 @@ function renderResultCard(item, index, queryType = "") {
     : renderMoreActionsMarkup(secondaryButtons.join(""), isDiary ? "日记管理" : "更多操作");
 
   return `
-    <article class="result-card" style="animation-delay: ${index * 0.04}s">
+    <article
+      class="result-card${isSelected ? " is-selected" : ""}"
+      data-result-index="${index}"
+      data-result-node="${escapeHtml(focusNode || routeTarget || "")}"
+      tabindex="0"
+      style="animation-delay: ${index * 0.04}s"
+    >
       <h4>${title}</h4>
       <div class="card-metrics">${metrics}</div>
       <p>${description}</p>
+      ${facetMarkup}
       ${interestMarkup}
+      ${matchMarkup}
       ${mediaMarkup}
       ${aigcMarkup}
       ${primaryButtons ? `<div class="card-actions card-actions-primary">${primaryButtons}</div>` : ""}
       ${secondaryActions}
     </article>
   `;
+}
+
+function renderEmptyResultState(response) {
+  const message = response.message || "暂无结果，请调整关键词或筛选条件。";
+  const suggestions = suggestionsForQueryType(response.query_type);
+  const suggestionMarkup = suggestions.length
+    ? `<div class="empty-suggestion-list">
+        ${suggestions.map((item, index) => `
+          <button class="quick-chip" type="button" data-empty-suggestion="${escapeHtml(response.query_type || "query")}:${index}">
+            ${escapeHtml(item.label)}
+          </button>
+        `).join("")}
+      </div>`
+    : "";
+  return `
+    <div class="empty-result-card">
+      <strong>${escapeHtml(message)}</strong>
+      ${suggestionMarkup}
+    </div>
+  `;
+}
+
+function suggestionsForQueryType(queryType) {
+  const suggestions = state.bootstrap?.empty_result_suggestions || {};
+  return suggestions[queryType] || suggestions.scenic_search || [];
+}
+
+async function runEmptySuggestion(key) {
+  const [queryType, rawIndex] = key.split(":");
+  const index = Number(rawIndex);
+  const suggestion = (suggestionsForQueryType(queryType) || [])[index];
+  if (!suggestion) {
+    return;
+  }
+
+  switchTab(suggestion.tab || "scenic", { openPage: true });
+  applySuggestionToForm(suggestion);
+  await runQuery(suggestion.endpoint || "/api/search/scenic", {
+    ...(suggestion.payload || {}),
+    start_node_id: state.currentStartNodeId,
+    limit: 6,
+    ...((suggestion.tab || "") === "scenic" ? buildInterestPayload() : {}),
+  });
+}
+
+function applySuggestionToForm(suggestion) {
+  const payload = suggestion.payload || {};
+  if (suggestion.tab === "place") {
+    document.querySelector("#place-keyword").value = payload.keyword || "";
+    setSelectValue("#place-category", payload.category || "");
+    return;
+  }
+  if (suggestion.tab === "diary") {
+    document.querySelector("#diary-query").value = payload.query || "";
+    return;
+  }
+  document.querySelector("#scenic-keyword").value = payload.keyword || "";
+  setSelectValue("#scenic-category", payload.category || "");
+}
+
+function renderMatchDetails(item) {
+  const details = matchDetailsForItem(item);
+  if (!details.length) {
+    return "";
+  }
+
+  return `
+    <div class="match-detail-list" aria-label="搜索命中解释">
+      ${details.slice(0, 3).map((detail) => `
+        <span class="match-detail-chip">
+          ${escapeHtml(detail.field_label || detail.field || "字段")}
+          · ${escapeHtml(matchTypeLabel(detail.match_type))}
+          · ${escapeHtml(detail.term || "")}
+        </span>
+      `).join("")}
+    </div>
+  `;
+}
+
+function matchDetailsForItem(item) {
+  return Array.isArray(item._match_detail) ? item._match_detail : [];
+}
+
+function renderHighlightedFacets(item, details = matchDetailsForItem(item)) {
+  const facets = [
+    { field: "tags", label: "标签", values: flattenDisplayValues(item.tags) },
+    { field: "keywords", label: "关键词", values: flattenDisplayValues(item.keywords) },
+  ];
+  const rows = facets
+    .map((facet) => {
+      const facetDetails = details.filter((detail) => detail.field === facet.field);
+      if (!facet.values.length || !facetDetails.length) {
+        return "";
+      }
+      return `
+        <div class="highlight-facet-row">
+          <span>${escapeHtml(facet.label)}</span>
+          <div class="highlight-facet-list">
+            ${facet.values.slice(0, 5).map((value) => `
+              <span class="highlight-facet-chip">${highlightMatchedText(value, facetDetails, [facet.field])}</span>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    })
+    .filter(Boolean);
+
+  return rows.length ? `<div class="highlight-facet-panel">${rows.join("")}</div>` : "";
+}
+
+function highlightMatchedText(value, details = [], fields = []) {
+  const text = String(value ?? "");
+  if (!text || !details.length) {
+    return escapeHtml(text);
+  }
+
+  const terms = highlightTermsForDetails(details, fields);
+  const ranges = mergeHighlightRanges(collectHighlightRanges(text, terms));
+  if (!ranges.length) {
+    return escapeHtml(text);
+  }
+
+  let cursor = 0;
+  let markup = "";
+  ranges.forEach((range) => {
+    if (range.start > cursor) {
+      markup += escapeHtml(text.slice(cursor, range.start));
+    }
+    markup += `<mark class="search-highlight">${escapeHtml(text.slice(range.start, range.end))}</mark>`;
+    cursor = range.end;
+  });
+  markup += escapeHtml(text.slice(cursor));
+  return markup;
+}
+
+function highlightTermsForDetails(details, fields = []) {
+  const fieldSet = new Set(fields);
+  const terms = [];
+  details.forEach((detail) => {
+    if (fieldSet.size && !fieldSet.has(detail.field)) {
+      return;
+    }
+    [detail.term, detail.matched_text].forEach((candidate) => {
+      const normalized = normalizeHighlightTerm(candidate);
+      if (normalized.length >= 2 && normalized.length <= 24 && !terms.includes(normalized)) {
+        terms.push(normalized);
+      }
+    });
+  });
+  return terms.sort((left, right) => right.length - left.length);
+}
+
+function collectHighlightRanges(text, terms) {
+  if (!terms.length) {
+    return [];
+  }
+
+  const index = buildNormalizedTextIndex(text);
+  const ranges = [];
+  terms.forEach((term) => {
+    let position = index.normalized.indexOf(term);
+    while (position >= 0) {
+      const start = index.map[position]?.start;
+      const end = index.map[position + term.length - 1]?.end;
+      if (start !== undefined && end !== undefined && end > start) {
+        ranges.push({ start, end });
+      }
+      position = index.normalized.indexOf(term, position + 1);
+    }
+  });
+  return ranges;
+}
+
+function buildNormalizedTextIndex(text) {
+  let normalized = "";
+  const map = [];
+  let offset = 0;
+  for (const char of text) {
+    const start = offset;
+    const end = start + char.length;
+    offset = end;
+    if (MATCH_SEPARATOR_PATTERN.test(char)) {
+      continue;
+    }
+    normalized += char.toLocaleLowerCase();
+    map.push({ start, end });
+  }
+  return { normalized, map };
+}
+
+function normalizeHighlightTerm(value) {
+  return String(value ?? "")
+    .trim()
+    .toLocaleLowerCase()
+    .split("")
+    .filter((char) => !MATCH_SEPARATOR_PATTERN.test(char))
+    .join("");
+}
+
+function mergeHighlightRanges(ranges) {
+  if (!ranges.length) {
+    return [];
+  }
+  const ordered = ranges
+    .filter((range) => Number.isInteger(range.start) && Number.isInteger(range.end) && range.end > range.start)
+    .sort((left, right) => left.start - right.start || right.end - left.end);
+  const merged = [];
+  ordered.forEach((range) => {
+    const previous = merged[merged.length - 1];
+    if (!previous || range.start > previous.end) {
+      merged.push({ ...range });
+      return;
+    }
+    previous.end = Math.max(previous.end, range.end);
+  });
+  return merged;
+}
+
+function flattenDisplayValues(value) {
+  if (value === null || value === undefined || value === "") {
+    return [];
+  }
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => flattenDisplayValues(item));
+  }
+  if (typeof value === "object") {
+    return Object.values(value).flatMap((item) => flattenDisplayValues(item));
+  }
+  return [String(value)];
+}
+
+function matchTypeLabel(matchType) {
+  const labels = {
+    exact: "精确",
+    prefix: "前缀",
+    contains: "包含",
+    subsequence: "跳字",
+    typo: "错字",
+  };
+  return labels[matchType] || "匹配";
 }
 
 function isDiaryResult(item, queryType) {
@@ -4128,7 +4965,7 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
       const labelX = projected.x - labelWidth / 2;
       const labelY = projected.y + labelDy - 14;
       return `
-        <g>
+        <g class="svg-map-node${isHighlighted ? " is-highlighted" : ""}" data-map-node="${escapeHtml(node.id)}">
           ${isHighlighted ? `<circle class="route-dot" cx="${projected.x}" cy="${projected.y}" r="${radius + 6}" fill="rgba(181, 94, 59, 0.16)" />` : ""}
           <circle cx="${projected.x}" cy="${projected.y}" r="${radius}" fill="${fill}" stroke="white" stroke-width="${isWaypoint ? 2 : 3}" opacity="${isWaypoint && !isHighlighted ? 0.48 : 1}" />
           ${
@@ -4547,6 +5384,11 @@ function bindLeafletFeaturePopup(feature, layer) {
       `);
       layer.on("click", () => {
         state.focusedNodeId = properties.id || "";
+        selectResultByNodeId(state.focusedNodeId, {
+          focusMap: false,
+          openDetail: true,
+          scrollIntoView: true,
+        });
         syncLeafletRouteLayer();
       });
       return;
@@ -4582,6 +5424,11 @@ function bindLeafletFeaturePopup(feature, layer) {
     });
     layer.on("click", () => {
       state.focusedNodeId = properties.id || "";
+      selectResultByNodeId(state.focusedNodeId, {
+        focusMap: false,
+        openDetail: true,
+        scrollIntoView: true,
+      });
       syncLeafletRouteLayer();
     });
     return;

@@ -174,6 +174,76 @@ DEFAULT_PRESETS = {
     ],
 }
 
+EMPTY_RESULT_SUGGESTIONS = {
+    "scenic_search": [
+        {"label": "试试图书馆", "tab": "scenic", "endpoint": "/api/search/scenic", "payload": {"keyword": "图书馆", "category": "education"}},
+        {"label": "试试宿舍", "tab": "scenic", "endpoint": "/api/search/scenic", "payload": {"keyword": "宿舍", "category": "dormitory"}},
+        {"label": "放宽类别", "tab": "scenic", "endpoint": "/api/search/scenic", "payload": {"keyword": "图书馆", "category": ""}},
+    ],
+    "place_search": [
+        {"label": "查洗手间", "tab": "place", "endpoint": "/api/search/places", "payload": {"keyword": "洗手间", "category": "restroom"}},
+        {"label": "查便利店", "tab": "place", "endpoint": "/api/search/places", "payload": {"keyword": "便利店", "category": "shopping"}},
+        {"label": "查教学楼", "tab": "place", "endpoint": "/api/search/places", "payload": {"keyword": "教学楼", "category": "education"}},
+    ],
+    "diary_fulltext_search": [
+        {"label": "图书馆 自习", "tab": "diary", "endpoint": "/api/diaries/fulltext", "payload": {"query": "图书馆 自习"}},
+        {"label": "食堂 美食", "tab": "diary", "endpoint": "/api/diaries/fulltext", "payload": {"query": "食堂 美食"}},
+    ],
+}
+
+DEMO_TOUR_STEPS = [
+    {
+        "id": "search",
+        "label": "搜索地点",
+        "tab": "scenic",
+        "action": "scenic_search",
+        "keyword": "图书馆",
+        "category": "education",
+        "description": "先用综合查询找到目标地点，并观察结果卡片的路线入口。",
+    },
+    {
+        "id": "route",
+        "label": "规划路线",
+        "tab": "route",
+        "action": "single_route",
+        "target_node_id": "library",
+        "description": "从默认起点规划到图书馆，展示地图高亮和路径步骤。",
+    },
+    {
+        "id": "indoor",
+        "label": "进入室内",
+        "tab": "route",
+        "action": "indoor_route",
+        "target_node_id": "lib_reading_room_1",
+        "description": "切到图书馆室内目标，展示楼层平面图和室内路线。",
+    },
+    {
+        "id": "nearby",
+        "label": "查附近",
+        "tab": "place",
+        "action": "nearby_search",
+        "center_node_id": "library",
+        "category": "restroom",
+        "description": "以图书馆为中心查找附近服务设施，展示真实路径距离。",
+    },
+    {
+        "id": "diary",
+        "label": "日记检索",
+        "tab": "diary",
+        "action": "diary_fulltext",
+        "query": "图书馆 自习",
+        "description": "从日记内容检索进入可导航目的地，串联内容和路线。",
+    },
+    {
+        "id": "aigc",
+        "label": "AIGC 预览",
+        "tab": "aigc",
+        "action": "aigc_preview",
+        "sample_id": "aigc_sample_003",
+        "description": "生成图书馆攻略 GIF 分镜预览，展示轻量 AIGC 能力。",
+    },
+]
+
 FEATURE_NAVIGATION = [
     {
         "id": "scenic",
@@ -420,6 +490,9 @@ class DemoUIService:
             "users": self._build_user_options(),
             "default_user_id": self._resolve_default_user_id(),
             "navigation": FEATURE_NAVIGATION,
+            "demo_tour": DEMO_TOUR_STEPS,
+            "empty_result_suggestions": EMPTY_RESULT_SUGGESTIONS,
+            "aigc_capabilities": self._build_aigc_capabilities(),
             "help": HELP_CONTENT,
             "state_policy": STATE_POLICY,
             "feedback_messages": FEEDBACK_MESSAGES,
@@ -2607,6 +2680,17 @@ class DemoUIService:
                 "fallback_reason",
                 "generated_images",
             ],
+        }
+
+    def _build_aigc_capabilities(self) -> dict[str, Any]:
+        api_key_present = bool(normalize_text(os.environ.get("OPENAI_API_KEY")))
+        return {
+            "template_preview": True,
+            "live_image": api_key_present,
+            "live_image_provider": "openai",
+            "live_image_model": normalize_text(os.environ.get("OPENAI_IMAGE_MODEL")) or DEFAULT_OPENAI_IMAGE_MODEL,
+            "live_image_reason": "" if api_key_present else "未检测到 OPENAI_API_KEY",
+            "max_frame_count": AIGC_MAX_FRAME_COUNT,
         }
 
     @staticmethod
