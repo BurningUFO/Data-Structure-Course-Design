@@ -14,7 +14,7 @@ from src.search.exact_search import (
     filter_by_name,
     search_records,
 )
-from src.search.fuzzy_search import fuzzy_search
+from src.search.fuzzy_search import calculate_match, fuzzy_search
 from src.search.response import build_error_response, build_success_response
 from src.search.search_service import (
     attach_distance_fields,
@@ -168,6 +168,37 @@ def test_fuzzy_search_supports_synonyms_and_initials():
     assert synonym_result[0]["id"] == "svc_010"
     assert initial_result[0]["id"] == "svc_011"
     print("test_fuzzy_search_supports_synonyms_and_initials passed.")
+
+
+def test_fuzzy_search_prefers_direct_query_term_over_synonym_only_match():
+    direct_canteen = {
+        "id": "canteen",
+        "name": "校园餐厅",
+        "category": "catering",
+        "heat": 90,
+        "rating": 4.6,
+        "tags": ["食堂", "餐厅", "餐饮"],
+        "keywords": ["食堂", "学生食堂", "校园美食"],
+        "description": "主力食堂，承接学生日常就餐。",
+    }
+    synonym_only_catering = {
+        "id": "restaurant",
+        "name": "校园餐厅",
+        "category": "catering",
+        "heat": 82,
+        "rating": 4.4,
+        "tags": ["餐厅", "餐饮"],
+        "keywords": ["餐饮", "校园美食"],
+        "description": "日常餐饮节点。",
+    }
+
+    direct_match = calculate_match(direct_canteen, "食堂")
+    synonym_match = calculate_match(synonym_only_catering, "食堂")
+
+    assert direct_match["score"] > 0
+    assert synonym_match["score"] > 0
+    assert direct_match["score"] > synonym_match["score"]
+    print("test_fuzzy_search_prefers_direct_query_term_over_synonym_only_match passed.")
 
 
 def test_fuzzy_search_normalizes_restroom_intent_without_english_false_positive():

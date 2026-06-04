@@ -29,6 +29,8 @@ from typing import Any
 Record = dict[str, Any]
 MatchDetail = dict[str, Any]
 
+DIRECT_QUERY_TERM_BONUS = 6
+
 TERM_EQUIVALENT_GROUPS = (
     ("洗手间", "卫生间", "厕所", "公厕", "wc", "restroom", "toilet", "washroom", "lavatory", "xsj"),
     ("食堂", "餐厅", "餐饮", "catering", "st"),
@@ -217,7 +219,8 @@ def score_collection_with_details(
     for group in term_groups:
         best_group_score = 0
         best_detail: MatchDetail | None = None
-        for term in group:
+        direct_term = group[0] if group else ""
+        for term_index, term in enumerate(group):
             for text in normalized_values:
                 score, match_type = score_text_match(
                     term,
@@ -228,6 +231,8 @@ def score_collection_with_details(
                     subsequence_score=subsequence_score,
                     approximate_score=approximate_score,
                 )
+                if score > 0 and term_index == 0 and term == direct_term:
+                    score += DIRECT_QUERY_TERM_BONUS
                 if score > best_group_score:
                     best_group_score = score
                     best_detail = {
