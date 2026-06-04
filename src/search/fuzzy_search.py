@@ -30,7 +30,7 @@ Record = dict[str, Any]
 MatchDetail = dict[str, Any]
 
 TERM_EQUIVALENT_GROUPS = (
-    ("洗手间", "卫生间", "厕所", "wc", "restroom", "xsj"),
+    ("洗手间", "卫生间", "厕所", "公厕", "wc", "restroom", "toilet", "washroom", "lavatory", "xsj"),
     ("食堂", "餐厅", "餐饮", "catering", "st"),
     ("便利店", "超市", "商店", "shopping", "bld"),
     ("图书馆", "tsg", "library"),
@@ -268,10 +268,17 @@ def score_text_match(
         return prefix_score, "prefix"
     if term in text:
         return contains_score, "contains"
+    if is_ascii_word(term):
+        return 0, ""
     if is_ordered_subsequence(term, text):
         return subsequence_score, "subsequence"
     approximate = approximate_match_score(term, text, approximate_score)
     return (approximate, "typo") if approximate > 0 else (0, "")
+
+
+def is_ascii_word(value: str) -> bool:
+    """英文查询词只做可靠匹配，避免 washroom 误召回 classroom。"""
+    return value.isascii() and any(char.isalpha() for char in value)
 
 
 def is_ordered_subsequence(term: str, text: str) -> bool:

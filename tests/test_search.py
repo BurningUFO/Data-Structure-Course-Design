@@ -170,6 +170,40 @@ def test_fuzzy_search_supports_synonyms_and_initials():
     print("test_fuzzy_search_supports_synonyms_and_initials passed.")
 
 
+def test_fuzzy_search_normalizes_restroom_intent_without_english_false_positive():
+    records = [
+        {
+            "id": "svc_restroom",
+            "name": "校园洗手间",
+            "category": "restroom",
+            "heat": 60,
+            "rating": 4.1,
+            "tags": ["公共服务"],
+            "keywords": ["卫生间"],
+            "description": "位于教学楼旁边。",
+        },
+        {
+            "id": "svc_classroom",
+            "name": "classroom 101",
+            "category": "education",
+            "heat": 99,
+            "rating": 4.8,
+            "tags": ["教学"],
+            "keywords": ["classroom", "教室"],
+            "description": "适合上课。",
+        },
+    ]
+
+    for keyword in ("卫生间", "公厕", "toilet", "washroom"):
+        result = fuzzy_search(records, keyword)
+        assert result
+        assert result[0]["id"] == "svc_restroom"
+
+    washroom_ids = {item["id"] for item in fuzzy_search(records, "washroom")}
+    assert "svc_classroom" not in washroom_ids
+    print("test_fuzzy_search_normalizes_restroom_intent_without_english_false_positive passed.")
+
+
 def test_fuzzy_search_supports_typo_tolerance():
     records = [
         {
@@ -484,6 +518,57 @@ def test_search_places_keyword_only_scope():
     assert response["data"][0]["name"] == "中关新园超市"
     assert response["data"][0]["category"] == "shopping"
     print("test_search_places_keyword_only_scope passed.")
+
+
+def test_search_places_keyword_only_restroom_aliases():
+    records = [
+        {
+            "id": "restroom_alias",
+            "name": "校园洗手间",
+            "category": "restroom",
+            "node_id": "restroom_alias",
+            "heat": 60,
+            "rating": 4.1,
+            "keywords": ["洗手间"],
+            "tags": ["公共服务"],
+            "description": "教学区附近公共服务设施。",
+        },
+        {
+            "id": "classroom_alias",
+            "name": "classroom 101",
+            "category": "education",
+            "node_id": "classroom_alias",
+            "heat": 99,
+            "rating": 4.8,
+            "keywords": ["classroom", "教室"],
+            "tags": ["教学"],
+            "description": "适合上课。",
+        },
+    ]
+
+    for keyword in ("公厕", "toilet", "washroom"):
+        response = search_places(
+            keyword=keyword,
+            records=records,
+            use_default_distance_provider=False,
+            limit=3,
+        )
+        assert response["success"] is True
+        assert response["data"]
+        assert response["data"][0]["category"] == "restroom"
+        assert response["data"][0]["id"] == "restroom_alias"
+
+    washroom_ids = {
+        item["id"]
+        for item in search_places(
+            keyword="washroom",
+            records=records,
+            use_default_distance_provider=False,
+            limit=3,
+        )["data"]
+    }
+    assert "classroom_alias" not in washroom_ids
+    print("test_search_places_keyword_only_restroom_aliases passed.")
 
 
 def test_search_places_nearby_radius_uses_graph_distance():
@@ -843,6 +928,7 @@ def run_all_tests():
     test_fuzzy_search()
     test_fuzzy_search_matches_name_tags_and_description()
     test_fuzzy_search_supports_synonyms_and_initials()
+    test_fuzzy_search_normalizes_restroom_intent_without_english_false_positive()
     test_fuzzy_search_supports_typo_tolerance()
     test_fuzzy_search_ignores_spaces_and_punctuation()
     test_fuzzy_search_supports_subsequence_abbreviation()
@@ -857,6 +943,7 @@ def run_all_tests():
     test_search_service_fuzzy_mode_supports_typo_tolerance()
     test_search_places_distance_sort()
     test_search_places_keyword_only_scope()
+    test_search_places_keyword_only_restroom_aliases()
     test_search_places_nearby_radius_uses_graph_distance()
     test_search_places_legacy_start_node_call_stays_unbounded()
     test_distance_adapter_uses_member_a_router()
