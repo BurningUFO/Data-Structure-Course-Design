@@ -1382,6 +1382,10 @@ function renderRecentSearches() {
   if (!container) {
     return;
   }
+  const strip = container.closest(".recent-search-strip");
+  if (strip) {
+    strip.classList.toggle("is-empty", !state.recentSearches.length);
+  }
   if (!state.recentSearches.length) {
     container.innerHTML = `<span class="recent-empty">暂无</span>`;
     return;
@@ -2060,17 +2064,45 @@ function renderHomeFlow(flowItems) {
 
 function updateActiveFeatureCaption() {
   const caption = document.querySelector("#active-feature-caption");
-  if (!caption) {
-    return;
-  }
-
   const startName = getNodeName(state.currentStartNodeId);
   const user = findBootstrapUser(state.currentUserId);
   const interestText = state.currentInterests.length ? state.currentInterests.join("、") : "未选择兴趣";
   const userText = user ? `当前用户：${user.name}` : "当前用户：自定义";
-  caption.textContent = startName
-    ? `当前起点：${startName}；${userText}；兴趣：${interestText}`
-    : `${userText}；兴趣：${interestText}`;
+  if (caption) {
+    caption.textContent = startName
+      ? `当前起点：${startName}；${userText}；兴趣：${interestText}`
+      : `${userText}；兴趣：${interestText}`;
+  }
+  renderWorkspaceContextSummary();
+}
+
+function renderWorkspaceContextSummary() {
+  const siteSummary = document.querySelector("#context-site-summary");
+  const startSummary = document.querySelector("#context-start-summary");
+  const userSummary = document.querySelector("#context-user-summary");
+  if (!siteSummary && !startSummary && !userSummary) {
+    return;
+  }
+
+  const site = state.bootstrap?.site || {};
+  const startName = getNodeName(state.currentStartNodeId);
+  const user = findBootstrapUser(state.currentUserId);
+  const interests = state.currentInterests.length
+    ? state.currentInterests.slice(0, 3).join("、")
+    : "未选择";
+
+  if (siteSummary) {
+    siteSummary.textContent = site.name ? `站点：${site.name}` : "站点加载中";
+    siteSummary.title = site.location ? `${site.name} · ${site.location}` : siteSummary.textContent;
+  }
+  if (startSummary) {
+    startSummary.textContent = startName ? `起点：${startName}` : "起点待选择";
+    startSummary.title = startSummary.textContent;
+  }
+  if (userSummary) {
+    userSummary.textContent = `偏好：${user ? user.name : "自定义"} · ${interests}`;
+    userSummary.title = userSummary.textContent;
+  }
 }
 
 function updateWorkspaceHeading() {
@@ -3957,6 +3989,7 @@ function syncIndoorMapStage() {
 }
 
 function renderIndoorPanel() {
+  const panel = document.querySelector("#indoor-panel");
   const meta = document.querySelector("#indoor-panel-meta");
   const body = document.querySelector("#indoor-panel-body");
   if (!meta || !body) {
@@ -3967,6 +4000,9 @@ function renderIndoorPanel() {
 
   const supportedBuildings = state.indoor.buildings || [];
   if (!supportedBuildings.length) {
+    if (panel) {
+      panel.open = false;
+    }
     meta.textContent = "当前站点未提供室内导航数据";
     body.className = "indoor-panel-body empty-state";
     body.textContent = "当前站点没有可用的室内模板图。";
@@ -3974,6 +4010,9 @@ function renderIndoorPanel() {
   }
 
   if (state.indoor.loading) {
+    if (panel) {
+      panel.open = true;
+    }
     const loadingBuilding = indoorBuildingRecord(state.indoor.loading.buildingId);
     meta.textContent = `正在加载 ${loadingBuilding?.building_name || state.indoor.loading.buildingId}…`;
     body.className = "indoor-panel-body";
@@ -3989,6 +4028,9 @@ function renderIndoorPanel() {
   const activeBuilding = indoorBuildingRecord(state.indoor.activeBuildingId);
   const payload = state.indoor.activePayload;
   if (!activeBuilding || !payload || payload.building_id !== activeBuilding.building_id) {
+    if (panel) {
+      panel.open = false;
+    }
     meta.textContent = state.indoor.error || `支持 ${supportedBuildings.length} 栋建筑室内导航`;
     body.className = "indoor-panel-body";
     body.innerHTML = renderIndoorEmptyState(supportedBuildings, state.indoor.error);
@@ -4011,6 +4053,9 @@ function renderIndoorPanel() {
         : "当前路线未经过该楼层，可先浏览平面图或切换到其他楼层。"
     : "先选择楼层和功能区，再点击规划路线。";
   meta.textContent = `${activeBuilding.building_name} · ${activeFloorLabel} · ${(payload.zones || []).length} 个功能区`;
+  if (panel) {
+    panel.open = true;
+  }
   body.className = "indoor-panel-body";
   body.innerHTML = `
     <div class="indoor-panel-shell">
@@ -6201,4 +6246,3 @@ async function handleApiResponse(response) {
   }
   return data;
 }
-

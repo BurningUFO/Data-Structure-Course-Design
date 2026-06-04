@@ -94,43 +94,60 @@
 
           <section class="page-view active" data-page-panel="app" aria-label="导览工作台">
             <section class="app-toolbar panel">
-              <div class="workspace-heading-block">
-                <p class="eyebrow">导览工作台</p>
-                <h1 id="workspace-title">综合查询</h1>
-                <p id="workspace-description">搜索地点后可直接定位或规划路线。</p>
+              <div class="workspace-toolbar-main">
+                <div class="workspace-heading-block">
+                  <p class="eyebrow">导览工作台</p>
+                  <h1 id="workspace-title">综合查询</h1>
+                  <p id="workspace-description">搜索地点后可直接定位或规划路线。</p>
+                </div>
+                <div id="workspace-context-summary" class="workspace-context-summary" aria-live="polite">
+                  <span id="context-site-summary" class="context-pill">当前站点加载中</span>
+                  <span id="context-start-summary" class="context-pill">起点待选择</span>
+                  <span id="context-user-summary" class="context-pill">偏好待加载</span>
+                </div>
               </div>
-              <div class="site-actions">
-                <label class="field site-switcher">
-                  <span class="field-label">当前站点</span>
-                  <select id="site-selector"></select>
-                </label>
-                <label class="field start-switcher">
-                  <span class="field-label">当前起点</span>
-                  <select id="global-start-node"></select>
-                </label>
-                <label class="field user-switcher">
-                  <span class="field-label">当前用户</span>
-                  <select id="user-selector"></select>
-                </label>
-                <label class="field interest-switcher">
-                  <span class="field-label">当前兴趣偏好</span>
-                  <input id="interest-tags" type="text" placeholder="例如：图书馆, 食堂, 运动" />
-                </label>
-              </div>
-              <details class="tour-strip workspace-tour" aria-label="工作区演示向导">
-                <summary class="tour-strip-header">
-                  <span>演示向导</span>
-                  <small>按需展开</small>
+              <details class="context-settings">
+                <summary>
+                  <span>站点与偏好</span>
+                  <small>按需修改</small>
                 </summary>
-                <div class="tour-strip-body">
-                  <button class="secondary-button compact-button" type="button" data-tour-run-all>按顺序演示</button>
-                  <div id="workspace-tour-steps" class="tour-step-list"></div>
+                <div class="context-settings-body">
+                  <div class="site-actions">
+                    <label class="field site-switcher">
+                      <span class="field-label">当前站点</span>
+                      <select id="site-selector"></select>
+                    </label>
+                    <label class="field start-switcher">
+                      <span class="field-label">当前起点</span>
+                      <select id="global-start-node"></select>
+                    </label>
+                    <label class="field user-switcher">
+                      <span class="field-label">当前用户</span>
+                      <select id="user-selector"></select>
+                    </label>
+                    <label class="field interest-switcher">
+                      <span class="field-label">当前兴趣偏好</span>
+                      <input id="interest-tags" type="text" placeholder="例如：图书馆, 食堂, 运动" />
+                    </label>
+                  </div>
+                  <div class="context-secondary-row">
+                    <details class="tour-strip workspace-tour" aria-label="工作区演示向导">
+                      <summary class="tour-strip-header">
+                        <span>演示向导</span>
+                        <small>按需展开</small>
+                      </summary>
+                      <div class="tour-strip-body">
+                        <button class="secondary-button compact-button" type="button" data-tour-run-all>按顺序演示</button>
+                        <div id="workspace-tour-steps" class="tour-step-list"></div>
+                      </div>
+                    </details>
+                    <section class="recent-search-strip is-empty" aria-label="最近搜索">
+                      <span>最近搜索</span>
+                      <div id="recent-searches" class="quick-row compact-presets"></div>
+                    </section>
+                  </div>
                 </div>
               </details>
-              <section class="recent-search-strip" aria-label="最近搜索">
-                <span>最近搜索</span>
-                <div id="recent-searches" class="quick-row compact-presets"></div>
-              </section>
             </section>
 
             <main class="workspace">
@@ -318,22 +335,19 @@
                 </section>
 
                 <section class="tab-panel" data-panel="route">
-                  <section id="indoor-quickstart" class="indoor-quickstart-card">
-                    <div class="form-section-heading">
+                  <details id="indoor-quickstart" class="indoor-quickstart-card">
+                    <summary class="form-section-heading">
                       <h3>室内导航最快入口</h3>
                       <span id="indoor-quickstart-status">先点建筑进入室内导航，或直接使用快捷入口。</span>
+                    </summary>
+                    <div class="indoor-quickstart-body">
+                      <div id="indoor-quick-actions" class="quick-row indoor-quick-actions"></div>
+                      <details id="indoor-supported-buildings-details" class="form-advanced">
+                        <summary>查看支持室内导航的建筑</summary>
+                        <div id="indoor-supported-buildings" class="indoor-supported-buildings"></div>
+                      </details>
                     </div>
-                    <ol class="quickstart-list">
-                      <li>点击支持建筑，进入室内导航。</li>
-                      <li>切换楼层并选择功能区。</li>
-                      <li>点击规划路线，再按需切换室内 / 室外路线视图。</li>
-                    </ol>
-                    <div id="indoor-quick-actions" class="quick-row indoor-quick-actions"></div>
-                    <details id="indoor-supported-buildings-details" class="form-advanced">
-                      <summary>查看支持室内导航的建筑</summary>
-                      <div id="indoor-supported-buildings" class="indoor-supported-buildings"></div>
-                    </details>
-                  </section>
+                  </details>
                   <form id="route-form" class="stack-form">
                     <div class="form-section-heading">
                       <h3>单目标路径</h3>
@@ -500,49 +514,50 @@
                   <div id="route-summary" class="route-summary empty-state">
                     暂无路径
                   </div>
-                  <div id="indoor-panel" class="indoor-panel">
-                    <div class="section-heading indoor-panel-heading">
+                  <details id="indoor-panel" class="indoor-panel">
+                    <summary class="section-heading indoor-panel-heading">
                       <h3>室内导航</h3>
                       <span id="indoor-panel-meta" class="meta-text">点击支持室内导航的建筑进入楼内视图</span>
-                    </div>
+                    </summary>
                     <div id="indoor-panel-body" class="indoor-panel-body empty-state">
                       暂未进入室内导航。可在地图上点击图书馆、教学楼、宿舍、食堂或体育馆等支持建筑。
                     </div>
+                  </details>
+                </section>
+              </section>
+
+              <section class="panel result-panel" data-expandable-panel="result">
+                <div class="panel-title-row">
+                  <div>
+                    <h2>结果与步骤</h2>
+                    <span class="panel-subtitle">展示查询卡片、路线步骤和当前操作状态</span>
+                  </div>
+                  <button class="panel-expand-button" type="button" data-expand-panel="result" aria-label="展开结果与步骤">
+                    展开结果
+                  </button>
+                </div>
+                <div id="status-banner" class="status-banner status-info" role="status" aria-live="polite">
+                  从首页进入工作区后，可直接按推荐路径开始演示。
+                </div>
+
+                <section class="result-section">
+                  <div class="section-heading">
+                    <h3>查询结果</h3>
+                    <span id="result-meta" class="meta-text">尚未执行查询</span>
+                  </div>
+                  <div id="results-list" class="card-list empty-state">
+                    暂无结果
                   </div>
                 </section>
-                <section class="panel result-panel" data-expandable-panel="result">
-                  <div class="panel-title-row">
-                    <div>
-                      <h2>结果与步骤</h2>
-                      <span class="panel-subtitle">展示查询卡片、路线步骤和当前操作状态</span>
-                    </div>
-                    <button class="panel-expand-button" type="button" data-expand-panel="result" aria-label="展开结果与步骤">
-                      展开结果
-                    </button>
-                  </div>
-                  <div id="status-banner" class="status-banner status-info" role="status" aria-live="polite">
-                    从首页进入工作区后，可直接按推荐路径开始演示。
-                  </div>
 
-                  <section class="result-section">
-                    <div class="section-heading">
-                      <h3>查询结果</h3>
-                      <span id="result-meta" class="meta-text">尚未执行查询</span>
-                    </div>
-                    <div id="results-list" class="card-list empty-state">
-                      暂无结果
-                    </div>
-                  </section>
-
-                  <section class="result-section">
-                    <div class="section-heading">
-                      <h3>路径步骤</h3>
-                      <span class="meta-text">展开后查看逐步说明</span>
-                    </div>
-                    <div id="route-steps" class="step-list empty-state">
-                      暂无步骤
-                    </div>
-                  </section>
+                <section class="result-section">
+                  <div class="section-heading">
+                    <h3>路径步骤</h3>
+                    <span class="meta-text">展开后查看逐步说明</span>
+                  </div>
+                  <div id="route-steps" class="step-list empty-state">
+                    暂无步骤
+                  </div>
                 </section>
               </section>
             </main>
