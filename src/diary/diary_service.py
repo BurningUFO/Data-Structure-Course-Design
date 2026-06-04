@@ -13,7 +13,11 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+import tempfile
+import threading
+from collections.abc import Callable
 from typing import Any
 
 from src.diary.fulltext_service import search_diary_fulltext_records
@@ -27,6 +31,18 @@ from src.search.response import build_error_response, build_success_response
 
 
 Record = dict[str, Any]
+_DIARY_DATA_LOCKS_GUARD = threading.Lock()
+_DIARY_DATA_LOCKS: dict[Path, Any] = {}
+
+
+def get_diary_data_lock(data_path: str | Path) -> Any:
+    lock_key = Path(data_path).expanduser().resolve()
+    with _DIARY_DATA_LOCKS_GUARD:
+        lock = _DIARY_DATA_LOCKS.get(lock_key)
+        if lock is None:
+            lock = threading.RLock()
+            _DIARY_DATA_LOCKS[lock_key] = lock
+        return lock
 
 
 def get_default_diary_data_path() -> Path:
@@ -171,6 +187,7 @@ class DiaryService:
         data_path: str | Path | None = None,
         prefer_legacy_data: bool = False,
     ) -> None:
+        self._records_injected = records is not None
         self.data_path = resolve_diary_data_path(
             data_path,
             prefer_legacy_data=prefer_legacy_data,
@@ -188,6 +205,7 @@ class DiaryService:
         prefer_legacy_data: bool = False,
     ) -> None:
         """重新加载日记数据。"""
+        self._records_injected = False
         self.data_path = resolve_diary_data_path(
             data_path,
             prefer_legacy_data=prefer_legacy_data,
@@ -195,174 +213,271 @@ class DiaryService:
         self.records = load_diary_records(self.data_path)
 
     def create_diary(self, payload: Record | None = None) -> dict[str, Any]:
-        """创建日记记录。当前为内存态演示，不直接写回标准数据文件。"""
+        """创建日记记录。"""
         request = payload or {}
-        title = str(request.get("title", "")).strip()
 
-        if not title:
-            return build_error_response(
-                "diary title cannot be empty",
-                query_type="diary_create",
-                metadata=self._management_metadata("create"),
+        created_record: Record | None = None
+
+        def build_update(current_records: list[Record]) -> tuple[list[Record] | None, Callable[[], dict[str, Any]]]:
+            nonlocal created_record
+            title = str(request.get("title", "")).strip()
+            if not title:
+                return None, lambda: build_error_response(
+                    "diary title cannot be empty",
+                    query_type="diary_create",
+                    metadata=self._management_metadata("create"),
+                )
+
+            rating_default = 0.0 if "rating" not in request else None
+            normalized_rating = self._normalize_rating(request.get("rating"), default=rating_default)
+            if normalized_rating is None:
+                return None, lambda: build_error_response(
+                    "diary rating must be a number between 0 and 5",
+                    query_type="diary_create",
+                    metadata=self._management_metadata("create"),
+                )
+
+            record = normalize_diary_record(
+                {
+                    "id": str(request.get("id", "")).strip() or self._next_diary_id_from(current_records),
+                    "title": title,
+                    "content": str(request.get("content", "")).strip(),
+                    "author_id": str(request.get("author_id", "")).strip() or "user_demo",
+                    "author_name": str(request.get("author_name", "")).strip() or "演示用户",
+                    "destination": str(request.get("destination", "")).strip(),
+                    "destination_node_id": request.get("destination_node_id"),
+                    "heat": coerce_int(request.get("heat"), default=0),
+                    "rating": normalized_rating,
+                    "tags": normalize_string_list(request.get("tags")),
+                    "views": coerce_int(request.get("views"), default=0),
+                    "created_at": str(request.get("created_at", "")).strip() or "2026-05-11",
+                    "images": normalize_string_list(request.get("images")),
+                    "videos": normalize_string_list(request.get("videos")),
+                },
+                len(current_records),
             )
 
-        record = normalize_diary_record(
-            {
-                "id": str(request.get("id", "")).strip() or self._next_diary_id(),
-                "title": title,
-                "content": str(request.get("content", "")).strip(),
-                "author_id": str(request.get("author_id", "")).strip() or "user_demo",
-                "author_name": str(request.get("author_name", "")).strip() or "演示用户",
-                "destination": str(request.get("destination", "")).strip(),
-                "destination_node_id": request.get("destination_node_id"),
-                "heat": coerce_int(request.get("heat"), default=0),
-                "rating": self._normalize_rating(request.get("rating"), default=0.0),
-                "tags": normalize_string_list(request.get("tags")),
-                "views": coerce_int(request.get("views"), default=0),
-                "created_at": str(request.get("created_at", "")).strip() or "2026-05-11",
-                "images": normalize_string_list(request.get("images")),
-                "videos": normalize_string_list(request.get("videos")),
-            },
-            len(self.records),
-        )
+            if self._find_record_index_in(current_records, record["id"]) >= 0:
+                return None, lambda: build_error_response(
+                    f"diary id already exists: {record['id']}",
+                    query_type="diary_create",
+                    filters={"id": record["id"]},
+                    metadata=self._management_metadata("create"),
+                )
 
-        if self._find_record_index(record["id"]) >= 0:
-            return build_error_response(
-                f"diary id already exists: {record['id']}",
+            updated_records = [item.copy() for item in current_records]
+            updated_records.append(record)
+            created_record = record
+
+            return updated_records, lambda: build_success_response(
+                data=[record],
+                message="diary created",
                 query_type="diary_create",
                 filters={"id": record["id"]},
-                metadata=self._management_metadata("create"),
+                metadata=self._management_metadata(
+                    "create",
+                    persistence_succeeded=True,
+                ),
             )
 
-        self.records.append(record)
-        return build_success_response(
-            data=[record],
-            message="diary created",
-            query_type="diary_create",
-            filters={"id": record["id"]},
-            metadata=self._management_metadata("create"),
-        )
+        def build_persistence_error(persist_error: str) -> dict[str, Any]:
+            record_id = str((created_record or {}).get("id", "")).strip()
+            return build_error_response(
+                persist_error,
+                query_type="diary_create",
+                filters={"id": record_id},
+                metadata=self._management_metadata(
+                    "create",
+                    persist_error=persist_error,
+                ),
+            )
+
+        return self._apply_records_update(build_update, build_persistence_error)
 
     def update_diary(self, diary_id: str, updates: Record | None = None) -> dict[str, Any]:
         """编辑日记记录。仅允许更新业务展示字段。"""
         normalized_id = str(diary_id or "").strip()
-        index = self._find_record_index(normalized_id)
-        if index < 0:
-            return build_error_response(
-                f"diary not found: {normalized_id}",
-                query_type="diary_update",
-                filters={"id": normalized_id},
-                metadata=self._management_metadata("update"),
-            )
-
         request = updates or {}
-        if "title" in request and not str(request.get("title", "")).strip():
-            return build_error_response(
-                "diary title cannot be empty",
-                query_type="diary_update",
-                filters={"id": normalized_id},
-                metadata=self._management_metadata("update"),
-            )
 
-        current = self.records[index].copy()
-        allowed_fields = {
-            "title",
-            "content",
-            "author_id",
-            "author_name",
-            "destination",
-            "destination_node_id",
-            "heat",
-            "rating",
-            "tags",
-            "views",
-            "created_at",
-            "images",
-            "videos",
-        }
-        for field_name in allowed_fields:
-            if field_name in request:
-                current[field_name] = request[field_name]
-
-        if "rating" in request:
-            normalized_rating = self._normalize_rating(request.get("rating"), default=None)
-            if normalized_rating is None:
-                return build_error_response(
-                    "diary rating must be a number between 0 and 5",
+        def build_update(current_records: list[Record]) -> tuple[list[Record] | None, Callable[[], dict[str, Any]]]:
+            index = self._find_record_index_in(current_records, normalized_id)
+            if index < 0:
+                return None, lambda: build_error_response(
+                    f"diary not found: {normalized_id}",
                     query_type="diary_update",
                     filters={"id": normalized_id},
                     metadata=self._management_metadata("update"),
                 )
-            current["rating"] = normalized_rating
 
-        normalized = normalize_diary_record(current, index)
-        if not str(normalized["title"]).strip():
-            return build_error_response(
-                "diary title cannot be empty",
+            if "title" in request and not str(request.get("title", "")).strip():
+                return None, lambda: build_error_response(
+                    "diary title cannot be empty",
+                    query_type="diary_update",
+                    filters={"id": normalized_id},
+                    metadata=self._management_metadata("update"),
+                )
+
+            current = current_records[index].copy()
+            allowed_fields = {
+                "title",
+                "content",
+                "author_id",
+                "author_name",
+                "destination",
+                "destination_node_id",
+                "heat",
+                "rating",
+                "tags",
+                "views",
+                "created_at",
+                "images",
+                "videos",
+            }
+            for field_name in allowed_fields:
+                if field_name in request:
+                    current[field_name] = request[field_name]
+
+            if "rating" in request:
+                normalized_rating = self._normalize_rating(request.get("rating"), default=None)
+                if normalized_rating is None:
+                    return None, lambda: build_error_response(
+                        "diary rating must be a number between 0 and 5",
+                        query_type="diary_update",
+                        filters={"id": normalized_id},
+                        metadata=self._management_metadata("update"),
+                    )
+                current["rating"] = normalized_rating
+
+            normalized = normalize_diary_record(current, index)
+            if not str(normalized["title"]).strip():
+                return None, lambda: build_error_response(
+                    "diary title cannot be empty",
+                    query_type="diary_update",
+                    filters={"id": normalized_id},
+                    metadata=self._management_metadata("update"),
+                )
+
+            updated_records = [item.copy() for item in current_records]
+            updated_records[index] = normalized
+            return updated_records, lambda: build_success_response(
+                data=[normalized],
+                message="diary updated",
                 query_type="diary_update",
                 filters={"id": normalized_id},
-                metadata=self._management_metadata("update"),
+                metadata=self._management_metadata(
+                    "update",
+                    persistence_succeeded=True,
+                ),
             )
 
-        self.records[index] = normalized
-        return build_success_response(
-            data=[normalized],
-            message="diary updated",
-            query_type="diary_update",
-            filters={"id": normalized_id},
-            metadata=self._management_metadata("update"),
-        )
+        def build_persistence_error(persist_error: str) -> dict[str, Any]:
+            return build_error_response(
+                persist_error,
+                query_type="diary_update",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata(
+                    "update",
+                    persist_error=persist_error,
+                ),
+            )
+
+        return self._apply_records_update(build_update, build_persistence_error)
 
     def delete_diary(self, diary_id: str) -> dict[str, Any]:
-        """删除日记记录。当前只删除内存态服务对象中的记录。"""
+        """删除日记记录。"""
         normalized_id = str(diary_id or "").strip()
-        index = self._find_record_index(normalized_id)
-        if index < 0:
-            return build_error_response(
-                f"diary not found: {normalized_id}",
+
+        def build_update(current_records: list[Record]) -> tuple[list[Record] | None, Callable[[], dict[str, Any]]]:
+            index = self._find_record_index_in(current_records, normalized_id)
+            if index < 0:
+                return None, lambda: build_error_response(
+                    f"diary not found: {normalized_id}",
+                    query_type="diary_delete",
+                    filters={"id": normalized_id},
+                    metadata=self._management_metadata("delete"),
+                )
+
+            deleted = current_records[index].copy()
+            updated_records = [item.copy() for item in current_records]
+            del updated_records[index]
+            return updated_records, lambda: build_success_response(
+                data=[deleted],
+                message="diary deleted",
                 query_type="diary_delete",
                 filters={"id": normalized_id},
-                metadata=self._management_metadata("delete"),
+                metadata=self._management_metadata(
+                    "delete",
+                    persistence_succeeded=True,
+                ),
             )
 
-        deleted = self.records.pop(index)
-        return build_success_response(
-            data=[deleted],
-            message="diary deleted",
-            query_type="diary_delete",
-            filters={"id": normalized_id},
-            metadata=self._management_metadata("delete"),
-        )
+        def build_persistence_error(persist_error: str) -> dict[str, Any]:
+            return build_error_response(
+                persist_error,
+                query_type="diary_delete",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata(
+                    "delete",
+                    persist_error=persist_error,
+                ),
+            )
+
+        return self._apply_records_update(build_update, build_persistence_error)
 
     def rate_diary(self, diary_id: str, rating: Any) -> dict[str, Any]:
         """更新日记评分。评分范围统一限制在 0 到 5。"""
         normalized_id = str(diary_id or "").strip()
-        index = self._find_record_index(normalized_id)
-        if index < 0:
-            return build_error_response(
-                f"diary not found: {normalized_id}",
+
+        normalized_rating: float | None = None
+
+        def build_update(current_records: list[Record]) -> tuple[list[Record] | None, Callable[[], dict[str, Any]]]:
+            nonlocal normalized_rating
+            index = self._find_record_index_in(current_records, normalized_id)
+            if index < 0:
+                return None, lambda: build_error_response(
+                    f"diary not found: {normalized_id}",
+                    query_type="diary_rate",
+                    filters={"id": normalized_id},
+                    metadata=self._management_metadata("rate"),
+                )
+
+            normalized_rating = self._normalize_rating(rating, default=None)
+            if normalized_rating is None:
+                return None, lambda: build_error_response(
+                    "diary rating must be a number between 0 and 5",
+                    query_type="diary_rate",
+                    filters={"id": normalized_id},
+                    metadata=self._management_metadata("rate"),
+                )
+
+            updated_record = current_records[index].copy()
+            updated_record["rating"] = normalized_rating
+            updated_record = normalize_diary_record(updated_record, index)
+            updated_records = [item.copy() for item in current_records]
+            updated_records[index] = updated_record
+            return updated_records, lambda: build_success_response(
+                data=[updated_record],
+                message="diary rated",
                 query_type="diary_rate",
-                filters={"id": normalized_id},
-                metadata=self._management_metadata("rate"),
+                filters={"id": normalized_id, "rating": normalized_rating},
+                metadata=self._management_metadata(
+                    "rate",
+                    persistence_succeeded=True,
+                ),
             )
 
-        normalized_rating = self._normalize_rating(rating, default=None)
-        if normalized_rating is None:
+        def build_persistence_error(persist_error: str) -> dict[str, Any]:
             return build_error_response(
-                "diary rating must be a number between 0 and 5",
+                persist_error,
                 query_type="diary_rate",
-                filters={"id": normalized_id},
-                metadata=self._management_metadata("rate"),
+                filters={"id": normalized_id, "rating": normalized_rating},
+                metadata=self._management_metadata(
+                    "rate",
+                    persist_error=persist_error,
+                ),
             )
 
-        self.records[index]["rating"] = normalized_rating
-        return build_success_response(
-            data=[self.records[index]],
-            message="diary rated",
-            query_type="diary_rate",
-            filters={"id": normalized_id, "rating": normalized_rating},
-            metadata=self._management_metadata("rate"),
-        )
+        return self._apply_records_update(build_update, build_persistence_error)
 
     def search_by_title(
         self,
@@ -633,14 +748,22 @@ class DiaryService:
         return "desc"
 
     def _find_record_index(self, diary_id: str) -> int:
-        for index, record in enumerate(self.records):
+        return self._find_record_index_in(self.records, diary_id)
+
+    @staticmethod
+    def _find_record_index_in(records: list[Record], diary_id: str) -> int:
+        for index, record in enumerate(records):
             if str(record.get("id", "")).strip() == diary_id:
                 return index
         return -1
 
     def _next_diary_id(self) -> str:
+        return self._next_diary_id_from(self.records)
+
+    @staticmethod
+    def _next_diary_id_from(records: list[Record]) -> str:
         max_number = 0
-        for record in self.records:
+        for record in records:
             record_id = str(record.get("id", "")).strip()
             if not record_id.startswith("diary_"):
                 continue
@@ -649,14 +772,22 @@ class DiaryService:
                 max_number = max(max_number, int(suffix))
         return f"diary_{max_number + 1:03d}"
 
-    def _management_metadata(self, operation: str) -> dict[str, Any]:
-        return {
+    def _management_metadata(
+        self,
+        operation: str,
+        *,
+        persist_error: str | None = None,
+        persistence_succeeded: bool = False,
+    ) -> dict[str, Any]:
+        storage_mode = "file_backed" if self._should_write_back() else "memory_only"
+        metadata = {
             "operation": operation,
-            "storage_mode": "memory_only",
+            "storage_mode": storage_mode,
             "record_count": len(self.records),
             "data_source": {
                 "path": str(self.data_path),
-                "write_back": False,
+                "write_back": self._should_write_back(),
+                "legacy_compatible": self.data_path == get_legacy_diary_data_path(),
             },
             "result_fields": [
                 "id",
@@ -674,6 +805,113 @@ class DiaryService:
                 "videos",
             ],
         }
+        if persist_error is not None:
+            metadata["persistence"] = {
+                "attempted": self._should_write_back(),
+                "succeeded": False,
+                "error": persist_error,
+            }
+        elif self._should_write_back() and persistence_succeeded:
+            metadata["persistence"] = {
+                "attempted": True,
+                "succeeded": True,
+            }
+        return metadata
+
+    def _should_write_back(self) -> bool:
+        return not self._records_injected
+
+    def _apply_records_update(
+        self,
+        build_update: Callable[[list[Record]], tuple[list[Record] | None, Callable[[], dict[str, Any]]]],
+        build_persistence_error: Callable[[str], dict[str, Any]],
+    ) -> dict[str, Any]:
+        if self._should_write_back():
+            with get_diary_data_lock(self.data_path):
+                try:
+                    current_records = load_diary_records(self.data_path)
+                except OSError as error:
+                    return build_persistence_error(f"failed to load diary data: {error}")
+                updated_records, build_response = build_update(current_records)
+                if updated_records is None:
+                    return build_response()
+                persist_error = self._commit_records_update(updated_records)
+                if persist_error is not None:
+                    return build_persistence_error(persist_error)
+                return build_response()
+
+        current_records = [item.copy() for item in self.records]
+        updated_records, build_response = build_update(current_records)
+        if updated_records is not None:
+            self.records = updated_records
+        return build_response()
+
+    def _commit_records_update(self, updated_records: list[Record]) -> str | None:
+        if self._should_write_back():
+            try:
+                self._persist_records(updated_records)
+            except OSError as error:
+                return f"failed to persist diary data: {error}"
+        self.records = updated_records
+        return None
+
+    def _persist_records(self, records: list[Record]) -> None:
+        target_path = self.data_path
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+
+        serialized_records = self._serialize_records(records)
+        payload = json.dumps(
+            serialized_records,
+            ensure_ascii=False,
+            indent=2,
+        ) + "\n"
+
+        file_descriptor: int | None = None
+        temp_path: str | None = None
+        try:
+            file_descriptor, temp_path = tempfile.mkstemp(
+                prefix=f"{target_path.stem}.",
+                suffix=".tmp",
+                dir=str(target_path.parent),
+            )
+            with os.fdopen(file_descriptor, "w", encoding="utf-8") as handle:
+                file_descriptor = None
+                handle.write(payload)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temp_path, target_path)
+        except OSError:
+            raise
+        finally:
+            if file_descriptor is not None:
+                os.close(file_descriptor)
+            if temp_path is not None and os.path.exists(temp_path):
+                os.unlink(temp_path)
+
+    def _serialize_records(self, records: list[Record]) -> list[Record]:
+        return [self._serialize_record(record) for record in records]
+
+    def _serialize_record(self, record: Record) -> Record:
+        serialized: Record = {
+            "id": str(record.get("id", "")).strip(),
+            "title": str(record.get("title", "")).strip(),
+            "content": str(record.get("content", "")).strip(),
+            "author_id": str(record.get("author_id", "")).strip(),
+            "author_name": str(record.get("author_name", "")).strip(),
+            "destination": str(record.get("destination", "")).strip(),
+            "destination_node_id": record.get("destination_node_id"),
+            "heat": coerce_int(record.get("heat"), default=0),
+            "rating": self._normalize_rating(record.get("rating"), default=0.0),
+            "tags": normalize_string_list(record.get("tags")),
+            "views": coerce_int(record.get("views"), default=0),
+            "created_at": str(record.get("created_at", "")).strip(),
+            "images": normalize_string_list(record.get("images")),
+        }
+
+        videos = normalize_string_list(record.get("videos"))
+        if videos:
+            serialized["videos"] = videos
+        return serialized
 
     @staticmethod
     def _normalize_rating(value: Any, default: float | None = 0.0) -> float | None:

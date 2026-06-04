@@ -18,7 +18,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from src.diary.diary_service import DiaryService, load_diary_records
+from src.diary.diary_service import DiaryService
 from src.graph.loader import GraphLoader
 from src.recommend.catering_service import recommend_catering
 from src.recommend.interest import (
@@ -427,14 +427,23 @@ def normalize_text(value: Any) -> str:
 class DemoUIService:
     """Thin service layer for the minimal demonstrable web UI."""
 
-    def __init__(self, site_id: str | None = None) -> None:
+    def __init__(
+        self,
+        site_id: str | None = None,
+        *,
+        diary_data_path: str | Path | None = None,
+        diary_records: list[Record] | None = None,
+    ) -> None:
         self.site_id = normalize_text(site_id) or get_default_site_id()
         self.site_meta = self._load_site_meta(self.site_id)
         self.graph = GraphLoader.load_site_graph(self.site_id)
         self.router = Router(self.graph)
         self.site_records = self._filter_searchable_site_records(load_site_records(self.site_id))
-        self.diary_records = load_diary_records()
-        self.diary_service = DiaryService(records=self.diary_records)
+        self.diary_service = DiaryService(
+            records=diary_records,
+            data_path=diary_data_path,
+        )
+        self.diary_records = self.diary_service.records
         self.users = load_users(site_id=self.site_id)
         self.outdoor_graph_source = self._load_outdoor_graph_source(self.site_id)
         self.outdoor_metadata = self._load_outdoor_metadata()
@@ -3531,10 +3540,11 @@ class DemoUIService:
 
         metadata = dict(response.get("metadata") or {})
         metadata["site_id"] = self.site_id
+        write_back = bool((metadata.get("data_source") or {}).get("write_back"))
         metadata["ui_contract"] = {
             "route_hint_field": "route_target_node_id",
             "media_fields": ["images", "videos"],
-            "write_back": False,
+            "write_back": write_back,
         }
 
         decorated = response.copy()
@@ -3543,7 +3553,8 @@ class DemoUIService:
         decorated["metadata"] = metadata
         decorated["ui"] = {
             "source": source,
-            "storage_mode": metadata.get("storage_mode", "memory_only"),
+            "storage_mode": metadata.get("storage_mode", "file_backed"),
+            "write_back": write_back,
             "record_count": len(self.diary_service.records),
             "routeable_result_count": routeable_count,
             "mappable_result_count": mappable_count,
@@ -3916,4 +3927,3 @@ class DemoUIService:
         if minutes <= 0:
             return f"{remaining_seconds} 秒"
         return f"{minutes} 分 {remaining_seconds} 秒"
-

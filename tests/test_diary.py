@@ -1,6 +1,8 @@
 import os
 import sys
 import json
+import tempfile
+import threading
 from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
@@ -23,6 +25,13 @@ GLOBAL_SITES_PATH = DATA_ROOT / "global_sites.json"
 def load_global_site_names():
     data = json.loads(GLOBAL_SITES_PATH.read_text(encoding="utf-8"))
     return [site["name"] for site in data["sites"]]
+
+
+def make_temp_diary_data_path():
+    temp_dir = tempfile.TemporaryDirectory()
+    temp_path = Path(temp_dir.name) / "diary_data.json"
+    temp_path.write_text(DEFAULT_DIARY_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+    return temp_dir, temp_path
 
 
 def test_load_default_records():
@@ -234,6 +243,184 @@ def test_diary_management_create_update_rate_delete_flow():
     print("test_diary_management_create_update_rate_delete_flow passed.")
 
 
+def test_diary_management_file_backed_persistence_flow():
+    temp_dir, temp_path = make_temp_diary_data_path()
+    try:
+        service = DiaryService(data_path=temp_path)
+        baseline_count = len(service.records)
+        created = service.create_diary(
+            {
+                "title": "真实写回创建验证",
+                "content": "用于验证日记文件写回、重载和全文检索链路。",
+                "author_id": "user_test",
+                "author_name": "测试用户",
+                "destination": "北京大学图书馆",
+                "destination_node_id": "library",
+                "rating": 4.6,
+                "tags": ["真实写回", "测试"],
+                "images": ["media/placeholders/test_diary.jpg"],
+                "videos": ["media/placeholders/test_diary.mp4"],
+            }
+        )
+
+        assert created["success"] is True
+        assert created["metadata"]["storage_mode"] == "file_backed"
+        assert created["metadata"]["data_source"]["write_back"] is True
+        diary_id = created["results"][0]["id"]
+
+        reloaded_after_create = DiaryService(data_path=temp_path)
+        created_record = next(record for record in reloaded_after_create.records if record["id"] == diary_id)
+        assert len(reloaded_after_create.records) == baseline_count + 1
+        assert created_record["title"] == "真实写回创建验证"
+        assert created_record["videos"] == ["media/placeholders/test_diary.mp4"]
+
+        fulltext_result = search_diaries_fulltext(
+            query="真实写回创建验证",
+            limit=5,
+            data_path=temp_path,
+        )
+        assert fulltext_result["success"] is True
+        assert any(item["id"] == diary_id for item in fulltext_result["results"])
+
+        updated = reloaded_after_create.update_diary(
+            diary_id,
+            {
+                "title": "真实写回更新验证",
+                "content": "更新后的正文仍应能在重载后读到。",
+                "tags": "更新后",
+            },
+        )
+        assert updated["success"] is True
+
+        reloaded_after_update = DiaryService(data_path=temp_path)
+        updated_record = next(record for record in reloaded_after_update.records if record["id"] == diary_id)
+        assert updated_record["title"] == "真实写回更新验证"
+        assert updated_record["tags"] == ["更新后"]
+
+        rated = reloaded_after_update.rate_diary(diary_id, 4.9)
+        assert rated["success"] is True
+
+        reloaded_after_rate = DiaryService(data_path=temp_path)
+        rated_record = next(record for record in reloaded_after_rate.records if record["id"] == diary_id)
+        assert rated_record["rating"] == 4.9
+
+        deleted = reloaded_after_rate.delete_diary(diary_id)
+        assert deleted["success"] is True
+
+        reloaded_after_delete = DiaryService(data_path=temp_path)
+        assert len(reloaded_after_delete.records) == baseline_count
+        assert all(record["id"] != diary_id for record in reloaded_after_delete.records)
+    finally:
+        temp_dir.cleanup()
+    print("test_diary_management_file_backed_persistence_flow passed.")
+
+
+def test_diary_management_records_injection_does_not_write_back():
+    temp_dir, temp_path = make_temp_diary_data_path()
+    try:
+        original_records = DiaryService(data_path=temp_path).records
+        service = DiaryService(records=[], data_path=temp_path)
+        created = service.create_diary(
+            {
+                "title": "隔离内存态验证",
+                "content": "这条记录不应写回临时日记文件。",
+            }
+        )
+
+        assert created["success"] is True
+        assert created["metadata"]["storage_mode"] == "memory_only"
+        assert created["metadata"]["data_source"]["write_back"] is False
+
+        reloaded = DiaryService(data_path=temp_path)
+        assert len(reloaded.records) == len(original_records)
+        assert all(record["title"] != "隔离内存态验证" for record in reloaded.records)
+    finally:
+        temp_dir.cleanup()
+    print("test_diary_management_records_injection_does_not_write_back passed.")
+
+
+def test_diary_management_file_backed_concurrent_create_keeps_both_records():
+    temp_dir, temp_path = make_temp_diary_data_path()
+    try:
+        baseline_count = len(DiaryService(data_path=temp_path).records)
+        barrier = threading.Barrier(2)
+        results: list[dict[str, object]] = []
+        result_lock = threading.Lock()
+
+        def create_from_separate_service(title: str) -> None:
+            service = DiaryService(data_path=temp_path)
+            barrier.wait()
+            response = service.create_diary(
+                {
+                    "title": title,
+                    "content": "并发写入回归测试。",
+                    "rating": 4.1,
+                }
+            )
+            with result_lock:
+                results.append(response)
+
+        threads = [
+            threading.Thread(
+                target=create_from_separate_service,
+                args=(f"并发写入回归 {index}",),
+            )
+            for index in range(2)
+        ]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+        assert len(results) == 2
+        assert all(result["success"] is True for result in results)
+        created_ids = [result["results"][0]["id"] for result in results]
+        assert len(set(created_ids)) == 2
+
+        reloaded = DiaryService(data_path=temp_path)
+        created_records = [
+            record
+            for record in reloaded.records
+            if str(record.get("title", "")).startswith("并发写入回归")
+        ]
+        assert len(reloaded.records) == baseline_count + 2
+        assert len(created_records) == 2
+        assert {record["id"] for record in created_records} == set(created_ids)
+    finally:
+        temp_dir.cleanup()
+    print("test_diary_management_file_backed_concurrent_create_keeps_both_records passed.")
+
+
+def test_diary_management_create_rejects_invalid_rating_without_write_back():
+    temp_dir, temp_path = make_temp_diary_data_path()
+    try:
+        service = DiaryService(data_path=temp_path)
+        baseline_count = len(service.records)
+
+        invalid = service.create_diary(
+            {
+                "title": "非法评分不应落盘",
+                "content": "显式传入不可解析评分时应失败。",
+                "rating": "not-a-number",
+            }
+        )
+
+        assert invalid["success"] is False
+        assert invalid["query_type"] == "diary_create"
+        assert invalid["message"] == "diary rating must be a number between 0 and 5"
+
+        reloaded = DiaryService(data_path=temp_path)
+        assert len(reloaded.records) == baseline_count
+        assert all(record["title"] != "非法评分不应落盘" for record in reloaded.records)
+
+        valid_without_rating = service.create_diary({"title": "未传评分仍可创建"})
+        assert valid_without_rating["success"] is True
+        assert valid_without_rating["results"][0]["rating"] == 0.0
+    finally:
+        temp_dir.cleanup()
+    print("test_diary_management_create_rejects_invalid_rating_without_write_back passed.")
+
+
 def test_diary_management_validation_errors():
     service = DiaryService(records=[])
 
@@ -243,12 +430,16 @@ def test_diary_management_validation_errors():
 
     first = service.create_diary({"id": "manual_diary", "title": "测试日记"})
     duplicate = service.create_diary({"id": "manual_diary", "title": "重复日记"})
+    invalid_create_rating = service.create_diary(
+        {"title": "非法创建评分", "rating": "not-a-number"}
+    )
     invalid_update = service.update_diary("manual_diary", {"title": ""})
     invalid_rating = service.rate_diary("manual_diary", "bad-rating")
     missing_delete = service.delete_diary("missing_diary")
 
     assert first["success"] is True
     assert duplicate["success"] is False
+    assert invalid_create_rating["success"] is False
     assert invalid_update["success"] is False
     assert invalid_rating["success"] is False
     assert missing_delete["success"] is False
@@ -307,6 +498,10 @@ def run_all_tests():
     test_diary_response_shape()
     test_diary_interest_recommendation_changes_with_user_interests()
     test_diary_management_create_update_rate_delete_flow()
+    test_diary_management_file_backed_persistence_flow()
+    test_diary_management_records_injection_does_not_write_back()
+    test_diary_management_file_backed_concurrent_create_keeps_both_records()
+    test_diary_management_create_rejects_invalid_rating_without_write_back()
     test_diary_management_validation_errors()
     test_search_fulltext_single_keyword()
     test_search_fulltext_multi_keyword()

@@ -14,6 +14,8 @@ import src.ui.demo_service as demo_service_module
 from src.ui.demo_service import DemoUIService
 from src.ui.demo_server import build_handler, load_local_env_files
 
+DEFAULT_DIARY_PATH = Path(__file__).resolve().parents[1] / "data" / "diary_data.json"
+
 
 def assert_close_coordinate(left, right, tolerance=0.00035):
     assert abs(left["lat"] - right["lat"]) <= tolerance
@@ -50,6 +52,13 @@ def iter_geojson_positions(geometry):
         for polygon in coordinates:
             for ring in polygon:
                 yield from ring
+
+
+def make_temp_diary_data_path():
+    temp_dir = tempfile.TemporaryDirectory()
+    temp_path = Path(temp_dir.name) / "diary_data.json"
+    temp_path.write_text(DEFAULT_DIARY_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+    return temp_dir, temp_path
 
 
 CORE_PKU_POI_COUNT = 14
@@ -10706,56 +10715,99 @@ def test_demo_m23_interest_user_switch_changes_diary_recommendations():
 
 
 def test_demo_diary_management_flow_links_to_route():
-    service = DemoUIService("PKU")
-    created = service.create_diary(
-        {
-            "title": "第十一周日记管理接口联调",
-            "content": "这是一条用于 Web 服务层联调的日记管理记录。",
-            "destination": "北京大学图书馆",
-            "destination_node_id": "library",
-            "rating": 4.4,
-            "tags": ["第十一周", "日记管理"],
-            "images": ["media/placeholders/ui_diary.jpg"],
-            "videos": ["media/placeholders/ui_diary.mp4"],
-        }
-    )
+    temp_dir, temp_path = make_temp_diary_data_path()
+    try:
+        service = DemoUIService("PKU", diary_data_path=temp_path)
+        created = service.create_diary(
+            {
+                "title": "第十一周日记管理接口联调",
+                "content": "这是一条用于 Web 服务层联调的日记管理记录。",
+                "destination": "北京大学图书馆",
+                "destination_node_id": "library",
+                "rating": 4.4,
+                "tags": ["第十一周", "日记管理"],
+                "images": ["media/placeholders/ui_diary.jpg"],
+                "videos": ["media/placeholders/ui_diary.mp4"],
+            }
+        )
 
-    assert created["success"] is True
-    assert created["query_type"] == "diary_create"
-    assert created["metadata"]["site_id"] == "PKU"
-    assert created["metadata"]["ui_contract"]["media_fields"] == ["images", "videos"]
-    assert created["ui"]["source"] == "diary_create"
-    assert created["ui"]["storage_mode"] == "memory_only"
-    diary = created["results"][0]
-    assert diary["route_target_node_id"] == "library"
-    assert diary["route_target_name"] == "图书馆"
-    assert diary["has_map_location"] is True
+        assert created["success"] is True
+        assert created["query_type"] == "diary_create"
+        assert created["metadata"]["site_id"] == "PKU"
+        assert created["metadata"]["data_source"]["write_back"] is True
+        assert created["metadata"]["ui_contract"]["media_fields"] == ["images", "videos"]
+        assert created["metadata"]["ui_contract"]["write_back"] is True
+        assert created["ui"]["source"] == "diary_create"
+        assert created["ui"]["storage_mode"] == "file_backed"
+        assert created["ui"]["write_back"] is True
+        diary = created["results"][0]
+        assert diary["route_target_node_id"] == "library"
+        assert diary["route_target_name"] == "图书馆"
+        assert diary["has_map_location"] is True
 
-    found = service.diary_fulltext_search({"query": "服务层联调", "limit": 5})
-    assert any(item["id"] == diary["id"] for item in found["results"])
+        reloaded_service = DemoUIService("PKU", diary_data_path=temp_path)
+        found = reloaded_service.diary_fulltext_search({"query": "服务层联调", "limit": 5})
+        assert any(item["id"] == diary["id"] for item in found["results"])
 
-    updated = service.update_diary(
-        {
-            "id": diary["id"],
-            "updates": {
-                "title": "第十一周日记管理接口复盘",
-                "rating": 4.9,
-                "videos": ["media/placeholders/ui_diary_updated.mp4"],
-            },
-        }
-    )
-    assert updated["success"] is True
-    assert updated["results"][0]["title"] == "第十一周日记管理接口复盘"
-    assert updated["results"][0]["videos"] == ["media/placeholders/ui_diary_updated.mp4"]
+        updated = reloaded_service.update_diary(
+            {
+                "id": diary["id"],
+                "updates": {
+                    "title": "第十一周日记管理接口复盘",
+                    "rating": 4.9,
+                    "videos": ["media/placeholders/ui_diary_updated.mp4"],
+                },
+            }
+        )
+        assert updated["success"] is True
+        assert updated["results"][0]["title"] == "第十一周日记管理接口复盘"
+        assert updated["results"][0]["videos"] == ["media/placeholders/ui_diary_updated.mp4"]
 
-    rated = service.rate_diary({"id": diary["id"], "rating": 5})
-    assert rated["success"] is True
-    assert rated["results"][0]["rating"] == 5.0
+        rated = DemoUIService("PKU", diary_data_path=temp_path).rate_diary({"id": diary["id"], "rating": 5})
+        assert rated["success"] is True
+        assert rated["results"][0]["rating"] == 5.0
 
-    deleted = service.delete_diary({"id": diary["id"]})
-    assert deleted["success"] is True
-    assert deleted["ui"]["record_count"] == len(service.diary_service.records)
+        deleted_service = DemoUIService("PKU", diary_data_path=temp_path)
+        deleted = deleted_service.delete_diary({"id": diary["id"]})
+        assert deleted["success"] is True
+        assert deleted["ui"]["record_count"] == len(deleted_service.diary_service.records)
+
+        final_service = DemoUIService("PKU", diary_data_path=temp_path)
+        final_found = final_service.diary_fulltext_search({"query": "服务层联调", "limit": 5})
+        assert all(item["id"] != diary["id"] for item in final_found["results"])
+    finally:
+        temp_dir.cleanup()
     print("test_demo_diary_management_flow_links_to_route passed.")
+
+
+def test_demo_diary_create_rejects_invalid_rating():
+    temp_dir, temp_path = make_temp_diary_data_path()
+    try:
+        service = DemoUIService("PKU", diary_data_path=temp_path)
+        baseline_count = len(service.diary_service.records)
+        created = service.create_diary(
+            {
+                "title": "UI 非法评分创建",
+                "content": "服务层不应接受不可解析评分。",
+                "rating": "not-a-number",
+            }
+        )
+
+        assert created["success"] is False
+        assert created["query_type"] == "diary_create"
+        assert created["message"] == "diary rating must be a number between 0 and 5"
+        assert created["metadata"]["site_id"] == "PKU"
+        assert created["ui"]["storage_mode"] == "file_backed"
+
+        reloaded_service = DemoUIService("PKU", diary_data_path=temp_path)
+        assert len(reloaded_service.diary_service.records) == baseline_count
+        assert all(
+            record["title"] != "UI 非法评分创建"
+            for record in reloaded_service.diary_service.records
+        )
+    finally:
+        temp_dir.cleanup()
+    print("test_demo_diary_create_rejects_invalid_rating passed.")
 
 
 def test_demo_diary_search_results_expose_destination_node_for_route_entry():
@@ -11487,6 +11539,7 @@ def run_all_tests():
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()
     test_demo_m23_interest_user_switch_changes_diary_recommendations()
     test_demo_diary_management_flow_links_to_route()
+    test_demo_diary_create_rejects_invalid_rating()
     test_demo_static_diary_center_contains_management_controls()
     test_demo_static_leaflet_renderer_contains_local_assets_and_fallback()
     test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks()
@@ -11511,4 +11564,3 @@ def run_all_tests():
 
 if __name__ == "__main__":
     run_all_tests()
-
