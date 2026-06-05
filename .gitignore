@@ -1,6 +1,9 @@
 __pycache__/
 *.py[cod]
 .venv/
+.venv-desktop/
+build/
+dist/
 .env.local
 .env.aigc.local
 src/ui/static/generated/aigc/*.gif

@@ -287,6 +287,8 @@ HELP_CONTENT = {
     "stage": "第13周正式产品冻结版 · 地图方案 B M14",
     "launch_command": "py -B -m src.ui.demo_server",
     "fallback_launch_command": "python -B -m src.ui.demo_server",
+    "desktop_launch_command": "py -B -m src.ui.desktop_app",
+    "desktop_build_command": "powershell -ExecutionPolicy Bypass -File scripts\\build_windows_desktop.ps1",
     "browser_url": "http://127.0.0.1:8765",
     "demo_flow": [
         "在首页确认当前站点和数据规模统计。",
@@ -412,6 +414,14 @@ OSM_EDGE_MATCHES_FILE = "edge_osm_geometry_matches.json"
 DEFAULT_NEARBY_RADIUS_OPTIONS = (200, 500, 800, 1200)
 AIGC_GENERATED_STATIC_DIR = Path(__file__).resolve().parent / "static" / "generated" / "aigc"
 AIGC_GENERATED_URL_PREFIX = "/generated/aigc"
+AIGC_GENERATED_STATIC_ROOT_ENV = "DEMO_UI_GENERATED_STATIC_ROOT"
+
+
+def resolve_aigc_generated_static_dir() -> Path:
+    configured_root = os.environ.get(AIGC_GENERATED_STATIC_ROOT_ENV, "").strip()
+    if configured_root:
+        return Path(configured_root).expanduser() / "aigc"
+    return AIGC_GENERATED_STATIC_DIR
 AIGC_MAX_FRAME_COUNT = 4
 AIGC_OPENAI_IMAGE_ENDPOINT = "https://api.openai.com/v1/images/generations"
 AIGC_OPENAI_IMAGE_TIMEOUT_S = 45
@@ -2594,9 +2604,10 @@ class DemoUIService:
         return max(10, min(300, timeout_s))
 
     def _save_aigc_generated_image(self, image_bytes: bytes, frame_index: int) -> str:
-        AIGC_GENERATED_STATIC_DIR.mkdir(parents=True, exist_ok=True)
+        generated_static_dir = resolve_aigc_generated_static_dir()
+        generated_static_dir.mkdir(parents=True, exist_ok=True)
         file_name = f"aigc_{int(time.time() * 1000)}_{frame_index:02d}.png"
-        file_path = AIGC_GENERATED_STATIC_DIR / file_name
+        file_path = generated_static_dir / file_name
         file_path.write_bytes(image_bytes)
         return f"{AIGC_GENERATED_URL_PREFIX}/{file_name}"
 
@@ -2660,7 +2671,7 @@ class DemoUIService:
             "provider": provider,
             "real_model_called": real_model_called,
             "fallback_used": fallback_used,
-            "generated_static_dir": str(AIGC_GENERATED_STATIC_DIR),
+            "generated_static_dir": str(resolve_aigc_generated_static_dir()),
             "data_source": {
                 "path": str(self._aigc_sample_path()),
                 "sample_count": len(self.aigc_samples),

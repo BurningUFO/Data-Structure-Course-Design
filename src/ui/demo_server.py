@@ -30,6 +30,7 @@ LOCAL_ENV_FILES = (
     ".env.local",
     ".env.aigc.local",
 )
+GENERATED_STATIC_ROOT_ENV = "DEMO_UI_GENERATED_STATIC_ROOT"
 
 
 def load_local_env_files(root_dir: Path | None = None) -> list[Path]:
@@ -58,14 +59,35 @@ def _load_env_file(env_path: Path) -> None:
         os.environ.setdefault(key, value)
 
 
-def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
+def _resolve_generated_static_root(static_root: Path) -> Path:
+    configured_root = os.environ.get(GENERATED_STATIC_ROOT_ENV, "").strip()
+    if configured_root:
+        return Path(configured_root).expanduser().resolve()
+    return (static_root / "generated").resolve()
+
+
+def build_handler(
+    service: DemoUIService,
+    *,
+    service_factory: Callable[[str], DemoUIService] | None = None,
+    generated_static_root: str | Path | None = None,
+) -> type[BaseHTTPRequestHandler]:
     static_root = Path(__file__).resolve().parent / "static"
+    generated_root = (
+        Path(generated_static_root).expanduser().resolve()
+        if generated_static_root is not None
+        else _resolve_generated_static_root(static_root)
+    )
     service_cache: dict[str, DemoUIService] = {service.site_id: service}
 
     def resolve_service(site_id: object | None = None) -> DemoUIService:
         normalized_site_id = str(site_id or service.site_id).strip() or service.site_id
         if normalized_site_id not in service_cache:
-            service_cache[normalized_site_id] = DemoUIService(site_id=normalized_site_id)
+            service_cache[normalized_site_id] = (
+                service_factory(normalized_site_id)
+                if service_factory is not None
+                else DemoUIService(site_id=normalized_site_id)
+            )
         return service_cache[normalized_site_id]
 
     class DemoRequestHandler(BaseHTTPRequestHandler):
@@ -192,8 +214,7 @@ def build_handler(service: DemoUIService) -> type[BaseHTTPRequestHandler]:
                     return
             elif path.startswith("/generated/"):
                 generated_name = path.removeprefix("/generated/")
-                file_path = (static_root / "generated" / generated_name).resolve()
-                generated_root = (static_root / "generated").resolve()
+                file_path = (generated_root / generated_name).resolve()
                 if generated_root not in file_path.parents and file_path != generated_root:
                     self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
                     return

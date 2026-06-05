@@ -75,6 +75,8 @@
 
 - Web 主入口：`py -m src.ui.demo_server`
 - 默认地址：`http://127.0.0.1:8765`
+- Windows 桌面入口：`py -B -m src.ui.desktop_app`
+- Windows 打包命令：`powershell -ExecutionPolicy Bypass -File scripts\build_windows_desktop.ps1`
 - 第 11-13 周为正式产品冲刺期，第 14-15 周只做用户体验优化与验收收口，详见 [docs/软件开发任务.md](docs/软件开发任务.md)、[docs/总体方案设计说明.md](docs/总体方案设计说明.md) 和 [docs/课程要求覆盖清单.md](docs/课程要求覆盖清单.md)
 
 ---

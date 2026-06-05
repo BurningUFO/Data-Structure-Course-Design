@@ -11,6 +11,8 @@ from pathlib import Path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import src.ui.demo_service as demo_service_module
+from src.ui.desktop_app import run_smoke
+from src.ui.desktop_paths import ensure_user_diary_data_path, prepare_desktop_runtime
 from src.ui.demo_service import DemoUIService
 from src.ui.demo_server import build_handler, load_local_env_files
 
@@ -59,6 +61,101 @@ def make_temp_diary_data_path():
     temp_path = Path(temp_dir.name) / "diary_data.json"
     temp_path.write_text(DEFAULT_DIARY_PATH.read_text(encoding="utf-8"), encoding="utf-8")
     return temp_dir, temp_path
+
+
+def test_desktop_paths_copy_diary_data_to_appdata_without_overwriting():
+    with tempfile.TemporaryDirectory() as app_tmp, tempfile.TemporaryDirectory() as bundle_tmp:
+        user_root = Path(app_tmp) / "IntelligentCampusGuide"
+        bundled_data = Path(bundle_tmp) / "data"
+        bundled_data.mkdir(parents=True)
+        source_path = bundled_data / "diary_data.json"
+        source_path.write_text('[{"id":"diary_source","title":"Source"}]\n', encoding="utf-8")
+
+        target_path = ensure_user_diary_data_path(
+            user_data_dir=user_root,
+            bundled_data_dir=bundled_data,
+        )
+        assert target_path == user_root / "data" / "diary_data.json"
+        assert target_path.read_text(encoding="utf-8") == source_path.read_text(encoding="utf-8")
+
+        target_path.write_text('[{"id":"diary_local","title":"Local"}]\n', encoding="utf-8")
+        source_path.write_text('[{"id":"diary_new","title":"New"}]\n', encoding="utf-8")
+        second_path = ensure_user_diary_data_path(
+            user_data_dir=user_root,
+            bundled_data_dir=bundled_data,
+        )
+        assert second_path == target_path
+        assert "diary_local" in second_path.read_text(encoding="utf-8")
+        assert "diary_new" not in second_path.read_text(encoding="utf-8")
+    print("test_desktop_paths_copy_diary_data_to_appdata_without_overwriting passed.")
+
+
+def test_demo_server_generated_static_root_env_serves_appdata_file():
+    old_generated_root = os.environ.get("DEMO_UI_GENERATED_STATIC_ROOT")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        generated_root = Path(tmpdir) / "generated"
+        frame_path = generated_root / "aigc" / "frame.png"
+        frame_path.parent.mkdir(parents=True)
+        frame_path.write_bytes(b"desktop-frame")
+        try:
+            os.environ["DEMO_UI_GENERATED_STATIC_ROOT"] = str(generated_root)
+            server = ThreadingHTTPServer(("127.0.0.1", 0), build_handler(DemoUIService("PKU")))
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                port = server.server_address[1]
+                with urllib.request.urlopen(f"http://127.0.0.1:{port}/generated/aigc/frame.png", timeout=10) as response:
+                    payload = response.read()
+            finally:
+                server.shutdown()
+                server.server_close()
+        finally:
+            if old_generated_root is None:
+                os.environ.pop("DEMO_UI_GENERATED_STATIC_ROOT", None)
+            else:
+                os.environ["DEMO_UI_GENERATED_STATIC_ROOT"] = old_generated_root
+
+    assert payload == b"desktop-frame"
+    print("test_demo_server_generated_static_root_env_serves_appdata_file passed.")
+
+
+def test_demo_aigc_generated_static_dir_env_overrides_default():
+    old_generated_root = os.environ.get("DEMO_UI_GENERATED_STATIC_ROOT")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        generated_root = Path(tmpdir) / "generated"
+        try:
+            os.environ["DEMO_UI_GENERATED_STATIC_ROOT"] = str(generated_root)
+            service = DemoUIService("PKU")
+            image_url = service._save_aigc_generated_image(b"fake-image", 1)
+        finally:
+            if old_generated_root is None:
+                os.environ.pop("DEMO_UI_GENERATED_STATIC_ROOT", None)
+            else:
+                os.environ["DEMO_UI_GENERATED_STATIC_ROOT"] = old_generated_root
+
+        saved_files = list((generated_root / "aigc").glob("aigc_*_01.png"))
+        assert image_url.startswith("/generated/aigc/aigc_")
+        assert len(saved_files) == 1
+        assert saved_files[0].read_bytes() == b"fake-image"
+    print("test_demo_aigc_generated_static_dir_env_overrides_default passed.")
+
+
+def test_desktop_smoke_starts_local_server_without_webview():
+    old_generated_root = os.environ.get("DEMO_UI_GENERATED_STATIC_ROOT")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        runtime = prepare_desktop_runtime(
+            user_data_dir=Path(tmpdir) / "IntelligentCampusGuide",
+            bundled_data_dir=DEFAULT_DIARY_PATH.parent,
+        )
+        try:
+            assert run_smoke(site_id="PKU", runtime_paths=runtime) == 0
+            assert runtime.diary_data_path.exists()
+        finally:
+            if old_generated_root is None:
+                os.environ.pop("DEMO_UI_GENERATED_STATIC_ROOT", None)
+            else:
+                os.environ["DEMO_UI_GENERATED_STATIC_ROOT"] = old_generated_root
+    print("test_desktop_smoke_starts_local_server_without_webview passed.")
 
 
 CORE_PKU_POI_COUNT = 14
@@ -378,6 +475,8 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert [item["id"] for item in payload["navigation"]] == ["scenic", "route", "place", "diary", "aigc", "help"]
     assert payload["help"]["launch_command"] == "py -B -m src.ui.demo_server"
     assert payload["help"]["fallback_launch_command"] == "python -B -m src.ui.demo_server"
+    assert payload["help"]["desktop_launch_command"] == "py -B -m src.ui.desktop_app"
+    assert payload["help"]["desktop_build_command"] == "powershell -ExecutionPolicy Bypass -File scripts\\build_windows_desktop.ps1"
     assert payload["help"]["browser_url"] == "http://127.0.0.1:8765"
     assert payload["help"]["stage"] == "第13周正式产品冻结版 · 地图方案 B M14"
     assert len(payload["help"]["demo_flow"]) >= 3
@@ -11422,6 +11521,10 @@ def test_demo_multi_route_contains_visit_order_and_legs():
 def run_all_tests():
     print("Running UI demo service tests...")
     test_demo_bootstrap_contains_map_and_controls()
+    test_desktop_paths_copy_diary_data_to_appdata_without_overwriting()
+    test_demo_server_generated_static_root_env_serves_appdata_file()
+    test_demo_aigc_generated_static_dir_env_overrides_default()
+    test_desktop_smoke_starts_local_server_without_webview()
     test_m27x_thu_outdoor_main_chain_is_available_in_first_batch()
     test_m27x_thu_frontend_switch_contract_and_leaflet_data()
     test_m27x_zju_outdoor_main_chain_is_available_in_first_batch()
