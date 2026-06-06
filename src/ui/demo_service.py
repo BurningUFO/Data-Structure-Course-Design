@@ -382,12 +382,29 @@ MAP_CAPABILITIES = {
             {
                 "id": "real_map",
                 "label": "真实底图",
-                "source": "OpenStreetMap 标准瓦片",
-                "tile_url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "source": "OpenStreetMap / CARTO OSM 派生瓦片（本地缓存代理）",
+                "tile_url": "/api/map/tile/osm/{z}/{x}/{y}.png",
+                "tile_sources": [
+                    {
+                        "id": "osm",
+                        "label": "OpenStreetMap",
+                        "tile_url": "/api/map/tile/osm/{z}/{x}/{y}.png",
+                        "source": "OpenStreetMap 标准瓦片",
+                        "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                    },
+                    {
+                        "id": "carto_light",
+                        "label": "CARTO Positron",
+                        "tile_url": "/api/map/tile/carto_light/{z}/{x}/{y}.png",
+                        "source": "CARTO Positron OSM 派生瓦片",
+                        "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors © <a href=\"https://carto.com/attributions\">CARTO</a>",
+                        "subdomains": "abcd",
+                    },
+                ],
                 "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                 "network_required": True,
                 "max_zoom": 19,
-                "usage_note": "仅适合低频课程演示；长期生产应切换合规瓦片服务或自托管。",
+                "usage_note": "通过本地代理添加明确 User-Agent 并缓存 7 天；主源失败时自动切换备用真实瓦片源。",
             },
             {
                 "id": "none",

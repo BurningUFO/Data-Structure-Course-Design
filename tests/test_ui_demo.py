@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import threading
+import urllib.error
 import urllib.request
 from collections import Counter
 from http.server import ThreadingHTTPServer
@@ -11,6 +12,7 @@ from pathlib import Path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import src.ui.demo_service as demo_service_module
+import src.ui.demo_server as demo_server_module
 from src.ui.desktop_app import run_smoke
 from src.ui.desktop_paths import ensure_user_diary_data_path, prepare_desktop_runtime
 from src.ui.demo_service import DemoUIService
@@ -119,6 +121,28 @@ def test_demo_server_generated_static_root_env_serves_appdata_file():
     print("test_demo_server_generated_static_root_env_serves_appdata_file passed.")
 
 
+def test_demo_server_tile_proxy_rejects_unknown_source_without_external_fetch():
+    server = ThreadingHTTPServer(("127.0.0.1", 0), build_handler(DemoUIService("PKU")))
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        port = server.server_address[1]
+        try:
+            urllib.request.urlopen(f"http://127.0.0.1:{port}/api/map/tile/missing/17/107472/49603.png", timeout=10)
+        except urllib.error.HTTPError as error:
+            status = error.code
+        else:
+            status = 200
+    finally:
+        server.shutdown()
+        server.server_close()
+
+    assert "osm" in demo_server_module.TILE_PROXY_SOURCES
+    assert "carto_light" in demo_server_module.TILE_PROXY_SOURCES
+    assert status == 404
+    print("test_demo_server_tile_proxy_rejects_unknown_source_without_external_fetch passed.")
+
+
 def test_demo_aigc_generated_static_dir_env_overrides_default():
     old_generated_root = os.environ.get("DEMO_UI_GENERATED_STATIC_ROOT")
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -156,6 +180,18 @@ def test_desktop_smoke_starts_local_server_without_webview():
             else:
                 os.environ["DEMO_UI_GENERATED_STATIC_ROOT"] = old_generated_root
     print("test_desktop_smoke_starts_local_server_without_webview passed.")
+
+
+def test_desktop_window_uses_default_window_mode():
+    app_path = Path(__file__).resolve().parents[1] / "src" / "ui" / "desktop_app.py"
+    script = app_path.read_text(encoding="utf-8")
+
+    assert "webview.create_window" in script
+    assert "width=1280" in script
+    assert "height=840" in script
+    assert "min_size=(1000, 700)" in script
+    assert "fullscreen=True" not in script
+    print("test_desktop_window_uses_default_window_mode passed.")
 
 
 CORE_PKU_POI_COUNT = 14
@@ -447,7 +483,10 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert basemaps["default"] == "real_map"
     assert basemaps["fallback"] == "none"
     assert [item["id"] for item in basemaps["modes"]] == ["real_map", "none"]
-    assert basemaps["modes"][0]["tile_url"] == "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    assert basemaps["modes"][0]["tile_url"] == "/api/map/tile/osm/{z}/{x}/{y}.png"
+    assert [item["id"] for item in basemaps["modes"][0]["tile_sources"]] == ["osm", "carto_light"]
+    assert basemaps["modes"][0]["tile_sources"][0]["tile_url"] == "/api/map/tile/osm/{z}/{x}/{y}.png"
+    assert basemaps["modes"][0]["tile_sources"][1]["tile_url"] == "/api/map/tile/carto_light/{z}/{x}/{y}.png"
     assert "OpenStreetMap" in basemaps["modes"][0]["attribution"]
     assert basemaps["modes"][0]["network_required"] is True
     assert basemaps["modes"][1]["network_required"] is False
@@ -10978,6 +11017,14 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "syncLeafletLayerOrder" in script
     assert "syncLeafletBasemapLayer" in script
     assert "switchBasemapMode" in script
+    assert "basemapTileSources" in script
+    assert "selectedBasemapTileSource" in script
+    assert "fallbackBasemapMode" in script
+    assert "switchToNextBasemapTileSource" in script
+    assert "正在切换到" in script
+    assert "所有真实底图瓦片源暂时不可达" in script
+    assert 'state.basemapSourceIndex = nextIndex;' in script
+    assert 'state.leaflet.tileLayerSourceId' in script
     assert "toggleWhiteRoadRole" in script
     assert "togglePathNodeVisibility" in script
     assert "refreshLeafletInspectionLayers" in script
@@ -11523,8 +11570,10 @@ def run_all_tests():
     test_demo_bootstrap_contains_map_and_controls()
     test_desktop_paths_copy_diary_data_to_appdata_without_overwriting()
     test_demo_server_generated_static_root_env_serves_appdata_file()
+    test_demo_server_tile_proxy_rejects_unknown_source_without_external_fetch()
     test_demo_aigc_generated_static_dir_env_overrides_default()
     test_desktop_smoke_starts_local_server_without_webview()
+    test_desktop_window_uses_default_window_mode()
     test_m27x_thu_outdoor_main_chain_is_available_in_first_batch()
     test_m27x_thu_frontend_switch_contract_and_leaflet_data()
     test_m27x_zju_outdoor_main_chain_is_available_in_first_batch()

@@ -61,6 +61,7 @@ const state = {
   mapRenderer: "simple_svg",
   mapRenderToken: 0,
   basemapMode: "real_map",
+  basemapSourceIndex: 0,
   basemapError: "",
   mapGeoJson: null,
   mapGeoJsonStats: null,
@@ -100,6 +101,7 @@ const state = {
     nodeLayer: null,
     tileLayer: null,
     tileLayerMode: "",
+    tileLayerSourceId: "",
     osmWaterLanduseLayer: null,
     osmBuildingsLayer: null,
     osmRoadsLayer: null,
@@ -139,6 +141,7 @@ async function loadSiteBootstrap(siteId) {
   state.bootstrap = bootstrap;
   state.mapRenderer = "leaflet_geo";
   state.basemapMode = defaultBasemapMode(bootstrap);
+  state.basemapSourceIndex = 0;
   state.basemapError = "";
   state.mapGeoJson = null;
   state.mapGeoJsonStats = null;
@@ -2657,6 +2660,7 @@ function switchBasemapMode(mode) {
   }
 
   state.basemapMode = basemapMode;
+  state.basemapSourceIndex = 0;
   state.basemapError = "";
   syncLeafletBasemapLayer();
   renderMap();
@@ -4865,14 +4869,51 @@ function basemapModeLabel(mode = selectedBasemapMode()) {
   return basemapConfig(mode)?.label || mode || "无底图";
 }
 
+function basemapTileSources(mode = selectedBasemapMode()) {
+  const config = basemapConfig(mode);
+  if (!config) {
+    return [];
+  }
+  if (Array.isArray(config.tile_sources) && config.tile_sources.length) {
+    return config.tile_sources.filter((source) => source && source.tile_url);
+  }
+  if (config.tile_url) {
+    return [{
+      id: config.id || mode,
+      label: config.label || mode,
+      tile_url: config.tile_url,
+      attribution: config.attribution || "",
+      source: config.source || config.label || mode,
+      subdomains: config.subdomains || "",
+    }];
+  }
+  return [];
+}
+
+function selectedBasemapTileSource(mode = selectedBasemapMode()) {
+  const sources = basemapTileSources(mode);
+  if (!sources.length) {
+    return null;
+  }
+  const boundedIndex = Math.max(0, Math.min(state.basemapSourceIndex || 0, sources.length - 1));
+  state.basemapSourceIndex = boundedIndex;
+  return sources[boundedIndex];
+}
+
+function fallbackBasemapMode() {
+  return resolveBasemapMode(basemapCapabilities().fallback || "none") || "none";
+}
+
 function basemapCaptionPrefix() {
   const config = basemapConfig();
-  if (!config || !config.tile_url) {
-    return "无底图模式：项目道路、POI 和路线来自本地 GeoJSON。";
+  const tileSource = selectedBasemapTileSource();
+  if (!config || !tileSource) {
+    const errorText = state.basemapError ? `${state.basemapError} ` : "";
+    return `${errorText}无底图模式：项目道路、POI 和路线来自本地 GeoJSON。`;
   }
 
   const networkText = config.network_required ? "需联网加载瓦片" : "无网络依赖";
-  const sourceText = config.source || config.label;
+  const sourceText = tileSource.source || tileSource.label || config.source || config.label;
   const errorText = state.basemapError ? ` ${state.basemapError}` : "";
   return `真实底图：${sourceText}（${networkText}）；项目道路、POI 和路线来自本地 GeoJSON。${errorText}`;
 }
@@ -5229,8 +5270,11 @@ function syncLeafletBasemapLayer() {
 
   const mode = selectedBasemapMode();
   const config = basemapConfig(mode);
+  const tileSource = selectedBasemapTileSource(mode);
+  const sourceId = tileSource?.id || "";
   if (
     state.leaflet.tileLayerMode === mode
+    && state.leaflet.tileLayerSourceId === sourceId
     && (mode === "none" || state.leaflet.tileLayer)
   ) {
     return;
@@ -5238,28 +5282,61 @@ function syncLeafletBasemapLayer() {
 
   removeLeafletLayer("tileLayer");
   state.leaflet.tileLayerMode = mode;
+  state.leaflet.tileLayerSourceId = sourceId;
 
-  if (!config || !config.tile_url) {
+  if (!config || !tileSource?.tile_url) {
     return;
   }
 
-  const tileLayer = L.tileLayer(config.tile_url, {
-    attribution: config.attribution || "",
+  const tileLayer = L.tileLayer(tileSource.tile_url, {
+    attribution: tileSource.attribution || config.attribution || "",
     maxZoom: config.max_zoom || 19,
     minZoom: config.min_zoom || 0,
+    subdomains: tileSource.subdomains || config.subdomains || "abc",
   });
   tileLayer.on("tileerror", () => {
-    if (state.basemapError) {
+    if (
+      state.leaflet.tileLayer !== tileLayer
+      || state.leaflet.tileLayerMode !== mode
+      || state.leaflet.tileLayerSourceId !== sourceId
+    ) {
       return;
     }
-    state.basemapError = "底图瓦片加载异常；本地 GeoJSON 道路、POI 和路线仍可继续显示。";
-    syncMapDemoPanel();
-    syncLeafletCaption();
-    setStatus(state.basemapError, "error");
+    switchToNextBasemapTileSource(mode, tileSource);
   });
   tileLayer.addTo(map);
   tileLayer.bringToBack();
   state.leaflet.tileLayer = tileLayer;
+}
+
+function switchToNextBasemapTileSource(mode, failedSource) {
+  const sources = basemapTileSources(mode);
+  const currentIndex = sources.findIndex((source) => source.id === failedSource?.id);
+  const nextIndex = currentIndex >= 0 ? currentIndex + 1 : (state.basemapSourceIndex || 0) + 1;
+
+  removeLeafletLayer("tileLayer");
+  if (nextIndex < sources.length) {
+    const nextSource = sources[nextIndex];
+    state.basemapSourceIndex = nextIndex;
+    state.basemapError = `真实底图源 ${failedSource?.label || failedSource?.id || "当前源"} 加载失败，正在切换到 ${nextSource.label || nextSource.id}。`;
+    state.leaflet.tileLayerMode = "";
+    state.leaflet.tileLayerSourceId = "";
+    syncLeafletBasemapLayer();
+    syncMapDemoPanel();
+    syncLeafletCaption();
+    setStatus(state.basemapError, "info");
+    return;
+  }
+
+  const fallbackMode = fallbackBasemapMode();
+  state.basemapMode = fallbackMode;
+  state.basemapSourceIndex = 0;
+  state.basemapError = `所有真实底图瓦片源暂时不可达，已切换到 ${basemapModeLabel(fallbackMode)}；本地 GeoJSON 道路、POI 和路线仍可继续显示。`;
+  state.leaflet.tileLayerMode = fallbackMode;
+  state.leaflet.tileLayerSourceId = "";
+  syncMapDemoPanel();
+  syncLeafletCaption();
+  setStatus(state.basemapError, "error");
 }
 
 function syncLeafletOsmLayers(payload) {
@@ -5940,6 +6017,7 @@ function clearLeafletLayers() {
   removeLeafletLayer("nodeLayer");
   removeLeafletLayer("routeLayer");
   state.leaflet.tileLayerMode = "";
+  state.leaflet.tileLayerSourceId = "";
   state.leaflet.osmLayersPayload = null;
   state.leaflet.baseGeoJson = null;
   state.leaflet.fittedSiteId = "";

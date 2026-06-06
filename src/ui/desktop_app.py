@@ -147,7 +147,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             width=1280,
             height=840,
             min_size=(1000, 700),
-            fullscreen=True,
         )
         try:
             window.events.closed += lambda: stop_server(server, stopped)

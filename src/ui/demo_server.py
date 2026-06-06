@@ -7,6 +7,9 @@ import json
 import mimetypes
 import os
 import sys
+import time
+import urllib.error
+import urllib.request
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -31,6 +34,22 @@ LOCAL_ENV_FILES = (
     ".env.aigc.local",
 )
 GENERATED_STATIC_ROOT_ENV = "DEMO_UI_GENERATED_STATIC_ROOT"
+TILE_CACHE_DIR_ENV = "DEMO_UI_TILE_CACHE_DIR"
+TILE_CACHE_MAX_AGE_S = 7 * 24 * 60 * 60
+TILE_USER_AGENT = "IntelligentCampusGuide/1.0 (course-design desktop demo; contact: local-user)"
+TILE_PROXY_SOURCES = {
+    "osm": {
+        "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "attribution": "OpenStreetMap contributors",
+        "max_zoom": 19,
+    },
+    "carto_light": {
+        "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        "subdomains": "abcd",
+        "attribution": "OpenStreetMap contributors; CARTO",
+        "max_zoom": 20,
+    },
+}
 
 
 def load_local_env_files(root_dir: Path | None = None) -> list[Path]:
@@ -64,6 +83,81 @@ def _resolve_generated_static_root(static_root: Path) -> Path:
     if configured_root:
         return Path(configured_root).expanduser().resolve()
     return (static_root / "generated").resolve()
+
+
+def _resolve_tile_cache_dir() -> Path:
+    configured_root = os.environ.get(TILE_CACHE_DIR_ENV, "").strip()
+    if configured_root:
+        return Path(configured_root).expanduser().resolve()
+
+    local_app_data = os.environ.get("LOCALAPPDATA", "").strip()
+    if local_app_data:
+        return Path(local_app_data) / "IntelligentCampusGuide" / "tile_cache"
+    return Path.home() / ".cache" / "IntelligentCampusGuide" / "tile_cache"
+
+
+def _parse_tile_proxy_path(path: str) -> tuple[str, int, int, int] | None:
+    parts = path.removeprefix("/api/map/tile/").split("/")
+    if len(parts) != 4:
+        return None
+
+    source_id, z_text, x_text, y_file = parts
+    y_text = y_file.removesuffix(".png")
+    if not source_id or y_text == y_file:
+        return None
+    try:
+        z = int(z_text)
+        x = int(x_text)
+        y = int(y_text)
+    except ValueError:
+        return None
+
+    max_tile = 2 ** z
+    source = TILE_PROXY_SOURCES.get(source_id)
+    max_zoom = int(source.get("max_zoom", 19)) if source else 19
+    if z < 0 or z > max_zoom or x < 0 or y < 0 or x >= max_tile or y >= max_tile:
+        return None
+    return source_id, z, x, y
+
+
+def _tile_cache_path(source_id: str, z: int, x: int, y: int) -> Path:
+    return _resolve_tile_cache_dir() / source_id / str(z) / str(x) / f"{y}.png"
+
+
+def _cached_tile_is_fresh(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    return time.time() - path.stat().st_mtime <= TILE_CACHE_MAX_AGE_S
+
+
+def _source_tile_url(source_id: str, z: int, x: int, y: int) -> str:
+    source = TILE_PROXY_SOURCES[source_id]
+    subdomains = str(source.get("subdomains") or "")
+    subdomain = subdomains[(x + y) % len(subdomains)] if subdomains else ""
+    return str(source["url"]).format(s=subdomain, z=z, x=x, y=y)
+
+
+def _fetch_tile_to_cache(source_id: str, z: int, x: int, y: int, cache_path: Path) -> bytes:
+    url = _source_tile_url(source_id, z, x, y)
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "image/avif,image/webp,image/apng,image/png,image/*,*/*;q=0.8",
+            "User-Agent": TILE_USER_AGENT,
+            "Referer": "http://127.0.0.1/",
+        },
+        method="GET",
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        payload = response.read()
+    if not payload:
+        raise OSError("empty tile response")
+
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path = cache_path.with_suffix(".tmp")
+    temporary_path.write_bytes(payload)
+    os.replace(temporary_path, cache_path)
+    return payload
 
 
 def build_handler(
@@ -193,6 +287,35 @@ def build_handler(
                     )
                     return
                 self._write_json({"success": True, "site_id": selected_service.site_id})
+                return
+
+            if path.startswith("/api/map/tile/"):
+                tile_request = _parse_tile_proxy_path(path)
+                if tile_request is None:
+                    self.send_error(HTTPStatus.NOT_FOUND, "Tile Not Found")
+                    return
+
+                source_id, z, x, y = tile_request
+                if source_id not in TILE_PROXY_SOURCES:
+                    self.send_error(HTTPStatus.NOT_FOUND, "Unknown tile source")
+                    return
+
+                cache_path = _tile_cache_path(source_id, z, x, y)
+                try:
+                    if _cached_tile_is_fresh(cache_path):
+                        content = cache_path.read_bytes()
+                    else:
+                        content = _fetch_tile_to_cache(source_id, z, x, y, cache_path)
+                except (OSError, urllib.error.URLError, urllib.error.HTTPError) as error:
+                    print(f"[demo-ui] tile source failed: {source_id}/{z}/{x}/{y}: {error}")
+                    self.send_error(HTTPStatus.BAD_GATEWAY, "Tile source unavailable")
+                    return
+
+                self._write_bytes(
+                    content,
+                    content_type="image/png",
+                    status=HTTPStatus.OK,
+                )
                 return
 
             file_name = STATIC_FILES.get(path)
