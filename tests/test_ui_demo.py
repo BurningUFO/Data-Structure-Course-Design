@@ -453,6 +453,10 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert basemaps["modes"][1]["network_required"] is False
     assert payload["stats"]["route_target_count"] >= 10
     assert payload["stats"]["indoor_building_count"] >= 20
+    assert payload["offline_capabilities"]["enabled"] is True
+    assert payload["offline_capabilities"]["sync_status_endpoint"] == "/api/offline/sync-status"
+    assert payload["offline_capabilities"]["schema_version"] == "diary-offline-package-v1"
+    assert "priority_diary_sync" in payload["offline_capabilities"]["features"]
 
     assert payload["stats"]["site_count"] >= 1
     assert payload["stats"]["user_count"] >= 10
@@ -492,6 +496,16 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["place_categories"])
     assert any(item["value"] == "interest" for item in payload["controls"]["scenic_sort_options"])
     assert any(item["value"] == "interest" for item in payload["controls"]["diary_sort_options"])
+    assert any(item["value"] == "weighted" for item in payload["controls"]["sort_options"])
+    assert any(item["value"] == "weighted" for item in payload["controls"]["scenic_sort_options"])
+    assert any(item["value"] == "weighted" for item in payload["controls"]["diary_sort_options"])
+    weight_fields = {item["value"]: item["default"] for item in payload["controls"]["ranking_weight_fields"]}
+    assert weight_fields == {
+        "interest_match_score": 0.0,
+        "heat": 0.4,
+        "rating": 0.3,
+        "distance_m": 0.3,
+    }
     assert any(item["value"] == "图书馆" for item in payload["controls"]["interest_options"])
     assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 500, 800, 1200]
     assert [item["value"] for item in payload["controls"]["transport_modes"]] == ["walk", "bike", "mixed"]
@@ -499,6 +513,12 @@ def test_demo_bootstrap_contains_map_and_controls():
         "步行",
         "自行车",
         "步行 + 自行车最短时间",
+    ]
+    assert [item["value"] for item in payload["controls"]["route_time_slots"]] == [
+        "normal",
+        "morning_peak",
+        "lunch_peak",
+        "evening_peak",
     ]
     library_target = next(item for item in payload["route_targets"] if item["id"] == "library")
     room_target = next(item for item in payload["route_targets"] if item["id"] == "lib_reading_room_1")
@@ -10777,6 +10797,27 @@ def test_demo_m23_interest_user_switch_changes_scenic_recommendations():
     print("test_demo_m23_interest_user_switch_changes_scenic_recommendations passed.")
 
 
+def test_demo_custom_weighted_scenic_search_uses_payload_weights():
+    service = DemoUIService("PKU")
+    response = service.scenic_search(
+        {
+            "keyword": "图书馆",
+            "sort_field": "weighted",
+            "interests": ["图书馆"],
+            "ranking_weights": {"rating": 100},
+            "limit": 3,
+        }
+    )
+
+    assert response["success"] is True
+    assert response["metadata"]["ranking"]["weighted_used_for_ranking"] is True
+    assert response["metadata"]["interest"]["custom_weights_active"] is True
+    assert response["filters"]["ranking_weights"] == {"rating": 1.0}
+    assert response["filters"]["interests"]
+    assert response["metadata"]["user_interest_context"]["interests"]
+    print("test_demo_custom_weighted_scenic_search_uses_payload_weights passed.")
+
+
 def test_demo_m23_interest_user_switch_changes_diary_recommendations():
     service = DemoUIService("PKU")
 
@@ -10917,6 +10958,53 @@ def test_demo_diary_search_results_expose_destination_node_for_route_entry():
     assert response["query_type"] == "diary_fulltext_search"
     assert any(item.get("destination_node_id") or item.get("route_target_node_id") for item in response["results"])
     print("test_demo_diary_search_results_expose_destination_node_for_route_entry passed.")
+
+
+def test_demo_offline_sync_status_reports_manifest_and_client_diff():
+    service = DemoUIService("PKU")
+    response = service.offline_sync_status({"priority_limit": 5})
+
+    assert response["success"] is True
+    assert response["query_type"] == "offline_sync_status"
+    offline = response["metadata"]["offline"]
+    manifest = offline["manifest"]
+    assert manifest["document_count"] == len(service.diary_records)
+    assert manifest["priority_policy"]["limit"] == 5
+    assert manifest["capabilities"]["offline_fulltext"] is True
+    assert offline["sync"]["needs_sync"] is True
+    assert offline["sync"]["reason"] == "missing_client_manifest"
+
+    current_response = service.offline_sync_status({"client_manifest": manifest, "priority_limit": 5})
+    assert current_response["metadata"]["offline"]["sync"]["needs_sync"] is False
+    assert current_response["metadata"]["offline"]["sync"]["reason"] == "up_to_date"
+    print("test_demo_offline_sync_status_reports_manifest_and_client_diff passed.")
+
+
+def test_demo_server_offline_sync_status_endpoint_returns_payload():
+    service = DemoUIService("PKU")
+    server = ThreadingHTTPServer(("127.0.0.1", 0), build_handler(service))
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        port = server.server_address[1]
+        body = json.dumps({"priority_limit": 3}).encode("utf-8")
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{port}/api/offline/sync-status",
+            data=body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=10) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    finally:
+        server.shutdown()
+        server.server_close()
+
+    assert payload["success"] is True
+    assert payload["query_type"] == "offline_sync_status"
+    assert payload["metadata"]["offline"]["manifest"]["priority_policy"]["limit"] == 3
+    assert payload["metadata"]["offline"]["sync"]["needs_sync"] is True
+    print("test_demo_server_offline_sync_status_endpoint_returns_payload passed.")
 
 
 def test_demo_static_diary_center_contains_management_controls():
@@ -11083,6 +11171,26 @@ def test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly():
     print("test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly passed.")
 
 
+def test_demo_static_route_time_slot_controls_are_wired():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert 'id="route-time-slot"' in html
+    assert "出发时段" in html
+    assert "route_time_slots" in script
+    assert "buildRouteTimePayload" in script
+    assert "time_slot" in script
+    assert "summary.time_slot_text" in script
+    assert "congestion_text" in script
+    print("test_demo_static_route_time_slot_controls_are_wired passed.")
+
+
 def test_demo_static_m22_nearby_place_search_controls():
     repo_root = os.path.join(os.path.dirname(__file__), "..")
     html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
@@ -11120,6 +11228,29 @@ def test_demo_static_m31b_nearby_profiles_are_used_by_ui():
     assert "profile.default_radius_m" in script
     assert "profile.default_category" in script
     print("test_demo_static_m31b_nearby_profiles_are_used_by_ui passed.")
+
+
+def test_demo_static_custom_weight_controls_are_wired_to_payloads():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert 'id="custom-weight-enabled"' in html
+    assert 'id="weight-interest"' in html
+    assert 'id="weight-heat"' in html
+    assert 'id="weight-rating"' in html
+    assert 'id="weight-distance"' in html
+    assert "buildRankingWeightPayload" in script
+    assert "selectedRecommendationSort" in script
+    assert "ranking_weights" in script
+    assert "customWeights" in script
+    assert "currentWeightStatusText" in script
+    print("test_demo_static_custom_weight_controls_are_wired_to_payloads passed.")
 
 
 def test_demo_aigc_preview_returns_template_storyboard():
@@ -11440,6 +11571,65 @@ def test_demo_route_overlay_contains_indoor_note():
     print("test_demo_route_overlay_contains_indoor_note passed.")
 
 
+def test_demo_route_time_slot_reaches_summary_and_steps():
+    service = DemoUIService("PKU")
+    response = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "sports_ground",
+            "strategy": "shortest_time",
+            "transport_mode": "mixed",
+            "time_slot": "evening_peak",
+        }
+    )
+
+    assert response["success"] is True
+    assert response["time_slot"] == "evening_peak"
+    assert response["time_context"]["dynamic_congestion"] is True
+    assert response["summary"]["time_slot_text"] == "晚高峰"
+    assert response["summary"]["dynamic_congestion_text"] == "动态拥堵已启用"
+    assert response["route_overview"]["time_slot"] == "evening_peak"
+    assert all(step["time_slot"] == "evening_peak" for step in response["path_steps"])
+    assert all("congestion_text" in step for step in response["path_steps"])
+    print("test_demo_route_time_slot_reaches_summary_and_steps passed.")
+
+
+def test_demo_route_departure_time_can_infer_peak_slot_without_explicit_time_slot():
+    service = DemoUIService("PKU")
+    response = service.plan_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_id": "sports_ground",
+            "strategy": "shortest_time",
+            "transport_mode": "mixed",
+            "departure_time": "08:30",
+        }
+    )
+
+    assert response["success"] is True
+    assert response["time_slot"] == "morning_peak"
+    assert response["time_context"]["source"] == "departure_time"
+    assert response["summary"]["time_slot_text"] == "早高峰"
+
+    multi_response = service.plan_multi_route(
+        {
+            "start_node_id": "gate_south",
+            "target_node_ids": ["sports_ground", "library"],
+            "strategy": "shortest_time",
+            "transport_mode": "mixed",
+            "return_to_start": False,
+            "departure_time": "18:15",
+        }
+    )
+
+    assert multi_response["success"] is True
+    assert multi_response["time_slot"] == "evening_peak"
+    assert multi_response["time_context"]["source"] == "departure_time"
+    assert multi_response["summary"]["time_slot_text"] == "晚高峰"
+    assert all(leg["time_slot"] == "evening_peak" for leg in multi_response["leg_results"])
+    print("test_demo_route_departure_time_can_infer_peak_slot_without_explicit_time_slot passed.")
+
+
 def test_demo_m21_mixed_transport_single_and_multi_routes():
     service = DemoUIService("PKU")
 
@@ -11493,6 +11683,7 @@ def test_demo_m21_mixed_transport_single_and_multi_routes():
     assert multi_response["route_type"] == "multi_target"
     assert multi_response["summary"]["transport_text"] == "步行 + 自行车最短时间"
     assert multi_response["summary"]["strategy_text"] == "最短时间"
+    assert multi_response["summary"]["time_slot_text"] == "平峰"
     assert multi_response["visit_order"][0] == "gate_south"
     assert multi_response["ui"]["route_geometry_stats"]["fallback_edge_count"] == 0
     print("test_demo_m21_mixed_transport_single_and_multi_routes passed.")
@@ -11640,15 +11831,20 @@ def run_all_tests():
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()
+    test_demo_custom_weighted_scenic_search_uses_payload_weights()
     test_demo_m23_interest_user_switch_changes_diary_recommendations()
     test_demo_diary_management_flow_links_to_route()
     test_demo_diary_create_rejects_invalid_rating()
+    test_demo_offline_sync_status_reports_manifest_and_client_diff()
+    test_demo_server_offline_sync_status_endpoint_returns_payload()
     test_demo_static_diary_center_contains_management_controls()
     test_demo_static_leaflet_renderer_contains_local_assets_and_fallback()
     test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks()
     test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly()
+    test_demo_static_route_time_slot_controls_are_wired()
     test_demo_static_m22_nearby_place_search_controls()
     test_demo_static_m31b_nearby_profiles_are_used_by_ui()
+    test_demo_static_custom_weight_controls_are_wired_to_payloads()
     test_demo_aigc_preview_returns_template_storyboard()
     test_demo_aigc_live_image_without_key_falls_back_to_template()
     test_demo_aigc_live_image_stub_success_returns_generated_frames()
@@ -11659,6 +11855,8 @@ def run_all_tests():
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()
     test_demo_route_overlay_contains_indoor_note()
+    test_demo_route_time_slot_reaches_summary_and_steps()
+    test_demo_route_departure_time_can_infer_peak_slot_without_explicit_time_slot()
     test_demo_m21_mixed_transport_single_and_multi_routes()
     test_m31a_ouc_transport_summary_and_step_copy()
     test_demo_multi_route_contains_visit_order_and_legs()

@@ -22,8 +22,11 @@ from typing import Any
 
 from src.diary.fulltext_service import search_diary_fulltext_records
 from src.recommend.interest import (
+    custom_business_ranking_weights,
     interest_ranking_weights,
     is_interest_sort_field,
+    is_weighted_sort_field,
+    normalize_custom_ranking_weights,
     normalize_interest_list,
     rank_interest_aware_records,
 )
@@ -540,10 +543,25 @@ class DiaryService:
         sort_order: str = "",
         limit: int = 10,
         interests: list[str] | str | None = None,
+        ranking_weights: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """日记统一查询入口。"""
         normalized_interests = normalize_interest_list(interests)
         interest_ranking_active = bool(normalized_interests) and is_interest_sort_field(sort_field)
+        weighted_ranking_active = is_weighted_sort_field(sort_field)
+        custom_weights = normalize_custom_ranking_weights(
+            ranking_weights,
+            include_distance=False,
+        )
+        active_ranking_weights = (
+            custom_weights
+            if custom_weights is not None
+            else (
+                custom_business_ranking_weights(include_distance=False)
+                if weighted_ranking_active
+                else None
+            )
+        )
         if not keyword and not destination:
             matched_records = self.records[:]
         else:
@@ -566,12 +584,13 @@ class DiaryService:
                 ]
 
         safe_limit = limit if limit > 0 else 10
-        if interest_ranking_active:
+        if interest_ranking_active or weighted_ranking_active:
             ordered_records = rank_interest_aware_records(
                 matched_records,
                 interests=normalized_interests,
                 include_distance=False,
                 limit=max(safe_limit, len(matched_records)),
+                weights=active_ranking_weights,
             )
         else:
             ordered_records = self._sort_records(
@@ -593,7 +612,7 @@ class DiaryService:
             "views",
             "created_at",
         ]
-        if normalized_interests:
+        if normalized_interests or interest_ranking_active or weighted_ranking_active:
             result_fields.extend(
                 [
                     "interest_match_score",
@@ -610,14 +629,17 @@ class DiaryService:
                 "limit": safe_limit,
                 "distance_used_for_ranking": False,
                 "interest_used_for_ranking": interest_ranking_active,
+                "weighted_used_for_ranking": weighted_ranking_active,
             },
             "interest": {
                 "requested": bool(normalized_interests),
-                "active_for_ranking": interest_ranking_active,
+                "active_for_ranking": interest_ranking_active or weighted_ranking_active,
                 "interests": normalized_interests,
                 "score_field": "interest_match_score",
                 "recommendation_score_field": "recommendation_score",
-                "weights": interest_ranking_weights(include_distance=False),
+                "weights": active_ranking_weights or interest_ranking_weights(include_distance=False),
+                "custom_weights_requested": isinstance(ranking_weights, dict),
+                "custom_weights_active": custom_weights is not None,
             },
             "data_source": {
                 "path": str(self.data_path),
@@ -638,6 +660,7 @@ class DiaryService:
                 "sort_order": sort_order,
                 "limit": safe_limit,
                 "interests": normalized_interests,
+                "ranking_weights": active_ranking_weights or {},
             },
             metadata=metadata,
         )
@@ -931,6 +954,7 @@ def search_diaries(
     sort_order: str = "",
     limit: int = 10,
     interests: list[str] | str | None = None,
+    ranking_weights: dict[str, Any] | None = None,
     records: list[Record] | None = None,
     data_path: str | Path | None = None,
     prefer_legacy_data: bool = False,
@@ -949,6 +973,7 @@ def search_diaries(
         sort_order=sort_order,
         limit=limit,
         interests=interests,
+        ranking_weights=ranking_weights,
     )
 
 

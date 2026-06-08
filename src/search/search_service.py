@@ -21,8 +21,11 @@ from pathlib import Path
 from typing import Any
 
 from src.recommend.interest import (
+    custom_business_ranking_weights,
     interest_ranking_weights,
     is_interest_sort_field,
+    is_weighted_sort_field,
+    normalize_custom_ranking_weights,
     normalize_interest_list,
     rank_interest_aware_records,
 )
@@ -47,7 +50,7 @@ PLACE_CATEGORY_SET = {
     "service",
     "landmark",
 }
-SUPPORTED_BUSINESS_SORT_FIELDS = {"heat", "rating", "distance_m", "interest"}
+SUPPORTED_BUSINESS_SORT_FIELDS = {"heat", "rating", "distance_m", "interest", "weighted", "custom"}
 DEFAULT_NEARBY_RADIUS_M = 500.0
 MAX_NEARBY_RADIUS_M = 3000.0
 
@@ -376,6 +379,7 @@ def search_and_recommend(
     use_default_distance_provider: bool = True,
     distance_strategy: str = "shortest_distance",
     interests: list[str] | str | None = None,
+    ranking_weights: dict[str, Any] | None = None,
     allow_empty_query: bool = False,
 ) -> dict[str, Any]:
     """
@@ -394,6 +398,20 @@ def search_and_recommend(
     """
     normalized_interests = normalize_interest_list(interests)
     interest_ranking_active = bool(normalized_interests) and is_interest_sort_field(sort_field)
+    weighted_ranking_active = is_weighted_sort_field(sort_field)
+    custom_weights = normalize_custom_ranking_weights(
+        ranking_weights,
+        include_distance=bool(start_node_id),
+    )
+    active_ranking_weights = (
+        custom_weights
+        if custom_weights is not None
+        else (
+            custom_business_ranking_weights(include_distance=bool(start_node_id))
+            if weighted_ranking_active
+            else None
+        )
+    )
     filters = {
         "keyword": keyword,
         "category": category,
@@ -406,6 +424,7 @@ def search_and_recommend(
         "prefer_member_c_data": prefer_member_c_data,
         "use_default_distance_provider": use_default_distance_provider,
         "interests": normalized_interests,
+        "ranking_weights": active_ranking_weights or {},
     }
     base_metadata = build_response_metadata(
         records=[],
@@ -417,9 +436,19 @@ def search_and_recommend(
         distance_provider_active=False,
         interests=normalized_interests,
         interest_ranking_active=interest_ranking_active,
+        weighted_ranking_active=weighted_ranking_active,
+        ranking_weights=active_ranking_weights,
+        custom_weights_requested=isinstance(ranking_weights, dict),
+        custom_weights_active=custom_weights is not None,
     )
 
-    if not keyword and not category and not allow_empty_query and not interest_ranking_active:
+    if (
+        not keyword
+        and not category
+        and not allow_empty_query
+        and not interest_ranking_active
+        and not weighted_ranking_active
+    ):
         return build_error_response(
             "keyword and category cannot both be empty",
             query_type="scenic_search",
@@ -460,12 +489,13 @@ def search_and_recommend(
         distance_provider=active_distance_provider,
         distance_strategy=distance_strategy,
     )
-    if interest_ranking_active:
+    if interest_ranking_active or weighted_ranking_active:
         top_records = rank_interest_aware_records(
             enriched_records,
             interests=normalized_interests,
             include_distance=bool(start_node_id),
             limit=limit,
+            weights=active_ranking_weights,
         )
     else:
         top_records = rank_records(
@@ -484,6 +514,10 @@ def search_and_recommend(
         distance_provider_active=active_distance_provider is not None,
         interests=normalized_interests,
         interest_ranking_active=interest_ranking_active,
+        weighted_ranking_active=weighted_ranking_active,
+        ranking_weights=active_ranking_weights,
+        custom_weights_requested=isinstance(ranking_weights, dict),
+        custom_weights_active=custom_weights is not None,
     )
 
     return build_success_response(
@@ -511,9 +545,12 @@ def search_places(
     distance_provider: DistanceProvider | None = None,
     use_default_distance_provider: bool = True,
     distance_strategy: str = "shortest_distance",
+    interests: list[str] | str | None = None,
+    ranking_weights: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """第九周新增：明确的设施/场所查询入口。"""
     normalized_category = canonicalize_category(category)
+    normalized_interests = normalize_interest_list(interests)
     normalized_center_node_id = str(center_node_id or "").strip()
     nearby_radius_m = (
         normalize_nearby_radius_m(radius_m)
@@ -541,6 +578,7 @@ def search_places(
         "sort_order": "asc" if normalized_center_node_id else _resolve_sort_order(effective_sort_field, sort_order),
         "limit": limit,
         "distance_strategy": distance_strategy,
+        "interests": normalized_interests,
     }
 
     if normalized_category and normalized_category not in PLACE_CATEGORY_SET:
@@ -598,7 +636,10 @@ def search_places(
         distance_provider=distance_provider,
         use_default_distance_provider=use_default_distance_provider,
         distance_strategy=distance_strategy,
+        interests=normalized_interests,
+        ranking_weights=ranking_weights,
     )
+    filters["ranking_weights"] = response.get("filters", {}).get("ranking_weights", {})
 
     return decorate_business_response(
         response,
@@ -898,6 +939,10 @@ def build_response_metadata(
     distance_provider_active: bool,
     interests: list[str] | None = None,
     interest_ranking_active: bool = False,
+    weighted_ranking_active: bool = False,
+    ranking_weights: dict[str, float] | None = None,
+    custom_weights_requested: bool = False,
+    custom_weights_active: bool = False,
 ) -> dict[str, Any]:
     """构造统一响应的业务元信息。"""
     status_counts = count_distance_status(records)
@@ -912,7 +957,7 @@ def build_response_metadata(
         "distance_m",
         "distance_status",
     ]
-    if normalized_interests:
+    if normalized_interests or interest_ranking_active or weighted_ranking_active:
         result_fields.extend(
             [
                 "interest_match_score",
@@ -927,14 +972,18 @@ def build_response_metadata(
             "limit": limit,
             "distance_used_for_ranking": sort_field == "distance_m",
             "interest_used_for_ranking": interest_ranking_active,
+            "weighted_used_for_ranking": weighted_ranking_active,
         },
         "interest": {
             "requested": bool(normalized_interests),
-            "active_for_ranking": interest_ranking_active,
+            "active_for_ranking": interest_ranking_active or weighted_ranking_active,
             "interests": normalized_interests,
             "score_field": "interest_match_score",
             "recommendation_score_field": "recommendation_score",
-            "weights": interest_ranking_weights(include_distance=bool(start_node_id)),
+            "weights": ranking_weights
+            or interest_ranking_weights(include_distance=bool(start_node_id)),
+            "custom_weights_requested": custom_weights_requested,
+            "custom_weights_active": custom_weights_active,
         },
         "distance": {
             "requested": bool(start_node_id),

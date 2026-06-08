@@ -1,4 +1,5 @@
 import heapq
+import re
 
 class Router:
     """
@@ -20,6 +21,62 @@ class Router:
         "步行+自行车": "mixed",
         "步行 + 自行车": "mixed",
         "混合交通": "mixed",
+    }
+    TIME_SLOT_LABELS = {
+        "normal": "平峰",
+        "morning_peak": "早高峰",
+        "lunch_peak": "午间高峰",
+        "evening_peak": "晚高峰",
+    }
+    TIME_SLOT_ALIASES = {
+        "": "normal",
+        "normal": "normal",
+        "off_peak": "normal",
+        "offpeak": "normal",
+        "平峰": "normal",
+        "常规": "normal",
+        "morning": "morning_peak",
+        "morning_peak": "morning_peak",
+        "am_peak": "morning_peak",
+        "早高峰": "morning_peak",
+        "早峰": "morning_peak",
+        "lunch": "lunch_peak",
+        "lunch_peak": "lunch_peak",
+        "noon": "lunch_peak",
+        "午间高峰": "lunch_peak",
+        "午高峰": "lunch_peak",
+        "evening": "evening_peak",
+        "evening_peak": "evening_peak",
+        "pm_peak": "evening_peak",
+        "晚高峰": "evening_peak",
+        "晚峰": "evening_peak",
+    }
+    TIME_SLOT_PROFILE_FACTORS = {
+        "normal": {"default": 1.0},
+        "morning_peak": {
+            "default": 0.78,
+            "road": 0.66,
+            "bike_lane": 0.82,
+            "poi_access": 0.86,
+            "gate_link": 0.9,
+            "indoor": 0.94,
+        },
+        "lunch_peak": {
+            "default": 0.84,
+            "road": 0.78,
+            "bike_lane": 0.9,
+            "poi_access": 0.72,
+            "gate_link": 0.92,
+            "indoor": 0.9,
+        },
+        "evening_peak": {
+            "default": 0.72,
+            "road": 0.62,
+            "bike_lane": 0.8,
+            "poi_access": 0.82,
+            "gate_link": 0.84,
+            "indoor": 0.94,
+        },
     }
 
     def __init__(self, graph):
@@ -68,6 +125,51 @@ class Router:
         """将交通方式别名折叠成路由内部的稳定字段。"""
         normalized = str(value).strip().casefold()
         return self.TRANSPORT_ALIASES.get(normalized, normalized)
+
+    def _normalize_time_slot(self, value):
+        """将时段别名折叠成路由内部的稳定字段。"""
+        normalized = str(value or "").strip().casefold()
+        return self.TIME_SLOT_ALIASES.get(normalized, "normal")
+
+    def _infer_time_slot_from_departure_time(self, departure_time):
+        """从 HH:MM 或 ISO-like 时间字符串推断高峰时段。"""
+        text = str(departure_time or "").strip()
+        if not text:
+            return None
+
+        match = re.search(r"(?<!\d)([01]?\d|2[0-3]):([0-5]\d)", text)
+        if not match:
+            return None
+
+        hour = int(match.group(1))
+        minute = int(match.group(2))
+        value = hour + minute / 60
+        if 7 <= value < 10:
+            return "morning_peak"
+        if 11 <= value < 14:
+            return "lunch_peak"
+        if 17 <= value < 20:
+            return "evening_peak"
+        return "normal"
+
+    def _resolve_time_context(self, time_slot=None, departure_time=None):
+        departure_text = str(departure_time or "").strip()
+        raw_slot = str(time_slot or "").strip()
+        if raw_slot:
+            slot = self._normalize_time_slot(raw_slot)
+            source = "time_slot"
+        else:
+            inferred_slot = self._infer_time_slot_from_departure_time(departure_text)
+            slot = inferred_slot or "normal"
+            source = "departure_time" if inferred_slot is not None else "default"
+
+        return {
+            "time_slot": slot,
+            "label": self.TIME_SLOT_LABELS.get(slot, slot),
+            "departure_time": departure_text,
+            "source": source,
+            "dynamic_congestion": slot != "normal",
+        }
 
     def _normalize_transport_modes(self, value):
         """
@@ -189,7 +291,7 @@ class Router:
             value = edge.get("ideal_speed", 1.0)
         return float(value)
 
-    def _get_transport_congestion(self, edge, mode=None):
+    def _get_base_transport_congestion(self, edge, mode=None):
         value = None
         if mode:
             value = self._resolve_transport_value(
@@ -201,7 +303,97 @@ class Router:
             value = edge.get("congestion", 1.0)
         return float(value)
 
-    def _select_edge_transport_mode(self, edge, transport_mode=None, from_node_id=None):
+    def _dict_get_casefold(self, mapping, candidates):
+        if not isinstance(mapping, dict):
+            return None
+        for candidate in candidates:
+            if candidate in mapping:
+                return mapping[candidate]
+        lowered = {str(key).strip().casefold(): value for key, value in mapping.items()}
+        for candidate in candidates:
+            normalized = str(candidate).strip().casefold()
+            if normalized in lowered:
+                return lowered[normalized]
+        return None
+
+    def _resolve_time_congestion_value(self, value, mode, time_slot):
+        if not isinstance(value, dict):
+            return None
+
+        slot_candidates = [
+            time_slot,
+            self.TIME_SLOT_LABELS.get(time_slot, ""),
+            "morning" if time_slot == "morning_peak" else "",
+            "lunch" if time_slot == "lunch_peak" else "",
+            "evening" if time_slot == "evening_peak" else "",
+        ]
+        slot_candidates = [item for item in slot_candidates if item]
+        mode_candidates = [
+            mode,
+            "pedestrian" if mode == "walk" else mode,
+            "bicycle" if mode == "bike" else mode,
+        ]
+        mode_candidates = [item for item in mode_candidates if item]
+
+        if mode_candidates:
+            mode_value = self._dict_get_casefold(value, mode_candidates)
+            slot_value = self._dict_get_casefold(mode_value, slot_candidates)
+            if slot_value is not None:
+                return slot_value
+
+        slot_value = self._dict_get_casefold(value, slot_candidates)
+        if isinstance(slot_value, dict) and mode_candidates:
+            return self._dict_get_casefold(slot_value, mode_candidates)
+        return slot_value
+
+    def _get_explicit_time_congestion(self, edge, mode=None, time_slot="normal"):
+        if time_slot == "normal":
+            return None
+
+        for field_name in (
+            "transport_congestion_by_time",
+            "congestion_by_transport_time",
+            "congestion_by_time",
+            "time_congestion",
+            "congestion_by_slot",
+            "time_slot_congestion",
+        ):
+            resolved = self._resolve_time_congestion_value(
+                edge.get(field_name),
+                mode,
+                time_slot,
+            )
+            if resolved is None:
+                continue
+            try:
+                return float(resolved)
+            except (TypeError, ValueError):
+                return None
+        return None
+
+    def _get_profile_congestion_factor(self, edge, time_slot="normal", from_node_id=None):
+        profile = self.TIME_SLOT_PROFILE_FACTORS.get(time_slot) or self.TIME_SLOT_PROFILE_FACTORS["normal"]
+        if time_slot == "normal":
+            return 1.0
+
+        if self._is_indoor_or_gate_edge(edge, from_node_id):
+            return profile.get("indoor", profile["default"])
+
+        edge_type = str(edge.get("type", "")).strip().casefold()
+        if edge_type in profile:
+            return profile[edge_type]
+        if edge_type in {"white_road", "walkway", "pedestrian_path", "campus_road"}:
+            return profile.get("road", profile["default"])
+        return profile["default"]
+
+    def _get_transport_congestion(self, edge, mode=None, time_slot="normal", from_node_id=None):
+        base_congestion = self._get_base_transport_congestion(edge, mode)
+        explicit_congestion = self._get_explicit_time_congestion(edge, mode, time_slot)
+        if explicit_congestion is not None:
+            return explicit_congestion
+        return base_congestion * self._get_profile_congestion_factor(edge, time_slot, from_node_id)
+
+    def _select_edge_transport_mode(self, edge, transport_mode=None, from_node_id=None, time_slot="normal"):
         normalized_mode = None
         if transport_mode is not None:
             normalized_mode = self._canonical_transport_mode(transport_mode)
@@ -219,7 +411,7 @@ class Router:
         distance = float(edge.get("distance", float("inf")))
         for mode in candidates:
             speed = self._get_transport_speed(edge, mode)
-            congestion = self._get_transport_congestion(edge, mode)
+            congestion = self._get_transport_congestion(edge, mode, time_slot, from_node_id)
             if speed <= 0 or congestion <= 0:
                 continue
             travel_time = distance / (speed * congestion)
@@ -228,22 +420,22 @@ class Router:
                 best_mode = mode
         return best_mode
 
-    def _get_travel_time_seconds(self, edge, transport_mode=None, from_node_id=None):
+    def _get_travel_time_seconds(self, edge, transport_mode=None, from_node_id=None, time_slot="normal"):
         """按秒计算边的预计通行时间。"""
-        selected_mode = self._select_edge_transport_mode(edge, transport_mode, from_node_id)
+        selected_mode = self._select_edge_transport_mode(edge, transport_mode, from_node_id, time_slot)
         if transport_mode is not None and selected_mode is None:
             return float('inf')
 
         distance = edge.get("distance", float('inf'))
         speed = self._get_transport_speed(edge, selected_mode)
-        congestion = self._get_transport_congestion(edge, selected_mode)
+        congestion = self._get_transport_congestion(edge, selected_mode, time_slot, from_node_id)
 
         if speed <= 0 or congestion <= 0:
             return float('inf')
 
         return distance / (speed * congestion)
 
-    def _summarize_path_metrics(self, path, path_edges, transport_mode=None):
+    def _summarize_path_metrics(self, path, path_edges, transport_mode=None, time_slot="normal"):
         """
         统计一条路径的总距离和总时间。
         """
@@ -253,7 +445,7 @@ class Router:
         for index, edge in enumerate(path_edges):
             from_node_id = path[index] if index < len(path) else None
             total_distance_m += float(edge.get("distance", 0))
-            edge_time = self._get_travel_time_seconds(edge, transport_mode, from_node_id)
+            edge_time = self._get_travel_time_seconds(edge, transport_mode, from_node_id, time_slot)
             if edge_time == float('inf'):
                 total_time_s = None
             elif total_time_s is not None:
@@ -321,7 +513,7 @@ class Router:
         name = str(node_data.get("name", "")).strip()
         return name or str(node_id)
 
-    def _build_path_steps(self, path, path_edges, transport_mode=None):
+    def _build_path_steps(self, path, path_edges, transport_mode=None, time_slot="normal"):
         """
         为业务层构造逐边的路径明细，便于展示“经过了哪条路、进了哪一层”。
         """
@@ -341,11 +533,24 @@ class Router:
             is_cross_layer = self._is_cross_layer_transition(start_node_id, end_node_id)
             edge_type = str(edge.get("type", "")).strip()
             edge_name = str(edge.get("name", "")).strip()
-            edge_time = self._get_travel_time_seconds(edge, transport_mode, start_node_id)
+            edge_time = self._get_travel_time_seconds(edge, transport_mode, start_node_id, time_slot)
             selected_transport_mode = self._select_edge_transport_mode(
                 edge,
                 transport_mode,
                 start_node_id,
+                time_slot,
+            )
+            base_congestion = self._get_base_transport_congestion(edge, selected_transport_mode)
+            effective_congestion = self._get_transport_congestion(
+                edge,
+                selected_transport_mode,
+                time_slot,
+                start_node_id,
+            )
+            congestion_ratio = (
+                effective_congestion / base_congestion
+                if base_congestion and base_congestion > 0
+                else None
             )
 
             steps.append(
@@ -373,6 +578,12 @@ class Router:
                         self._supported_edge_transport_modes(edge, start_node_id)
                     ),
                     "transport_mode_used": selected_transport_mode,
+                    "time_slot": time_slot,
+                    "time_slot_label": self.TIME_SLOT_LABELS.get(time_slot, time_slot),
+                    "base_congestion": base_congestion,
+                    "effective_congestion": effective_congestion,
+                    "congestion_factor": congestion_ratio,
+                    "congestion_text": f"拥堵系数 {effective_congestion:.2f}",
                     "is_cross_floor_transition": bool(
                         start_floor_id and end_floor_id and start_floor_id != end_floor_id
                     ),
@@ -472,7 +683,7 @@ class Router:
 
         return segments
 
-    def _build_route_overview(self, path, path_steps, segments, strategy, transport_mode):
+    def _build_route_overview(self, path, path_steps, segments, strategy, transport_mode, time_context=None):
         """
         构造路径摘要，供业务层快速展示。
         """
@@ -493,6 +704,7 @@ class Router:
                 "strategy": strategy,
                 "weight_unit": "meter" if strategy == "shortest_distance" else "second",
                 "transport_mode": transport_mode,
+                "time_slot": (time_context or {}).get("time_slot", "normal"),
             }
 
         cross_layer_step_count = sum(
@@ -523,9 +735,12 @@ class Router:
             "strategy": strategy,
             "weight_unit": "meter" if strategy == "shortest_distance" else "second",
             "transport_mode": transport_mode,
+            "time_slot": (time_context or {}).get("time_slot", "normal"),
+            "time_slot_label": (time_context or {}).get("label", self.TIME_SLOT_LABELS["normal"]),
+            "dynamic_congestion": bool((time_context or {}).get("dynamic_congestion")),
         }
 
-    def _get_weight(self, edge, strategy, transport_mode=None, from_node_id=None):
+    def _get_weight(self, edge, strategy, transport_mode=None, from_node_id=None, time_slot="normal"):
         """
         根据当前策略计算边的权重。
         """
@@ -533,7 +748,7 @@ class Router:
             return edge.get("distance", float('inf'))
         elif strategy == "shortest_time":
             # 时间单位：秒 (distance: 米, ideal_speed: 米/秒)
-            return self._get_travel_time_seconds(edge, transport_mode, from_node_id)
+            return self._get_travel_time_seconds(edge, transport_mode, from_node_id, time_slot)
         else:
             raise ValueError(f"Unknown routing strategy: {strategy}")
 
@@ -544,6 +759,8 @@ class Router:
         strategy="shortest_distance",
         transport_mode=None,
         site_id=None,
+        time_slot=None,
+        departure_time=None,
     ):
         """
         完整路径查询接口
@@ -552,8 +769,12 @@ class Router:
         :param strategy: 规划策略 ('shortest_distance' 或 'shortest_time')
         :param transport_mode: 交通方式，可选；未提供时表示不过滤
         :param site_id: 景区 ID，可选；未提供时默认使用当前图对象绑定景区
+        :param time_slot: 出发时段，可选；normal/morning_peak/lunch_peak/evening_peak
+        :param departure_time: 出发时间，可选；未传 time_slot 时可由 HH:MM 推断时段
         :return: 包含路径信息、总权重、距离、时间和分段信息的字典
         """
+        time_context = self._resolve_time_context(time_slot=time_slot, departure_time=departure_time)
+        resolved_time_slot = time_context["time_slot"]
         site_is_valid, normalized_site_id = self._validate_site_id(site_id)
         if not site_is_valid:
             return {
@@ -591,7 +812,7 @@ class Router:
                     continue
 
                 neighbor = edge["to"]
-                weight = self._get_weight(edge, strategy, transport_mode, current_node)
+                weight = self._get_weight(edge, strategy, transport_mode, current_node, resolved_time_slot)
                 
                 new_weight = current_weight + weight
                 
@@ -623,12 +844,20 @@ class Router:
             path,
             path_edges,
             transport_mode,
+            resolved_time_slot,
         )
         total_weight = distances[target_node_id]
         weight_unit = "meter" if strategy == "shortest_distance" else "second"
-        path_steps = self._build_path_steps(path, path_edges, transport_mode)
+        path_steps = self._build_path_steps(path, path_edges, transport_mode, resolved_time_slot)
         segments = self._build_segments(path, path_steps)
-        route_overview = self._build_route_overview(path, path_steps, segments, strategy, transport_mode)
+        route_overview = self._build_route_overview(
+            path,
+            path_steps,
+            segments,
+            strategy,
+            transport_mode,
+            time_context,
+        )
 
         # 返回符合文档约定的数据结构
         return {
@@ -649,6 +878,9 @@ class Router:
             "estimated_time": estimated_time_s,
             "strategy": strategy,
             "transport_mode": transport_mode,
+            "time_slot": resolved_time_slot,
+            "departure_time": time_context["departure_time"],
+            "time_context": time_context,
             "layer_sequence": route_overview["layer_sequence"],
             "route_overview": route_overview,
             "segments": segments,
@@ -661,6 +893,8 @@ class Router:
         strategy="shortest_distance",
         transport_mode=None,
         site_id=None,
+        time_slot=None,
+        departure_time=None,
     ):
         """
         轻量级查询接口，专供 Member B 推荐系统排序使用。
@@ -675,6 +909,8 @@ class Router:
             strategy=strategy,
             transport_mode=transport_mode,
             site_id=site_id,
+            time_slot=time_slot,
+            departure_time=departure_time,
         )
         if result["success"]:
             return result["total_weight"]
@@ -704,6 +940,8 @@ class Router:
         transport_mode=None,
         return_to_start=True,
         site_id=None,
+        time_slot=None,
+        departure_time=None,
     ):
         """
         多目标路径基础版接口。
@@ -713,6 +951,8 @@ class Router:
         2. 再使用状态压缩 DP 搜索最优访问顺序
         3. 最后将各段最短路径拼接成完整路线
         """
+        time_context = self._resolve_time_context(time_slot=time_slot, departure_time=departure_time)
+        resolved_time_slot = time_context["time_slot"]
         site_is_valid, normalized_site_id = self._validate_site_id(site_id)
         if not site_is_valid:
             return {
@@ -750,6 +990,9 @@ class Router:
                 "estimated_time": 0,
                 "strategy": strategy,
                 "transport_mode": transport_mode,
+                "time_slot": resolved_time_slot,
+                "departure_time": time_context["departure_time"],
+                "time_context": time_context,
                 "return_to_start": return_to_start,
                 "segments": [],
                 "leg_results": [],
@@ -775,6 +1018,8 @@ class Router:
                     strategy=strategy,
                     transport_mode=transport_mode,
                     site_id=normalized_site_id,
+                    time_slot=resolved_time_slot,
+                    departure_time=time_context["departure_time"],
                 )
 
         target_count = len(unique_targets)
@@ -875,6 +1120,9 @@ class Router:
                 "total_distance": route.get("total_distance", route.get("total_distance_m", 0.0)),
                 "estimated_time": route.get("estimated_time", route.get("estimated_time_s")),
                 "route_overview": route.get("route_overview", {}),
+                "time_context": route.get("time_context", time_context),
+                "time_slot": route.get("time_slot", resolved_time_slot),
+                "departure_time": route.get("departure_time", time_context["departure_time"]),
                 "segments": route.get("segments", []),
             }
             leg_results.append(leg_result)
@@ -907,6 +1155,9 @@ class Router:
             ) if all(leg["estimated_time_s"] is not None for leg in leg_results) else None,
             "strategy": strategy,
             "transport_mode": transport_mode,
+            "time_slot": resolved_time_slot,
+            "departure_time": time_context["departure_time"],
+            "time_context": time_context,
             "return_to_start": return_to_start,
             "segments": merged_segments,
             "leg_results": leg_results,

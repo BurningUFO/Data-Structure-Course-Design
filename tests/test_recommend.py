@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.recommend.ranking import recommend_top_k
 from src.recommend.catering_service import recommend_catering
-from src.recommend.interest import rank_interest_aware_records
+from src.recommend.interest import normalize_custom_ranking_weights, rank_interest_aware_records
 from src.recommend.sorter import sort_records
 from src.recommend.topk import top_k
 
@@ -229,6 +229,69 @@ def test_interest_aware_ranking_uses_interest_heat_rating_and_distance():
     print("test_interest_aware_ranking_uses_interest_heat_rating_and_distance passed.")
 
 
+def test_custom_ranking_weights_normalize_aliases_and_ignore_invalid_values():
+    weights = normalize_custom_ranking_weights(
+        {
+            "interest": 10,
+            "hot": "20",
+            "rating": 20,
+            "distance": -5,
+            "unknown": 100,
+            "distance_m": 50,
+        },
+        include_distance=True,
+    )
+
+    assert weights == {
+        "interest_match_score": 0.1,
+        "heat": 0.2,
+        "rating": 0.2,
+        "distance_m": 0.5,
+    }
+    assert normalize_custom_ranking_weights({"distance": 5}, include_distance=False) is None
+    assert normalize_custom_ranking_weights({"heat": 0, "rating": "bad"}, include_distance=True) is None
+    print("test_custom_ranking_weights_normalize_aliases_and_ignore_invalid_values passed.")
+
+
+def test_custom_weighted_ranking_can_prioritize_distance_over_heat():
+    records = [
+        {
+            "id": "popular_far",
+            "name": "热门远点",
+            "category": "landmark",
+            "heat": 100,
+            "rating": 5.0,
+            "distance_m": 1400,
+        },
+        {
+            "id": "quiet_near",
+            "name": "近处安静点",
+            "category": "service",
+            "heat": 40,
+            "rating": 3.5,
+            "distance_m": 20,
+        },
+    ]
+
+    heat_first = rank_interest_aware_records(
+        records,
+        interests=[],
+        limit=2,
+        weights={"heat": 1.0},
+    )
+    distance_first = rank_interest_aware_records(
+        records,
+        interests=[],
+        limit=2,
+        weights={"distance_m": 1.0},
+    )
+
+    assert heat_first[0]["id"] == "popular_far"
+    assert distance_first[0]["id"] == "quiet_near"
+    assert distance_first[0]["recommendation_components"]["weights"] == {"distance_m": 1.0}
+    print("test_custom_weighted_ranking_can_prioritize_distance_over_heat passed.")
+
+
 def run_all_tests():
     print("Running recommend module tests...")
     test_sort_by_heat()
@@ -241,6 +304,8 @@ def run_all_tests():
     test_recommend_catering_distance_sort()
     test_recommend_catering_optional_cuisine_filter()
     test_interest_aware_ranking_uses_interest_heat_rating_and_distance()
+    test_custom_ranking_weights_normalize_aliases_and_ignore_invalid_values()
+    test_custom_weighted_ranking_can_prioritize_distance_over_heat()
     print("All recommend tests passed.")
 
 

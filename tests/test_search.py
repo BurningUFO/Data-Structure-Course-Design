@@ -170,6 +170,51 @@ def test_fuzzy_search_supports_synonyms_and_initials():
     print("test_fuzzy_search_supports_synonyms_and_initials passed.")
 
 
+def test_fuzzy_search_supports_general_pinyin_full_and_initials():
+    records = [
+        {
+            "id": "library",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 90,
+            "rating": 4.8,
+            "tags": ["学习"],
+            "keywords": ["阅览室"],
+            "description": "适合自习。",
+        },
+        {
+            "id": "lake",
+            "name": "未名湖",
+            "category": "landmark",
+            "heat": 88,
+            "rating": 4.7,
+            "tags": ["景观"],
+            "keywords": ["湖"],
+            "description": "校园景观。",
+        },
+        {
+            "id": "teaching",
+            "name": "第一教学楼",
+            "category": "education",
+            "heat": 86,
+            "rating": 4.6,
+            "tags": ["上课"],
+            "keywords": ["教室"],
+            "description": "教学区域。",
+        },
+    ]
+
+    full_pinyin_result = fuzzy_search(records, "tushuguan")
+    initial_result = fuzzy_search(records, "wmh")
+    teaching_result = fuzzy_search(records, "jiaoxuelou")
+
+    assert full_pinyin_result[0]["id"] == "library"
+    assert full_pinyin_result[0]["_match_detail"][0]["match_type"] in {"exact", "contains"}
+    assert initial_result[0]["id"] == "lake"
+    assert teaching_result[0]["id"] == "teaching"
+    print("test_fuzzy_search_supports_general_pinyin_full_and_initials passed.")
+
+
 def test_fuzzy_search_prefers_direct_query_term_over_synonym_only_match():
     direct_canteen = {
         "id": "canteen",
@@ -232,6 +277,8 @@ def test_fuzzy_search_normalizes_restroom_intent_without_english_false_positive(
 
     washroom_ids = {item["id"] for item in fuzzy_search(records, "washroom")}
     assert "svc_classroom" not in washroom_ids
+    classroom_ids = {item["id"] for item in fuzzy_search(records, "classroom")}
+    assert "svc_restroom" not in classroom_ids
     print("test_fuzzy_search_normalizes_restroom_intent_without_english_false_positive passed.")
 
 
@@ -516,6 +563,118 @@ def test_search_service_fuzzy_mode_supports_typo_tolerance():
     print("test_search_service_fuzzy_mode_supports_typo_tolerance passed.")
 
 
+def test_search_weighted_sort_uses_custom_weights_and_metadata():
+    records = [
+        {
+            "id": "popular_far",
+            "name": "热门远点",
+            "category": "service",
+            "heat": 100,
+            "rating": 5.0,
+            "tags": ["服务"],
+            "keywords": ["测试"],
+            "description": "热度最高但距离较远。",
+            "node_id": "far",
+        },
+        {
+            "id": "quiet_near",
+            "name": "近处安静点",
+            "category": "service",
+            "heat": 40,
+            "rating": 3.5,
+            "tags": ["服务"],
+            "keywords": ["测试"],
+            "description": "热度较低但距离最近。",
+            "node_id": "near",
+        },
+    ]
+
+    def provider(start_node_id, target_node_id, strategy):
+        return {"far": 1400, "near": 20}[target_node_id]
+
+    response = search_and_recommend(
+        keyword="测试",
+        start_node_id="origin",
+        sort_field="weighted",
+        ranking_weights={"distance": 100},
+        records=records,
+        distance_provider=provider,
+        use_default_distance_provider=False,
+        limit=2,
+    )
+
+    assert response["success"] is True
+    assert [item["id"] for item in response["data"]] == ["quiet_near", "popular_far"]
+    assert response["filters"]["ranking_weights"] == {"distance_m": 1.0}
+    assert response["metadata"]["ranking"]["weighted_used_for_ranking"] is True
+    assert response["metadata"]["interest"]["custom_weights_requested"] is True
+    assert response["metadata"]["interest"]["custom_weights_active"] is True
+    assert response["metadata"]["interest"]["weights"] == {"distance_m": 1.0}
+    assert "recommendation_score" in response["metadata"]["result_fields"]
+    print("test_search_weighted_sort_uses_custom_weights_and_metadata passed.")
+
+
+def test_search_weighted_sort_falls_back_to_default_weights_for_invalid_custom_weights():
+    response = search_and_recommend(
+        keyword="图书馆",
+        sort_field="weighted",
+        ranking_weights={"bad": 10, "heat": 0},
+        use_default_distance_provider=False,
+        limit=3,
+    )
+
+    assert response["success"] is True
+    assert response["metadata"]["ranking"]["weighted_used_for_ranking"] is True
+    assert response["metadata"]["interest"]["custom_weights_requested"] is True
+    assert response["metadata"]["interest"]["custom_weights_active"] is False
+    assert response["metadata"]["interest"]["weights"] == {"heat": 0.55, "rating": 0.45}
+    assert response["filters"]["ranking_weights"] == {"heat": 0.55, "rating": 0.45}
+    print("test_search_weighted_sort_falls_back_to_default_weights_for_invalid_custom_weights passed.")
+
+
+def test_search_places_weighted_sort_preserves_ranking_weight_filters():
+    records = [
+        {
+            "id": "cafe_hot",
+            "name": "热门咖啡",
+            "category": "catering",
+            "heat": 100,
+            "rating": 4.6,
+            "tags": ["咖啡"],
+            "keywords": ["咖啡"],
+            "description": "热度高。",
+            "node_id": "cafe_hot",
+        },
+        {
+            "id": "cafe_rated",
+            "name": "高分咖啡",
+            "category": "catering",
+            "heat": 60,
+            "rating": 5.0,
+            "tags": ["咖啡"],
+            "keywords": ["咖啡"],
+            "description": "评分高。",
+            "node_id": "cafe_rated",
+        },
+    ]
+
+    response = search_places(
+        keyword="咖啡",
+        sort_field="weighted",
+        ranking_weights={"rating": 100},
+        records=records,
+        use_default_distance_provider=False,
+        limit=2,
+    )
+
+    assert response["success"] is True
+    assert response["query_type"] == "place_search"
+    assert response["data"][0]["id"] == "cafe_rated"
+    assert response["filters"]["ranking_weights"] == {"rating": 1.0}
+    assert response["metadata"]["ranking"]["weighted_used_for_ranking"] is True
+    print("test_search_places_weighted_sort_preserves_ranking_weight_filters passed.")
+
+
 def test_search_places_distance_sort():
     response = search_places(
         keyword="",
@@ -600,6 +759,77 @@ def test_search_places_keyword_only_restroom_aliases():
     }
     assert "classroom_alias" not in washroom_ids
     print("test_search_places_keyword_only_restroom_aliases passed.")
+
+
+def test_search_places_supports_general_pinyin_queries():
+    records = [
+        {
+            "id": "library",
+            "name": "图书馆",
+            "category": "education",
+            "node_id": "library",
+            "heat": 90,
+            "rating": 4.8,
+            "keywords": ["图书馆", "阅览室"],
+            "tags": ["学习"],
+            "description": "适合阅读。",
+        },
+        {
+            "id": "canteen",
+            "name": "农园食堂",
+            "category": "catering",
+            "node_id": "canteen",
+            "heat": 88,
+            "rating": 4.7,
+            "keywords": ["食堂"],
+            "tags": ["餐饮"],
+            "description": "学生餐饮。",
+        },
+    ]
+
+    library_response = search_places(
+        keyword="tushuguan",
+        records=records,
+        use_default_distance_provider=False,
+        limit=3,
+    )
+    canteen_response = search_places(
+        keyword="shitang",
+        records=records,
+        use_default_distance_provider=False,
+        limit=3,
+    )
+
+    assert library_response["success"] is True
+    assert library_response["data"][0]["id"] == "library"
+    assert canteen_response["success"] is True
+    assert canteen_response["data"][0]["id"] == "canteen"
+    print("test_search_places_supports_general_pinyin_queries passed.")
+
+
+def test_search_places_supports_real_pku_pinyin_queries():
+    expected_names = {
+        "zhongguoyinhang": "中国银行",
+        "zgyh": "中国银行",
+        "wumeichaoshi": "物美超市",
+        "wmcs": "物美超市",
+        "shuxuekexuexueyuan": "数学科学学院",
+        "sxkxxy": "数学科学学院",
+    }
+
+    for keyword, expected_name in expected_names.items():
+        response = search_places(
+            keyword=keyword,
+            sort_field="heat",
+            use_default_distance_provider=False,
+            limit=8,
+        )
+        result_names = [item["name"] for item in response["data"]]
+
+        assert response["success"] is True
+        assert expected_name in result_names
+
+    print("test_search_places_supports_real_pku_pinyin_queries passed.")
 
 
 def test_search_places_nearby_radius_uses_graph_distance():
@@ -959,6 +1189,7 @@ def run_all_tests():
     test_fuzzy_search()
     test_fuzzy_search_matches_name_tags_and_description()
     test_fuzzy_search_supports_synonyms_and_initials()
+    test_fuzzy_search_supports_general_pinyin_full_and_initials()
     test_fuzzy_search_normalizes_restroom_intent_without_english_false_positive()
     test_fuzzy_search_supports_typo_tolerance()
     test_fuzzy_search_ignores_spaces_and_punctuation()
@@ -972,9 +1203,13 @@ def run_all_tests():
     test_default_site_data_load()
     test_default_site_data_query_flow()
     test_search_service_fuzzy_mode_supports_typo_tolerance()
+    test_search_weighted_sort_uses_custom_weights_and_metadata()
+    test_search_weighted_sort_falls_back_to_default_weights_for_invalid_custom_weights()
+    test_search_places_weighted_sort_preserves_ranking_weight_filters()
     test_search_places_distance_sort()
     test_search_places_keyword_only_scope()
     test_search_places_keyword_only_restroom_aliases()
+    test_search_places_supports_general_pinyin_queries()
     test_search_places_nearby_radius_uses_graph_distance()
     test_search_places_legacy_start_node_call_stays_unbounded()
     test_distance_adapter_uses_member_a_router()

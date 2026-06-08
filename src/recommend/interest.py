@@ -26,6 +26,15 @@ INTEREST_SORT_FIELDS = {
     "personalized_recommendation",
 }
 
+WEIGHTED_SORT_FIELDS = {
+    "weighted",
+    "custom",
+    "custom_weight",
+    "custom_weights",
+    "custom_weighted",
+    "weighted_recommendation",
+}
+
 SCENIC_INTEREST_WEIGHTS = {
     "interest_match_score": 0.45,
     "heat": 0.25,
@@ -37,6 +46,32 @@ DIARY_INTEREST_WEIGHTS = {
     "interest_match_score": 0.55,
     "heat": 0.25,
     "rating": 0.20,
+}
+
+CUSTOM_BUSINESS_WEIGHTS_WITH_DISTANCE = {
+    "heat": 0.40,
+    "rating": 0.30,
+    "distance_m": 0.30,
+}
+
+CUSTOM_BUSINESS_WEIGHTS_NO_DISTANCE = {
+    "heat": 0.55,
+    "rating": 0.45,
+}
+
+WEIGHT_FIELD_ALIASES = {
+    "interest": "interest_match_score",
+    "interest_score": "interest_match_score",
+    "interest_match": "interest_match_score",
+    "interest_match_score": "interest_match_score",
+    "heat": "heat",
+    "hot": "heat",
+    "popularity": "heat",
+    "rating": "rating",
+    "score": "rating",
+    "distance": "distance_m",
+    "distance_m": "distance_m",
+    "distance_score": "distance_m",
 }
 
 CATEGORY_INTEREST_TERMS = {
@@ -185,8 +220,54 @@ def is_interest_sort_field(value: Any) -> bool:
     return normalize_text(value) in INTEREST_SORT_FIELDS
 
 
+def is_weighted_sort_field(value: Any) -> bool:
+    return normalize_text(value) in WEIGHTED_SORT_FIELDS
+
+
 def interest_ranking_weights(*, include_distance: bool) -> dict[str, float]:
     return dict(SCENIC_INTEREST_WEIGHTS if include_distance else DIARY_INTEREST_WEIGHTS)
+
+
+def custom_business_ranking_weights(*, include_distance: bool) -> dict[str, float]:
+    return dict(
+        CUSTOM_BUSINESS_WEIGHTS_WITH_DISTANCE
+        if include_distance
+        else CUSTOM_BUSINESS_WEIGHTS_NO_DISTANCE
+    )
+
+
+def normalize_custom_ranking_weights(
+    weights: Any,
+    *,
+    include_distance: bool,
+) -> dict[str, float] | None:
+    """Normalize user supplied ranking weights to a stable 0..1 sum."""
+    if not isinstance(weights, dict):
+        return None
+
+    allowed_fields = {"interest_match_score", "heat", "rating"}
+    if include_distance:
+        allowed_fields.add("distance_m")
+
+    normalized: dict[str, float] = {}
+    for raw_field, raw_weight in weights.items():
+        field = WEIGHT_FIELD_ALIASES.get(normalize_text(raw_field))
+        if field not in allowed_fields:
+            continue
+
+        weight = coerce_float(raw_weight, default=math.nan)
+        if math.isnan(weight) or math.isinf(weight) or weight <= 0:
+            continue
+        normalized[field] = normalized.get(field, 0.0) + weight
+
+    total_weight = sum(normalized.values())
+    if total_weight <= 0:
+        return None
+
+    return {
+        field: round(weight / total_weight, 4)
+        for field, weight in normalized.items()
+    }
 
 
 def enrich_interest_scores(

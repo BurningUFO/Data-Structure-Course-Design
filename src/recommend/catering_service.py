@@ -80,6 +80,8 @@ def recommend_catering(
     distance_provider: Any | None = None,
     use_default_distance_provider: bool = True,
     distance_strategy: str = "shortest_distance",
+    interests: list[str] | str | None = None,
+    ranking_weights: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """第九周新增：餐饮推荐业务入口。"""
     effective_sort_field = resolve_business_sort_field(
@@ -101,6 +103,8 @@ def recommend_catering(
         distance_provider=distance_provider,
         use_default_distance_provider=use_default_distance_provider,
         distance_strategy=distance_strategy,
+        interests=interests,
+        ranking_weights=ranking_weights,
     )
     resolved_sort_order = str(response.get("filters", {}).get("sort_order", sort_order))
 
@@ -118,6 +122,8 @@ def recommend_catering(
             "sort_order": resolved_sort_order,
             "limit": limit,
             "distance_strategy": distance_strategy,
+            "interests": response.get("filters", {}).get("interests", []),
+            "ranking_weights": response.get("filters", {}).get("ranking_weights", {}),
         },
         extra_metadata={
             "business": {

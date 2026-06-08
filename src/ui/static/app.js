@@ -48,6 +48,13 @@ const state = {
   currentStartNodeId: "",
   currentUserId: "",
   currentInterests: [],
+  customWeights: {
+    enabled: false,
+    interest_match_score: 0,
+    heat: 40,
+    rating: 30,
+    distance_m: 30,
+  },
   focusedNodeId: "",
   nearbyCenterNodeId: "",
   currentResults: [],
@@ -374,7 +381,7 @@ function bindForms() {
     await runQuery("/api/search/scenic", {
       keyword: document.querySelector("#scenic-keyword").value.trim(),
       category: document.querySelector("#scenic-category").value,
-      sort_field: document.querySelector("#scenic-sort").value,
+      sort_field: selectedRecommendationSort("#scenic-sort"),
       start_node_id: state.currentStartNodeId,
       limit: 6,
       ...buildInterestPayload(),
@@ -397,9 +404,10 @@ function bindForms() {
     await runQuery("/api/recommend/catering", {
       keyword: document.querySelector("#catering-keyword").value.trim(),
       cuisine: document.querySelector("#catering-cuisine").value.trim(),
-      sort_field: document.querySelector("#catering-sort").value,
+      sort_field: selectedRecommendationSort("#catering-sort"),
       start_node_id: state.currentStartNodeId,
       limit: 6,
+      ...buildInterestPayload(),
     });
   });
 
@@ -414,7 +422,7 @@ function bindForms() {
   document.querySelector("#diary-list-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     await runQuery("/api/diaries/list", {
-      sort_field: document.querySelector("#diary-list-sort").value,
+      sort_field: selectedRecommendationSort("#diary-list-sort"),
       limit: 6,
       ...buildInterestPayload(),
     });
@@ -490,6 +498,20 @@ function bindForms() {
     updateActiveFeatureCaption();
     persistUserContext();
     setStatus(currentInterestStatusText(), "info");
+  });
+
+  document.querySelector("#custom-weight-enabled").addEventListener("change", () => {
+    state.customWeights = readCustomWeightSettings();
+    persistUserContext();
+    setStatus(currentWeightStatusText(), "info");
+  });
+
+  ["#weight-interest", "#weight-heat", "#weight-rating", "#weight-distance"].forEach((selector) => {
+    document.querySelector(selector).addEventListener("change", () => {
+      state.customWeights = readCustomWeightSettings();
+      persistUserContext();
+      setStatus(currentWeightStatusText(), "info");
+    });
   });
 
   document.querySelector("#site-selector").addEventListener("change", async (event) => {
@@ -993,6 +1015,7 @@ function clearUserInputs() {
   setMultipleSelectValues("#multi-route-targets", []);
   setSelectValue("#route-strategy", "shortest_distance");
   setSelectValue("#route-transport", "mixed");
+  setSelectValue("#route-time-slot", "normal");
   setSelectValue("#global-start-node", state.currentStartNodeId);
   fillAigcFormFromSample(defaultAigcSampleId());
   clearDiaryManagementForm();
@@ -1049,10 +1072,94 @@ function readInterestTags() {
 
 function buildInterestPayload() {
   state.currentInterests = readInterestTags();
-  return {
+  const payload = {
     user_id: state.currentUserId,
     interests: state.currentInterests,
   };
+  const weightPayload = buildRankingWeightPayload();
+  if (weightPayload) {
+    payload.ranking_weights = weightPayload;
+  }
+  return payload;
+}
+
+function readNumericInput(selector, fallback) {
+  const element = document.querySelector(selector);
+  if (!element) {
+    return fallback;
+  }
+  const value = Number(element.value);
+  return Number.isFinite(value) && value >= 0 ? value : fallback;
+}
+
+function readCustomWeightSettings() {
+  return {
+    enabled: Boolean(document.querySelector("#custom-weight-enabled")?.checked),
+    interest_match_score: readNumericInput("#weight-interest", 0),
+    heat: readNumericInput("#weight-heat", 40),
+    rating: readNumericInput("#weight-rating", 30),
+    distance_m: readNumericInput("#weight-distance", 30),
+  };
+}
+
+function syncCustomWeightControls() {
+  const settings = state.customWeights || {};
+  const enabled = Boolean(settings.enabled);
+  const enabledInput = document.querySelector("#custom-weight-enabled");
+  if (enabledInput) {
+    enabledInput.checked = enabled;
+  }
+  const fields = [
+    ["#weight-interest", settings.interest_match_score ?? 0],
+    ["#weight-heat", settings.heat ?? 40],
+    ["#weight-rating", settings.rating ?? 30],
+    ["#weight-distance", settings.distance_m ?? 30],
+  ];
+  fields.forEach(([selector, value]) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      element.value = String(value);
+    }
+  });
+}
+
+function buildRankingWeightPayload() {
+  if (!state.customWeights?.enabled) {
+    return null;
+  }
+  state.customWeights = readCustomWeightSettings();
+  return {
+    interest_match_score: state.customWeights.interest_match_score,
+    heat: state.customWeights.heat,
+    rating: state.customWeights.rating,
+    distance_m: state.customWeights.distance_m,
+  };
+}
+
+function selectedRecommendationSort(selector) {
+  if (state.customWeights?.enabled) {
+    return "weighted";
+  }
+  return document.querySelector(selector)?.value || "heat";
+}
+
+function buildRouteTimePayload() {
+  return {
+    time_slot: document.querySelector("#route-time-slot")?.value || "normal",
+  };
+}
+
+function currentWeightStatusText() {
+  if (!state.customWeights?.enabled) {
+    return "自定义权重排序未启用。";
+  }
+  return [
+    "自定义权重已启用",
+    `兴趣 ${state.customWeights.interest_match_score}`,
+    `热度 ${state.customWeights.heat}`,
+    `评分 ${state.customWeights.rating}`,
+    `距离 ${state.customWeights.distance_m}`,
+  ].join("；") + "。";
 }
 
 function findBootstrapUser(userId) {
@@ -1077,6 +1184,7 @@ function syncUserContextControls() {
   if (interestInput) {
     interestInput.value = state.currentInterests.join(", ");
   }
+  syncCustomWeightControls();
   renderRecentSearches();
 }
 
@@ -1213,6 +1321,15 @@ function hydrateBootstrap(bootstrap) {
     "mixed",
   );
 
+  populateSelect(
+    document.querySelector("#route-time-slot"),
+    (bootstrap.controls.route_time_slots || [{ value: "normal", label: "平峰" }]).map((item) => ({
+      value: item.value,
+      label: item.label,
+    })),
+    "normal",
+  );
+
   const scenicOptions = [{ value: "", label: "不限类别" }].concat(
     bootstrap.controls.scenic_categories.map((item) => ({
       value: item.value,
@@ -1307,6 +1424,15 @@ function restoreUserContext() {
   state.currentInterests = Array.isArray(stored.currentInterests)
     ? stored.currentInterests.filter(Boolean).slice(0, 8)
     : state.currentInterests;
+  if (stored.customWeights && typeof stored.customWeights === "object") {
+    state.customWeights = {
+      enabled: Boolean(stored.customWeights.enabled),
+      interest_match_score: Number(stored.customWeights.interest_match_score) || 0,
+      heat: Number(stored.customWeights.heat) || 40,
+      rating: Number(stored.customWeights.rating) || 30,
+      distance_m: Number(stored.customWeights.distance_m) || 30,
+    };
+  }
   state.recentSearches = Array.isArray(stored.recentSearches)
     ? stored.recentSearches.slice(0, RECENT_SEARCH_LIMIT)
     : [];
@@ -1338,6 +1464,7 @@ function persistUserContext() {
       currentStartNodeId: state.currentStartNodeId,
       currentUserId: state.currentUserId,
       currentInterests: state.currentInterests,
+      customWeights: state.customWeights,
       recentSearches: state.recentSearches,
     }));
   } catch {
@@ -1957,7 +2084,7 @@ async function runTourStep(stepId, options = {}) {
     await runQuery("/api/search/scenic", {
       keyword: step.keyword || "",
       category: step.category || "",
-      sort_field: document.querySelector("#scenic-sort").value,
+      sort_field: selectedRecommendationSort("#scenic-sort"),
       start_node_id: state.currentStartNodeId,
       limit: 6,
       ...buildInterestPayload(),
@@ -2160,7 +2287,7 @@ function handleScenicPreset(preset) {
   void runQuery("/api/search/scenic", {
     keyword: preset.keyword || "",
     category: preset.category || "",
-    sort_field: document.querySelector("#scenic-sort").value,
+    sort_field: selectedRecommendationSort("#scenic-sort"),
     start_node_id: state.currentStartNodeId,
     limit: 6,
     ...buildInterestPayload(),
@@ -2215,13 +2342,14 @@ function buildPlaceSearchPayload(overrides = {}) {
     sort_field: "distance_m",
     start_node_id: state.currentStartNodeId,
     limit: overrides.limit ?? 6,
+    ...buildInterestPayload(),
   };
 
   if (centerNodeId) {
     payload.center_node_id = centerNodeId;
     payload.radius_m = Number(radiusM || 500);
   } else {
-    payload.sort_field = overrides.sort_field ?? document.querySelector("#place-sort").value;
+    payload.sort_field = overrides.sort_field ?? selectedRecommendationSort("#place-sort");
   }
 
   return payload;
@@ -2264,9 +2392,10 @@ function handleCateringPreset(preset) {
   void runQuery("/api/recommend/catering", {
     keyword: preset.keyword || "",
     cuisine: preset.cuisine || "",
-    sort_field: document.querySelector("#catering-sort").value,
+    sort_field: selectedRecommendationSort("#catering-sort"),
     start_node_id: state.currentStartNodeId,
     limit: 6,
+    ...buildInterestPayload(),
   });
 }
 
@@ -2923,6 +3052,7 @@ async function planRoute(targetNodeId) {
       target_node_id: targetNodeId,
       strategy: document.querySelector("#route-strategy").value,
       transport_mode: document.querySelector("#route-transport").value,
+      ...buildRouteTimePayload(),
     });
 
     if (!response.success) {
@@ -2969,6 +3099,7 @@ async function planMultiRoute(targetNodeIds) {
       strategy: document.querySelector("#route-strategy").value,
       transport_mode: document.querySelector("#route-transport").value,
       return_to_start: document.querySelector("#multi-route-return").checked,
+      ...buildRouteTimePayload(),
     });
 
     if (!response.success) {
@@ -3861,6 +3992,7 @@ function renderRoute(route, emptyMessage = "暂无路径") {
         ${renderMetricPill(summary.time_text, "metric-pill-strong")}
         ${renderMetricPill(crossLayerText)}
         ${renderMetricPill(summary.strategy_text)}
+        ${renderMetricPill(summary.time_slot_text)}
       </div>
       ${renderRouteDetails(geometrySummary)}
     </article>
@@ -3891,6 +4023,7 @@ function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
         ${renderMetricPill(summary.time_text, "metric-pill-strong")}
         ${renderMetricPill(`${summary.target_count || 0} 个目标`)}
         ${renderMetricPill(summary.return_to_start_text || "")}
+        ${renderMetricPill(summary.time_slot_text)}
       </div>
       ${renderRouteDetails(geometrySummary)}
     </article>
@@ -4642,6 +4775,7 @@ function renderSingleRouteStep(step, index) {
         ${renderMetricPill(step.display_layer || step.to_layer || "")}
         ${renderMetricPill(formatDistance(step.distance_m, "available"))}
         ${renderMetricPill(formatSeconds(step.estimated_time_s))}
+        ${renderMetricPill(step.congestion_text || "")}
         ${renderMetricPill(step.transition_kind === "cross_layer" ? "跨层" : "同层")}
       </div>
       <p>${escapeHtml(step.description || "沿当前道路继续前进。")}</p>

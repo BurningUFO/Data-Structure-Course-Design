@@ -216,6 +216,12 @@ def normalize_backend_payload(
         storage_mode = payload.get("storage_mode")
         if storage_mode is not None:
             payload_metadata["storage_mode"] = str(storage_mode)
+        offline_manifest = payload.get("offline_manifest")
+        if isinstance(offline_manifest, dict):
+            payload_metadata["offline_manifest"] = offline_manifest
+        sync_state = payload.get("sync")
+        if isinstance(sync_state, dict):
+            payload_metadata["sync"] = sync_state
     elif isinstance(payload, list):
         raw_items = payload
         total_matched = len(raw_items)

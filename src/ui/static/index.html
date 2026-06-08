@@ -130,6 +130,31 @@
                       <input id="interest-tags" type="text" placeholder="例如：图书馆, 食堂, 运动" />
                     </label>
                   </div>
+                  <details class="form-advanced">
+                    <summary>自定义推荐权重</summary>
+                    <label class="check-field">
+                      <input id="custom-weight-enabled" type="checkbox" />
+                      <span>启用自定义权重排序</span>
+                    </label>
+                    <div class="form-advanced-grid">
+                      <label class="field">
+                        <span class="field-label">兴趣</span>
+                        <input id="weight-interest" type="number" min="0" max="100" step="1" value="0" />
+                      </label>
+                      <label class="field">
+                        <span class="field-label">热度</span>
+                        <input id="weight-heat" type="number" min="0" max="100" step="1" value="40" />
+                      </label>
+                      <label class="field">
+                        <span class="field-label">评分</span>
+                        <input id="weight-rating" type="number" min="0" max="100" step="1" value="30" />
+                      </label>
+                      <label class="field">
+                        <span class="field-label">距离</span>
+                        <input id="weight-distance" type="number" min="0" max="100" step="1" value="30" />
+                      </label>
+                    </div>
+                  </details>
                   <div class="context-secondary-row">
                     <details class="tour-strip workspace-tour" aria-label="工作区演示向导">
                       <summary class="tour-strip-header">
@@ -369,6 +394,10 @@
                         <label class="field">
                           <span class="field-label">交通方式</span>
                           <select id="route-transport"></select>
+                        </label>
+                        <label class="field">
+                          <span class="field-label">出发时段</span>
+                          <select id="route-time-slot"></select>
                         </label>
                       </div>
                     </details>

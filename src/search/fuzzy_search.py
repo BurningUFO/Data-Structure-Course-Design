@@ -48,6 +48,442 @@ TERM_EQUIVALENT_GROUPS = (
 )
 
 SEPARATOR_PATTERN = re.compile(r"[\s,，。.;；:：、/\\|_\-+()（）\[\]【】{}<>《》\"'`~!！?？@#$%^&*=]+")
+CJK_PATTERN = re.compile(r"[\u4e00-\u9fff]")
+MAX_PINYIN_VARIANT_COUNT = 24
+
+PINYIN_SYLLABLES = {
+    "北": "bei",
+    "京": "jing",
+    "大": "da",
+    "学": "xue",
+    "校": "xiao",
+    "园": "yuan",
+    "区": "qu",
+    "图": "tu",
+    "书": "shu",
+    "馆": "guan",
+    "未": "wei",
+    "名": "ming",
+    "湖": "hu",
+    "洗": "xi",
+    "手": "shou",
+    "间": "jian",
+    "卫": "wei",
+    "生": "sheng",
+    "厕": "ce",
+    "所": "suo",
+    "公": "gong",
+    "食": "shi",
+    "堂": "tang",
+    "餐": "can",
+    "厅": "ting",
+    "饮": "yin",
+    "便": "bian",
+    "利": "li",
+    "店": "dian",
+    "超": "chao",
+    "市": "shi",
+    "商": "shang",
+    "教": "jiao",
+    "楼": "lou",
+    "室": "shi",
+    "上": "shang",
+    "课": "ke",
+    "宿": "su",
+    "舍": "she",
+    "寝": "qin",
+    "寓": "yu",
+    "体": "ti",
+    "育": "yu",
+    "场": "chang",
+    "操": "cao",
+    "运": "yun",
+    "动": "dong",
+    "门": "men",
+    "入": "ru",
+    "口": "kou",
+    "广": "guang",
+    "中": "zhong",
+    "心": "xin",
+    "停": "ting",
+    "车": "che",
+    "库": "ku",
+    "咖": "ka",
+    "啡": "fei",
+    "阅": "yue",
+    "览": "lan",
+    "自": "zi",
+    "习": "xi",
+    "热": "re",
+    "水": "shui",
+    "房": "fang",
+    "服": "fu",
+    "务": "wu",
+    "台": "tai",
+    "活": "huo",
+    "休": "xiu",
+    "闲": "xian",
+    "办": "ban",
+    "理": "li",
+    "报": "bao",
+    "修": "xiu",
+    "卡": "ka",
+    "借": "jie",
+    "读": "du",
+    "习": "xi",
+    "习": "xi",
+    "百": "bai",
+    "周": "zhou",
+    "年": "nian",
+    "纪": "ji",
+    "念": "nian",
+    "广": "guang",
+    "五": "wu",
+    "四": "si",
+    "农": "nong",
+    "燕": "yan",
+    "南": "nan",
+    "东": "dong",
+    "西": "xi",
+    "北": "bei",
+    "清": "qing",
+    "华": "hua",
+    "武": "wu",
+    "汉": "han",
+    "复": "fu",
+    "旦": "dan",
+    "同": "tong",
+    "济": "ji",
+    "苏": "su",
+    "州": "zhou",
+    "山": "shan",
+    "厦": "xia",
+    "门": "men",
+    "浙": "zhe",
+    "江": "jiang",
+}
+
+PINYIN_SYLLABLES.update(
+    {
+        "一": "yi",
+        "三": "san",
+        "不": "bu",
+        "与": "yu",
+        "专": "zhuan",
+        "为": "wei",
+        "主": "zhu",
+        "乐": ("le", "yue"),
+        "二": "er",
+        "于": "yu",
+        "交": "jiao",
+        "享": "xiang",
+        "亭": "ting",
+        "人": "ren",
+        "代": "dai",
+        "仪": "yi",
+        "会": "hui",
+        "伞": "san",
+        "位": "wei",
+        "住": "zhu",
+        "作": "zuo",
+        "供": "gong",
+        "侧": "ce",
+        "保": "bao",
+        "信": "xin",
+        "候": "hou",
+        "值": "zhi",
+        "健": "jian",
+        "充": "chong",
+        "全": "quan",
+        "共": "gong",
+        "关": "guan",
+        "兹": "zi",
+        "内": "nei",
+        "准": "zhun",
+        "出": "chu",
+        "分": "fen",
+        "切": "qie",
+        "创": "chuang",
+        "到": "dao",
+        "功": "gong",
+        "加": "jia",
+        "助": "zhu",
+        "勒": "le",
+        "勤": "qin",
+        "包": "bao",
+        "化": "hua",
+        "医": "yi",
+        "卖": "mai",
+        "卜": "bu",
+        "印": "yin",
+        "参": "can",
+        "叉": "cha",
+        "发": "fa",
+        "叔": "shu",
+        "取": "qu",
+        "古": "gu",
+        "只": "zhi",
+        "可": "ke",
+        "号": "hao",
+        "各": "ge",
+        "合": "he",
+        "后": "hou",
+        "向": "xiang",
+        "吧": "ba",
+        "告": "gao",
+        "和": "he",
+        "咨": "zi",
+        "品": "pin",
+        "售": "shou",
+        "善": "shan",
+        "喷": "pen",
+        "器": "qi",
+        "回": "hui",
+        "国": "guo",
+        "地": "di",
+        "坐": "zuo",
+        "型": "xing",
+        "城": "cheng",
+        "域": "yu",
+        "塑": "su",
+        "境": "jing",
+        "处": "chu",
+        "备": "bei",
+        "外": "wai",
+        "多": "duo",
+        "媒": "mei",
+        "子": "zi",
+        "字": "zi",
+        "安": "an",
+        "实": "shi",
+        "客": "ke",
+        "家": "jia",
+        "对": "dui",
+        "导": "dao",
+        "小": "xiao",
+        "层": "ceng",
+        "工": "gong",
+        "己": "ji",
+        "师": "shi",
+        "干": "gan",
+        "平": "ping",
+        "幸": "xing",
+        "床": "chuang",
+        "府": "fu",
+        "座": "zuo",
+        "康": "kang",
+        "廊": "lang",
+        "建": "jian",
+        "开": "kai",
+        "引": "yin",
+        "影": "ying",
+        "径": "jing",
+        "微": "wei",
+        "德": "de",
+        "快": "kuai",
+        "怡": "yi",
+        "总": "zong",
+        "息": "xi",
+        "成": "cheng",
+        "或": "huo",
+        "战": "zhan",
+        "打": "da",
+        "扶": "fu",
+        "投": "tou",
+        "拐": "guai",
+        "拔": "ba",
+        "拟": "ni",
+        "择": "ze",
+        "按": "an",
+        "据": "ju",
+        "接": "jie",
+        "提": "ti",
+        "插": "cha",
+        "收": "shou",
+        "数": "shu",
+        "文": "wen",
+        "料": "liao",
+        "新": "xin",
+        "方": "fang",
+        "施": "shi",
+        "旁": "pang",
+        "配": "pei",
+        "无": "wu",
+        "星": "xing",
+        "更": "geng",
+        "最": "zui",
+        "本": "ben",
+        "术": "shu",
+        "机": "ji",
+        "材": "cai",
+        "村": "cun",
+        "杜": "du",
+        "松": "song",
+        "板": "ban",
+        "析": "xi",
+        "林": "lin",
+        "架": "jia",
+        "柜": "gui",
+        "查": "cha",
+        "标": "biao",
+        "栏": "lan",
+        "样": "yang",
+        "案": "an",
+        "桌": "zhuo",
+        "档": "dang",
+        "桩": "zhuang",
+        "梯": "ti",
+        "检": "jian",
+        "椅": "yi",
+        "步": "bu",
+        "段": "duan",
+        "民": "min",
+        "汇": "hui",
+        "池": "chi",
+        "沙": "sha",
+        "泉": "quan",
+        "泊": "bo",
+        "派": "pai",
+        "流": "liu",
+        "海": "hai",
+        "消": "xiao",
+        "淀": "dian",
+        "源": "yuan",
+        "点": "dian",
+        "烘": "hong",
+        "然": "ran",
+        "片": "pian",
+        "版": "ban",
+        "牌": "pai",
+        "物": "wu",
+        "特": "te",
+        "王": "wang",
+        "环": "huan",
+        "珍": "zhen",
+        "班": "ban",
+        "球": "qiu",
+        "瑞": "rui",
+        "用": "yong",
+        "田": "tian",
+        "由": "you",
+        "电": "dian",
+        "界": "jie",
+        "略": "lue",
+        "白": "bai",
+        "的": "de",
+        "盘": "pan",
+        "目": "mu",
+        "盲": "mang",
+        "相": "xiang",
+        "看": "kan",
+        "真": "zhen",
+        "短": "duan",
+        "研": "yan",
+        "硬": "ying",
+        "碍": "ai",
+        "社": "she",
+        "票": "piao",
+        "禁": "jin",
+        "离": "li",
+        "科": "ke",
+        "究": "jiu",
+        "空": "kong",
+        "窗": "chuang",
+        "立": "li",
+        "站": "zhan",
+        "端": "duan",
+        "第": "di",
+        "等": "deng",
+        "筑": "zhu",
+        "箱": "xiang",
+        "篮": "lan",
+        "籍": "ji",
+        "类": "lei",
+        "系": "xi",
+        "索": "suo",
+        "约": "yue",
+        "线": "xian",
+        "练": "lian",
+        "组": "zu",
+        "终": "zhong",
+        "统": "tong",
+        "综": "zong",
+        "编": "bian",
+        "网": "wang",
+        "美": "mei",
+        "考": "kao",
+        "者": "zhe",
+        "能": "neng",
+        "至": "zhi",
+        "航": "hang",
+        "节": "jie",
+        "营": "ying",
+        "藏": "cang",
+        "虚": "xu",
+        "行": ("hang", "xing"),
+        "衣": "yi",
+        "观": "guan",
+        "视": "shi",
+        "角": "jiao",
+        "讨": "tao",
+        "套": "tao",
+        "训": "xun",
+        "议": "yi",
+        "讲": "jiang",
+        "论": "lun",
+        "设": "she",
+        "询": "xun",
+        "调": ("tiao", "diao"),
+        "购": "gou",
+        "资": "zi",
+        "赛": "sai",
+        "走": "zou",
+        "起": "qi",
+        "足": "zu",
+        "路": "lu",
+        "身": "shen",
+        "轻": "qing",
+        "辅": "fu",
+        "辆": "liang",
+        "边": "bian",
+        "达": "da",
+        "过": "guo",
+        "近": "jin",
+        "还": "hai",
+        "连": "lian",
+        "适": "shi",
+        "选": "xuan",
+        "通": "tong",
+        "速": "su",
+        "道": "dao",
+        "邱": "qiu",
+        "邻": "lin",
+        "部": "bu",
+        "重": ("zhong", "chong"),
+        "钮": "niu",
+        "银": "yin",
+        "铺": "pu",
+        "防": "fang",
+        "阶": "jie",
+        "阿": "a",
+        "附": "fu",
+        "院": "yuan",
+        "障": "zhang",
+        "雨": "yu",
+        "零": "ling",
+        "青": "qing",
+        "静": "jing",
+        "面": "mian",
+        "预": "yu",
+        "题": "ti",
+        "驳": "bo",
+        "验": "yan",
+        "骨": "gu",
+        "鸟": "niao",
+        "麦": "mai",
+        "齐": "qi",
+    }
+)
 
 
 def normalize_text(value: Any) -> str:
@@ -71,6 +507,76 @@ def build_term_aliases() -> dict[str, list[str]]:
 
 
 TERM_ALIASES = build_term_aliases()
+
+
+def has_cjk(value: str) -> bool:
+    return bool(CJK_PATTERN.search(value))
+
+
+def get_pinyin_choices(char: str) -> tuple[str, ...]:
+    syllable = PINYIN_SYLLABLES.get(char)
+    if not syllable:
+        return ()
+    if isinstance(syllable, str):
+        return (syllable,)
+    return tuple(str(item) for item in syllable if str(item))
+
+
+def combine_pinyin_options(option_groups: list[tuple[str, ...]]) -> list[str]:
+    variants = [""]
+    for choices in option_groups:
+        if not choices:
+            continue
+        next_variants: list[str] = []
+        for prefix in variants:
+            for choice in choices:
+                next_variants.append(f"{prefix}{choice}")
+                if len(next_variants) >= MAX_PINYIN_VARIANT_COUNT:
+                    break
+            if len(next_variants) >= MAX_PINYIN_VARIANT_COUNT:
+                break
+        variants = next_variants
+    return variants
+
+
+def pinyin_variants(value: Any) -> list[str]:
+    normalized = normalize_match_text(value)
+    if not normalized or not has_cjk(normalized):
+        return []
+
+    syllable_options: list[tuple[str, ...]] = []
+    initial_options: list[tuple[str, ...]] = []
+    cjk_count = 0
+    mapped_count = 0
+    for char in normalized:
+        if "\u4e00" <= char <= "\u9fff":
+            cjk_count += 1
+            choices = get_pinyin_choices(char)
+            if not choices:
+                continue
+            mapped_count += 1
+            syllable_options.append(choices)
+            initial_options.append(tuple(unique_ordered([choice[0] for choice in choices])))
+        elif char.isascii() and char.isalnum():
+            syllable_options.append((char,))
+            initial_options.append((char,))
+
+    if not cjk_count or mapped_count < 2 or mapped_count / cjk_count < 0.75:
+        return []
+
+    return unique_ordered(
+        [
+            *combine_pinyin_options(syllable_options),
+            *combine_pinyin_options(initial_options),
+        ]
+    )
+
+
+def expand_match_value(value: Any) -> list[str]:
+    normalized = normalize_match_text(value)
+    if not normalized:
+        return []
+    return unique_ordered([normalized, *pinyin_variants(value)])
 
 
 def expand_query_term(term: str) -> list[str]:
@@ -204,11 +710,13 @@ def score_collection_with_details(
     if not values or not term_groups:
         return 0, []
 
-    normalized_values = [
-        normalize_match_text(value)
-        for value in values
-        if normalize_match_text(value)
-    ]
+    normalized_values = unique_ordered(
+        [
+            candidate
+            for value in values
+            for candidate in expand_match_value(value)
+        ]
+    )
     if not normalized_values:
         return 0, []
 

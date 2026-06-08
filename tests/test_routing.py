@@ -83,6 +83,70 @@ class TestRouting(unittest.TestCase):
         res = self.router.query_routing("node_1", "node_5", strategy="shortest_time")
         self.assertEqual(res["path"], ["node_1", "node_bypass", "node_5"])
 
+    def test_time_slot_dynamic_congestion_changes_shortest_time_path(self):
+        graph = Graph(layer_id="time_slot_demo")
+        for node_id in ["start", "direct", "bypass", "finish"]:
+            graph.add_node(node_id, name=node_id)
+
+        graph.add_edge(
+            "start",
+            "finish",
+            distance=10,
+            congestion=1.0,
+            ideal_speed=1.0,
+            type="road",
+            congestion_by_time={"evening_peak": 0.08},
+        )
+        graph.add_edge("start", "bypass", distance=30, congestion=1.0, ideal_speed=1.0, type="road")
+        graph.add_edge("bypass", "finish", distance=30, congestion=1.0, ideal_speed=1.0, type="road")
+
+        router = Router(graph)
+        normal_route = router.query_routing("start", "finish", strategy="shortest_time")
+        evening_route = router.query_routing(
+            "start",
+            "finish",
+            strategy="shortest_time",
+            time_slot="evening_peak",
+        )
+
+        self.assertTrue(normal_route["success"])
+        self.assertTrue(evening_route["success"])
+        self.assertEqual(normal_route["path"], ["start", "finish"])
+        self.assertEqual(evening_route["path"], ["start", "bypass", "finish"])
+        self.assertEqual(evening_route["time_slot"], "evening_peak")
+        self.assertTrue(evening_route["time_context"]["dynamic_congestion"])
+        self.assertEqual(evening_route["path_steps"][0]["time_slot"], "evening_peak")
+        self.assertLess(evening_route["path_steps"][0]["effective_congestion"], 1.0)
+
+    def test_departure_time_infers_peak_slot_for_distance_query(self):
+        graph = Graph(layer_id="departure_time_demo")
+        graph.add_node("start", name="start")
+        graph.add_node("finish", name="finish")
+        graph.add_edge(
+            "start",
+            "finish",
+            distance=10,
+            congestion=1.0,
+            ideal_speed=1.0,
+            congestion_by_time={"morning_peak": 0.5},
+        )
+
+        router = Router(graph)
+
+        self.assertEqual(
+            router.query_distance("start", "finish", strategy="shortest_time"),
+            10,
+        )
+        self.assertEqual(
+            router.query_distance(
+                "start",
+                "finish",
+                strategy="shortest_time",
+                departure_time="08:30",
+            ),
+            20,
+        )
+
     def test_unreachable_node(self):
         # 验证不可达节点的处理
         self.graph.add_node("isolated_node")

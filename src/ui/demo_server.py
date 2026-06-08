@@ -264,6 +264,7 @@ def build_handler(
                 "/api/diaries/delete": selected_service.delete_diary,
                 "/api/diaries/rate": selected_service.rate_diary,
                 "/api/aigc/preview": selected_service.aigc_preview,
+                "/api/offline/sync-status": selected_service.offline_sync_status,
                 "/api/route": selected_service.plan_route,
                 "/api/route/multi": selected_service.plan_multi_route,
             }

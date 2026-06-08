@@ -18,6 +18,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from src.compress.offline_index import build_offline_diary_index, evaluate_offline_sync_state
 from src.diary.diary_service import DiaryService
 from src.graph.loader import GraphLoader
 from src.recommend.catering_service import recommend_catering
@@ -25,6 +26,7 @@ from src.recommend.interest import (
     build_user_options,
     collect_interest_options,
     is_interest_sort_field,
+    is_weighted_sort_field,
     load_users,
     normalize_interest_list,
     resolve_user_by_id,
@@ -70,6 +72,13 @@ TRANSPORT_MODE_LABELS = {
     "bike": "自行车",
     "mixed": "步行 + 自行车最短时间",
 }
+
+ROUTE_TIME_SLOT_OPTIONS = [
+    {"value": "normal", "label": "平峰"},
+    {"value": "morning_peak", "label": "早高峰"},
+    {"value": "lunch_peak", "label": "午间高峰"},
+    {"value": "evening_peak", "label": "晚高峰"},
+]
 
 START_NODE_PRIORITY = {
     "gate_north": 0,
@@ -512,6 +521,7 @@ class DemoUIService:
             "demo_tour": DEMO_TOUR_STEPS,
             "empty_result_suggestions": EMPTY_RESULT_SUGGESTIONS,
             "aigc_capabilities": self._build_aigc_capabilities(),
+            "offline_capabilities": self._build_offline_capabilities(),
             "help": HELP_CONTENT,
             "state_policy": STATE_POLICY,
             "feedback_messages": FEEDBACK_MESSAGES,
@@ -528,22 +538,31 @@ class DemoUIService:
                     for category in sorted(PLACE_CATEGORY_SET)
                 ],
                 "sort_options": [
+                    {"value": "weighted", "label": "自定义权重"},
                     {"value": "heat", "label": "按热度"},
                     {"value": "rating", "label": "按评分"},
                     {"value": "distance_m", "label": "按真实距离"},
                 ],
                 "scenic_sort_options": [
                     {"value": "interest", "label": "按兴趣综合"},
+                    {"value": "weighted", "label": "自定义权重"},
                     {"value": "heat", "label": "按热度"},
                     {"value": "rating", "label": "按评分"},
                     {"value": "distance_m", "label": "按真实距离"},
                 ],
                 "diary_sort_options": [
                     {"value": "interest", "label": "按兴趣推荐"},
+                    {"value": "weighted", "label": "自定义权重"},
                     {"value": "heat", "label": "按热度"},
                     {"value": "rating", "label": "按评分"},
                     {"value": "views", "label": "按浏览量"},
                     {"value": "created_at", "label": "按发布时间"},
+                ],
+                "ranking_weight_fields": [
+                    {"value": "interest_match_score", "label": "兴趣", "default": 0.0},
+                    {"value": "heat", "label": "热度", "default": 0.4},
+                    {"value": "rating", "label": "评分", "default": 0.3},
+                    {"value": "distance_m", "label": "距离", "default": 0.3},
                 ],
                 "interest_options": collect_interest_options(self.users),
                 "nearby_radius_options": self.nearby_radius_options,
@@ -557,6 +576,7 @@ class DemoUIService:
                     {"value": "bike", "label": "自行车"},
                     {"value": "mixed", "label": "步行 + 自行车最短时间"},
                 ],
+                "route_time_slots": ROUTE_TIME_SLOT_OPTIONS,
                 "aigc_styles": self._build_aigc_style_options(),
             },
             "aigc_samples": self._build_aigc_sample_options(),
@@ -1489,7 +1509,8 @@ class DemoUIService:
             distance_provider=self._distance_provider,
             use_default_distance_provider=False,
             interests=interest_context["interests"],
-            allow_empty_query=is_interest_sort_field(sort_field),
+            ranking_weights=self._normalize_ranking_weights(request.get("ranking_weights")),
+            allow_empty_query=is_interest_sort_field(sort_field) or is_weighted_sort_field(sort_field),
         )
         response = self._attach_interest_context(response, interest_context)
         return self._decorate_query_response(response, source="scenic_search")
@@ -1497,6 +1518,7 @@ class DemoUIService:
     def place_search(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         request = payload or {}
         start_node_id = self._normalize_start_node(request.get("start_node_id"))
+        interest_context = self._resolve_interest_context(request)
         center_node_id = normalize_text(request.get("center_node_id"))
         if center_node_id and center_node_id not in self.graph.nodes:
             return build_error_response(
@@ -1520,12 +1542,16 @@ class DemoUIService:
             records=self.site_records,
             distance_provider=self._distance_provider,
             use_default_distance_provider=False,
+            interests=interest_context["interests"],
+            ranking_weights=self._normalize_ranking_weights(request.get("ranking_weights")),
         )
+        response = self._attach_interest_context(response, interest_context)
         return self._decorate_query_response(response, source="place_search")
 
     def catering_search(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         request = payload or {}
         start_node_id = self._normalize_start_node(request.get("start_node_id"))
+        interest_context = self._resolve_interest_context(request)
         response = recommend_catering(
             keyword=normalize_text(request.get("keyword")),
             cuisine=normalize_text(request.get("cuisine")),
@@ -1537,7 +1563,10 @@ class DemoUIService:
             records=self.site_records,
             distance_provider=self._distance_provider,
             use_default_distance_provider=False,
+            interests=interest_context["interests"],
+            ranking_weights=self._normalize_ranking_weights(request.get("ranking_weights")),
         )
+        response = self._attach_interest_context(response, interest_context)
         return self._decorate_query_response(response, source="catering_recommend")
 
     def diary_list(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -1554,13 +1583,17 @@ class DemoUIService:
             sort_order=normalize_text(request.get("sort_order")),
             limit=self._normalize_limit(request.get("limit"), default=6),
             interests=interest_context["interests"],
+            ranking_weights=self._normalize_ranking_weights(request.get("ranking_weights")),
         )
         response = response.copy()
         response["query_type"] = "diary_list"
         if response.get("success"):
             response["message"] = (
                 "diary recommendation success"
-                if is_interest_sort_field(sort_field) and interest_context["interests"]
+                if (
+                    (is_interest_sort_field(sort_field) and interest_context["interests"])
+                    or is_weighted_sort_field(sort_field)
+                )
                 else "diary list success"
             )
         response = self._attach_interest_context(response, interest_context)
@@ -1677,6 +1710,8 @@ class DemoUIService:
         target_node_id = normalize_text(request.get("target_node_id"))
         strategy = self._normalize_strategy(request.get("strategy"))
         transport_mode = self._normalize_transport_mode(request.get("transport_mode"))
+        time_slot = self._normalize_route_time_slot(request.get("time_slot"), default=None)
+        departure_time = normalize_text(request.get("departure_time"))
 
         result = self.router.query_routing(
             start_node_id=start_node_id,
@@ -1684,11 +1719,14 @@ class DemoUIService:
             strategy=strategy,
             transport_mode=transport_mode,
             site_id=self.site_id,
+            time_slot=time_slot,
+            departure_time=departure_time,
         )
         if not result.get("success"):
             return result
 
         decorated = result.copy()
+        time_context = decorated.get("time_context", {})
         decorated["ui"] = self._build_route_overlay(decorated)
         decorated["summary"] = {
             "distance_text": self.format_distance(decorated.get("total_distance_m")),
@@ -1696,6 +1734,12 @@ class DemoUIService:
             "layer_text": " -> ".join(decorated.get("layer_sequence", [])) or "outdoor",
             "transport_text": self._transport_mode_label(transport_mode),
             "strategy_text": "最短时间" if strategy == "shortest_time" else "最短距离",
+            "time_slot_text": time_context.get("label", "平峰"),
+            "dynamic_congestion_text": (
+                "动态拥堵已启用"
+                if time_context.get("dynamic_congestion")
+                else "平峰拥堵"
+            ),
         }
         return decorated
 
@@ -1706,6 +1750,8 @@ class DemoUIService:
         strategy = self._normalize_strategy(request.get("strategy"))
         transport_mode = self._normalize_transport_mode(request.get("transport_mode"))
         return_to_start = self._normalize_bool(request.get("return_to_start"), default=True)
+        time_slot = self._normalize_route_time_slot(request.get("time_slot"), default=None)
+        departure_time = normalize_text(request.get("departure_time"))
 
         if not target_node_ids:
             return {
@@ -1721,6 +1767,8 @@ class DemoUIService:
             transport_mode=transport_mode,
             return_to_start=return_to_start,
             site_id=self.site_id,
+            time_slot=time_slot,
+            departure_time=departure_time,
         )
         if not result.get("success"):
             result["route_type"] = "multi_target"
@@ -1730,6 +1778,7 @@ class DemoUIService:
         decorated["route_type"] = "multi_target"
         decorated["start_node_id"] = start_node_id
         decorated["start_node_name"] = self._resolve_node_name(start_node_id)
+        time_context = decorated.get("time_context", {})
         decorated["ui"] = self._build_multi_route_overlay(decorated)
         decorated["summary"] = {
             "distance_text": self.format_distance(decorated.get("total_distance_m")),
@@ -1740,8 +1789,51 @@ class DemoUIService:
             "return_to_start_text": "返回起点" if return_to_start else "不返回起点",
             "transport_text": self._transport_mode_label(transport_mode),
             "strategy_text": "最短时间" if strategy == "shortest_time" else "最短距离",
+            "time_slot_text": time_context.get("label", "平峰"),
+            "dynamic_congestion_text": (
+                "动态拥堵已启用"
+                if time_context.get("dynamic_congestion")
+                else "平峰拥堵"
+            ),
         }
         return decorated
+
+    def offline_sync_status(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        request = payload or {}
+        package = build_offline_diary_index(
+            self.diary_records,
+            priority_limit=self._normalize_priority_limit(request.get("priority_limit")),
+            package_id=f"{self.site_id.lower()}_diary_fulltext_offline",
+        )
+        sync_state = evaluate_offline_sync_state(
+            package,
+            request.get("client_manifest"),
+        )
+        manifest = package["manifest"]
+        return build_success_response(
+            data=[],
+            message=(
+                "offline package sync required"
+                if sync_state.get("needs_sync")
+                else "offline package up to date"
+            ),
+            query_type="offline_sync_status",
+            filters={
+                "site_id": self.site_id,
+                "priority_limit": manifest["priority_policy"]["limit"],
+            },
+            metadata={
+                "offline": {
+                    "manifest": manifest,
+                    "sync": sync_state,
+                    "storage_mode": package["storage_mode"],
+                    "document_count": package["document_count"],
+                    "priority_record_count": len(package["priority_record_ids"]),
+                    "notes": package["notes"],
+                },
+                "result_fields": [],
+            },
+        )
 
     def _load_site_meta(self, site_id: str) -> dict[str, Any]:
         for site in load_global_sites():
@@ -2714,6 +2806,23 @@ class DemoUIService:
         }
 
     @staticmethod
+    def _build_offline_capabilities() -> dict[str, Any]:
+        return {
+            "enabled": True,
+            "package_version": "offline-sync-v1",
+            "schema_version": "diary-offline-package-v1",
+            "sync_status_endpoint": "/api/offline/sync-status",
+            "storage_mode": "in_memory",
+            "persistent_cache": False,
+            "features": [
+                "priority_diary_sync",
+                "huffman_compression",
+                "local_fulltext_index",
+                "manifest_diff",
+            ],
+        }
+
+    @staticmethod
     def _normalize_aigc_mode(value: Any) -> str:
         mode = normalize_text(value).casefold()
         return mode if mode in {"template", "live_image"} else "template"
@@ -3374,6 +3483,26 @@ class DemoUIService:
             return default
         return min(radius, 3000.0)
 
+    @staticmethod
+    def _normalize_ranking_weights(value: Any) -> dict[str, Any] | None:
+        if not isinstance(value, dict):
+            return None
+        allowed_fields = {
+            "interest_match_score",
+            "interest",
+            "heat",
+            "rating",
+            "distance_m",
+            "distance",
+        }
+        normalized: dict[str, Any] = {}
+        for key, raw_weight in value.items():
+            field = normalize_text(key)
+            if field not in allowed_fields:
+                continue
+            normalized[field] = raw_weight
+        return normalized or None
+
     def _normalize_duration(self, value: Any, default: Any = 6) -> int:
         try:
             duration = int(value)
@@ -3389,6 +3518,20 @@ class DemoUIService:
         if normalized == "shortest_time":
             return "shortest_time"
         return "shortest_distance"
+
+    def _normalize_route_time_slot(self, value: Any, default: str | None = "normal") -> str | None:
+        normalized = normalize_text(value)
+        if not normalized:
+            return default
+        return self.router._normalize_time_slot(normalized)
+
+    @staticmethod
+    def _normalize_priority_limit(value: Any) -> int:
+        try:
+            limit = int(value)
+        except (TypeError, ValueError):
+            limit = 50
+        return max(1, min(limit, 200))
 
     @staticmethod
     def _normalize_transport_list(value: Any) -> list[str]:

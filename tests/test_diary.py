@@ -185,6 +185,26 @@ def test_diary_interest_recommendation_changes_with_user_interests():
     print("test_diary_interest_recommendation_changes_with_user_interests passed.")
 
 
+def test_diary_weighted_sort_uses_custom_weights_and_metadata():
+    result = search_diaries(
+        destination="北京大学",
+        sort_field="weighted",
+        ranking_weights={"rating": 100},
+        limit=10,
+    )
+
+    ratings = [item["rating"] for item in result["data"]]
+    assert result["success"] is True
+    assert ratings == sorted(ratings, reverse=True)
+    assert result["filters"]["ranking_weights"] == {"rating": 1.0}
+    assert result["metadata"]["ranking"]["weighted_used_for_ranking"] is True
+    assert result["metadata"]["interest"]["custom_weights_requested"] is True
+    assert result["metadata"]["interest"]["custom_weights_active"] is True
+    assert result["metadata"]["interest"]["weights"] == {"rating": 1.0}
+    assert "recommendation_score" in result["metadata"]["result_fields"]
+    print("test_diary_weighted_sort_uses_custom_weights_and_metadata passed.")
+
+
 def test_diary_management_create_update_rate_delete_flow():
     service = DiaryService(records=[])
     created = service.create_diary(
@@ -497,6 +517,7 @@ def run_all_tests():
     test_search_legacy_dataset_support()
     test_diary_response_shape()
     test_diary_interest_recommendation_changes_with_user_interests()
+    test_diary_weighted_sort_uses_custom_weights_and_metadata()
     test_diary_management_create_update_rate_delete_flow()
     test_diary_management_file_backed_persistence_flow()
     test_diary_management_records_injection_does_not_write_back()
