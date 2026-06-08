@@ -41,6 +41,14 @@ from src.search.search_service import (
     search_places,
 )
 from src.search.response import build_error_response, build_success_response
+from src.site_registry import (
+    resolve_site_data_id,
+    resolve_site_node_name_overrides,
+    resolve_site_template_id,
+    resolve_site_text_replacements,
+    resolve_site_user_name_overrides,
+    site_uses_template_clone,
+)
 
 
 Record = dict[str, Any]
@@ -462,6 +470,12 @@ class DemoUIService:
         diary_records: list[Record] | None = None,
     ) -> None:
         self.site_id = normalize_text(site_id) or get_default_site_id()
+        self.data_site_id = resolve_site_data_id(self.site_id)
+        self.template_site_id = resolve_site_template_id(self.site_id)
+        self.is_template_clone = site_uses_template_clone(self.site_id)
+        self.display_node_name_overrides = resolve_site_node_name_overrides(self.site_id)
+        self.display_user_name_overrides = resolve_site_user_name_overrides(self.site_id)
+        self.display_text_replacements = resolve_site_text_replacements(self.site_id)
         self.site_meta = self._load_site_meta(self.site_id)
         self.graph = GraphLoader.load_site_graph(self.site_id)
         self.router = Router(self.graph)
@@ -471,7 +485,7 @@ class DemoUIService:
             data_path=diary_data_path,
         )
         self.diary_records = self.diary_service.records
-        self.users = load_users(site_id=self.site_id)
+        self.users = self._load_site_users()
         self.outdoor_graph_source = self._load_outdoor_graph_source(self.site_id)
         self.outdoor_metadata = self._load_outdoor_metadata()
         self.map_nodes = self._build_map_nodes(self.outdoor_graph_source)
@@ -506,6 +520,39 @@ class DemoUIService:
         self.scenic_categories = self._build_scenic_categories()
         self.aigc_samples = self._load_aigc_samples()
 
+    def _display_text(self, value: Any) -> str:
+        if value is None:
+            return ""
+        text = str(value)
+        for source, target in self.display_text_replacements:
+            text = text.replace(source, target)
+        return text.strip()
+
+    def _display_node_name(self, node_id: str, fallback_name: Any = "") -> str:
+        normalized_node_id = normalize_text(node_id)
+        return (
+            self.display_node_name_overrides.get(normalized_node_id)
+            or self._display_text(fallback_name)
+            or normalized_node_id
+        )
+
+    def _display_list(self, values: Any) -> list[Any]:
+        if not isinstance(values, list):
+            return []
+        return [
+            self._display_text(item) if isinstance(item, str) else item
+            for item in values
+        ]
+
+    def _display_node_extra_fields(self, node: dict[str, Any]) -> dict[str, Any]:
+        fields = self._extract_node_extra_fields(node)
+        for key, value in list(fields.items()):
+            if isinstance(value, str):
+                fields[key] = self._display_text(value)
+            elif isinstance(value, list):
+                fields[key] = self._display_list(value)
+        return fields
+
     def get_bootstrap_payload(self) -> dict[str, Any]:
         """Return all static data needed by the one-page UI."""
         map_geometry_stats = self._build_map_geometry_stats()
@@ -516,6 +563,8 @@ class DemoUIService:
         map_capabilities["indoor_buildings"] = indoor_buildings
         map_capabilities["indoor_supported_buildings"] = indoor_buildings
         map_capabilities["indoor_supported_building_count"] = len(indoor_buildings)
+        if self.is_template_clone:
+            map_capabilities = self._apply_template_clone_map_capabilities(map_capabilities)
         return {
             "product": {
                 "name": "智能校园导览系统",
@@ -609,6 +658,44 @@ class DemoUIService:
                 "indoor_building_count": len(self.indoor_building_registry),
             },
         }
+
+    def _apply_template_clone_map_capabilities(
+        self,
+        map_capabilities: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Restrict template-clone sites to local course graph rendering."""
+        template_site_id = self.template_site_id or self.data_site_id
+        map_capabilities["map_profile"] = "template_clone"
+        map_capabilities["template_site_id"] = template_site_id
+        map_capabilities["template_source_note"] = (
+            f"{self.site_id} 复用 {template_site_id} 的课程图配置；"
+            "当前展示模板校园图，不加载真实瓦片底图或真实 OSM 上下文图层。"
+        )
+        map_capabilities["osm_layers"] = {
+            "default_visible": {
+                "roads": False,
+                "buildings": False,
+                "water_landuse": False,
+            },
+            "layers": [],
+        }
+        map_capabilities["basemaps"] = {
+            "default": "none",
+            "fallback": "none",
+            "modes": [
+                {
+                    "id": "none",
+                    "label": "模板校园图",
+                    "source": "本地课程 GeoJSON",
+                    "tile_url": "",
+                    "attribution": "",
+                    "network_required": False,
+                    "max_zoom": 19,
+                    "usage_note": "模板站点只展示本地课程图，不加载真实地图瓦片。",
+                }
+            ],
+        }
+        return map_capabilities
 
     def get_map_geojson_payload(self) -> dict[str, Any]:
         """Return outdoor nodes and edges as a GeoJSON FeatureCollection."""
@@ -718,6 +805,41 @@ class DemoUIService:
 
     def get_osm_layers_payload(self) -> dict[str, Any]:
         """Return local OSM-derived contextual layers for the Leaflet renderer."""
+        if self.is_template_clone:
+            layer_stats = {
+                layer_id: {
+                    "file": file_name,
+                    "feature_count": 0,
+                    "available": False,
+                    "geometry_types": {},
+                }
+                for layer_id, file_name in OSM_LAYER_FILES.items()
+            }
+            return {
+                "success": True,
+                "site_id": self.site_id,
+                "layers": {
+                    layer_id: self._empty_feature_collection()
+                    for layer_id in OSM_LAYER_FILES
+                },
+                "metadata": {
+                    "map_profile": "template_clone",
+                    "template_site_id": self.template_site_id or self.data_site_id,
+                    "usage_note": "模板校园图不加载真实 OSM 上下文图层。",
+                },
+                "stats": {
+                    "layers": layer_stats,
+                    "roads_feature_count": 0,
+                    "buildings_feature_count": 0,
+                    "water_landuse_feature_count": 0,
+                    "feature_count": 0,
+                    "available_layer_count": 0,
+                    "missing_files": [],
+                    "missing_file_count": 0,
+                },
+                "warnings": [],
+            }
+
         layers: dict[str, Any] = {}
         layer_stats: dict[str, Any] = {}
         warnings: list[dict[str, str]] = []
@@ -825,7 +947,10 @@ class DemoUIService:
         current_nodes = [
             {
                 "id": normalize_text(node.get("id")),
-                "name": normalize_text(node.get("name")),
+                "name": self._display_node_name(
+                    normalize_text(node.get("id")),
+                    node.get("name"),
+                ),
                 "type": normalize_text(node.get("type")),
                 "category": normalize_text(node.get("category")),
                 "category_label": CATEGORY_LABELS.get(
@@ -836,9 +961,9 @@ class DemoUIService:
                 "floor_label": normalize_text(node.get("floor_label")) or current_floor["label"],
                 "layout": node.get("layout", {}),
                 "is_gate": bool(node.get("is_gate", False)),
-                "description": normalize_text(node.get("description")),
-                "facilities": list(node.get("facilities", [])),
-                "tags": node.get("tags", []),
+                "description": self._display_text(node.get("description")),
+                "facilities": self._display_list(node.get("facilities")),
+                "tags": self._display_list(node.get("tags")),
             }
             for node in graph_data.get("nodes", [])
             if normalize_text(node.get("floor_id")) == current_floor_id
@@ -850,8 +975,8 @@ class DemoUIService:
                 "to": normalize_text(edge.get("to")),
                 "distance_m": float(edge.get("distance", 0)),
                 "edge_type": normalize_text(edge.get("type")) or "indoor_path",
-                "name": normalize_text(edge.get("name")),
-                "description": normalize_text(edge.get("description")),
+                "name": self._display_text(edge.get("name")),
+                "description": self._display_text(edge.get("description")),
                 "vehicle_access": normalize_text(edge.get("vehicle_access")) or "pedestrian_only",
                 "from_floor_id": current_floor_id,
                 "to_floor_id": current_floor_id,
@@ -884,7 +1009,10 @@ class DemoUIService:
             "success": True,
             "site_id": self.site_id,
             "building_id": normalized_building_id,
-            "building_name": normalize_text(building_entry.get("building_name")) or normalized_building_id,
+            "building_name": self._display_node_name(
+                normalized_building_id,
+                building_entry.get("building_name") or normalized_building_id,
+            ),
             "entry_node_id": normalize_text(building_entry.get("entry_node_id")),
             "indoor_graph_id": indoor_graph_id,
             "template_id": normalize_text(building_entry.get("template_id")),
@@ -1127,7 +1255,10 @@ class DemoUIService:
             "version": INDOOR_FLOORPLAN_VERSION,
             "units": "layout_px",
             "building_id": normalize_text(building_entry.get("building_id")),
-            "building_name": normalize_text(building_entry.get("building_name")),
+            "building_name": self._display_node_name(
+                normalize_text(building_entry.get("building_id")),
+                building_entry.get("building_name"),
+            ),
             "floor_id": current_floor["id"],
             "floor_label": current_floor["label"],
             "view_box": view_box,
@@ -1413,6 +1544,8 @@ class DemoUIService:
                     "is_current": site_id == self.site_id,
                     "is_available": is_available,
                     "data_status": data_status,
+                    "map_profile": normalize_text(site.get("map_profile")),
+                    "template_site_id": normalize_text(site.get("template_site_id")),
                     "sub_graphs": site.get("sub_graphs", []),
                 }
             )
@@ -1437,6 +1570,45 @@ class DemoUIService:
     def _build_user_options(self) -> list[dict[str, Any]]:
         return build_user_options(self.users)
 
+    def _load_site_users(self) -> list[dict[str, Any]]:
+        user_site_id = self.data_site_id if self.is_template_clone else self.site_id
+        users = load_users(site_id=user_site_id)
+        if not self.is_template_clone or user_site_id == self.site_id:
+            return users
+
+        cloned_users: list[dict[str, Any]] = []
+        user_prefix = self.site_id.lower()
+        for index, user in enumerate(users, start=1):
+            cloned_user = user.copy()
+            source_user_id = normalize_text(user.get("id"))
+            cloned_user_id = f"user_{user_prefix}_{index:03d}"
+            cloned_user["id"] = cloned_user_id
+            cloned_user["template_user_id"] = source_user_id
+            cloned_user["name"] = (
+                self.display_user_name_overrides.get(source_user_id)
+                or self._display_text(user.get("name"))
+                or cloned_user_id
+            )
+            cloned_user["interests"] = self._display_list(user.get("interests"))
+            cloned_user["template_home_site_id"] = user_site_id
+            cloned_user["home_site_id"] = self.site_id
+            cloned_users.append(cloned_user)
+        return cloned_users
+
+    def _resolve_user_for_request(self, user_id: str) -> dict[str, Any] | None:
+        user = resolve_user_by_id(self.users, user_id)
+        if user is not None:
+            return user
+
+        normalized_user_id = normalize_text(user_id)
+        if not normalized_user_id:
+            return None
+
+        for candidate in self.users:
+            if normalize_text(candidate.get("template_user_id")) == normalized_user_id:
+                return candidate
+        return None
+
     def _resolve_default_user_id(self) -> str:
         options = self._build_user_options()
         if not options:
@@ -1453,12 +1625,17 @@ class DemoUIService:
             or request.get("interest_tags")
             or request.get("interest_text")
         )
-        selected_user = resolve_user_by_id(self.users, user_id)
-        user_interests = resolve_user_interests(self.users, user_id)
+        selected_user = self._resolve_user_for_request(user_id)
+        user_interests = (
+            normalize_interest_list(selected_user.get("interests"))
+            if selected_user
+            else resolve_user_interests(self.users, user_id)
+        )
         interests = requested_interests or user_interests
+        display_user_id = normalize_text(selected_user.get("id")) if selected_user else user_id
 
         return {
-            "user_id": user_id,
+            "user_id": display_user_id,
             "user_name": normalize_text(selected_user.get("name")) if selected_user else "",
             "role": normalize_text(selected_user.get("role")) if selected_user else "",
             "interests": interests,
@@ -1771,8 +1948,12 @@ class DemoUIService:
                     "location": normalize_text(site.get("location")),
                     "is_available": is_available,
                     "data_status": data_status,
+                    "map_profile": normalize_text(site.get("map_profile")),
+                    "template_site_id": normalize_text(site.get("template_site_id")),
+                    "data_site_id": resolve_site_data_id(site_id),
                     "sub_graphs": site.get("sub_graphs", []),
                 }
+        template_site_id = resolve_site_template_id(site_id)
         return {
             "id": site_id,
             "name": site_id,
@@ -1780,15 +1961,19 @@ class DemoUIService:
             "location": "",
             "is_available": bool(get_site_graph_paths(site_id)),
             "data_status": "available" if get_site_graph_paths(site_id) else "scaffold_only",
+            "map_profile": "template_clone" if template_site_id else "",
+            "template_site_id": template_site_id,
+            "data_site_id": resolve_site_data_id(site_id),
             "sub_graphs": [],
         }
 
     def _load_outdoor_graph_source(self, site_id: str) -> dict[str, Any]:
+        data_site_id = resolve_site_data_id(site_id)
         outdoor_path = (
             Path(__file__).resolve().parents[2]
             / "data"
             / "sites"
-            / site_id
+            / data_site_id
             / "outdoor.json"
         )
         if not outdoor_path.exists():
@@ -1852,7 +2037,7 @@ class DemoUIService:
         return profiles
 
     def _osm_geo_dir(self) -> Path:
-        return Path(__file__).resolve().parents[2] / "data" / "sites" / self.site_id / "geo"
+        return Path(__file__).resolve().parents[2] / "data" / "sites" / self.data_site_id / "geo"
 
     def _indoor_registry_path(self) -> Path:
         return self._osm_geo_dir() / "indoor_building_registry.json"
@@ -1877,7 +2062,7 @@ class DemoUIService:
         return [item for item in records if isinstance(item, dict)]
 
     def _indoor_graph_path(self, indoor_graph_id: str) -> Path:
-        return Path(__file__).resolve().parents[2] / "data" / "sites" / self.site_id / f"{indoor_graph_id}.json"
+        return Path(__file__).resolve().parents[2] / "data" / "sites" / self.data_site_id / f"{indoor_graph_id}.json"
 
     def _load_indoor_graph_sources(self) -> dict[str, dict[str, Any]]:
         graph_sources: dict[str, dict[str, Any]] = {}
@@ -1902,18 +2087,21 @@ class DemoUIService:
             summaries.append(
                 {
                     "building_id": building_id,
-                    "building_name": normalize_text(item.get("building_name")) or building_id,
+                    "building_name": self._display_node_name(
+                        building_id,
+                        item.get("building_name") or building_id,
+                    ),
                     "entry_node_id": normalize_text(item.get("entry_node_id")),
                     "entry_node_name": self._resolve_node_name(normalize_text(item.get("entry_node_id"))),
                     "indoor_graph_id": normalize_text(item.get("indoor_graph_id")),
                     "template_id": template_id,
-                    "template_name": normalize_text(
+                    "template_name": self._display_text(
                         self.indoor_template_lookup.get(template_id, {}).get("template_name")
                     ),
                     "floor_ids": list(item.get("floor_ids", [])),
                     "default_floor_id": normalize_text(item.get("default_floor_id")) or "F1",
                     "building_category": normalize_text(outdoor_node.get("category")),
-                    "entry_mapping_reason": normalize_text(item.get("entry_mapping_reason")),
+                    "entry_mapping_reason": self._display_text(item.get("entry_mapping_reason")),
                 }
             )
         return summaries
@@ -1949,10 +2137,9 @@ class DemoUIService:
         indoor_graph_id = normalize_text(node_data.get("indoor_graph_id"))
         if building_entry is not None:
             context["building_id"] = normalize_text(building_entry.get("building_id")) or node_id
-            context["building_name"] = (
-                normalize_text(building_entry.get("building_name"))
-                or self._resolve_node_name(context["building_id"])
-                or context["building_id"]
+            context["building_name"] = self._display_node_name(
+                context["building_id"],
+                building_entry.get("building_name") or context["building_id"],
             )
             context["entry_node_id"] = normalize_text(building_entry.get("entry_node_id"))
             context["entry_node_name"] = self._resolve_node_name(context["entry_node_id"])
@@ -2070,6 +2257,9 @@ class DemoUIService:
         return loaded, ""
 
     def _load_osm_edge_geometry_matches(self) -> tuple[list[dict[str, Any]], list[str]]:
+        if self.is_template_clone:
+            return [], ["template clone skips real OSM edge geometry matches"]
+
         path = self._osm_geo_dir() / OSM_EDGE_MATCHES_FILE
         if not path.exists():
             return [], [f"missing {OSM_EDGE_MATCHES_FILE}"]
@@ -2785,7 +2975,10 @@ class DemoUIService:
             nodes.append(
                 {
                     "id": normalize_text(node.get("id")),
-                    "name": normalize_text(node.get("name")) or normalize_text(node.get("id")),
+                    "name": self._display_node_name(
+                        normalize_text(node.get("id")),
+                        node.get("name"),
+                    ),
                     "category": category,
                     "category_label": CATEGORY_LABELS.get(category, category),
                     **display_metadata,
@@ -2793,7 +2986,7 @@ class DemoUIService:
                     "lat": float(lat),
                     "lng": float(lng),
                     "is_gate": bool(node.get("is_gate", False)),
-                    **self._extract_node_extra_fields(node),
+                    **self._display_node_extra_fields(node),
                 }
             )
 
@@ -2855,7 +3048,7 @@ class DemoUIService:
     def _build_node_extra_properties(self, node: dict[str, Any]) -> dict[str, Any]:
         node_id = normalize_text(node.get("id"))
         return {
-            **self._extract_node_extra_fields(node),
+            **self._display_node_extra_fields(node),
             **self._build_indoor_node_context(node_id, node),
         }
 
@@ -2889,7 +3082,7 @@ class DemoUIService:
             map_edge = {
                 "from": source,
                 "to": target,
-                "name": normalize_text(edge.get("name")),
+                "name": self._display_text(edge.get("name")),
                 "type": normalize_text(edge.get("type")) or "outdoor_road",
                 "distance_m": float(edge.get("distance", 0)),
                 "vehicle_access": normalize_text(edge.get("vehicle_access")) or "all",
@@ -3488,6 +3681,10 @@ class DemoUIService:
         items = response.get("results", response.get("data", []))
         decorated_items = [self._decorate_result_item(item) for item in items]
         decorated = response.copy()
+        metadata = dict(decorated.get("metadata") or {})
+        metadata["site_id"] = self.site_id
+        decorated["metadata"] = metadata
+        decorated["site_id"] = self.site_id
         decorated["data"] = decorated_items
         decorated["results"] = decorated_items
         decorated["ui"] = {
@@ -3660,7 +3857,10 @@ class DemoUIService:
                 building_id,
                 {
                     "building_id": building_id,
-                    "building_name": normalize_text(building_entry.get("building_name")) or building_id,
+                    "building_name": self._display_node_name(
+                        building_id,
+                        building_entry.get("building_name") or building_id,
+                    ),
                     "indoor_graph_id": indoor_graph_id,
                     "entry_node_id": normalize_text(building_entry.get("entry_node_id")),
                     "default_floor_id": normalize_text(building_entry.get("default_floor_id")) or "F1",

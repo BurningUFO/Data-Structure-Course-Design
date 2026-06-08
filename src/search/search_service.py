@@ -31,6 +31,13 @@ from src.search.exact_search import canonicalize_category, filter_by_category, s
 from src.search.distance_adapter import DistanceProvider, build_distance_provider
 from src.search.fuzzy_search import fuzzy_search
 from src.search.response import build_error_response, build_success_response
+from src.site_registry import (
+    load_global_sites as load_registered_sites,
+    resolve_site_data_dir,
+    resolve_site_node_name_overrides,
+    resolve_site_subgraphs,
+    resolve_site_text_replacements,
+)
 
 
 Record = dict[str, Any]
@@ -89,15 +96,7 @@ def get_global_sites_path() -> Path:
 
 def load_global_sites() -> list[Record]:
     """加载全局景区注册信息。"""
-    path = get_global_sites_path()
-    if not path.exists():
-        return []
-
-    with path.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    sites = data.get("sites", [])
-    return sites if isinstance(sites, list) else []
+    return load_registered_sites()
 
 
 def get_default_site_id() -> str:
@@ -111,7 +110,7 @@ def get_default_site_id() -> str:
 def get_site_dir(site_id: str | None = None) -> Path:
     """返回景区分层数据目录。"""
     target_site_id = site_id or get_default_site_id()
-    return Path(__file__).resolve().parents[2] / "data" / "sites" / target_site_id
+    return resolve_site_data_dir(target_site_id)
 
 
 def get_site_graph_paths(site_id: str | None = None) -> list[Path]:
@@ -121,12 +120,7 @@ def get_site_graph_paths(site_id: str | None = None) -> list[Path]:
     if not site_dir.exists():
         return []
 
-    target_names: list[str] = []
-    for site in load_global_sites():
-        if str(site.get("id", "")).strip() == target_site_id:
-            target_names = [str(name).strip() for name in site.get("sub_graphs", []) if str(name).strip()]
-            break
-
+    target_names = resolve_site_subgraphs(target_site_id)
     if target_names:
         paths = [site_dir / f"{name}.json" for name in target_names]
         return [path for path in paths if path.exists()]
@@ -216,7 +210,22 @@ def normalize_site_graph_records(site_id: str, graph_path: Path) -> list[Record]
     graph_type = str(data.get("graph_type", "")).strip().lower() or "outdoor"
     building_name = str(data.get("building_name", "")).strip()
     source_graph_id = str(data.get("graph_id", graph_path.stem)).strip()
+    node_name_overrides = resolve_site_node_name_overrides(site_id)
+    text_replacements = resolve_site_text_replacements(site_id)
     normalized_records: list[Record] = []
+
+    def display_text(value: Any) -> str:
+        if value is None:
+            return ""
+        text = str(value)
+        for source, target in text_replacements:
+            text = text.replace(source, target)
+        return text.strip()
+
+    def display_node_name(node_id: str, fallback_name: Any) -> str:
+        return node_name_overrides.get(node_id) or display_text(fallback_name or node_id)
+
+    display_building_name = display_text(building_name)
 
     for node in data.get("nodes", []):
         node_id = str(node.get("id", "")).strip()
@@ -224,18 +233,45 @@ def normalize_site_graph_records(site_id: str, graph_path: Path) -> list[Record]
             continue
 
         category = str(node.get("category", node.get("type", ""))).strip()
+        display_name = display_node_name(node_id, node.get("name", node_id))
+        display_description = display_text(node.get("description", ""))
+        display_indoor_building = display_text(
+            node.get(
+                "indoor_building",
+                display_building_name if graph_type == "indoor" else "",
+            )
+        )
+        display_tags = [
+            display_text(item)
+            for item in node.get("tags", [])
+        ]
+        display_facilities = [
+            display_text(item)
+            for item in node.get("facilities", [])
+        ]
         record: Record = {
             "id": node_id,
             "node_id": node_id,
             "map_node_id": node_id,
             "site_id": site_id,
-            "name": node.get("name", node_id),
+            "name": display_name,
             "category": category,
             "heat": int(node.get("heat", estimate_heat(node, graph_type))),
             "rating": float(node.get("rating", estimate_rating(node, graph_type))),
-            "tags": list(node.get("tags", [])),
-            "keywords": build_keywords(node, graph_type, building_name),
-            "description": node.get("description", ""),
+            "tags": display_tags,
+            "keywords": build_keywords(
+                {
+                    **node,
+                    "name": display_name,
+                    "description": display_description,
+                    "indoor_building": display_indoor_building,
+                    "tags": display_tags,
+                    "facilities": display_facilities,
+                },
+                graph_type,
+                display_building_name,
+            ),
+            "description": display_description,
             "type": node.get("type", ""),
             "graph_type": graph_type,
             "source_graph_id": source_graph_id,
@@ -243,12 +279,9 @@ def normalize_site_graph_records(site_id: str, graph_path: Path) -> list[Record]
             "sub_graph_id": node.get("sub_graph_id"),
             "is_gate": bool(node.get("is_gate", False)),
             "is_indoor": bool(node.get("is_indoor", graph_type == "indoor")),
-            "indoor_building": node.get(
-                "indoor_building",
-                building_name if graph_type == "indoor" else "",
-            ),
-            "building_name": building_name,
-            "facilities": list(node.get("facilities", [])),
+            "indoor_building": display_indoor_building,
+            "building_name": display_building_name,
+            "facilities": display_facilities,
             "open_hours": node.get("open_hours"),
         }
         normalized_records.append(record)

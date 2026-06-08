@@ -4904,9 +4904,18 @@ function fallbackBasemapMode() {
   return resolveBasemapMode(basemapCapabilities().fallback || "none") || "none";
 }
 
+function isTemplateCloneSite(bootstrap = state.bootstrap) {
+  return bootstrap?.map_capabilities?.map_profile === "template_clone"
+    || bootstrap?.site?.map_profile === "template_clone";
+}
+
 function basemapCaptionPrefix() {
   const config = basemapConfig();
   const tileSource = selectedBasemapTileSource();
+  if (isTemplateCloneSite()) {
+    return "模板校园图：仅展示本地课程 GeoJSON，不加载真实底图。";
+  }
+
   if (!config || !tileSource) {
     const errorText = state.basemapError ? `${state.basemapError} ` : "";
     return `${errorText}无底图模式：项目道路、POI 和路线来自本地 GeoJSON。`;
@@ -5931,6 +5940,9 @@ function syncMapDemoPanel() {
     if (state.osmLayerError) {
       osmStatus.textContent = `${state.osmLayerError} · 核心地图可用`;
       osmStatus.className = "status-pill status-error";
+    } else if (isTemplateCloneSite()) {
+      osmStatus.textContent = "模板校园图 · 真实 OSM 图层关闭";
+      osmStatus.className = "status-pill status-pill-muted";
     } else if (osmStats.feature_count) {
       osmStatus.textContent = `本地 OSM ${osmStats.feature_count} 项 · ${enabledOsmLayerCount()} 层开启`;
       osmStatus.className = "status-pill status-pill-primary";
@@ -5958,7 +5970,8 @@ function syncMapDemoPanel() {
   const dataStatus = document.querySelector("#map-data-status");
   if (dataStatus) {
     const siteName = state.bootstrap?.site?.name || "当前站点";
-    dataStatus.textContent = `已载入 ${siteName} 主地图 · ${poiCount || nodeCount} 个地点`;
+    const mapLabel = isTemplateCloneSite() ? "模板校园图" : "主地图";
+    dataStatus.textContent = `已载入 ${siteName} ${mapLabel} · ${poiCount || nodeCount} 个地点`;
     dataStatus.title = `路网点 ${waypointCount}，OSM ${osmMatchedCount}，manual ${manualCount}，fallback ${fallbackCount}`;
   }
 
@@ -5993,6 +6006,9 @@ function enabledOsmLayerCount() {
 
 function osmLayerCaptionText() {
   const stats = state.osmLayersStats || {};
+  if (isTemplateCloneSite()) {
+    return "模板校园图不加载真实 OSM 道路、建筑、水域/绿地图层。";
+  }
   if (state.osmLayerError) {
     return "本地 OSM 图层加载提示已显示，核心项目地图继续可用。";
   }

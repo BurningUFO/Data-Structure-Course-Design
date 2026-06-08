@@ -3,6 +3,22 @@ import os
 import sys
 from pathlib import Path
 
+try:
+    from src.site_registry import (
+        resolve_site_data_dir,
+        resolve_site_node_name_overrides,
+        resolve_site_subgraphs,
+        resolve_site_text_replacements,
+    )
+except ImportError:
+    sys.path.append(str(Path(__file__).resolve().parents[2]))
+    from src.site_registry import (
+        resolve_site_data_dir,
+        resolve_site_node_name_overrides,
+        resolve_site_subgraphs,
+        resolve_site_text_replacements,
+    )
+
 # 尝试从包中导入，或者从当前目录导入
 try:
     from .graph import Graph
@@ -47,22 +63,15 @@ class GraphLoader:
             return [Path(path) for path in graph_paths]
 
         data_root_path = GraphLoader._resolve_data_root(data_root)
-        site_dir = data_root_path / "sites" / str(site_id).strip()
+        normalized_site_id = str(site_id).strip()
+        site_dir = resolve_site_data_dir(normalized_site_id, data_root_path)
         if not site_dir.exists():
             raise FileNotFoundError(f"Site directory not found: {site_dir}")
 
-        for site in GraphLoader._load_global_sites(data_root_path):
-            if str(site.get("id", "")).strip() != str(site_id).strip():
-                continue
-
-            sub_graphs = [
-                str(name).strip()
-                for name in site.get("sub_graphs", [])
-                if str(name).strip()
-            ]
-            if sub_graphs:
-                resolved_paths = [site_dir / f"{name}.json" for name in sub_graphs]
-                return [path for path in resolved_paths if path.exists()]
+        sub_graphs = resolve_site_subgraphs(normalized_site_id, data_root_path)
+        if sub_graphs:
+            resolved_paths = [site_dir / f"{name}.json" for name in sub_graphs]
+            return [path for path in resolved_paths if path.exists()]
 
         return sorted(site_dir.rglob("*.json"))
 
@@ -133,9 +142,28 @@ class GraphLoader:
 
         graph = Graph(layer_id=normalized_site_id, name=normalized_site_id)
         graph.site_id = normalized_site_id
+        node_name_overrides = resolve_site_node_name_overrides(
+            normalized_site_id,
+            data_root,
+        )
+        text_replacements = resolve_site_text_replacements(
+            normalized_site_id,
+            data_root,
+        )
 
         indoor_gate_nodes = {}
         outdoor_gate_links = []
+
+        def display_text(value):
+            if value is None:
+                return ""
+            text = str(value)
+            for source, target in text_replacements:
+                text = text.replace(source, target)
+            return text.strip()
+
+        def display_node_name(node_id, fallback_name):
+            return node_name_overrides.get(str(node_id).strip()) or display_text(fallback_name or node_id)
 
         for graph_path in resolved_paths:
             data = GraphLoader._load_json_file(graph_path)
@@ -149,6 +177,11 @@ class GraphLoader:
                 node_id = str(node_data.pop("id", "")).strip()
                 if not node_id:
                     continue
+
+                node_data["name"] = display_node_name(node_id, node_data.get("name", node_id))
+                for field_name in ("description", "indoor_building", "building_name"):
+                    if field_name in node_data:
+                        node_data[field_name] = display_text(node_data[field_name])
 
                 node_data["source_sub_graph_id"] = graph_file_id
                 node_data["graph_type"] = graph_type
@@ -172,6 +205,8 @@ class GraphLoader:
                 edge_data.setdefault("vehicle_access", "all")
                 edge_data.setdefault("name", "")
                 edge_data.setdefault("description", "")
+                edge_data["name"] = display_text(edge_data["name"])
+                edge_data["description"] = display_text(edge_data["description"])
                 graph.add_edge(
                     u=source,
                     v=target,
@@ -181,6 +216,8 @@ class GraphLoader:
 
         for outdoor_gate_id, indoor_graph_id in outdoor_gate_links:
             for indoor_gate_id in indoor_gate_nodes.get(indoor_graph_id, []):
+                outdoor_gate_name = display_node_name(outdoor_gate_id, outdoor_gate_id)
+                indoor_gate_name = display_node_name(indoor_gate_id, indoor_gate_id)
                 graph.add_edge(
                     outdoor_gate_id,
                     indoor_gate_id,
@@ -189,7 +226,7 @@ class GraphLoader:
                     ideal_speed=1.0,
                     type="gate_link",
                     vehicle_access="pedestrian_only",
-                    name=f"{outdoor_gate_id}->{indoor_gate_id}",
+                    name=f"{outdoor_gate_name} -> {indoor_gate_name}",
                 )
                 graph.add_edge(
                     indoor_gate_id,
@@ -199,7 +236,7 @@ class GraphLoader:
                     ideal_speed=1.0,
                     type="gate_link",
                     vehicle_access="pedestrian_only",
-                    name=f"{indoor_gate_id}->{outdoor_gate_id}",
+                    name=f"{indoor_gate_name} -> {outdoor_gate_name}",
                 )
 
         return graph

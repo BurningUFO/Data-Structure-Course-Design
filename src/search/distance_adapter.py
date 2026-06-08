@@ -10,12 +10,12 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Callable
 
 from src.graph.loader import GraphLoader
 from src.routing.router import Router
+from src.site_registry import load_global_sites, resolve_site_data_dir, resolve_site_subgraphs
 
 
 DistanceProvider = Callable[[str, str, str], float]
@@ -38,14 +38,7 @@ def get_global_sites_path() -> Path:
 
 def get_default_site_id() -> str:
     """返回默认景区 ID。"""
-    path = get_global_sites_path()
-    if not path.exists():
-        return "PKU"
-
-    with path.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    sites = data.get("sites", [])
+    sites = load_global_sites()
     if not sites:
         return "PKU"
 
@@ -55,20 +48,13 @@ def get_default_site_id() -> str:
 def get_default_site_graph_paths(site_id: str | None = None) -> list[Path]:
     """返回标准分层图数据文件列表。"""
     target_site_id = site_id or get_default_site_id()
-    site_dir = Path(__file__).resolve().parents[2] / "data" / "sites" / target_site_id
+    site_dir = resolve_site_data_dir(target_site_id)
     if not site_dir.exists():
         return []
 
-    global_sites_path = get_global_sites_path()
-    if global_sites_path.exists():
-        with global_sites_path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-        for site in data.get("sites", []):
-            if str(site.get("id", "")).strip() != target_site_id:
-                continue
-            sub_graphs = [str(name).strip() for name in site.get("sub_graphs", []) if str(name).strip()]
-            if sub_graphs:
-                return [path for path in (site_dir / f"{name}.json" for name in sub_graphs) if path.exists()]
+    sub_graphs = resolve_site_subgraphs(target_site_id)
+    if sub_graphs:
+        return [path for path in (site_dir / f"{name}.json" for name in sub_graphs) if path.exists()]
 
     return sorted(site_dir.glob("*.json"))
 
