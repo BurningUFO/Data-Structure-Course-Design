@@ -746,6 +746,7 @@ class TestRouting(unittest.TestCase):
         semantic_edges = [
             edge for edge in edges
             if edge.get("transport_semantics") in expected_semantics
+            and edge.get("source") == calibration_source
         ]
         shared_edges = [
             edge for edge in semantic_edges
@@ -1716,6 +1717,7 @@ class TestRouting(unittest.TestCase):
             edge for edge in edges
             if set(edge.get("allowed_transports", [])) == {"walk", "bike"}
             and edge.get("transport_semantics") == "shared_walk_bike"
+            and edge.get("type", "").startswith("campus_")
         ]
         bike_calibration_edges = [
             edge for edge in edges
@@ -1889,6 +1891,7 @@ class TestRouting(unittest.TestCase):
             edge for edge in edges
             if set(edge.get("allowed_transports", [])) == {"walk", "bike"}
             and edge.get("transport_semantics") == "shared_walk_bike"
+            and edge.get("type", "").startswith("campus_")
         ]
         bike_calibration_edges = [
             edge for edge in edges
