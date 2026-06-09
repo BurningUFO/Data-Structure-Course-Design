@@ -113,6 +113,7 @@ def _option_values(options: list[dict[str, object]]) -> set[str]:
 def test_m32b_static_shell_exposes_multicampus_ui_contract():
     html = (STATIC_DIR / "index.html").read_text(encoding="utf-8")
     app_js = (STATIC_DIR / "app.js").read_text(encoding="utf-8")
+    styles_css = (STATIC_DIR / "styles.css").read_text(encoding="utf-8")
     parser = StaticUiContractParser()
     parser.feed(html)
     side_menu = html.split('<nav class="side-menu"', 1)[1].split("</nav>", 1)[0]
@@ -120,8 +121,14 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
 
     required_ids = {
         "site-selector",
+        "site-selector-value",
+        "site-selector-results",
         "global-start-node",
+        "global-start-node-value",
+        "global-start-node-results",
         "user-selector",
+        "user-selector-value",
+        "user-selector-results",
         "interest-tags",
         "scenic-form",
         "place-form",
@@ -163,6 +170,30 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
     assert 'data-aigc-mode="template"' in html
     assert 'data-aigc-mode="live_image"' in html
     assert "renderAigcGeneratedPlayer" in app_js
+    assert "renderAigcCinematicPlayer" in app_js
+    assert "renderAigcLoadingPreview" in app_js
+    assert "aigcLoopDuration" in app_js
+    assert "animation_profile" in app_js
+    assert ".aigc-cinematic-player" in styles_css
+    assert ".aigc-cinematic-progress" in styles_css
+    assert ".aigc-loading-film" in styles_css
+    assert "@media (prefers-reduced-motion: reduce)" in styles_css
+    assert html.count('role="combobox"') >= 3
+    assert html.count('type="search"') >= 3
+    assert html.count('data-combobox-toggle=') == 3
+    assert 'data-combobox="site"' in html
+    assert 'data-combobox="start"' in html
+    assert 'data-combobox="user"' in html
+    assert "bindContextComboboxes" in app_js
+    assert "filterContextComboboxResults" in app_js
+    assert "selectContextComboboxOption" in app_js
+    assert ".combo-results" in styles_css
+    assert ".context-settings[open]" in styles_css
+    assert ".combo-field:focus-within" in styles_css
+    assert "z-index: 9999" in styles_css
+    assert "top: calc(50% - 1px)" in styles_css
+    assert "transform: translateY(-50%)" in styles_css
+    assert "displaySiteLocation" in app_js
 
     assert "/vendor/leaflet/leaflet.css" in html
     assert "/vendor/leaflet/leaflet.js" in html
@@ -192,7 +223,7 @@ def test_m32b_twenty_extension_sites_have_ui_demo_materials():
             assert status == 200
             assert bootstrap["site"]["id"] == site_id
             assert bootstrap["site"]["is_available"] is True
-            assert {item["id"] for item in bootstrap["sites"]} == set(ALL_SITE_IDS)
+            assert set(ALL_SITE_IDS) <= {item["id"] for item in bootstrap["sites"]}
             assert bootstrap["map_renderer"] == "leaflet_geo"
             assert "simple_svg" in bootstrap["map_capabilities"]["renderers"]
             assert bootstrap["map_capabilities"]["fallback_renderer"] == "simple_svg"

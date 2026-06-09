@@ -24,7 +24,13 @@ GLOBAL_SITES_PATH = DATA_ROOT / "global_sites.json"
 
 def load_global_site_names():
     data = json.loads(GLOBAL_SITES_PATH.read_text(encoding="utf-8"))
-    return [site["name"] for site in data["sites"]]
+    return [
+        site["name"]
+        for site in data["sites"]
+        if not site.get("template_site_id")
+        and site.get("map_profile") != "template_clone"
+        and site.get("data_status") != "template_clone_available"
+    ]
 
 
 def make_temp_diary_data_path():

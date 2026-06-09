@@ -115,15 +115,63 @@
                   <div class="site-actions">
                     <label class="field site-switcher">
                       <span class="field-label">当前站点</span>
-                      <select id="site-selector"></select>
+                      <div class="combo-field" data-combobox="site">
+                        <div class="combo-input-wrap">
+                          <input
+                            id="site-selector"
+                            type="search"
+                            autocomplete="off"
+                            placeholder="输入学校名 / ID"
+                            role="combobox"
+                            aria-autocomplete="list"
+                            aria-expanded="false"
+                            aria-controls="site-selector-results"
+                          />
+                          <button class="combo-arrow-button" type="button" data-combobox-toggle="site" aria-label="展开站点列表"></button>
+                        </div>
+                        <input id="site-selector-value" type="hidden" />
+                        <div id="site-selector-results" class="combo-results" role="listbox"></div>
+                      </div>
                     </label>
                     <label class="field start-switcher">
                       <span class="field-label">当前起点</span>
-                      <select id="global-start-node"></select>
+                      <div class="combo-field" data-combobox="start">
+                        <div class="combo-input-wrap">
+                          <input
+                            id="global-start-node"
+                            type="search"
+                            autocomplete="off"
+                            placeholder="输入起点名 / 类别"
+                            role="combobox"
+                            aria-autocomplete="list"
+                            aria-expanded="false"
+                            aria-controls="global-start-node-results"
+                          />
+                          <button class="combo-arrow-button" type="button" data-combobox-toggle="start" aria-label="展开起点列表"></button>
+                        </div>
+                        <input id="global-start-node-value" type="hidden" />
+                        <div id="global-start-node-results" class="combo-results" role="listbox"></div>
+                      </div>
                     </label>
                     <label class="field user-switcher">
                       <span class="field-label">当前用户</span>
-                      <select id="user-selector"></select>
+                      <div class="combo-field" data-combobox="user">
+                        <div class="combo-input-wrap">
+                          <input
+                            id="user-selector"
+                            type="search"
+                            autocomplete="off"
+                            placeholder="输入用户名 / 兴趣"
+                            role="combobox"
+                            aria-autocomplete="list"
+                            aria-expanded="false"
+                            aria-controls="user-selector-results"
+                          />
+                          <button class="combo-arrow-button" type="button" data-combobox-toggle="user" aria-label="展开用户列表"></button>
+                        </div>
+                        <input id="user-selector-value" type="hidden" />
+                        <div id="user-selector-results" class="combo-results" role="listbox"></div>
+                      </div>
                     </label>
                     <label class="field interest-switcher">
                       <span class="field-label">当前兴趣偏好</span>
@@ -439,7 +487,7 @@
                       </div>
                     </details>
                     <p class="form-hint" id="aigc-mode-hint">
-                      默认使用模板预览；切换到实时生成后会读取本机 OPENAI_API_KEY，失败时自动回退到模板预览。
+                      默认使用模板预览；切换到实时生成后会读取本机 OPENAI_API_KEY，并自动使用 1 张稳态分镜。
                     </p>
                     <section id="aigc-preview-panel" class="aigc-live-preview empty-state" aria-live="polite">
                       选择样例并生成预览后，在这里直接展示 JPG / GIF 和分镜。

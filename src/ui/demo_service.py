@@ -12,6 +12,9 @@ import base64
 import concurrent.futures
 import json
 import os
+import shutil
+import subprocess
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -449,7 +452,9 @@ def resolve_aigc_generated_static_dir() -> Path:
     return AIGC_GENERATED_STATIC_DIR
 AIGC_MAX_FRAME_COUNT = 4
 AIGC_OPENAI_IMAGE_ENDPOINT = "https://api.openai.com/v1/images/generations"
-AIGC_OPENAI_IMAGE_TIMEOUT_S = 45
+AIGC_OPENAI_IMAGE_TIMEOUT_S = 180
+AIGC_OPENAI_HTTP_TRANSPORT_ENV = "OPENAI_HTTP_TRANSPORT"
+AIGC_OPENAI_IMAGE_MAX_WORKERS_ENV = "OPENAI_IMAGE_MAX_WORKERS"
 DEFAULT_OPENAI_IMAGE_MODEL = "gpt-image-1"
 
 
@@ -1540,7 +1545,7 @@ class DemoUIService:
                     "id": site_id,
                     "name": normalize_text(site.get("name")) or site_id,
                     "description": normalize_text(site.get("description")),
-                    "location": normalize_text(site.get("location")),
+                    "location": self._display_location(site),
                     "is_current": site_id == self.site_id,
                     "is_available": is_available,
                     "data_status": data_status,
@@ -1566,6 +1571,11 @@ class DemoUIService:
             is_available = bool(get_site_graph_paths(site_id))
             data_status = explicit_data_status or ("available" if is_available else "scaffold_only")
         return is_available, data_status
+
+    @staticmethod
+    def _display_location(site: dict[str, Any]) -> str:
+        location = normalize_text(site.get("location"))
+        return "" if "待补充" in location else location
 
     def _build_user_options(self) -> list[dict[str, Any]]:
         return build_user_options(self.users)
@@ -1945,7 +1955,7 @@ class DemoUIService:
                     "id": site_id,
                     "name": normalize_text(site.get("name")) or site_id,
                     "description": normalize_text(site.get("description")),
-                    "location": normalize_text(site.get("location")),
+                    "location": self._display_location(site),
                     "is_available": is_available,
                     "data_status": data_status,
                     "map_profile": normalize_text(site.get("map_profile")),
@@ -2171,17 +2181,17 @@ class DemoUIService:
         if isinstance(layout, dict) and layout:
             context["layout"] = layout
 
-        description = normalize_text(node_data.get("description"))
+        description = self._display_text(node_data.get("description"))
         if description:
             context["description"] = description
 
         facilities = node_data.get("facilities")
         if isinstance(facilities, list) and facilities:
-            context["facilities"] = facilities
+            context["facilities"] = self._display_list(facilities)
 
         tags = node_data.get("tags")
         if isinstance(tags, list) and tags:
-            context["tags"] = tags
+            context["tags"] = self._display_list(tags)
 
         if "is_gate" in node_data:
             context["is_gate"] = bool(node_data.get("is_gate"))
@@ -2492,16 +2502,11 @@ class DemoUIService:
             "fallback_reason": "",
             "generated_images": [],
             "frame_count": len(storyboard),
+            "animation_profile": self._build_aigc_animation_profile(duration_s),
             "prototype_notice": "AIGC 模板化预览：基于用户描述生成校园导览分镜动画，使用本地 JPG / GIF 可见输出。",
             "prompt_summary": self._summarize_prompt(prompt),
             "storyboard_frames": storyboard,
-            "keyframes": [
-                {
-                    "time_s": frame["time_s"],
-                    "visual": frame["visual"],
-                }
-                for frame in storyboard
-            ],
+            "keyframes": self._build_aigc_keyframes(storyboard),
             "generation_pipeline": [
                 "读取媒体占位样例",
                 "合并用户文字描述与样例风格",
@@ -2532,6 +2537,7 @@ class DemoUIService:
             return self._mark_aigc_template_fallback(preview, f"unsupported provider: {provider}")
 
         model = normalize_text(os.environ.get("OPENAI_IMAGE_MODEL")) or DEFAULT_OPENAI_IMAGE_MODEL
+        live_retry_reason = ""
         try:
             generated_images = self._call_openai_image_generation(
                 api_key=api_key,
@@ -2543,10 +2549,27 @@ class DemoUIService:
                 frame_count=frame_count,
             )
         except Exception as error:  # pragma: no cover - exercised through focused stubs
-            return self._mark_aigc_template_fallback(
-                preview,
-                f"{type(error).__name__}: {error}",
-            )
+            if frame_count <= 1:
+                return self._mark_aigc_template_fallback(
+                    preview,
+                    f"{type(error).__name__}: {error}",
+                )
+            live_retry_reason = f"{type(error).__name__}: {error}"
+            try:
+                generated_images = self._call_openai_image_generation(
+                    api_key=api_key,
+                    model=model,
+                    sample=sample,
+                    prompt=prompt,
+                    style=style,
+                    duration_s=duration_s,
+                    frame_count=1,
+                )
+            except Exception as retry_error:  # pragma: no cover - network edge path
+                return self._mark_aigc_template_fallback(
+                    preview,
+                    f"{live_retry_reason}; single-frame retry failed: {type(retry_error).__name__}: {retry_error}",
+                )
 
         if not generated_images:
             return self._mark_aigc_template_fallback(preview, "OpenAI returned no generated images")
@@ -2571,20 +2594,15 @@ class DemoUIService:
                 "fallback_reason": "",
                 "generated_images": generated_images,
                 "frame_count": len(generated_images),
+                "animation_profile": self._build_aigc_animation_profile(duration_s),
                 "prototype_notice": "AIGC 实时分镜：已调用 OpenAI 图片生成 API，生成图片由前端轻量动画播放。",
                 "storyboard_frames": storyboard,
-                "keyframes": [
-                    {
-                        "time_s": frame["time_s"],
-                        "visual": frame["visual"],
-                        "image_url": frame.get("image_url", ""),
-                    }
-                    for frame in storyboard
-                ],
+                "keyframes": self._build_aigc_keyframes(storyboard),
                 "generation_pipeline": [
                     "读取本地输入图片样例和用户文字描述",
                     f"调用 OpenAI 图片生成模型 {model}",
                     f"生成 {len(generated_images)} 张实时分镜图",
+                    *([f"多帧生成降级为单帧：{live_retry_reason}"] if live_retry_reason else []),
                     "保存到本地静态生成目录并返回前端播放",
                 ],
                 "source": {
@@ -2592,6 +2610,8 @@ class DemoUIService:
                     "real_model_called": True,
                     "provider": provider,
                     "model": model,
+                    "requested_frame_count": frame_count,
+                    "live_retry_reason": live_retry_reason,
                 },
             }
         )
@@ -2644,7 +2664,8 @@ class DemoUIService:
     ) -> list[str]:
         generated_by_index: dict[int, str] = {}
         errors: list[BaseException] = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=min(frame_count, AIGC_MAX_FRAME_COUNT)) as executor:
+        max_workers = min(frame_count, self._openai_image_max_workers())
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {
                 executor.submit(
                     self._request_openai_image_batch_with_retry,
@@ -2714,18 +2735,11 @@ class DemoUIService:
             "n": batch_count,
             "size": "1024x1024",
         }
-        request = urllib.request.Request(
-            self._resolve_openai_image_endpoint(),
-            data=json.dumps(request_body, ensure_ascii=False).encode("utf-8"),
-            headers=self._build_openai_request_headers(api_key),
-            method="POST",
-        )
-        try:
-            with urllib.request.urlopen(request, timeout=self._openai_image_timeout_s()) as response:
-                payload = json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as error:
-            body = error.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"OpenAI image request failed with {error.code}: {body[:180]}") from error
+        endpoint = self._resolve_openai_image_endpoint()
+        if self._should_use_curl_openai_transport(endpoint):
+            payload = self._request_openai_json_with_curl(endpoint, request_body, api_key)
+        else:
+            payload = self._request_openai_json_with_urllib(endpoint, request_body, api_key)
 
         data = payload.get("data") if isinstance(payload, dict) else None
         if not isinstance(data, list):
@@ -2740,6 +2754,106 @@ class DemoUIService:
                 continue
             generated_images.append(self._save_aigc_generated_image(image_bytes, index))
         return generated_images
+
+    @classmethod
+    def _request_openai_json_with_urllib(
+        cls,
+        endpoint: str,
+        request_body: dict[str, Any],
+        api_key: str,
+    ) -> dict[str, Any]:
+        request = urllib.request.Request(
+            endpoint,
+            data=json.dumps(request_body, ensure_ascii=False).encode("utf-8"),
+            headers=cls._build_openai_request_headers(api_key),
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=cls._openai_image_timeout_s()) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as error:
+            body = error.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"OpenAI image request failed with {error.code}: {body[:240]}") from error
+
+    @classmethod
+    def _request_openai_json_with_curl(
+        cls,
+        endpoint: str,
+        request_body: dict[str, Any],
+        api_key: str,
+    ) -> dict[str, Any]:
+        curl_path = shutil.which("curl")
+        if not curl_path:
+            raise RuntimeError("curl transport requested but curl was not found")
+
+        timeout_s = cls._openai_image_timeout_s()
+        body_path = ""
+        config_path = ""
+        try:
+            with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as body_file:
+                body_file.write(json.dumps(request_body, ensure_ascii=False))
+                body_path = body_file.name
+            with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as config_file:
+                config_file.write("silent\n")
+                config_file.write("show-error\n")
+                config_file.write("location\n")
+                config_file.write(f"max-time = {timeout_s}\n")
+                for header, value in cls._build_openai_request_headers(api_key).items():
+                    config_file.write(f'header = "{cls._curl_config_value(f"{header}: {value}")}"\n')
+                config_path = config_file.name
+
+            completed = subprocess.run(
+                [
+                    curl_path,
+                    "--http1.1",
+                    "--config",
+                    config_path,
+                    "--data-binary",
+                    f"@{body_path}",
+                    "--write-out",
+                    "\nHTTP_STATUS:%{http_code}\n",
+                    endpoint,
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=timeout_s + 10,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as error:
+            raise TimeoutError(f"curl image request timed out after {timeout_s} seconds") from error
+        finally:
+            if body_path:
+                Path(body_path).unlink(missing_ok=True)
+            if config_path:
+                Path(config_path).unlink(missing_ok=True)
+
+        stdout = completed.stdout or ""
+        stderr = completed.stderr or ""
+        marker = "\nHTTP_STATUS:"
+        marker_index = stdout.rfind(marker)
+        body_text = stdout
+        status_code = 0
+        if marker_index >= 0:
+            body_text = stdout[:marker_index]
+            status_text = stdout[marker_index + len(marker):].strip().splitlines()[0]
+            try:
+                status_code = int(status_text)
+            except ValueError:
+                status_code = 0
+
+        if completed.returncode != 0:
+            message = stderr.strip() or body_text[:240] or f"curl exited with code {completed.returncode}"
+            if completed.returncode == 28:
+                raise TimeoutError(message)
+            raise RuntimeError(f"OpenAI image curl request failed: {message[:240]}")
+        if status_code >= 400 or status_code == 0:
+            raise RuntimeError(f"OpenAI image request failed with {status_code}: {body_text[:240]}")
+
+        try:
+            return json.loads(body_text)
+        except json.JSONDecodeError as error:
+            raise RuntimeError(f"OpenAI image response was not JSON: {body_text[:240]}") from error
 
     def _build_openai_image_prompt(
         self,
@@ -2770,7 +2884,7 @@ class DemoUIService:
                 image_url,
                 headers={
                     "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-                    "User-Agent": self._openai_user_agent(),
+                    "User-Agent": DemoUIService._openai_user_agent(),
                 },
                 method="GET",
             )
@@ -2810,6 +2924,40 @@ class DemoUIService:
             timeout_s = AIGC_OPENAI_IMAGE_TIMEOUT_S
         return max(10, min(300, timeout_s))
 
+    @staticmethod
+    def _curl_config_value(value: str) -> str:
+        return value.replace("\\", "\\\\").replace('"', '\\"')
+
+    @staticmethod
+    def _openai_http_transport() -> str:
+        transport = normalize_text(os.environ.get(AIGC_OPENAI_HTTP_TRANSPORT_ENV)).casefold()
+        return transport if transport in {"auto", "urllib", "curl"} else "auto"
+
+    @classmethod
+    def _should_use_curl_openai_transport(cls, endpoint: str) -> bool:
+        transport = cls._openai_http_transport()
+        if transport == "urllib":
+            return False
+        if transport == "curl":
+            return True
+
+        base_url = normalize_text(os.environ.get("OPENAI_BASE_URL")).casefold()
+        endpoint_url = normalize_text(endpoint).casefold()
+        is_official = "api.openai.com" in base_url or "api.openai.com" in endpoint_url
+        return bool(base_url) and not is_official and shutil.which("curl") is not None
+
+    @classmethod
+    def _openai_image_max_workers(cls) -> int:
+        configured = normalize_text(os.environ.get(AIGC_OPENAI_IMAGE_MAX_WORKERS_ENV))
+        if configured:
+            try:
+                max_workers = int(float(configured))
+            except ValueError:
+                max_workers = 1
+            return max(1, min(AIGC_MAX_FRAME_COUNT, max_workers))
+
+        return AIGC_MAX_FRAME_COUNT
+
     def _save_aigc_generated_image(self, image_bytes: bytes, frame_index: int) -> str:
         generated_static_dir = resolve_aigc_generated_static_dir()
         generated_static_dir.mkdir(parents=True, exist_ok=True)
@@ -2845,10 +2993,38 @@ class DemoUIService:
         step = max(1, round(duration_s / normalized_frame_count))
         summary = self._summarize_prompt(prompt)
         frame_templates = [
-            ("开场", f"用{style_label}建立场景氛围：{summary}"),
-            ("推进", "突出地点、人物动作和路线线索，形成可跟随的游览节奏。"),
-            ("重点", "放大体验亮点，并补充文字贴片说明推荐理由。"),
-            ("收束", "以导览提示和下一步路线建议结束预览。"),
+            {
+                "title": "开场",
+                "visual": f"用{style_label}建立场景氛围：{summary}",
+                "motion": "slow_push_in",
+                "transition": "soft_fade",
+                "subtitle": f"{summary}，导览从这里展开。",
+                "accent": "opening",
+            },
+            {
+                "title": "推进",
+                "visual": "突出地点、人物动作和路线线索，形成可跟随的游览节奏。",
+                "motion": "pan_left",
+                "transition": "slide_blend",
+                "subtitle": "沿着路线线索推进，串起校园场景。",
+                "accent": "route",
+            },
+            {
+                "title": "重点",
+                "visual": "放大体验亮点，并补充文字贴片说明推荐理由。",
+                "motion": "pan_right",
+                "transition": "soft_fade",
+                "subtitle": "停留在亮点处，强化推荐理由。",
+                "accent": "highlight",
+            },
+            {
+                "title": "收束",
+                "visual": "以导览提示和下一步路线建议结束预览。",
+                "motion": "slow_pull_back",
+                "transition": "slide_blend",
+                "subtitle": "收束画面，并提示下一步路线。",
+                "accent": "closing",
+            },
         ][:normalized_frame_count]
         image_urls = image_urls or []
 
@@ -2856,12 +3032,39 @@ class DemoUIService:
             {
                 "frame_index": index,
                 "time_s": min(duration_s, (index - 1) * step),
-                "title": title,
-                "visual": visual,
-                "caption": f"{title}镜头：{visual}",
+                "title": template["title"],
+                "visual": template["visual"],
+                "caption": f"{template['title']}镜头：{template['visual']}",
                 "image_url": image_urls[index - 1] if index <= len(image_urls) else "",
+                "motion": template["motion"],
+                "transition": template["transition"],
+                "subtitle": template["subtitle"],
+                "accent": template["accent"],
             }
-            for index, (title, visual) in enumerate(frame_templates, start=1)
+            for index, template in enumerate(frame_templates, start=1)
+        ]
+
+    @staticmethod
+    def _build_aigc_animation_profile(duration_s: int) -> dict[str, Any]:
+        return {
+            "version": "cinematic_template_v1",
+            "player": "cinematic_tour",
+            "aspect_ratio": "16:10",
+            "loop_duration_s": duration_s,
+            "reduced_motion_fallback": True,
+        }
+
+    @staticmethod
+    def _build_aigc_keyframes(storyboard: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        return [
+            {
+                "time_s": frame["time_s"],
+                "visual": frame["visual"],
+                "motion": frame.get("motion", ""),
+                "transition": frame.get("transition", ""),
+                "image_url": frame.get("image_url", ""),
+            }
+            for frame in storyboard
         ]
 
     def _build_aigc_metadata(
@@ -2899,6 +3102,7 @@ class DemoUIService:
                 "style",
                 "duration_s",
                 "preview_placeholder",
+                "animation_profile",
                 "storyboard_frames",
                 "keyframes",
                 "generation_mode",
@@ -2918,6 +3122,9 @@ class DemoUIService:
             "live_image_model": normalize_text(os.environ.get("OPENAI_IMAGE_MODEL")) or DEFAULT_OPENAI_IMAGE_MODEL,
             "live_image_reason": "" if api_key_present else "未检测到 OPENAI_API_KEY",
             "max_frame_count": AIGC_MAX_FRAME_COUNT,
+            "http_transport": self._openai_http_transport(),
+            "image_timeout_s": self._openai_image_timeout_s(),
+            "image_max_workers": self._openai_image_max_workers(),
         }
 
     @staticmethod
@@ -3510,7 +3717,7 @@ class DemoUIService:
                     "has_map_location": has_location,
                     "lat": float(location.get("lat")) if location.get("lat") is not None else None,
                     "lng": float(location.get("lng")) if location.get("lng") is not None else None,
-                    **self._extract_node_extra_fields(node_data),
+                    **self._display_node_extra_fields(node_data),
                     **self._build_indoor_node_context(node_id, node_data),
                 }
             )

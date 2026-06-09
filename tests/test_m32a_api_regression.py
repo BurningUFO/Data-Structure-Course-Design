@@ -95,7 +95,9 @@ def _indoor_library_target(bootstrap: dict[str, object]) -> str:
 
 def test_m32a_http_api_matrix_covers_pku_and_twenty_extension_sites():
     assert len(EXTENSION_SITE_IDS) == 20
-    assert _global_site_ids() == M32A_SITE_IDS
+    global_site_ids = _global_site_ids()
+    assert set(M32A_SITE_IDS) <= set(global_site_ids)
+    assert len(global_site_ids) >= len(M32A_SITE_IDS)
 
     with _demo_api_server() as base_url:
         for site_id in M32A_SITE_IDS:
@@ -104,7 +106,7 @@ def test_m32a_http_api_matrix_covers_pku_and_twenty_extension_sites():
             assert bootstrap["site"]["id"] == site_id
             assert bootstrap["site"]["is_available"] is True
             assert bootstrap["site"]["data_status"] == "available"
-            assert {item["id"] for item in bootstrap["sites"]} == set(M32A_SITE_IDS)
+            assert set(M32A_SITE_IDS) <= {item["id"] for item in bootstrap["sites"]}
             assert bootstrap["map_renderer"] == "leaflet_geo"
             assert bootstrap["map_capabilities"]["geojson_endpoint"] == "/api/map/geojson"
             assert bootstrap["map_capabilities"]["indoor_map_endpoint"] == "/api/map/indoor"

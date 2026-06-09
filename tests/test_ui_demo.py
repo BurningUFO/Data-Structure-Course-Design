@@ -11191,6 +11191,34 @@ def test_demo_aigc_preview_returns_template_storyboard():
     assert preview["style_label"] == "暖色故事板"
     assert preview["duration_s"] == 9
     assert len(preview["storyboard_frames"]) == 4
+    assert preview["animation_profile"] == {
+        "version": "cinematic_template_v1",
+        "player": "cinematic_tour",
+        "aspect_ratio": "16:10",
+        "loop_duration_s": 9,
+        "reduced_motion_fallback": True,
+    }
+    assert [frame["motion"] for frame in preview["storyboard_frames"]] == [
+        "slow_push_in",
+        "pan_left",
+        "pan_right",
+        "slow_pull_back",
+    ]
+    assert [frame["transition"] for frame in preview["storyboard_frames"]] == [
+        "soft_fade",
+        "slide_blend",
+        "soft_fade",
+        "slide_blend",
+    ]
+    assert [frame["accent"] for frame in preview["storyboard_frames"]] == [
+        "opening",
+        "route",
+        "highlight",
+        "closing",
+    ]
+    assert all(frame["subtitle"] for frame in preview["storyboard_frames"])
+    assert preview["keyframes"][0]["motion"] == "slow_push_in"
+    assert preview["keyframes"][0]["transition"] == "soft_fade"
     assert preview["source"]["real_model_called"] is False
     assert preview["generation_mode"] == "template_preview"
     assert preview["fallback_used"] is False
@@ -11228,6 +11256,12 @@ def test_demo_aigc_live_image_without_key_falls_back_to_template():
     assert preview["preview_placeholder"].endswith("aigc_sample_001_storyboard.gif")
     assert preview["generated_images"] == []
     assert len(preview["storyboard_frames"]) == 3
+    assert preview["animation_profile"]["player"] == "cinematic_tour"
+    assert [frame["accent"] for frame in preview["storyboard_frames"]] == [
+        "opening",
+        "route",
+        "highlight",
+    ]
     assert preview["source"]["real_model_called"] is False
     print("test_demo_aigc_live_image_without_key_falls_back_to_template passed.")
 
@@ -11283,6 +11317,10 @@ def test_demo_aigc_live_image_stub_success_returns_generated_frames():
     assert preview["preview_placeholder"] == "/generated/aigc/test_frame_01.png"
     assert len(preview["storyboard_frames"]) == 2
     assert preview["storyboard_frames"][0]["image_url"].endswith("test_frame_01.png")
+    assert preview["storyboard_frames"][0]["motion"] == "slow_push_in"
+    assert preview["storyboard_frames"][1]["motion"] == "pan_left"
+    assert preview["animation_profile"]["version"] == "cinematic_template_v1"
+    assert preview["keyframes"][0]["image_url"].endswith("test_frame_01.png")
     assert preview["source"]["real_model_called"] is True
     print("test_demo_aigc_live_image_stub_success_returns_generated_frames passed.")
 
@@ -11353,6 +11391,54 @@ def test_demo_aigc_live_image_keeps_partial_frames_after_later_error():
     print("test_demo_aigc_live_image_keeps_partial_frames_after_later_error passed.")
 
 
+def test_demo_aigc_live_image_retries_single_frame_when_multi_frame_fails():
+    old_key = os.environ.get("OPENAI_API_KEY")
+    old_model = os.environ.get("OPENAI_IMAGE_MODEL")
+    try:
+        os.environ["OPENAI_API_KEY"] = "test-key"
+        os.environ["OPENAI_IMAGE_MODEL"] = "gpt-image-2"
+        service = DemoUIService("PKU")
+        calls = []
+
+        def fake_generation(**kwargs):
+            calls.append(kwargs["frame_count"])
+            if kwargs["frame_count"] > 1:
+                raise RuntimeError("OpenAI image request failed with 504: upstream timeout")
+            return ["/generated/aigc/test_frame_01.png"]
+
+        service._call_openai_image_generation = fake_generation
+        response = service.aigc_preview(
+            {
+                "sample_id": "aigc_sample_001",
+                "prompt": "多图失败时保留一张实时分镜。",
+                "style": "warm_storyboard",
+                "duration_s": 8,
+                "mode": "live_image",
+                "frame_count": 3,
+            }
+        )
+    finally:
+        if old_key is None:
+            os.environ.pop("OPENAI_API_KEY", None)
+        else:
+            os.environ["OPENAI_API_KEY"] = old_key
+        if old_model is None:
+            os.environ.pop("OPENAI_IMAGE_MODEL", None)
+        else:
+            os.environ["OPENAI_IMAGE_MODEL"] = old_model
+
+    assert response["success"] is True
+    assert response["metadata"]["generation_mode"] == "live_image"
+    preview = response["results"][0]
+    assert calls == [3, 1]
+    assert preview["generated_images"] == ["/generated/aigc/test_frame_01.png"]
+    assert preview["frame_count"] == 1
+    assert preview["source"]["requested_frame_count"] == 3
+    assert "504" in preview["source"]["live_retry_reason"]
+    assert any("多帧生成降级为单帧" in step for step in preview["generation_pipeline"])
+    print("test_demo_aigc_live_image_retries_single_frame_when_multi_frame_fails passed.")
+
+
 def test_demo_aigc_openai_base_url_resolves_image_endpoint():
     old_base_url = os.environ.get("OPENAI_BASE_URL")
     old_image_url = os.environ.get("OPENAI_IMAGE_API_URL")
@@ -11377,6 +11463,94 @@ def test_demo_aigc_openai_base_url_resolves_image_endpoint():
             os.environ["OPENAI_IMAGE_API_URL"] = old_image_url
 
     print("test_demo_aigc_openai_base_url_resolves_image_endpoint passed.")
+
+
+def test_demo_aigc_openai_transport_defaults_keep_multi_frame_parallel():
+    old_base_url = os.environ.get("OPENAI_BASE_URL")
+    old_image_url = os.environ.get("OPENAI_IMAGE_API_URL")
+    old_timeout = os.environ.get("OPENAI_IMAGE_TIMEOUT_S")
+    old_transport = os.environ.get(demo_service_module.AIGC_OPENAI_HTTP_TRANSPORT_ENV)
+    old_workers = os.environ.get(demo_service_module.AIGC_OPENAI_IMAGE_MAX_WORKERS_ENV)
+    old_which = demo_service_module.shutil.which
+    try:
+        os.environ["OPENAI_BASE_URL"] = "https://ai.maok.shop"
+        os.environ.pop("OPENAI_IMAGE_API_URL", None)
+        os.environ.pop("OPENAI_IMAGE_TIMEOUT_S", None)
+        os.environ.pop(demo_service_module.AIGC_OPENAI_HTTP_TRANSPORT_ENV, None)
+        os.environ.pop(demo_service_module.AIGC_OPENAI_IMAGE_MAX_WORKERS_ENV, None)
+        demo_service_module.shutil.which = lambda name: "/usr/bin/curl" if name == "curl" else old_which(name)
+
+        assert DemoUIService._openai_image_timeout_s() == demo_service_module.AIGC_OPENAI_IMAGE_TIMEOUT_S
+        assert DemoUIService._should_use_curl_openai_transport(
+            "https://ai.maok.shop/v1/images/generations"
+        ) is True
+        assert DemoUIService._openai_image_max_workers() == demo_service_module.AIGC_MAX_FRAME_COUNT
+        capabilities = DemoUIService("PKU")._build_aigc_capabilities()
+        assert capabilities["image_timeout_s"] == demo_service_module.AIGC_OPENAI_IMAGE_TIMEOUT_S
+        assert capabilities["image_max_workers"] == demo_service_module.AIGC_MAX_FRAME_COUNT
+    finally:
+        demo_service_module.shutil.which = old_which
+        if old_base_url is None:
+            os.environ.pop("OPENAI_BASE_URL", None)
+        else:
+            os.environ["OPENAI_BASE_URL"] = old_base_url
+        if old_image_url is None:
+            os.environ.pop("OPENAI_IMAGE_API_URL", None)
+        else:
+            os.environ["OPENAI_IMAGE_API_URL"] = old_image_url
+        if old_timeout is None:
+            os.environ.pop("OPENAI_IMAGE_TIMEOUT_S", None)
+        else:
+            os.environ["OPENAI_IMAGE_TIMEOUT_S"] = old_timeout
+        if old_transport is None:
+            os.environ.pop(demo_service_module.AIGC_OPENAI_HTTP_TRANSPORT_ENV, None)
+        else:
+            os.environ[demo_service_module.AIGC_OPENAI_HTTP_TRANSPORT_ENV] = old_transport
+        if old_workers is None:
+            os.environ.pop(demo_service_module.AIGC_OPENAI_IMAGE_MAX_WORKERS_ENV, None)
+        else:
+            os.environ[demo_service_module.AIGC_OPENAI_IMAGE_MAX_WORKERS_ENV] = old_workers
+
+    print("test_demo_aigc_openai_transport_defaults_keep_multi_frame_parallel passed.")
+
+
+def test_demo_aigc_curl_transport_uses_http11():
+    old_timeout = os.environ.get("OPENAI_IMAGE_TIMEOUT_S")
+    old_which = demo_service_module.shutil.which
+    old_run = demo_service_module.subprocess.run
+    command = []
+
+    class FakeCompleted:
+        returncode = 0
+        stdout = '{"data": []}\nHTTP_STATUS:200\n'
+        stderr = ""
+
+    try:
+        os.environ["OPENAI_IMAGE_TIMEOUT_S"] = "30"
+        demo_service_module.shutil.which = lambda name: "/usr/bin/curl" if name == "curl" else old_which(name)
+
+        def fake_run(args, **kwargs):
+            command.extend(args)
+            return FakeCompleted()
+
+        demo_service_module.subprocess.run = fake_run
+        payload = DemoUIService._request_openai_json_with_curl(
+            "https://ai.maok.shop/v1/images/generations",
+            {"model": "gpt-image-2", "prompt": "test", "n": 1},
+            "test-key",
+        )
+    finally:
+        demo_service_module.shutil.which = old_which
+        demo_service_module.subprocess.run = old_run
+        if old_timeout is None:
+            os.environ.pop("OPENAI_IMAGE_TIMEOUT_S", None)
+        else:
+            os.environ["OPENAI_IMAGE_TIMEOUT_S"] = old_timeout
+
+    assert payload == {"data": []}
+    assert "--http1.1" in command
+    assert command.index("--http1.1") < command.index("--config")
+    print("test_demo_aigc_curl_transport_uses_http11 passed.")
 
 
 def test_demo_server_loads_untracked_local_aigc_env_file():
@@ -11426,11 +11600,14 @@ def test_demo_static_aigc_entry_contains_controls():
     repo_root = os.path.join(os.path.dirname(__file__), "..")
     html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
     js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+    css_path = os.path.join(repo_root, "src", "ui", "static", "styles.css")
 
     with open(html_path, encoding="utf-8") as file:
         html = file.read()
     with open(js_path, encoding="utf-8") as file:
         script = file.read()
+    with open(css_path, encoding="utf-8") as file:
+        styles = file.read()
 
     assert 'data-tab="aigc"' in html
     assert 'data-panel="aigc"' in html
@@ -11447,9 +11624,18 @@ def test_demo_static_aigc_entry_contains_controls():
     assert '"/api/aigc/preview"' in script
     assert "renderAigcPreview" in script
     assert "renderAigcLivePreview" in script
+    assert "renderAigcCinematicPlayer" in script
+    assert "renderAigcLoadingPreview" in script
     assert "renderAigcGeneratedPlayer" in script
+    assert "syncAigcFrameCountForMode" in script
+    assert "AIGC_LIVE_REQUEST_TIMEOUT_MS" in script
     assert "generation_mode" in script
     assert "generated_images" in script
+    assert "animation_profile" in script
+    assert "aigc-cinematic-player" in styles
+    assert "aigc-cinematic-progress" in styles
+    assert "aigc-loading-film" in styles
+    assert "@media (prefers-reduced-motion: reduce)" in styles
     side_menu = html.split('<nav class="side-menu"', 1)[1].split("</nav>", 1)[0]
     place_panel = html.split('data-panel="place"', 1)[1].split('data-panel="diary"', 1)[0]
     assert 'data-tab="aigc"' in side_menu
@@ -11703,7 +11889,10 @@ def run_all_tests():
     test_demo_aigc_live_image_stub_success_returns_generated_frames()
     test_demo_aigc_live_image_requests_frames_one_by_one()
     test_demo_aigc_live_image_keeps_partial_frames_after_later_error()
+    test_demo_aigc_live_image_retries_single_frame_when_multi_frame_fails()
     test_demo_aigc_openai_base_url_resolves_image_endpoint()
+    test_demo_aigc_openai_transport_defaults_keep_multi_frame_parallel()
+    test_demo_aigc_curl_transport_uses_http11()
     test_demo_server_loads_untracked_local_aigc_env_file()
     test_demo_aigc_preview_validation_error()
     test_demo_static_aigc_entry_contains_controls()

@@ -7,6 +7,7 @@ const MAP_ZOOM_STEP = 0.0016;
 const PRIORITY_METRIC_LIMIT = 4;
 const UX_STORAGE_KEY = "tourgraph_ux_state_v1";
 const RECENT_SEARCH_LIMIT = 5;
+const AIGC_LIVE_REQUEST_TIMEOUT_MS = 420000;
 const MATCH_SEPARATOR_PATTERN = /[\s,，。.;；:：、/\\|_\-+()（）\[\]【】{}<>《》"'`~!！?？@#$%^&*=]+/u;
 const DEMO_ROUTE_SCENARIOS = {
   single: {
@@ -87,6 +88,7 @@ const state = {
   whiteRoadEdgesVisible: true,
   pathNodesVisible: false,
   indoor: createDefaultIndoorState(),
+  comboboxes: {},
   mapView: {
     scale: 1,
     translateX: 0,
@@ -468,26 +470,6 @@ function bindForms() {
     await planMultiRoute(targetNodeIds);
   });
 
-  document.querySelector("#global-start-node").addEventListener("change", (event) => {
-    state.currentStartNodeId = event.target.value;
-    if (state.currentRoute) {
-      clearRoute();
-    }
-    updateActiveFeatureCaption();
-    persistUserContext();
-    setStatus(
-      `当前起点已切换为 ${getNodeName(state.currentStartNodeId)}。`,
-      "info",
-    );
-  });
-
-  document.querySelector("#user-selector").addEventListener("change", (event) => {
-    applySelectedUser(event.target.value);
-    updateActiveFeatureCaption();
-    persistUserContext();
-    setStatus(currentInterestStatusText(), "info");
-  });
-
   document.querySelector("#interest-tags").addEventListener("change", () => {
     state.currentInterests = readInterestTags();
     updateActiveFeatureCaption();
@@ -495,28 +477,7 @@ function bindForms() {
     setStatus(currentInterestStatusText(), "info");
   });
 
-  document.querySelector("#site-selector").addEventListener("change", async (event) => {
-    const selectedSiteId = event.target.value;
-    const currentSiteId = state.bootstrap ? state.bootstrap.site.id : selectedSiteId;
-    if (selectedSiteId === currentSiteId) {
-      resetInteractionState({ clearForms: true });
-      setStatus(`当前站点为 ${state.bootstrap.site.name}，页面状态已重置。`, "info");
-      return;
-    }
-
-    setStatus(feedback("site_switching", "正在切换站点并重置页面状态..."), "loading");
-    try {
-      const bootstrap = await loadSiteBootstrap(selectedSiteId);
-      switchTab("route");
-      setStatus(
-        `${feedback("site_switched", "站点已切换，页面状态已重置。")} 当前站点：${bootstrap.site.name}。`,
-        "success",
-      );
-    } catch (error) {
-      event.target.value = currentSiteId;
-      setStatus(`站点切换失败：${error.message}`, "error");
-    }
-  });
+  bindContextComboboxes();
 
   bindMapInteractions();
   bindMapDemoControls();
@@ -996,7 +957,7 @@ function clearUserInputs() {
   setMultipleSelectValues("#multi-route-targets", []);
   setSelectValue("#route-strategy", "shortest_distance");
   setSelectValue("#route-transport", "mixed");
-  setSelectValue("#global-start-node", state.currentStartNodeId);
+  syncContextComboboxValue("start", state.currentStartNodeId);
   fillAigcFormFromSample(defaultAigcSampleId());
   clearDiaryManagementForm();
   const returnToStart = document.querySelector("#multi-route-return");
@@ -1008,6 +969,10 @@ function clearUserInputs() {
 function setSelectValue(selector, value) {
   const element = document.querySelector(selector);
   if (!element) {
+    return;
+  }
+  if (!("options" in element)) {
+    element.value = value || "";
     return;
   }
   const hasValue = Array.from(element.options).some((option) => option.value === value);
@@ -1062,11 +1027,15 @@ function findBootstrapUser(userId) {
   return (state.bootstrap?.users || []).find((item) => item.id === userId) || null;
 }
 
+function defaultUserId(bootstrap = state.bootstrap) {
+  return bootstrap?.default_user_id || bootstrap?.users?.[0]?.id || "";
+}
+
 function applySelectedUser(userId) {
   const user = findBootstrapUser(userId) || (state.bootstrap?.users || [])[0] || null;
   state.currentUserId = user ? user.id : "";
   state.currentInterests = user && Array.isArray(user.interests) ? user.interests.slice() : [];
-  setSelectValue("#user-selector", state.currentUserId);
+  syncContextComboboxValue("user", state.currentUserId);
   const interestInput = document.querySelector("#interest-tags");
   if (interestInput) {
     interestInput.value = state.currentInterests.join(", ");
@@ -1074,8 +1043,8 @@ function applySelectedUser(userId) {
 }
 
 function syncUserContextControls() {
-  setSelectValue("#global-start-node", state.currentStartNodeId);
-  setSelectValue("#user-selector", state.currentUserId);
+  syncContextComboboxValue("start", state.currentStartNodeId);
+  syncContextComboboxValue("user", state.currentUserId);
   const interestInput = document.querySelector("#interest-tags");
   if (interestInput) {
     interestInput.value = state.currentInterests.join(", ");
@@ -1088,6 +1057,370 @@ function currentInterestStatusText() {
   const userName = user ? user.name : "自定义";
   const interests = state.currentInterests.length ? state.currentInterests.join("、") : "未选择";
   return `当前用户：${userName}；当前兴趣偏好：${interests}。`;
+}
+
+function bindContextComboboxes() {
+  ["site", "start", "user"].forEach((comboId) => {
+    const config = contextComboboxConfig(comboId);
+    const input = document.querySelector(config.inputSelector);
+    const results = document.querySelector(config.resultsSelector);
+    const toggleButton = document.querySelector(config.toggleSelector);
+    if (!input || !results || !toggleButton) {
+      return;
+    }
+
+    input.addEventListener("focus", () => {
+      input.select();
+      openContextCombobox(comboId, "");
+    });
+    input.addEventListener("input", () => {
+      openContextCombobox(comboId, input.value);
+    });
+    input.addEventListener("keydown", (event) => {
+      handleContextComboboxKeydown(event, comboId);
+    });
+    toggleButton.addEventListener("click", () => {
+      input.focus();
+      openContextCombobox(comboId, "");
+    });
+    results.addEventListener("mousedown", (event) => {
+      event.preventDefault();
+    });
+    results.addEventListener("click", (event) => {
+      const option = event.target.closest("[data-combo-option-id]");
+      if (option) {
+        void selectContextComboboxOption(comboId, option.dataset.comboOptionId || "");
+      }
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("[data-combobox]")) {
+      closeAllContextComboboxes();
+    }
+  });
+}
+
+function contextComboboxConfig(comboId) {
+  const configs = {
+    site: {
+      inputSelector: "#site-selector",
+      hiddenSelector: "#site-selector-value",
+      resultsSelector: "#site-selector-results",
+      toggleSelector: '[data-combobox-toggle="site"]',
+      emptyText: "未找到匹配站点",
+      getItems: () => (state.bootstrap?.sites || []).filter(isSiteFrontendSelectable),
+      currentValue: () => currentSiteId(),
+      label: (site) => siteSearchInputLabel(site),
+      optionName: (site) => site.name || site.id,
+      optionMeta: (site) => [site.id, displaySiteLocation(site)].filter(Boolean).join(" · "),
+      optionBadge: (site) => site.map_profile === "template_clone" || site.template_site_id ? "模板校园" : "真实校园",
+      searchFields: (site) => [site.id, site.name, displaySiteLocation(site), site.description, site.template_site_id],
+      onSelect: selectSiteFromCombobox,
+    },
+    start: {
+      inputSelector: "#global-start-node",
+      hiddenSelector: "#global-start-node-value",
+      resultsSelector: "#global-start-node-results",
+      toggleSelector: '[data-combobox-toggle="start"]',
+      emptyText: "未找到匹配起点",
+      getItems: () => state.bootstrap?.start_nodes || [],
+      currentValue: () => state.currentStartNodeId,
+      label: (node) => node ? `${node.name || node.id} (${node.id})` : "",
+      optionName: (node) => node.name || node.id,
+      optionMeta: (node) => [node.id, node.category_label || node.category].filter(Boolean).join(" · "),
+      optionBadge: (node) => node.category_label || node.category || "起点",
+      searchFields: (node) => [node.id, node.name, node.category_label, node.category],
+      onSelect: selectStartNodeFromCombobox,
+    },
+    user: {
+      inputSelector: "#user-selector",
+      hiddenSelector: "#user-selector-value",
+      resultsSelector: "#user-selector-results",
+      toggleSelector: '[data-combobox-toggle="user"]',
+      emptyText: "未找到匹配用户",
+      getItems: () => state.bootstrap?.users || [],
+      currentValue: () => state.currentUserId,
+      label: (user) => user ? `${user.name || user.id} (${user.id})` : "",
+      optionName: (user) => user.name || user.id,
+      optionMeta: (user) => user.interest_text || (Array.isArray(user.interests) ? user.interests.join("、") : ""),
+      optionBadge: () => "用户",
+      searchFields: (user) => [user.id, user.name, user.interest_text, ...(Array.isArray(user.interests) ? user.interests : [])],
+      onSelect: selectUserFromCombobox,
+    },
+  };
+  return configs[comboId];
+}
+
+function comboValue(item) {
+  return item?.id || "";
+}
+
+function comboboxState(comboId) {
+  if (!state.comboboxes[comboId]) {
+    state.comboboxes[comboId] = {
+      query: "",
+      results: [],
+      activeIndex: -1,
+      isOpen: false,
+    };
+  }
+  return state.comboboxes[comboId];
+}
+
+function syncContextComboboxValue(comboId, value) {
+  const config = contextComboboxConfig(comboId);
+  const input = document.querySelector(config.inputSelector);
+  const hidden = document.querySelector(config.hiddenSelector);
+  if (!input) {
+    return;
+  }
+  const selected = contextComboboxItems(comboId).find((item) => comboValue(item) === value) || null;
+  input.value = selected ? config.label(selected) : "";
+  input.setAttribute("aria-expanded", "false");
+  if (hidden) {
+    hidden.value = selected ? comboValue(selected) : "";
+  }
+  state.comboboxes[comboId] = {
+    query: input.value,
+    results: [],
+    activeIndex: -1,
+    isOpen: false,
+  };
+  renderContextCombobox(comboId);
+}
+
+function contextComboboxItems(comboId) {
+  const config = contextComboboxConfig(comboId);
+  return config ? config.getItems() : [];
+}
+
+function openContextCombobox(comboId, query) {
+  closeAllContextComboboxes(comboId);
+  const comboState = comboboxState(comboId);
+  comboState.query = String(query || "").trim();
+  comboState.results = filterContextComboboxResults(comboId, comboState.query);
+  comboState.activeIndex = comboState.results.length ? 0 : -1;
+  comboState.isOpen = true;
+  renderContextCombobox(comboId);
+}
+
+function filterContextComboboxResults(comboId, query) {
+  const config = contextComboboxConfig(comboId);
+  const items = contextComboboxItems(comboId);
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) {
+    return prioritizeContextComboboxItems(comboId, items).slice(0, 12);
+  }
+
+  return items
+    .map((item) => ({
+      item,
+      score: contextComboboxScore(config, item, normalizedQuery),
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort((left, right) => right.score - left.score || config.label(left.item).localeCompare(config.label(right.item)))
+    .slice(0, 12)
+    .map((entry) => entry.item);
+}
+
+function prioritizeContextComboboxItems(comboId, items) {
+  const currentValue = contextComboboxConfig(comboId).currentValue();
+  return [...items].sort((left, right) => {
+    if (comboValue(left) === currentValue) {
+      return -1;
+    }
+    if (comboValue(right) === currentValue) {
+      return 1;
+    }
+    return 0;
+  });
+}
+
+function contextComboboxScore(config, item, normalizedQuery) {
+  let score = 0;
+  config.searchFields(item)
+    .map(normalizeSearchText)
+    .filter(Boolean)
+    .forEach((field, index) => {
+      if (field === normalizedQuery) {
+        score = Math.max(score, 100 - index);
+      } else if (field.startsWith(normalizedQuery)) {
+        score = Math.max(score, 80 - index);
+      } else if (field.includes(normalizedQuery)) {
+        score = Math.max(score, 55 - index);
+      }
+    });
+  return score;
+}
+
+function normalizeSearchText(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "");
+}
+
+function handleContextComboboxKeydown(event, comboId) {
+  const comboState = comboboxState(comboId);
+  if (!comboState.isOpen && ["ArrowDown", "ArrowUp", "Enter"].includes(event.key)) {
+    openContextCombobox(comboId, "");
+  }
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    moveContextComboboxActive(comboId, 1);
+    return;
+  }
+  if (event.key === "ArrowUp") {
+    event.preventDefault();
+    moveContextComboboxActive(comboId, -1);
+    return;
+  }
+  if (event.key === "Enter") {
+    event.preventDefault();
+    const input = document.querySelector(contextComboboxConfig(comboId).inputSelector);
+    const selected = comboState.results[comboState.activeIndex]
+      || exactContextComboboxMatch(comboId, input?.value || "")
+      || comboState.results[0];
+    if (selected) {
+      void selectContextComboboxOption(comboId, comboValue(selected));
+    }
+    return;
+  }
+  if (event.key === "Escape") {
+    closeContextCombobox(comboId);
+    syncContextComboboxValue(comboId, contextComboboxConfig(comboId).currentValue());
+  }
+}
+
+function moveContextComboboxActive(comboId, delta) {
+  const comboState = comboboxState(comboId);
+  if (!comboState.results.length) {
+    return;
+  }
+  comboState.activeIndex = (comboState.activeIndex + delta + comboState.results.length) % comboState.results.length;
+  renderContextCombobox(comboId);
+}
+
+function exactContextComboboxMatch(comboId, query) {
+  const config = contextComboboxConfig(comboId);
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) {
+    return null;
+  }
+  return contextComboboxItems(comboId).find((item) => {
+    return [comboValue(item), config.optionName(item), config.label(item)]
+      .some((value) => normalizeSearchText(value) === normalizedQuery);
+  }) || null;
+}
+
+function renderContextCombobox(comboId) {
+  const config = contextComboboxConfig(comboId);
+  const comboState = comboboxState(comboId);
+  const input = document.querySelector(config.inputSelector);
+  const results = document.querySelector(config.resultsSelector);
+  if (!input || !results) {
+    return;
+  }
+
+  input.setAttribute("aria-expanded", comboState.isOpen ? "true" : "false");
+  results.classList.toggle("is-open", comboState.isOpen);
+  if (!comboState.isOpen) {
+    results.innerHTML = "";
+    return;
+  }
+
+  if (!comboState.results.length) {
+    results.innerHTML = `<div class="combo-empty" role="option">${escapeHtml(config.emptyText)}</div>`;
+    return;
+  }
+
+  results.innerHTML = comboState.results.map((item, index) => {
+    const isActive = index === comboState.activeIndex;
+    const itemId = comboValue(item);
+    const meta = config.optionMeta(item);
+    const badge = config.optionBadge(item);
+    return `
+      <button
+        class="combo-option${isActive ? " active" : ""}"
+        type="button"
+        role="option"
+        aria-selected="${isActive ? "true" : "false"}"
+        data-combo-option-id="${escapeHtml(itemId)}"
+      >
+        <span class="combo-option-name">${escapeHtml(config.optionName(item))}</span>
+        <span class="combo-option-meta">${escapeHtml(meta || itemId)}</span>
+        <span class="combo-option-badge">${escapeHtml(badge)}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+async function selectContextComboboxOption(comboId, value) {
+  const config = contextComboboxConfig(comboId);
+  const selected = contextComboboxItems(comboId).find((item) => comboValue(item) === value) || null;
+  if (!selected) {
+    setStatus("没有找到可选择的匹配项。", "error");
+    syncContextComboboxValue(comboId, config.currentValue());
+    return;
+  }
+  closeContextCombobox(comboId);
+  await config.onSelect(selected);
+}
+
+async function selectSiteFromCombobox(site) {
+  const currentId = currentSiteId();
+  if (site.id === currentId) {
+    resetInteractionState({ clearForms: true });
+    syncContextComboboxValue("site", currentId);
+    setStatus(`当前站点为 ${state.bootstrap.site.name}，页面状态已重置。`, "info");
+    return;
+  }
+
+  setStatus(feedback("site_switching", "正在切换站点并重置页面状态..."), "loading");
+  try {
+    const bootstrap = await loadSiteBootstrap(site.id);
+    switchTab("route");
+    setStatus(
+      `${feedback("site_switched", "站点已切换，页面状态已重置。")} 当前站点：${bootstrap.site.name}。`,
+      "success",
+    );
+  } catch (error) {
+    syncContextComboboxValue("site", currentId);
+    setStatus(`站点切换失败：${error.message}`, "error");
+  }
+}
+
+function selectStartNodeFromCombobox(node) {
+  state.currentStartNodeId = node.id;
+  syncContextComboboxValue("start", state.currentStartNodeId);
+  if (state.currentRoute) {
+    clearRoute();
+  }
+  updateActiveFeatureCaption();
+  persistUserContext();
+  setStatus(`当前起点已切换为 ${getNodeName(state.currentStartNodeId)}。`, "info");
+}
+
+function selectUserFromCombobox(user) {
+  applySelectedUser(user.id);
+  updateActiveFeatureCaption();
+  persistUserContext();
+  setStatus(currentInterestStatusText(), "info");
+}
+
+function closeContextCombobox(comboId) {
+  const comboState = comboboxState(comboId);
+  comboState.isOpen = false;
+  renderContextCombobox(comboId);
+}
+
+function closeAllContextComboboxes(exceptComboId = "") {
+  Object.keys(state.comboboxes).forEach((comboId) => {
+    if (comboId !== exceptComboId) {
+      closeContextCombobox(comboId);
+    }
+  });
 }
 
 function hydrateBootstrap(bootstrap) {
@@ -1104,7 +1437,7 @@ function hydrateBootstrap(bootstrap) {
   const heroSiteSummary = document.querySelector("#hero-site-summary");
   if (heroSiteSummary) {
     heroSiteSummary.textContent = [
-      bootstrap.site.location ? `地点：${bootstrap.site.location}` : "",
+      displaySiteLocation(bootstrap.site) ? `地点：${displaySiteLocation(bootstrap.site)}` : "",
       `当前支持 ${bootstrap.stats.route_target_count} 个可规划目标`,
     ]
       .filter(Boolean)
@@ -1124,34 +1457,9 @@ function hydrateBootstrap(bootstrap) {
     statDiaries.textContent = String(bootstrap.stats.diary_count);
   }
 
-  populateSelect(
-    document.querySelector("#site-selector"),
-    bootstrap.sites.map((item) => ({
-      value: item.id,
-      label: siteOptionLabel(item),
-      disabled: !isSiteFrontendSelectable(item),
-    })),
-    bootstrap.site.id,
-  );
-
-  populateSelect(
-    document.querySelector("#global-start-node"),
-    bootstrap.start_nodes.map((item) => ({
-      value: item.id,
-      label: `${item.name} · ${item.category_label}`,
-    })),
-    bootstrap.default_start_node,
-  );
-
-  populateSelect(
-    document.querySelector("#user-selector"),
-    (bootstrap.users || []).map((item) => ({
-      value: item.id,
-      label: `${item.name} · ${item.interest_text || "无兴趣标签"}`,
-    })),
-    bootstrap.default_user_id || bootstrap.users?.[0]?.id || "",
-  );
-  applySelectedUser(bootstrap.default_user_id || bootstrap.users?.[0]?.id || "");
+  syncContextComboboxValue("site", bootstrap.site.id);
+  syncContextComboboxValue("start", bootstrap.default_start_node);
+  applySelectedUser(defaultUserId(bootstrap));
 
   const defaultTargetId = defaultRouteTargetId(bootstrap);
   populateSelect(
@@ -1445,7 +1753,7 @@ function endpointForQueryType(queryType) {
 }
 
 function siteOptionLabel(site) {
-  const pieces = [site.name || site.id, site.location || site.id];
+  const pieces = [site.name || site.id, displaySiteLocation(site) || site.id];
   const statusLabel = siteOptionStatusLabel(site);
   if (statusLabel) {
     pieces.push(statusLabel);
@@ -1461,6 +1769,22 @@ function siteOptionStatusLabel(site) {
     return "待接入";
   }
   return "";
+}
+
+function siteSearchInputLabel(site) {
+  if (!site) {
+    return "";
+  }
+  const id = site.id ? ` (${site.id})` : "";
+  return `${site.name || site.id || ""}${id}`;
+}
+
+function displaySiteLocation(site) {
+  const location = String(site?.location || "").trim();
+  if (!location || location.includes("待补充")) {
+    return "";
+  }
+  return location;
 }
 
 function isSiteFrontendSelectable(site) {
@@ -2096,7 +2420,8 @@ function renderWorkspaceContextSummary() {
 
   if (siteSummary) {
     siteSummary.textContent = site.name ? `站点：${site.name}` : "站点加载中";
-    siteSummary.title = site.location ? `${site.name} · ${site.location}` : siteSummary.textContent;
+    const location = displaySiteLocation(site);
+    siteSummary.title = location ? `${site.name} · ${location}` : siteSummary.textContent;
   }
   if (startSummary) {
     startSummary.textContent = startName ? `起点：${startName}` : "起点待选择";
@@ -2288,12 +2613,26 @@ function handleAigcPreset(preset) {
 
 function setAigcMode(mode) {
   state.aigcMode = mode === "live_image" && isAigcLiveAvailable() ? "live_image" : "template";
+  syncAigcFrameCountForMode();
   document.querySelectorAll("[data-aigc-mode]").forEach((button) => {
     const isActive = button.dataset.aigcMode === state.aigcMode;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", isActive ? "true" : "false");
   });
   syncAigcModeAvailability();
+}
+
+function syncAigcFrameCountForMode() {
+  const input = document.querySelector("#aigc-frame-count");
+  if (!input) {
+    return;
+  }
+  const currentValue = Number(input.value || "0");
+  if (state.aigcMode === "live_image" && (!currentValue || currentValue > 1)) {
+    input.value = "1";
+  } else if (state.aigcMode === "template" && (!currentValue || currentValue === 1)) {
+    input.value = "4";
+  }
 }
 
 function currentAigcMode() {
@@ -2336,7 +2675,7 @@ async function runAigcPreview() {
       mode,
       provider: "openai",
       frame_count: document.querySelector("#aigc-frame-count").value,
-    });
+    }, isLiveMode ? { timeoutMs: AIGC_LIVE_REQUEST_TIMEOUT_MS } : {});
 
     state.currentResults = response.results || response.data || [];
     state.currentRoute = null;
@@ -2840,16 +3179,11 @@ function firstExistingRouteTargetId(candidates = []) {
 }
 
 function applyDemoStartNode(nodeId) {
-  const startSelect = document.querySelector("#global-start-node");
-  if (!startSelect) {
-    return;
-  }
-  const hasNode = Array.from(startSelect.options).some((option) => option.value === nodeId);
-  if (!hasNode) {
+  if (!startNodeIdSet().has(nodeId)) {
     return;
   }
   state.currentStartNodeId = nodeId;
-  setSelectValue("#global-start-node", nodeId);
+  syncContextComboboxValue("start", nodeId);
   updateActiveFeatureCaption();
 }
 
@@ -3300,7 +3634,7 @@ function renderAigcLivePreview(item, mode = "empty", message = "") {
 
   if (mode === "loading") {
     panel.className = "aigc-live-preview aigc-live-preview-loading";
-    panel.textContent = message || "正在生成 AIGC 轻量预览...";
+    panel.innerHTML = renderAigcLoadingPreview(message || "正在生成 AIGC 轻量预览...");
     return;
   }
 
@@ -3341,6 +3675,7 @@ function renderAigcLivePreview(item, mode = "empty", message = "") {
   const previewMarkup = outputPreview && /\.(gif|jpe?g|png|webp)$/i.test(outputPreview)
     ? `<img src="${escapeHtml(outputPreview)}" alt="AIGC 输出预览" loading="lazy" />`
     : `<strong>${escapeHtml(outputPreview || "生成后显示 GIF 预览")}</strong>`;
+  const cinematicMarkup = renderAigcCinematicPlayer(item);
 
   panel.className = `aigc-live-preview${isGenerated ? " aigc-live-preview-ready" : " aigc-live-preview-sample"}`;
   panel.innerHTML = `
@@ -3365,10 +3700,10 @@ function renderAigcLivePreview(item, mode = "empty", message = "") {
       </figure>
       <figure class="aigc-live-media-card aigc-live-media-card-primary">
         <figcaption>${generationMode === "live_image" ? "实时分镜播放" : "输出 GIF 预览"}</figcaption>
-        ${liveImages.length ? renderAigcGeneratedPlayer(liveImages, frames) : previewMarkup}
+        ${cinematicMarkup || (liveImages.length ? renderAigcGeneratedPlayer(liveImages, frames) : previewMarkup)}
       </figure>
     </div>
-    ${isGenerated ? renderAigcPreview(item) : ""}
+    ${isGenerated ? renderAigcPreview(item, { includePlayer: false }) : ""}
     ${!isGenerated && pipeline.length ? renderAigcDetails(pipeline) : ""}
   `;
 }
@@ -3384,6 +3719,100 @@ function aigcGenerationModeLabel(mode) {
     return "template_preview";
   }
   return "当前样例";
+}
+
+function renderAigcLoadingPreview(message) {
+  return `
+    <div class="aigc-loading-film" aria-label="${escapeHtml(message)}">
+      <div class="aigc-loading-strip" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <strong>${escapeHtml(message)}</strong>
+      <p>正在整理镜头脚本、字幕条和导览节奏。</p>
+    </div>
+  `;
+}
+
+function renderAigcCinematicPlayer(item) {
+  const frames = Array.isArray(item.storyboard_frames) ? item.storyboard_frames : [];
+  if (!frames.length) {
+    return "";
+  }
+
+  const generatedImages = Array.isArray(item.generated_images) ? item.generated_images : [];
+  const frameImages = frames.map((frame) => frame.image_url).filter(Boolean);
+  const fallbackImages = [item.preview_placeholder, item.image_placeholder]
+    .filter((src) => src && /\.(gif|jpe?g|png|webp)$/i.test(src));
+  const mediaSources = (generatedImages.length ? generatedImages : frameImages).concat(fallbackImages);
+  const uniqueSources = [...new Set(mediaSources)].filter(Boolean);
+  if (!uniqueSources.length) {
+    return "";
+  }
+
+  const duration = aigcLoopDuration(item);
+  const frameCount = frames.length;
+  const profile = item.animation_profile || {};
+  const profileLabel = profile.player || "cinematic_tour";
+  const frameMarkup = frames.map((frame, index) => {
+    const title = frame.title || `分镜 ${index + 1}`;
+    const subtitle = frame.subtitle || frame.caption || frame.visual || title;
+    const src = frame.image_url || uniqueSources[index % uniqueSources.length];
+    const motion = safeAigcToken(frame.motion || "slow_push_in");
+    const accent = safeAigcToken(frame.accent || "highlight");
+    const transition = safeAigcToken(frame.transition || "soft_fade");
+    return `
+      <figure
+        class="aigc-cinematic-frame aigc-motion-${motion} aigc-accent-${accent} aigc-transition-${transition}"
+        style="--aigc-frame-index:${index}; --aigc-frame-delay:${aigcFrameDelay(index, duration, frameCount)}s"
+      >
+        <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" />
+        <figcaption>
+          <span class="aigc-cinematic-count">${index + 1}/${frameCount}</span>
+          <strong>${escapeHtml(title)}</strong>
+          <span>${escapeHtml(subtitle)}</span>
+        </figcaption>
+      </figure>
+    `;
+  }).join("");
+
+  return `
+    <div
+      class="aigc-cinematic-player${frameCount === 1 ? " aigc-cinematic-player-single" : ""}"
+      style="--aigc-frame-count:${frameCount}; --aigc-loop-duration:${duration}s"
+      data-aigc-player="${escapeHtml(profileLabel)}"
+    >
+      <div class="aigc-cinematic-stage">
+        ${frameMarkup}
+        <div class="aigc-cinematic-depth" aria-hidden="true"></div>
+        <div class="aigc-cinematic-progress" aria-hidden="true"></div>
+      </div>
+    </div>
+  `;
+}
+
+function aigcFrameDelay(index, duration, frameCount) {
+  return (-(index * duration) / Math.max(1, frameCount)).toFixed(3);
+}
+
+function aigcLoopDuration(item) {
+  const profileDuration = Number(item.animation_profile?.loop_duration_s);
+  const duration = Number.isFinite(profileDuration) && profileDuration > 0
+    ? profileDuration
+    : Number(item.duration_s);
+  if (!Number.isFinite(duration) || duration <= 0) {
+    return 12;
+  }
+  return Math.max(6, Math.min(24, duration));
+}
+
+function safeAigcToken(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g, "")
+    || "default";
 }
 
 function renderAigcGeneratedPlayer(images, frames) {
@@ -3787,7 +4216,7 @@ function isAigcResult(item, queryType) {
   return queryType === "aigc_preview" || Boolean(item.storyboard_frames);
 }
 
-function renderAigcPreview(item) {
+function renderAigcPreview(item, options = {}) {
   const frames = Array.isArray(item.storyboard_frames) ? item.storyboard_frames : [];
   const pipeline = Array.isArray(item.generation_pipeline) ? item.generation_pipeline : [];
   const previewSummary = item.prompt_summary || item.text_prompt || "";
@@ -3804,13 +4233,15 @@ function renderAigcPreview(item) {
   const previewImg = item.preview_placeholder && /\.(gif|jpe?g|png|webp)$/i.test(item.preview_placeholder)
     ? `<div class="aigc-preview-image"><img src="${escapeHtml(item.preview_placeholder)}" alt="AIGC Preview" loading="lazy" style="max-width:480px;max-height:270px;border-radius:8px;object-fit:cover;" /></div>`
     : "";
+  const cinematicMarkup = renderAigcCinematicPlayer(item);
+  const includePlayer = options.includePlayer !== false;
   return `
     <div class="aigc-preview-block">
       <p class="prototype-notice">${escapeHtml(item.prototype_notice || "")}</p>
       ${previewMetrics ? `<div class="aigc-preview-meta">${previewMetrics}</div>` : ""}
       ${item.fallback_used ? `<p class="aigc-fallback-note">已回退到模板预览：${escapeHtml(item.fallback_reason || "实时生成不可用")}</p>` : ""}
       ${previewSummary ? `<p class="aigc-preview-summary">${escapeHtml(previewSummary)}</p>` : ""}
-      ${generatedImages.length ? renderAigcGeneratedPlayer(generatedImages, frames) : previewImg}
+      ${includePlayer ? (cinematicMarkup || (generatedImages.length ? renderAigcGeneratedPlayer(generatedImages, frames) : previewImg)) : ""}
       <div class="storyboard-grid">
         ${frames
           .map((frame) => `
@@ -6316,21 +6747,39 @@ async function apiGet(url) {
   return handleApiResponse(response);
 }
 
-async function apiPost(url, payload) {
+async function apiPost(url, payload, options = {}) {
   const body = { ...payload };
   if (currentSiteId() && !body.site_id) {
     body.site_id = currentSiteId();
   }
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-  return handleApiResponse(response);
+  const timeoutMs = Number(options.timeoutMs || 0);
+  const controller = timeoutMs > 0 ? new AbortController() : null;
+  const timeoutId = controller
+    ? window.setTimeout(() => controller.abort(), timeoutMs)
+    : null;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+      signal: controller?.signal,
+    });
+    return handleApiResponse(response);
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw new Error("请求超时，请稍后重试；多帧实时生成可先调低分镜张数。");
+    }
+    throw error;
+  } finally {
+    if (timeoutId) {
+      window.clearTimeout(timeoutId);
+    }
+  }
 }
 
 async function handleApiResponse(response) {
