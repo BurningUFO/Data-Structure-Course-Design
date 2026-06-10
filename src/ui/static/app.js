@@ -429,6 +429,32 @@ function bindForms() {
     });
   });
 
+  document.querySelector("#diary-title-search-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await runQuery("/api/diaries/list", {
+      keyword: document.querySelector("#diary-title-query").value.trim(),
+      match_mode: "exact",
+      sort_field: "heat",
+      limit: 6,
+      ...buildInterestPayload(),
+    });
+  });
+
+  document.querySelector("#diary-destination-search-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await runQuery("/api/diaries/list", {
+      destination: document.querySelector("#diary-destination-query").value.trim(),
+      sort_field: document.querySelector("#diary-destination-sort").value,
+      limit: 6,
+      ...buildInterestPayload(),
+    });
+  });
+
+  document.querySelector("#diary-compress-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await runDiaryCompression();
+  });
+
   document.querySelector("#aigc-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     await runAigcPreview();
@@ -502,6 +528,12 @@ function bindForms() {
     const diaryRateButton = event.target.closest("[data-diary-rate-id]");
     if (diaryRateButton) {
       await rateDiary(diaryRateButton.dataset.diaryRateId, 5);
+      return;
+    }
+
+    const diaryViewButton = event.target.closest("[data-diary-view-id]");
+    if (diaryViewButton) {
+      await viewDiary(diaryViewButton.dataset.diaryViewId);
       return;
     }
 
@@ -1740,6 +1772,9 @@ function tabForQueryType(queryType) {
   if (queryType === "diary_fulltext_search" || queryType === "diary_list") {
     return "diary";
   }
+  if (queryType === "diary_view" || queryType === "diary_compress") {
+    return "diary";
+  }
   return "scenic";
 }
 
@@ -1752,6 +1787,9 @@ function endpointForQueryType(queryType) {
   }
   if (queryType === "diary_fulltext_search") {
     return "/api/diaries/fulltext";
+  }
+  if (queryType === "diary_list") {
+    return "/api/diaries/list";
   }
   return "/api/search/scenic";
 }
@@ -2800,8 +2838,18 @@ async function rateDiary(diaryId, rating) {
     {
       id: diaryId,
       rating,
+      user_id: state.currentUserId,
     },
     "日记评分已更新。",
+    { keepSelected: true },
+  );
+}
+
+async function viewDiary(diaryId) {
+  await runDiaryManagement(
+    "/api/diaries/view",
+    { id: diaryId },
+    "已浏览日记，浏览量和热度已同步更新。",
     { keepSelected: true },
   );
 }
@@ -2856,6 +2904,46 @@ async function runDiaryManagement(url, payload, successMessage, options = {}) {
     renderRoute(null, "日记管理操作失败。");
     renderMap();
     setStatus(`日记管理操作失败：${error.message}`, "error");
+  }
+}
+
+async function runDiaryCompression() {
+  const diaryId = document.querySelector("#diary-compress-id").value.trim() || selectedDiaryId();
+  const text = document.querySelector("#diary-compress-text").value.trim();
+  setStatus("正在执行哈夫曼压缩预览...", "loading");
+  renderRoute(null, "压缩演示不产生路径。");
+
+  try {
+    const response = await apiPost("/api/diaries/compress", {
+      id: diaryId,
+      text,
+    });
+    state.currentResults = response.results || response.data || [];
+    state.currentRoute = null;
+    state.focusedNodeId = "";
+    renderResults(response);
+    renderRoute(null);
+    renderMap();
+
+    if (!response.success) {
+      setStatus(response.message || "压缩演示失败", "error");
+      return;
+    }
+    setStatus("压缩演示完成，结果区已显示压缩率和解压校验。", "success");
+  } catch (error) {
+    state.currentResults = [];
+    state.currentRoute = null;
+    state.focusedNodeId = "";
+    renderResults({
+      success: false,
+      message: `压缩演示失败：${error.message}`,
+      total: 0,
+      query_type: "diary_compress_error",
+      results: [],
+    });
+    renderRoute(null, "压缩演示失败。");
+    renderMap();
+    setStatus(`压缩演示失败：${error.message}`, "error");
   }
 }
 
@@ -2918,6 +3006,10 @@ function fillDiaryManagementForm(diary) {
   document.querySelector("#diary-tags").value = Array.isArray(diary.tags) ? diary.tags.join(", ") : "";
   document.querySelector("#diary-images").value = Array.isArray(diary.images) ? diary.images.join(", ") : "";
   document.querySelector("#diary-videos").value = Array.isArray(diary.videos) ? diary.videos.join(", ") : "";
+  const compressId = document.querySelector("#diary-compress-id");
+  if (compressId) {
+    compressId.value = diaryId;
+  }
 }
 
 function clearDiaryManagementForm() {
@@ -2942,6 +3034,10 @@ function clearDiaryManagementForm() {
   const selectedLabel = document.querySelector("#diary-selected-label");
   if (selectedLabel) {
     selectedLabel.textContent = "当前为新建模式";
+  }
+  const compressId = document.querySelector("#diary-compress-id");
+  if (compressId) {
+    compressId.value = "";
   }
 }
 
@@ -3508,8 +3604,11 @@ function renderResultDetailMetrics(item, routeTarget) {
   return [
     routeTarget ? `<span class="metric-pill metric-pill-strong">目的地 ${escapeHtml(getNodeName(routeTarget))}</span>` : "",
     distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
-    item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}</span>` : "",
-    item.heat !== undefined ? `<span class="metric-pill">热度 ${item.heat}</span>` : "",
+    item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}${item.rating_count !== undefined ? ` (${item.rating_count}人)` : ""}</span>` : "",
+    item.heat !== undefined ? `<span class="metric-pill">热度 ${item.heat}${item.views !== undefined ? ` / 浏览 ${item.views}` : ""}</span>` : "",
+    item.original_size_bytes !== undefined ? `<span class="metric-pill">原文 ${item.original_size_bytes} bytes</span>` : "",
+    item.estimated_package_size_bytes !== undefined ? `<span class="metric-pill">压缩 ${item.estimated_package_size_bytes} bytes</span>` : "",
+    item.estimated_compression_ratio !== undefined ? `<span class="metric-pill">压缩比 ${(Number(item.estimated_compression_ratio) * 100).toFixed(1)}%${item.roundtrip_ok !== undefined ? ` · ${item.roundtrip_ok ? "校验通过" : "校验失败"}` : ""}</span>` : "",
     item.interest_match_score !== undefined ? `<span class="metric-pill">兴趣 ${Number(item.interest_match_score).toFixed(1)}</span>` : "",
     item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
     item.created_at ? `<span class="metric-pill">${escapeHtml(item.created_at)}</span>` : "",
@@ -3523,6 +3622,8 @@ function resultTypeLabel(queryType) {
     catering_recommend: "美食推荐",
     diary_fulltext_search: "日记",
     diary_list: "日记",
+    diary_view: "日记",
+    diary_compress: "压缩演示",
     aigc_preview: "AIGC",
   };
   return labels[queryType] || "结果详情";
@@ -3560,7 +3661,9 @@ function resultMetaText(total, queryType, ui = {}) {
     diary_create: "日记管理",
     diary_update: "日记管理",
     diary_rate: "日记评分",
+    diary_view: "日记浏览",
     diary_delete: "日记删除",
+    diary_compress: "压缩演示",
     aigc_preview: "AIGC 预览",
   };
   const parts = [`${total} 条结果`, labelMap[queryType] || queryType];
@@ -3869,10 +3972,14 @@ function renderResultCard(item, index, queryType = "") {
     distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
     item.nearby_reason ? `<span class="metric-pill">${escapeHtml(item.nearby_reason)}</span>` : "",
     item.category_label ? `<span class="metric-pill">${escapeHtml(item.category_label)}</span>` : "",
-    item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}</span>` : "",
+    item.algorithm ? `<span class="metric-pill">${escapeHtml(item.algorithm)}</span>` : "",
+    item.original_size_bytes !== undefined ? `<span class="metric-pill">原文 ${item.original_size_bytes} bytes</span>` : "",
+    item.estimated_package_size_bytes !== undefined ? `<span class="metric-pill">压缩 ${item.estimated_package_size_bytes} bytes</span>` : "",
+    item.estimated_compression_ratio !== undefined ? `<span class="metric-pill">压缩比 ${(Number(item.estimated_compression_ratio) * 100).toFixed(1)}%${item.roundtrip_ok !== undefined ? ` · ${item.roundtrip_ok ? "校验通过" : "校验失败"}` : ""}</span>` : "",
+    item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}${item.rating_count !== undefined ? ` (${item.rating_count}人)` : ""}</span>` : "",
     item.destination ? `<span class="metric-pill">目的地 ${escapeHtml(item.destination)}</span>` : "",
     scoreText ? `<span class="metric-pill">${escapeHtml(scoreText)}</span>` : "",
-    item.heat !== undefined ? `<span class="metric-pill">热度 ${item.heat}</span>` : "",
+    item.heat !== undefined ? `<span class="metric-pill">热度 ${item.heat}${item.views !== undefined ? ` / 浏览 ${item.views}` : ""}</span>` : "",
     item.style_label ? `<span class="metric-pill">${escapeHtml(item.style_label)}</span>` : "",
     item.duration_s !== undefined ? `<span class="metric-pill">${item.duration_s} 秒</span>` : "",
     item.status ? `<span class="metric-pill">${escapeHtml(item.status)}</span>` : "",
@@ -3896,7 +4003,8 @@ function renderResultCard(item, index, queryType = "") {
   if (indoorContext) {
     secondaryButtons.push(`<button class="ghost-button" type="button" data-enter-indoor="${escapeHtml(indoorContext.buildingId)}" data-indoor-floor="${escapeHtml(indoorContext.floorId || "")}" data-indoor-zone-target="${escapeHtml(indoorContext.targetNodeId)}">进入室内导航</button>`);
   }
-  if (isDiary && queryType !== "diary_delete") {
+  if (isDiary && diaryId && queryType !== "diary_delete") {
+    secondaryButtons.push(`<button class="ghost-button" type="button" data-diary-view-id="${escapeHtml(diaryId)}">浏览</button>`);
     secondaryButtons.push(`<button class="ghost-button" type="button" data-diary-edit-id="${escapeHtml(diaryId)}">编辑</button>`);
     secondaryButtons.push(`<button class="ghost-button" type="button" data-diary-rate-id="${escapeHtml(diaryId)}">评 5 分</button>`);
     secondaryButtons.push(`<button class="danger-button" type="button" data-diary-delete-id="${escapeHtml(diaryId)}">删除</button>`);
@@ -4199,11 +4307,20 @@ function renderMediaPlaceholders(item) {
       ${mediaItems
         .map((media) => {
           const isImage = /\.(jpe?g|png|gif|webp|bmp)$/i.test(media.value);
-          const src = media.value;
+          const isVideo = /\.(mp4|webm|ogg)$/i.test(media.value);
+          const src = normalizeMediaSource(media.value);
           if (isImage) {
             return `<span class="media-chip media-chip-image">
               <span>${escapeHtml(media.kind)}</span>
-              <img src="${escapeHtml(src)}" alt="${escapeHtml(media.kind)}" loading="lazy" style="max-width:360px;max-height:200px;border-radius:6px;object-fit:cover;" />
+              <img src="${escapeHtml(src)}" alt="${escapeHtml(media.kind)}" loading="lazy" style="max-width:360px;max-height:200px;border-radius:6px;object-fit:cover;" onerror="this.remove();" />
+              <strong>${escapeHtml(media.value)}</strong>
+            </span>`;
+          }
+          if (isVideo) {
+            return `<span class="media-chip media-chip-video">
+              <span>${escapeHtml(media.kind)}</span>
+              <video src="${escapeHtml(src)}" controls preload="metadata" style="max-width:360px;max-height:220px;border-radius:6px;"></video>
+              <strong>${escapeHtml(media.value)}</strong>
             </span>`;
           }
           return `<span class="media-chip">
@@ -4214,6 +4331,20 @@ function renderMediaPlaceholders(item) {
         .join("")}
     </div>
   `;
+}
+
+function normalizeMediaSource(value) {
+  const rawValue = String(value || "").trim();
+  if (!rawValue) {
+    return "";
+  }
+  if (/^(https?:|data:|blob:|\/)/i.test(rawValue)) {
+    return rawValue;
+  }
+  if (rawValue.startsWith("media/placeholders/")) {
+    return `/assets/${encodeURIComponent(rawValue.split("/").pop() || "")}`;
+  }
+  return rawValue;
 }
 
 function isAigcResult(item, queryType) {

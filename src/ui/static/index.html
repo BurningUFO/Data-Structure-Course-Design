@@ -310,6 +310,38 @@
                     </label>
                     <button class="primary-button form-primary-action" type="submit">浏览推荐日记</button>
                   </form>
+                  <form id="diary-title-search-form" class="stack-form separated-form">
+                    <div class="form-section-heading">
+                      <h3>标题精确查询</h3>
+                      <span>按完整日记名称定位唯一记录</span>
+                    </div>
+                    <label class="field">
+                      <span class="field-label">日记名称</span>
+                      <input id="diary-title-query" type="text" placeholder="例如：五一黄山行" />
+                    </label>
+                    <button class="secondary-button form-primary-action" type="submit">精确查询</button>
+                  </form>
+                  <form id="diary-destination-search-form" class="stack-form separated-form">
+                    <div class="form-section-heading">
+                      <h3>目的地查询</h3>
+                      <span>按热度或评分排序相关日记</span>
+                    </div>
+                    <div class="form-advanced-grid">
+                      <label class="field">
+                        <span class="field-label">目的地</span>
+                        <input id="diary-destination-query" type="text" placeholder="例如：北京大学" />
+                      </label>
+                      <label class="field">
+                        <span class="field-label">排序</span>
+                        <select id="diary-destination-sort">
+                          <option value="heat">按热度</option>
+                          <option value="rating">按评分</option>
+                          <option value="views">按浏览量</option>
+                        </select>
+                      </label>
+                    </div>
+                    <button class="secondary-button form-primary-action" type="submit">查询目的地日记</button>
+                  </form>
                   <form id="diary-form" class="stack-form separated-form">
                     <div class="form-section-heading">
                       <h3>全文检索</h3>
@@ -378,6 +410,24 @@
                       <p class="form-hint">
                         当前为内存态演示，不会写回标准样例数据；刷新页面后新增或编辑结果会重置。
                       </p>
+                    </form>
+                  </details>
+                  <details class="form-advanced separated-form management-details">
+                    <summary>压缩存储演示</summary>
+                    <form id="diary-compress-form" class="stack-form nested-form">
+                      <div class="form-section-heading">
+                        <h3>哈夫曼压缩</h3>
+                        <span>展示原文大小、压缩率和解压校验</span>
+                      </div>
+                      <label class="field">
+                        <span class="field-label">日记 ID</span>
+                        <input id="diary-compress-id" type="text" placeholder="例如：diary_003；留空可直接输入文本" />
+                      </label>
+                      <label class="field">
+                        <span class="field-label">压缩文本</span>
+                        <textarea id="diary-compress-text" rows="4" placeholder="可粘贴一段日记正文；留空时使用日记 ID 对应内容"></textarea>
+                      </label>
+                      <button class="secondary-button form-primary-action" type="submit">压缩预览</button>
                     </form>
                   </details>
                 </section>

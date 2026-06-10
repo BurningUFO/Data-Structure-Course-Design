@@ -37,6 +37,7 @@ FIELD_WEIGHTS: dict[str, float] = {
     "destination": 10.0,
     "content": 6.0,
 }
+FULLTEXT_HEAT_TIE_BREAKER_WEIGHT = 0.005
 
 TOKEN_PATTERN = re.compile(r"[a-z0-9_]+|[\u4e00-\u9fff]+")
 MAX_CJK_TOKEN_LENGTH = 8
@@ -265,7 +266,7 @@ class DiaryFullTextIndex:
             if len(query_terms) > 1 and coverage == len(query_terms):
                 score += 20
 
-            score += int(record.get("heat", 0)) * 0.05
+            score += int(record.get("heat", 0)) * FULLTEXT_HEAT_TIE_BREAKER_WEIGHT
             score += float(record.get("rating", 0.0)) * 2
 
             destination_node_id = record.get("destination_node_id")

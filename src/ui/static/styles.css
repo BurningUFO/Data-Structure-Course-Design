@@ -3171,6 +3171,13 @@ select[multiple] {
   word-break: break-all;
 }
 
+.media-chip img,
+.media-chip video {
+  display: block;
+  width: min(100%, 360px);
+  max-height: 220px;
+}
+
 .deleted-badge {
   display: inline-flex;
   align-items: center;

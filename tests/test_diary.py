@@ -113,6 +113,34 @@ def test_search_sort_by_heat():
     print("test_search_sort_by_heat passed.")
 
 
+def test_search_sort_by_heat_uses_views_as_effective_heat():
+    result = search_diaries(
+        destination="北京大学",
+        sort_field="heat",
+        records=[
+            {
+                "id": "diary_low_views",
+                "title": "旧热度高但浏览低",
+                "destination": "北京大学",
+                "heat": 999,
+                "views": 3,
+            },
+            {
+                "id": "diary_high_views",
+                "title": "浏览量更高",
+                "destination": "北京大学",
+                "heat": 1,
+                "views": 30,
+            },
+        ],
+    )
+
+    assert result["success"] is True
+    assert [item["id"] for item in result["results"]] == ["diary_high_views", "diary_low_views"]
+    assert all(item["heat"] == item["views"] for item in result["results"])
+    print("test_search_sort_by_heat_uses_views_as_effective_heat passed.")
+
+
 def test_search_sort_by_rating():
     result = search_diaries(destination="北京大学", sort_field="rating")
     ratings = [item["rating"] for item in result["data"]]
@@ -247,6 +275,74 @@ def test_diary_management_create_update_rate_delete_flow():
     assert deleted["results"][0]["id"] == diary["id"]
     assert service.records == []
     print("test_diary_management_create_update_rate_delete_flow passed.")
+
+
+def test_diary_view_increments_views_and_syncs_heat():
+    service = DiaryService(
+        records=[
+            {
+                "id": "diary_view_demo",
+                "title": "浏览量演示",
+                "views": 7,
+                "heat": 999,
+            }
+        ]
+    )
+
+    viewed = service.view_diary("diary_view_demo")
+
+    assert viewed["success"] is True
+    assert viewed["query_type"] == "diary_view"
+    assert viewed["results"][0]["views"] == 8
+    assert viewed["results"][0]["heat"] == 8
+    assert service.records[0]["views"] == 8
+    assert service.records[0]["heat"] == 8
+    print("test_diary_view_increments_views_and_syncs_heat passed.")
+
+
+def test_diary_rating_aggregation_tracks_users_and_overwrites_repeat_score():
+    service = DiaryService(
+        records=[
+            {
+                "id": "diary_rating_demo",
+                "title": "评分聚合演示",
+                "rating": 0,
+            }
+        ]
+    )
+
+    first = service.rate_diary("diary_rating_demo", 5, user_id="student_a")
+    second = service.rate_diary("diary_rating_demo", 3, user_id="student_b")
+    repeated = service.rate_diary("diary_rating_demo", 4, user_id="student_a")
+
+    assert first["results"][0]["rating"] == 5.0
+    assert second["results"][0]["rating"] == 4.0
+    assert repeated["results"][0]["rating"] == 3.5
+    assert repeated["results"][0]["rating_count"] == 2
+    assert repeated["results"][0]["rating_total"] == 7.0
+    assert repeated["results"][0]["user_ratings"] == {
+        "student_a": 4.0,
+        "student_b": 3.0,
+    }
+    print("test_diary_rating_aggregation_tracks_users_and_overwrites_repeat_score passed.")
+
+
+def test_diary_title_exact_index_refreshes_after_writes():
+    service = DiaryService(records=[])
+
+    created = service.create_diary({"title": "索引创建标题"})
+    diary_id = created["results"][0]["id"]
+    assert [record["id"] for record in service.search_by_title_exact("索引创建标题")] == [diary_id]
+
+    updated = service.update_diary(diary_id, {"title": "索引更新标题"})
+    assert updated["success"] is True
+    assert service.search_by_title_exact("索引创建标题") == []
+    assert [record["id"] for record in service.search_by_title_exact("索引更新标题")] == [diary_id]
+
+    deleted = service.delete_diary(diary_id)
+    assert deleted["success"] is True
+    assert service.search_by_title_exact("索引更新标题") == []
+    print("test_diary_title_exact_index_refreshes_after_writes passed.")
 
 
 def test_diary_management_file_backed_persistence_flow():
@@ -497,6 +593,7 @@ def run_all_tests():
     test_search_by_title_fuzzy()
     test_search_by_destination_exact()
     test_search_sort_by_heat()
+    test_search_sort_by_heat_uses_views_as_effective_heat()
     test_search_sort_by_rating()
     test_search_limit_and_total_matched()
     test_search_no_match()
@@ -504,6 +601,9 @@ def run_all_tests():
     test_diary_response_shape()
     test_diary_interest_recommendation_changes_with_user_interests()
     test_diary_management_create_update_rate_delete_flow()
+    test_diary_view_increments_views_and_syncs_heat()
+    test_diary_rating_aggregation_tracks_users_and_overwrites_repeat_score()
+    test_diary_title_exact_index_refreshes_after_writes()
     test_diary_management_file_backed_persistence_flow()
     test_diary_management_records_injection_does_not_write_back()
     test_diary_management_file_backed_concurrent_create_keeps_both_records()

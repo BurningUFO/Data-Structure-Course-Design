@@ -26,6 +26,7 @@ TERM_EQUIVALENT_GROUPS = (
     ("食堂", "餐厅", "餐饮", "catering", "st"),
     ("便利店", "超市", "商店", "shopping", "bld"),
 )
+FULLTEXT_HEAT_TIE_BREAKER_WEIGHT = 0.005
 
 
 def normalize_text(value: Any) -> str:
@@ -269,7 +270,7 @@ def build_fallback_result(record: Record, query_tokens: list[str]) -> Record | N
     if len(query_tokens) > 1 and len(unique_matched_terms) >= len(query_tokens):
         score += 18
     score += len(unique_matched_terms) * 4
-    score += int(record.get("heat", 0)) * 0.05
+    score += int(record.get("heat", 0)) * FULLTEXT_HEAT_TIE_BREAKER_WEIGHT
     score += float(record.get("rating", 0.0)) * 2
 
     destination_node_id = record.get("destination_node_id")

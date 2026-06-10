@@ -385,7 +385,9 @@ def build_handler(
                 "/api/diaries/create": selected_service.create_diary,
                 "/api/diaries/update": selected_service.update_diary,
                 "/api/diaries/delete": selected_service.delete_diary,
+                "/api/diaries/view": selected_service.view_diary,
                 "/api/diaries/rate": selected_service.rate_diary,
+                "/api/diaries/compress": selected_service.diary_compress_preview,
                 "/api/aigc/preview": selected_service.aigc_preview,
                 "/api/route": selected_service.plan_route,
                 "/api/route/multi": selected_service.plan_multi_route,
@@ -485,4 +487,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

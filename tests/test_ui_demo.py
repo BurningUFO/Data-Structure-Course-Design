@@ -10852,6 +10852,46 @@ def test_demo_m23_interest_user_switch_changes_diary_recommendations():
     print("test_demo_m23_interest_user_switch_changes_diary_recommendations passed.")
 
 
+def test_demo_diary_exact_title_and_destination_sort_queries():
+    service = DemoUIService("PKU")
+
+    exact = service.diary_list(
+        {
+            "keyword": "五一黄山行",
+            "match_mode": "exact",
+            "sort_field": "heat",
+            "limit": 5,
+        }
+    )
+    destination_by_heat = service.diary_list(
+        {
+            "destination": "北京大学",
+            "sort_field": "heat",
+            "limit": 5,
+        }
+    )
+    destination_by_rating = service.diary_list(
+        {
+            "destination": "北京大学",
+            "sort_field": "rating",
+            "limit": 5,
+        }
+    )
+
+    assert exact["success"] is True
+    assert exact["query_type"] == "diary_list"
+    assert exact["metadata"]["ranking"]["sort_field"] == "heat"
+    assert exact["filters"]["match_mode"] == "exact"
+    assert [item["title"] for item in exact["results"]] == ["五一黄山行"]
+
+    heat_values = [item["heat"] for item in destination_by_heat["results"]]
+    rating_values = [item["rating"] for item in destination_by_rating["results"]]
+    assert heat_values == sorted(heat_values, reverse=True)
+    assert all(item["heat"] == item["views"] for item in destination_by_heat["results"])
+    assert rating_values == sorted(rating_values, reverse=True)
+    print("test_demo_diary_exact_title_and_destination_sort_queries passed.")
+
+
 def test_demo_diary_management_flow_links_to_route():
     temp_dir, temp_path = make_temp_diary_data_path()
     try:
@@ -10918,6 +10958,56 @@ def test_demo_diary_management_flow_links_to_route():
     print("test_demo_diary_management_flow_links_to_route passed.")
 
 
+def test_demo_diary_view_rating_aggregation_and_compress_preview():
+    temp_dir, temp_path = make_temp_diary_data_path()
+    try:
+        service = DemoUIService("PKU", diary_data_path=temp_path)
+        created = service.create_diary(
+            {
+                "title": "浏览评分压缩联调",
+                "content": "用于验证浏览量递增、按用户评分聚合和哈夫曼压缩预览。",
+                "destination": "北京大学图书馆",
+                "destination_node_id": "library",
+                "views": 2,
+                "rating": 0,
+                "tags": ["浏览", "评分", "压缩"],
+            }
+        )
+        diary_id = created["results"][0]["id"]
+
+        viewed = service.view_diary({"id": diary_id})
+        rated_a = service.rate_diary({"id": diary_id, "rating": 5, "user_id": "student_a"})
+        rated_b = service.rate_diary({"id": diary_id, "rating": 3, "user_id": "student_b"})
+        rated_repeat = service.rate_diary({"id": diary_id, "rating": 4, "user_id": "student_a"})
+        compressed = service.diary_compress_preview({"id": diary_id})
+
+        assert viewed["success"] is True
+        assert viewed["query_type"] == "diary_view"
+        assert viewed["results"][0]["views"] == 3
+        assert viewed["results"][0]["heat"] == 3
+
+        assert rated_a["success"] is True
+        assert rated_b["success"] is True
+        assert rated_repeat["success"] is True
+        assert rated_repeat["results"][0]["rating"] == 3.5
+        assert rated_repeat["results"][0]["rating_count"] == 2
+        assert rated_repeat["results"][0]["user_ratings"] == {
+            "student_a": 4.0,
+            "student_b": 3.0,
+        }
+
+        assert compressed["success"] is True
+        assert compressed["query_type"] == "diary_compress"
+        assert compressed["results"][0]["source_diary_id"] == diary_id
+        assert compressed["results"][0]["algorithm"] == "huffman"
+        assert compressed["results"][0]["roundtrip_ok"] is True
+        assert compressed["results"][0]["original_size_bytes"] > 0
+        assert compressed["results"][0]["estimated_package_size_bytes"] > 0
+    finally:
+        temp_dir.cleanup()
+    print("test_demo_diary_view_rating_aggregation_and_compress_preview passed.")
+
+
 def test_demo_diary_create_rejects_invalid_rating():
     temp_dir, temp_path = make_temp_diary_data_path()
     try:
@@ -10971,16 +11061,30 @@ def test_demo_static_diary_center_contains_management_controls():
     assert 'id="diary-create-form"' in html
     assert 'id="diary-list-form"' in html
     assert 'id="diary-list-sort"' in html
+    assert 'id="diary-title-search-form"' in html
+    assert 'id="diary-title-query"' in html
+    assert 'id="diary-destination-search-form"' in html
+    assert 'id="diary-destination-query"' in html
+    assert 'id="diary-destination-sort"' in html
+    assert 'id="diary-compress-form"' in html
+    assert 'id="diary-compress-id"' in html
+    assert 'id="diary-compress-text"' in html
     assert 'id="diary-destination-node"' in html
     assert 'id="diary-images"' in html
     assert 'id="diary-videos"' in html
+    assert 'data-diary-view-id' in script
     assert 'data-diary-edit-id' in script
     assert 'data-diary-delete-id' in script
     assert '"/api/diaries/create"' in script
     assert '"/api/diaries/update"' in script
+    assert '"/api/diaries/view"' in script
     assert '"/api/diaries/rate"' in script
     assert '"/api/diaries/delete"' in script
     assert '"/api/diaries/list"' in script
+    assert '"/api/diaries/compress"' in script
+    assert "match_mode: \"exact\"" in script
+    assert "<video" in script
+    assert "normalizeMediaSource" in script
     assert "buildInterestPayload" in script
     assert 'id="user-selector"' in html
     assert 'id="interest-tags"' in html
@@ -11891,7 +11995,9 @@ def run_all_tests():
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()
     test_demo_m23_interest_user_switch_changes_diary_recommendations()
+    test_demo_diary_exact_title_and_destination_sort_queries()
     test_demo_diary_management_flow_links_to_route()
+    test_demo_diary_view_rating_aggregation_and_compress_preview()
     test_demo_diary_create_rejects_invalid_rating()
     test_demo_static_diary_center_contains_management_controls()
     test_demo_static_leaflet_renderer_contains_local_assets_and_fallback()

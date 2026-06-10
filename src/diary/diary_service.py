@@ -94,6 +94,57 @@ def coerce_float(value: Any, default: float = 0.0) -> float:
         return default
 
 
+def normalize_rating_value(value: Any, default: float | None = 0.0) -> float | None:
+    try:
+        rating = float(value)
+    except (TypeError, ValueError):
+        return default
+    return max(0.0, min(5.0, rating))
+
+
+def normalize_user_rating_map(value: Any) -> dict[str, float]:
+    if not isinstance(value, dict):
+        return {}
+
+    ratings: dict[str, float] = {}
+    for raw_user_id, raw_rating in value.items():
+        user_id = str(raw_user_id).strip()
+        if not user_id:
+            continue
+        rating = normalize_rating_value(raw_rating, default=None)
+        if rating is None:
+            continue
+        ratings[user_id] = rating
+    return ratings
+
+
+def summarize_rating_fields(record: Record) -> tuple[float, int, float, dict[str, float]]:
+    base_rating = normalize_rating_value(record.get("rating"), default=0.0) or 0.0
+    user_ratings = normalize_user_rating_map(record.get("user_ratings"))
+    raw_count = max(0, coerce_int(record.get("rating_count"), default=0))
+    raw_total = coerce_float(record.get("rating_total"), default=0.0)
+
+    if raw_count > 0:
+        rating_count = raw_count
+        rating_total = raw_total if raw_total > 0 else base_rating * rating_count
+        rating_total = max(0.0, min(5.0 * rating_count, rating_total))
+        if user_ratings and len(user_ratings) > rating_count:
+            rating_count = len(user_ratings)
+            rating_total = sum(user_ratings.values())
+    elif user_ratings:
+        rating_count = len(user_ratings)
+        rating_total = sum(user_ratings.values())
+    elif base_rating > 0:
+        rating_count = 1
+        rating_total = base_rating
+    else:
+        rating_count = 0
+        rating_total = 0.0
+
+    rating = round(rating_total / rating_count, 4) if rating_count else base_rating
+    return rating, rating_count, round(rating_total, 4), user_ratings
+
+
 def normalize_string_list(value: Any) -> list[str]:
     if isinstance(value, list):
         return [str(item) for item in value if str(item).strip()]
@@ -132,6 +183,8 @@ def normalize_diary_record(record: Record, index: int) -> Record:
     destination_node_id = record.get("destination_node_id")
     if destination_node_id is not None:
         destination_node_id = str(destination_node_id).strip() or None
+    views = coerce_int(record.get("views"), default=coerce_int(record.get("heat"), default=0))
+    rating, rating_count, rating_total, user_ratings = summarize_rating_fields(record)
 
     return {
         "id": raw_id or f"diary_auto_{index + 1:03d}",
@@ -145,10 +198,13 @@ def normalize_diary_record(record: Record, index: int) -> Record:
         ).strip(),
         "destination": str(record.get("destination", "")).strip(),
         "destination_node_id": destination_node_id,
-        "heat": coerce_int(record.get("heat"), default=0),
-        "rating": coerce_float(record.get("rating"), default=0.0),
+        "heat": views,
+        "rating": rating,
+        "rating_count": rating_count,
+        "rating_total": rating_total,
+        "user_ratings": user_ratings,
         "tags": normalize_string_list(record.get("tags")),
-        "views": coerce_int(record.get("views"), default=0),
+        "views": views,
         "created_at": str(record.get("created_at", "")).strip(),
         "images": normalize_string_list(record.get("images")),
         "videos": normalize_string_list(record.get("videos")),
@@ -197,6 +253,7 @@ class DiaryService:
             if records is not None
             else load_diary_records(self.data_path)
         )
+        self._rebuild_title_index()
 
     def reload(
         self,
@@ -211,6 +268,7 @@ class DiaryService:
             prefer_legacy_data=prefer_legacy_data,
         )
         self.records = load_diary_records(self.data_path)
+        self._rebuild_title_index()
 
     def create_diary(self, payload: Record | None = None) -> dict[str, Any]:
         """创建日记记录。"""
@@ -237,6 +295,10 @@ class DiaryService:
                     metadata=self._management_metadata("create"),
                 )
 
+            initial_views = coerce_int(
+                request.get("views", request.get("heat", 0)),
+                default=0,
+            )
             record = normalize_diary_record(
                 {
                     "id": str(request.get("id", "")).strip() or self._next_diary_id_from(current_records),
@@ -246,10 +308,10 @@ class DiaryService:
                     "author_name": str(request.get("author_name", "")).strip() or "演示用户",
                     "destination": str(request.get("destination", "")).strip(),
                     "destination_node_id": request.get("destination_node_id"),
-                    "heat": coerce_int(request.get("heat"), default=0),
+                    "heat": initial_views,
                     "rating": normalized_rating,
                     "tags": normalize_string_list(request.get("tags")),
-                    "views": coerce_int(request.get("views"), default=0),
+                    "views": initial_views,
                     "created_at": str(request.get("created_at", "")).strip() or "2026-05-11",
                     "images": normalize_string_list(request.get("images")),
                     "videos": normalize_string_list(request.get("videos")),
@@ -327,6 +389,9 @@ class DiaryService:
                 "destination_node_id",
                 "heat",
                 "rating",
+                "rating_count",
+                "rating_total",
+                "user_ratings",
                 "tags",
                 "views",
                 "created_at",
@@ -347,6 +412,14 @@ class DiaryService:
                         metadata=self._management_metadata("update"),
                     )
                 current["rating"] = normalized_rating
+                current["rating_count"] = 1 if normalized_rating > 0 else 0
+                current["rating_total"] = normalized_rating if normalized_rating > 0 else 0.0
+                current["user_ratings"] = {}
+
+            if "views" in request:
+                current["heat"] = request.get("views")
+            elif "heat" in request:
+                current["views"] = request.get("heat")
 
             normalized = normalize_diary_record(current, index)
             if not str(normalized["title"]).strip():
@@ -424,9 +497,56 @@ class DiaryService:
 
         return self._apply_records_update(build_update, build_persistence_error)
 
-    def rate_diary(self, diary_id: str, rating: Any) -> dict[str, Any]:
+    def view_diary(self, diary_id: str) -> dict[str, Any]:
+        """浏览日记详情，并将热度同步为浏览量。"""
+        normalized_id = str(diary_id or "").strip()
+
+        def build_update(current_records: list[Record]) -> tuple[list[Record] | None, Callable[[], dict[str, Any]]]:
+            index = self._find_record_index_in(current_records, normalized_id)
+            if index < 0:
+                return None, lambda: build_error_response(
+                    f"diary not found: {normalized_id}",
+                    query_type="diary_view",
+                    filters={"id": normalized_id},
+                    metadata=self._management_metadata("view"),
+                )
+
+            updated_record = current_records[index].copy()
+            next_views = self._effective_views(updated_record) + 1
+            updated_record["views"] = next_views
+            updated_record["heat"] = next_views
+            updated_record = normalize_diary_record(updated_record, index)
+            updated_records = [item.copy() for item in current_records]
+            updated_records[index] = updated_record
+            return updated_records, lambda: build_success_response(
+                data=[updated_record],
+                message="diary viewed",
+                query_type="diary_view",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata(
+                    "view",
+                    persistence_succeeded=True,
+                ),
+            )
+
+        def build_persistence_error(persist_error: str) -> dict[str, Any]:
+            return build_error_response(
+                persist_error,
+                query_type="diary_view",
+                filters={"id": normalized_id},
+                metadata=self._management_metadata(
+                    "view",
+                    persist_error=persist_error,
+                ),
+            )
+
+        return self._apply_records_update(build_update, build_persistence_error)
+
+    def rate_diary(self, diary_id: str, rating: Any, user_id: str | None = None) -> dict[str, Any]:
         """更新日记评分。评分范围统一限制在 0 到 5。"""
         normalized_id = str(diary_id or "").strip()
+        user_id_provided = bool(str(user_id or "").strip())
+        normalized_user_id = str(user_id or "").strip() or "user_demo"
 
         normalized_rating: float | None = None
 
@@ -451,7 +571,38 @@ class DiaryService:
                 )
 
             updated_record = current_records[index].copy()
-            updated_record["rating"] = normalized_rating
+            if not user_id_provided:
+                updated_record["rating"] = normalized_rating
+                updated_record["rating_count"] = 1 if normalized_rating > 0 else 0
+                updated_record["rating_total"] = normalized_rating if normalized_rating > 0 else 0.0
+                updated_record["user_ratings"] = (
+                    {normalized_user_id: normalized_rating}
+                    if normalized_rating > 0
+                    else {}
+                )
+            else:
+                user_ratings = normalize_user_rating_map(updated_record.get("user_ratings"))
+                rating_count = max(0, coerce_int(updated_record.get("rating_count"), default=0))
+                rating_total = coerce_float(updated_record.get("rating_total"), default=0.0)
+                if rating_count <= 0:
+                    legacy_rating = normalize_rating_value(updated_record.get("rating"), default=0.0) or 0.0
+                    rating_count = 1 if legacy_rating > 0 else 0
+                    rating_total = legacy_rating if legacy_rating > 0 else 0.0
+
+                user_total_before = sum(user_ratings.values())
+                legacy_count = max(0, rating_count - len(user_ratings))
+                legacy_total = max(0.0, rating_total - user_total_before)
+                user_ratings[normalized_user_id] = normalized_rating
+                next_rating_total = legacy_total + sum(user_ratings.values())
+                next_rating_count = legacy_count + len(user_ratings)
+                updated_record["rating_count"] = next_rating_count
+                updated_record["rating_total"] = round(next_rating_total, 4)
+                updated_record["user_ratings"] = user_ratings
+                updated_record["rating"] = (
+                    round(next_rating_total / next_rating_count, 4)
+                    if next_rating_count
+                    else 0.0
+                )
             updated_record = normalize_diary_record(updated_record, index)
             updated_records = [item.copy() for item in current_records]
             updated_records[index] = updated_record
@@ -459,7 +610,11 @@ class DiaryService:
                 data=[updated_record],
                 message="diary rated",
                 query_type="diary_rate",
-                filters={"id": normalized_id, "rating": normalized_rating},
+                filters={
+                    "id": normalized_id,
+                    "rating": normalized_rating,
+                    "user_id": normalized_user_id,
+                },
                 metadata=self._management_metadata(
                     "rate",
                     persistence_succeeded=True,
@@ -470,7 +625,11 @@ class DiaryService:
             return build_error_response(
                 persist_error,
                 query_type="diary_rate",
-                filters={"id": normalized_id, "rating": normalized_rating},
+                filters={
+                    "id": normalized_id,
+                    "rating": normalized_rating,
+                    "user_id": normalized_user_id,
+                },
                 metadata=self._management_metadata(
                     "rate",
                     persist_error=persist_error,
@@ -491,11 +650,7 @@ class DiaryService:
             return []
 
         if match_mode == "exact":
-            return [
-                record
-                for record in self.records
-                if normalize_text(record.get("title")) == normalized_title
-            ]
+            return list(self._title_exact_index.get(normalized_title, []))
 
         return [
             record
@@ -588,6 +743,7 @@ class DiaryService:
             "destination_node_id",
             "heat",
             "rating",
+            "rating_count",
             "author_name",
             "tags",
             "views",
@@ -733,10 +889,23 @@ class DiaryService:
         if sort_field == "rating":
             return sorted(records, key=lambda item: float(item.get("rating", 0)), reverse=reverse)
         if sort_field == "views":
-            return sorted(records, key=lambda item: int(item.get("views", 0)), reverse=reverse)
+            return sorted(records, key=self._effective_views, reverse=reverse)
         if sort_field == "created_at":
             return sorted(records, key=lambda item: str(item.get("created_at", "")), reverse=reverse)
-        return sorted(records, key=lambda item: int(item.get("heat", 0)), reverse=reverse)
+        return sorted(records, key=self._effective_views, reverse=reverse)
+
+    @staticmethod
+    def _effective_views(record: Record) -> int:
+        return coerce_int(record.get("views"), default=coerce_int(record.get("heat"), default=0))
+
+    def _rebuild_title_index(self) -> None:
+        title_index: dict[str, list[Record]] = {}
+        for record in self.records:
+            normalized_title = normalize_text(record.get("title"))
+            if not normalized_title:
+                continue
+            title_index.setdefault(normalized_title, []).append(record)
+        self._title_exact_index = title_index
 
     @staticmethod
     def _resolve_sort_order(sort_field: str, sort_order: str) -> str:
@@ -797,6 +966,9 @@ class DiaryService:
                 "destination_node_id",
                 "heat",
                 "rating",
+                "rating_count",
+                "rating_total",
+                "user_ratings",
                 "author_name",
                 "tags",
                 "views",
@@ -844,6 +1016,7 @@ class DiaryService:
         updated_records, build_response = build_update(current_records)
         if updated_records is not None:
             self.records = updated_records
+            self._rebuild_title_index()
         return build_response()
 
     def _commit_records_update(self, updated_records: list[Record]) -> str | None:
@@ -853,6 +1026,7 @@ class DiaryService:
             except OSError as error:
                 return f"failed to persist diary data: {error}"
         self.records = updated_records
+        self._rebuild_title_index()
         return None
 
     def _persist_records(self, records: list[Record]) -> None:
@@ -900,10 +1074,13 @@ class DiaryService:
             "author_name": str(record.get("author_name", "")).strip(),
             "destination": str(record.get("destination", "")).strip(),
             "destination_node_id": record.get("destination_node_id"),
-            "heat": coerce_int(record.get("heat"), default=0),
+            "heat": self._effective_views(record),
             "rating": self._normalize_rating(record.get("rating"), default=0.0),
+            "rating_count": max(0, coerce_int(record.get("rating_count"), default=0)),
+            "rating_total": round(max(0.0, coerce_float(record.get("rating_total"), default=0.0)), 4),
+            "user_ratings": normalize_user_rating_map(record.get("user_ratings")),
             "tags": normalize_string_list(record.get("tags")),
-            "views": coerce_int(record.get("views"), default=0),
+            "views": self._effective_views(record),
             "created_at": str(record.get("created_at", "")).strip(),
             "images": normalize_string_list(record.get("images")),
         }
@@ -915,11 +1092,7 @@ class DiaryService:
 
     @staticmethod
     def _normalize_rating(value: Any, default: float | None = 0.0) -> float | None:
-        try:
-            rating = float(value)
-        except (TypeError, ValueError):
-            return default
-        return max(0.0, min(5.0, rating))
+        return normalize_rating_value(value, default=default)
 
 
 def search_diaries(
@@ -1021,10 +1194,27 @@ def delete_diary(
     return service.delete_diary(diary_id)
 
 
+def view_diary(
+    diary_id: str,
+    *,
+    records: list[Record] | None = None,
+    data_path: str | Path | None = None,
+    prefer_legacy_data: bool = False,
+) -> dict[str, Any]:
+    """日记浏览快捷调用入口。"""
+    service = DiaryService(
+        records,
+        data_path=data_path,
+        prefer_legacy_data=prefer_legacy_data,
+    )
+    return service.view_diary(diary_id)
+
+
 def rate_diary(
     diary_id: str,
     rating: Any,
     *,
+    user_id: str | None = None,
     records: list[Record] | None = None,
     data_path: str | Path | None = None,
     prefer_legacy_data: bool = False,
@@ -1035,4 +1225,4 @@ def rate_diary(
         data_path=data_path,
         prefer_legacy_data=prefer_legacy_data,
     )
-    return service.rate_diary(diary_id, rating)
+    return service.rate_diary(diary_id, rating, user_id=user_id)

@@ -21,6 +21,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from src.compress.huffman import compress_text, decompress_text
 from src.diary.diary_service import DiaryService
 from src.graph.loader import GraphLoader
 from src.recommend.catering_service import recommend_catering
@@ -1753,7 +1754,7 @@ class DemoUIService:
         response = self.diary_service.search(
             keyword=normalize_text(request.get("keyword")),
             destination=normalize_text(request.get("destination")),
-            match_mode="fuzzy",
+            match_mode=self._normalize_diary_match_mode(request.get("match_mode")),
             sort_field=sort_field,
             sort_order=normalize_text(request.get("sort_order")),
             limit=self._normalize_limit(request.get("limit"), default=6),
@@ -1801,11 +1802,106 @@ class DemoUIService:
         response = self.diary_service.delete_diary(diary_id)
         return self._decorate_diary_management_response(response, source="diary_delete")
 
+    def view_diary(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        request = payload or {}
+        diary_id = normalize_text(request.get("id") or request.get("diary_id"))
+        response = self.diary_service.view_diary(diary_id)
+        return self._decorate_diary_management_response(response, source="diary_view")
+
     def rate_diary(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         request = payload or {}
         diary_id = normalize_text(request.get("id") or request.get("diary_id"))
-        response = self.diary_service.rate_diary(diary_id, request.get("rating"))
+        user_id = normalize_text(request.get("user_id") or request.get("current_user_id"))
+        response = self.diary_service.rate_diary(
+            diary_id,
+            request.get("rating"),
+            user_id=user_id or None,
+        )
         return self._decorate_diary_management_response(response, source="diary_rate")
+
+    def diary_compress_preview(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        request = payload or {}
+        diary_id = normalize_text(request.get("id") or request.get("diary_id"))
+        text = str(request.get("text") or "").strip()
+        source_title = ""
+
+        if not text and diary_id:
+            for record in self.diary_service.records:
+                if normalize_text(record.get("id")) != diary_id:
+                    continue
+                source_title = str(record.get("title", "")).strip()
+                text = "\n".join(
+                    part
+                    for part in [
+                        str(record.get("title", "")).strip(),
+                        str(record.get("content", "")).strip(),
+                    ]
+                    if part
+                )
+                break
+
+        if not text:
+            return build_error_response(
+                "diary compression text cannot be empty",
+                query_type="diary_compress",
+                filters={"id": diary_id},
+                metadata={
+                    "site_id": self.site_id,
+                    "algorithm": "huffman",
+                    "result_fields": [
+                        "title",
+                        "original_size_bytes",
+                        "bit_length",
+                        "bitstream_size_bytes",
+                        "estimated_package_size_bytes",
+                        "estimated_compression_ratio",
+                        "roundtrip_ok",
+                    ],
+                },
+            )
+
+        compressed = compress_text(text)
+        restored = decompress_text(compressed)
+        result = {
+            "title": source_title or "日记文本压缩演示",
+            "source_diary_id": diary_id,
+            "algorithm": "huffman",
+            "original_size_bytes": compressed["original_size_bytes"],
+            "bit_length": compressed["bit_length"],
+            "bitstream_size_bytes": compressed["bitstream_size_bytes"],
+            "frequency_table_size_estimate_bytes": compressed["frequency_table_size_estimate_bytes"],
+            "estimated_package_size_bytes": compressed["estimated_package_size_bytes"],
+            "estimated_compression_ratio": compressed["estimated_compression_ratio"],
+            "character_count": compressed["character_count"],
+            "unique_character_count": compressed["unique_character_count"],
+            "storage_format": compressed["storage_format"],
+            "roundtrip_ok": restored == text,
+            "content": f"哈夫曼无损压缩：原文 {compressed['original_size_bytes']} bytes，压缩包估算 {compressed['estimated_package_size_bytes']} bytes。",
+        }
+        response = build_success_response(
+            data=[result],
+            message="diary compression preview success",
+            query_type="diary_compress",
+            filters={"id": diary_id, "text_provided": bool(str(request.get("text") or "").strip())},
+            metadata={
+                "site_id": self.site_id,
+                "algorithm": "huffman",
+                "roundtrip_checked": True,
+                "result_fields": [
+                    "title",
+                    "source_diary_id",
+                    "algorithm",
+                    "original_size_bytes",
+                    "bit_length",
+                    "bitstream_size_bytes",
+                    "frequency_table_size_estimate_bytes",
+                    "estimated_package_size_bytes",
+                    "estimated_compression_ratio",
+                    "roundtrip_ok",
+                ],
+            },
+        )
+        return self._decorate_query_response(response, source="diary_compress")
 
     def aigc_preview(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         request = payload or {}
@@ -3779,6 +3875,10 @@ class DemoUIService:
         except (TypeError, ValueError):
             return default
         return max(1, min(limit, 20))
+
+    @staticmethod
+    def _normalize_diary_match_mode(value: Any) -> str:
+        return "exact" if normalize_text(value) == "exact" else "fuzzy"
 
     def _normalize_radius_m(self, value: Any, *, default: float = 500.0) -> float:
         if value in (None, ""):
