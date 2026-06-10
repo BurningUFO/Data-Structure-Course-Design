@@ -10991,11 +10991,14 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     repo_root = os.path.join(os.path.dirname(__file__), "..")
     html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
     js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+    css_path = os.path.join(repo_root, "src", "ui", "static", "styles.css")
 
     with open(html_path, encoding="utf-8") as file:
         html = file.read()
     with open(js_path, encoding="utf-8") as file:
         script = file.read()
+    with open(css_path, encoding="utf-8") as file:
+        styles = file.read()
 
     assert 'href="/vendor/leaflet/leaflet.css"' in html
     assert 'src="/vendor/leaflet/leaflet.js"' in html
@@ -11035,6 +11038,14 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "shouldRenderWhiteRoadEdge" in script
     assert 'edgeType === "white_road" || edgeType === "poi_access"' in script
     assert "syncLeafletRouteLayer" in script
+    assert "ROUTE_ARROW_SPACING_PX = 92" in script
+    assert "buildSvgRouteMarkup" in script
+    assert "routeDirectionSamples" in script
+    assert "addLeafletRouteDirectionArrows" in script
+    assert "leaflet-route-arrow" in script
+    assert "route-line-halo" in script
+    assert "蓝色导航线" in script
+    assert "#1677ff" in script
     assert "switchMapRenderer" in script
     assert "runMapDemoAction" in script
     assert "syncMapDemoPanel" in script
@@ -11062,6 +11073,10 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "fallbackToSvgMap" in script
     assert '"/api/map/geojson"' in script
     assert '"/api/map/osm-layers"' in script
+    assert ".leaflet-route-arrow" in styles
+    assert ".route-arrow" in styles
+    assert ".route-line-halo" in styles
+    assert "stroke: #1677ff" in styles
     print("test_demo_static_leaflet_renderer_contains_local_assets_and_fallback passed.")
 
 

@@ -1863,10 +1863,12 @@ select[multiple] {
 }
 
 .legend-swatch-route::before {
-  height: 7px;
+  height: 5px;
   border-radius: 999px;
-  background: #f59e0b;
-  box-shadow: 0 0 0 4px rgba(143, 60, 18, 0.24);
+  background: #1677ff;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.92),
+    0 4px 10px rgba(22, 119, 255, 0.28);
 }
 
 .legend-swatch-node {
@@ -3297,20 +3299,71 @@ select[multiple] {
   vector-effect: non-scaling-stroke;
 }
 
+.route-line-halo,
+.route-line-shadow,
 .route-line {
   fill: none;
-  stroke: var(--amber);
-  stroke-width: 10;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.96;
-  filter: drop-shadow(0 8px 12px rgba(217, 130, 20, 0.24));
   vector-effect: non-scaling-stroke;
+}
+
+.route-line-halo {
+  stroke: rgba(255, 255, 255, 0.94);
+  stroke-width: 11;
+}
+
+.route-line-shadow {
+  stroke: #1677ff;
+  stroke-width: 8;
+  opacity: 0.26;
+  filter: drop-shadow(0 5px 10px rgba(22, 119, 255, 0.24));
+}
+
+.route-line {
+  stroke: #1677ff;
+  stroke-width: 5;
+  opacity: 0.96;
+}
+
+.route-arrow {
+  fill: #1677ff;
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  filter: drop-shadow(0 3px 6px rgba(22, 119, 255, 0.28));
 }
 
 .route-dot {
   stroke: white;
   stroke-width: 4;
+}
+
+.leaflet-route-arrow {
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.leaflet-route-arrow-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  overflow: visible;
+  filter: drop-shadow(0 3px 6px rgba(22, 119, 255, 0.3));
+  transform-origin: center;
+}
+
+.leaflet-route-arrow-outline {
+  fill: #ffffff;
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.leaflet-route-arrow-fill {
+  fill: #1677ff;
 }
 
 .svg-map-node {

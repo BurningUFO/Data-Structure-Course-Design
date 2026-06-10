@@ -4,6 +4,9 @@ const MAP_PADDING = 88;
 const MAP_MIN_SCALE = 0.75;
 const MAP_MAX_SCALE = 4;
 const MAP_ZOOM_STEP = 0.0016;
+const ROUTE_ARROW_SPACING_PX = 92;
+const ROUTE_ARROW_ICON_SIZE = 18;
+const ROUTE_MAIN_COLOR = "#1677ff";
 const PRIORITY_METRIC_LIMIT = 4;
 const UX_STORAGE_KEY = "tourgraph_ux_state_v1";
 const RECENT_SEARCH_LIMIT = 5;
@@ -110,6 +113,7 @@ const state = {
     osmLayersPayload: null,
     baseGeoJson: null,
     routeLayer: null,
+    routeZoomHandler: null,
     fittedSiteId: "",
     siteBoundsFitted: false,
   },
@@ -5060,6 +5064,68 @@ function svgNumber(value) {
   return String(Math.round(number * 100) / 100);
 }
 
+function buildSvgRouteMarkup(routeScreenPoints) {
+  const points = (routeScreenPoints || [])
+    .filter((point) => Number.isFinite(point?.x) && Number.isFinite(point?.y));
+  if (points.length < 2) {
+    return "";
+  }
+
+  const routePoints = points.map((point) => `${svgNumber(point.x)},${svgNumber(point.y)}`).join(" ");
+  const arrowMarkup = routeDirectionSamples(points)
+    .map((sample) => `
+      <path
+        class="route-arrow"
+        d="M -6 -5 L 8 0 L -6 5 L -3 0 Z"
+        transform="translate(${svgNumber(sample.x)} ${svgNumber(sample.y)}) rotate(${svgNumber(sample.angle)})"
+      />
+    `)
+    .join("");
+
+  return `
+    <g class="svg-route-layer" aria-hidden="true">
+      <polyline class="route-line-halo" points="${routePoints}" />
+      <polyline class="route-line-shadow" points="${routePoints}" />
+      <polyline class="route-line" points="${routePoints}" />
+      ${arrowMarkup}
+    </g>
+  `;
+}
+
+function routeDirectionSamples(points, spacing = ROUTE_ARROW_SPACING_PX) {
+  const segments = [];
+  let totalLength = 0;
+  for (let index = 1; index < points.length; index += 1) {
+    const from = points[index - 1];
+    const to = points[index];
+    const length = Math.hypot(to.x - from.x, to.y - from.y);
+    if (length <= 0) {
+      continue;
+    }
+    segments.push({ from, to, length, startLength: totalLength });
+    totalLength += length;
+  }
+
+  if (!segments.length || totalLength <= 0) {
+    return [];
+  }
+
+  const arrowCount = Math.max(1, Math.round(totalLength / spacing));
+  const gap = totalLength / (arrowCount + 1);
+  const samples = [];
+  for (let index = 1; index <= arrowCount; index += 1) {
+    const distance = gap * index;
+    const segment = segments.find((item) => distance <= item.startLength + item.length) || segments[segments.length - 1];
+    const localDistance = Math.max(0, Math.min(segment.length, distance - segment.startLength));
+    const ratio = segment.length ? localDistance / segment.length : 0;
+    const x = segment.from.x + (segment.to.x - segment.from.x) * ratio;
+    const y = segment.from.y + (segment.to.y - segment.from.y) * ratio;
+    const angle = Math.atan2(segment.to.y - segment.from.y, segment.to.x - segment.from.x) * 180 / Math.PI;
+    samples.push({ x, y, angle });
+  }
+  return samples;
+}
+
 function renderMetricPill(text, className = "") {
   if (!text) {
     return "";
@@ -5466,15 +5532,10 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
     })
     .join("");
 
-  const routeMarkup = routePath.length >= 2
-    ? `<polyline class="route-line" points="${routePath
-        .map((nodeId) => {
-          const point = projectedNodes.get(nodeId);
-          return point ? `${point.x},${point.y}` : "";
-        })
-        .filter(Boolean)
-        .join(" ")}" />`
-    : "";
+  const routeScreenPoints = routePath
+    .map((nodeId) => screenNodes.get(nodeId))
+    .filter(Boolean);
+  const routeMarkup = buildSvgRouteMarkup(routeScreenPoints);
 
   const visibleNodes = mapData.nodes.filter((node) => state.pathNodesVisible || !isPathNodeData(node));
   const nodeMarkup = visibleNodes
@@ -5492,7 +5553,7 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
       const labelY = projected.y + labelDy - 14;
       return `
         <g class="svg-map-node${isHighlighted ? " is-highlighted" : ""}" data-map-node="${escapeHtml(node.id)}">
-          ${isHighlighted ? `<circle class="route-dot" cx="${projected.x}" cy="${projected.y}" r="${radius + 6}" fill="rgba(181, 94, 59, 0.16)" />` : ""}
+          ${isHighlighted ? `<circle class="route-dot" cx="${projected.x}" cy="${projected.y}" r="${radius + 6}" fill="rgba(22, 119, 255, 0.18)" />` : ""}
           <circle cx="${projected.x}" cy="${projected.y}" r="${radius}" fill="${fill}" stroke="white" stroke-width="${isWaypoint ? 2 : 3}" opacity="${isWaypoint && !isHighlighted ? 0.48 : 1}" />
           ${
             showLabel
@@ -5511,7 +5572,7 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
     <g transform="translate(44, 54)">
       <text class="legend-badge" x="0" y="0">室外校园简图</text>
       <text class="legend-badge" x="0" y="28" style="font-size: 14px; fill: rgba(29, 43, 56, 0.58);">
-        高亮橙线为当前路径；滚轮缩放，按住拖动平移
+        蓝色导航线为当前路径；滚轮缩放，按住拖动平移
       </text>
     </g>
   `;
@@ -5522,8 +5583,8 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
     ${legendMarkup}
     <g transform="${mapTransform}">
       ${edgeMarkup}
-      ${routeMarkup}
-      </g>
+    </g>
+    ${routeMarkup}
     ${nodeMarkup}
   `;
 
@@ -5616,6 +5677,12 @@ function ensureLeafletMap() {
       worldCopyJump: false,
     }).setView(center, 17);
     fitLeafletToSiteBounds();
+    state.leaflet.routeZoomHandler = () => {
+      if (selectedMapRenderer() === "leaflet_geo" && selectedMapViewMode() === "outdoor") {
+        syncLeafletRouteLayer();
+      }
+    };
+    state.leaflet.map.on("zoomend", state.leaflet.routeZoomHandler);
   }
 
   return state.leaflet.map;
@@ -6113,39 +6180,18 @@ function syncLeafletRouteLayer() {
   removeLeafletLayer("routeLayer");
   const layer = L.layerGroup().addTo(map);
   const nodeIndex = mapNodeIndex();
-  let renderedRouteGeoJson = false;
+  let routeLatLngSegments = [];
   const routeGeoJson = state.currentRoute?.ui?.route_geojson || state.currentRoute?.ui?.geojson;
 
   if (isRenderableRouteGeoJson(routeGeoJson)) {
     try {
-      addLeafletRouteGeoJson(layer, routeGeoJson, {
-        color: "#ffffff",
-        weight: 16,
-        opacity: 0.82,
-        lineCap: "round",
-        lineJoin: "round",
-      });
-      addLeafletRouteGeoJson(layer, routeGeoJson, {
-        color: "#8f3c12",
-        weight: 11,
-        opacity: 0.58,
-        lineCap: "round",
-        lineJoin: "round",
-      });
-      addLeafletRouteGeoJson(layer, routeGeoJson, {
-        color: "#f59e0b",
-        weight: 6,
-        opacity: 0.96,
-        lineCap: "round",
-        lineJoin: "round",
-      });
-      renderedRouteGeoJson = true;
+      routeLatLngSegments = routeLatLngSegmentsFromGeoJson(routeGeoJson);
     } catch (error) {
       console.warn("Leaflet route GeoJSON render failed, falling back to node path.", error);
     }
   }
 
-  if (!renderedRouteGeoJson) {
+  if (!routeLatLngSegments.length) {
     const routePath = state.currentRoute?.ui?.mappable_path_node_ids || [];
     const routeLatLngs = routePath
       .map((nodeId) => nodeIndex.get(nodeId))
@@ -6153,28 +6199,13 @@ function syncLeafletRouteLayer() {
       .map((node) => [node.lat, node.lng]);
 
     if (routeLatLngs.length >= 2) {
-      L.polyline(routeLatLngs, {
-        color: "#ffffff",
-        weight: 16,
-        opacity: 0.82,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(layer);
-      L.polyline(routeLatLngs, {
-        color: "#8f3c12",
-        weight: 11,
-        opacity: 0.54,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(layer);
-      L.polyline(routeLatLngs, {
-        color: "#f59e0b",
-        weight: 6,
-        opacity: 0.94,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(layer);
+      routeLatLngSegments = [routeLatLngs];
     }
+  }
+
+  if (routeLatLngSegments.length) {
+    addLeafletRoutePolylines(layer, routeLatLngSegments);
+    addLeafletRouteDirectionArrows(layer, routeLatLngSegments);
   }
 
   getMapHighlightNodeIds().forEach((nodeId) => {
@@ -6189,7 +6220,7 @@ function syncLeafletRouteLayer() {
       radius: 10,
       color: "#ffffff",
       weight: 3,
-      fillColor: "#d98214",
+      fillColor: ROUTE_MAIN_COLOR,
       fillOpacity: 0.9,
     })
       .bindTooltip(node.name, { direction: "top" })
@@ -6225,11 +6256,130 @@ function syncLeafletLayerOrder() {
   });
 }
 
-function addLeafletRouteGeoJson(layer, routeGeoJson, style) {
-  L.geoJSON(routeGeoJson, {
-    filter: (feature) => isRouteLineGeometry(feature?.geometry || feature),
-    style: () => style,
-  }).addTo(layer);
+function addLeafletRoutePolylines(layer, routeLatLngSegments) {
+  const routeStyles = [
+    {
+      color: "#ffffff",
+      weight: 11,
+      opacity: 0.9,
+      lineCap: "round",
+      lineJoin: "round",
+    },
+    {
+      color: ROUTE_MAIN_COLOR,
+      weight: 8,
+      opacity: 0.26,
+      lineCap: "round",
+      lineJoin: "round",
+    },
+    {
+      color: ROUTE_MAIN_COLOR,
+      weight: 5,
+      opacity: 0.96,
+      lineCap: "round",
+      lineJoin: "round",
+    },
+  ];
+
+  routeStyles.forEach((style) => {
+    routeLatLngSegments.forEach((latLngs) => {
+      L.polyline(latLngs, style).addTo(layer);
+    });
+  });
+}
+
+function addLeafletRouteGeoJson(layer, routeGeoJson) {
+  addLeafletRoutePolylines(layer, routeLatLngSegmentsFromGeoJson(routeGeoJson));
+}
+
+function addLeafletRouteDirectionArrows(layer, routeLatLngSegments) {
+  const map = state.leaflet.map;
+  if (!map) {
+    return;
+  }
+
+  routeLatLngSegments.forEach((latLngs) => {
+    const layerPoints = latLngs
+      .map((latLng) => map.latLngToLayerPoint(latLng))
+      .map((point) => ({ x: point.x, y: point.y }));
+    routeDirectionSamples(layerPoints).forEach((sample) => {
+      const latLng = map.layerPointToLatLng(L.point(sample.x, sample.y));
+      L.marker(latLng, {
+        icon: L.divIcon({
+          className: "leaflet-route-arrow",
+          html: routeArrowSvgHtml(sample.angle),
+          iconSize: [ROUTE_ARROW_ICON_SIZE, ROUTE_ARROW_ICON_SIZE],
+          iconAnchor: [ROUTE_ARROW_ICON_SIZE / 2, ROUTE_ARROW_ICON_SIZE / 2],
+        }),
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: 700,
+      }).addTo(layer);
+    });
+  });
+}
+
+function routeArrowSvgHtml(angle) {
+  const safeAngle = Number.isFinite(angle) ? angle : 0;
+  return `
+    <svg class="leaflet-route-arrow-icon" viewBox="0 0 24 24" style="transform: rotate(${safeAngle}deg)" aria-hidden="true">
+      <path class="leaflet-route-arrow-outline" d="M5 4 L20 12 L5 20 L9 12 Z"></path>
+      <path class="leaflet-route-arrow-fill" d="M5 4 L20 12 L5 20 L9 12 Z"></path>
+    </svg>
+  `;
+}
+
+function routeLatLngSegmentsFromGeoJson(routeGeoJson) {
+  return routeLineGeometries(routeGeoJson)
+    .flatMap((geometry) => routeLatLngSegmentsFromGeometry(geometry))
+    .filter((latLngs) => latLngs.length >= 2);
+}
+
+function routeLineGeometries(routeGeoJson) {
+  if (!routeGeoJson || typeof routeGeoJson !== "object") {
+    return [];
+  }
+
+  if (routeGeoJson.type === "FeatureCollection") {
+    return (routeGeoJson.features || [])
+      .map((feature) => feature?.geometry)
+      .filter(isRouteLineGeometry);
+  }
+
+  if (routeGeoJson.type === "Feature") {
+    return isRouteLineGeometry(routeGeoJson.geometry) ? [routeGeoJson.geometry] : [];
+  }
+
+  return isRouteLineGeometry(routeGeoJson) ? [routeGeoJson] : [];
+}
+
+function routeLatLngSegmentsFromGeometry(geometry) {
+  if (geometry?.type === "LineString") {
+    return [routeLatLngsFromCoordinates(geometry.coordinates)];
+  }
+
+  if (geometry?.type === "MultiLineString") {
+    return (geometry.coordinates || []).map(routeLatLngsFromCoordinates);
+  }
+
+  return [];
+}
+
+function routeLatLngsFromCoordinates(coordinates) {
+  if (!Array.isArray(coordinates)) {
+    return [];
+  }
+
+  return coordinates
+    .map((coordinate) => {
+      if (!Array.isArray(coordinate) || coordinate.length < 2) {
+        return null;
+      }
+      const lng = Number(coordinate[0]);
+      const lat = Number(coordinate[1]);
+      return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null;
+    })
+    .filter(Boolean);
 }
 
 function isRenderableRouteGeoJson(routeGeoJson) {
