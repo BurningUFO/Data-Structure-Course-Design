@@ -286,7 +286,12 @@
                         <div class="form-advanced-grid">
                           <label class="field">
                             <span class="field-label">菜系 / 筛选词</span>
-                            <input id="catering-cuisine" type="text" placeholder="例如：咖啡 / 轻食 / 清真" />
+                            <input id="catering-cuisine" type="text" list="catering-cuisine-options" placeholder="例如：咖啡 / 轻食 / 清真" />
+                            <datalist id="catering-cuisine-options"></datalist>
+                          </label>
+                          <label class="field">
+                            <span class="field-label">推荐中心</span>
+                            <select id="catering-center-node"></select>
                           </label>
                           <label class="field">
                             <span class="field-label">排序</span>

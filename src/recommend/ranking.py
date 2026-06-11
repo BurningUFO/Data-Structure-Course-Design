@@ -32,6 +32,7 @@ def recommend_top_k(
     sort_field: str = "heat",
     limit: int = 10,
     sort_order: str = "",
+    match_score_primary: bool = True,
 ) -> list[Record]:
     """
     返回业务推荐场景下的 Top-K 结果。
@@ -48,28 +49,47 @@ def recommend_top_k(
     prepared_records = prepare_ranking_records(records)
     ranking_field = resolve_ranking_field(sort_field)
 
-    if has_match_scores(prepared_records):
+    if has_match_scores(prepared_records) and match_score_primary:
         sorted_selected = sort_records(
             prepared_records,
-            build_match_first_sort_rules(sort_field, ranking_field, effective_order),
+            build_match_score_first_sort_rules(sort_field, ranking_field, effective_order),
         )
         return strip_internal_ranking_fields(sorted_selected[:limit])
 
-    if len(prepared_records) > limit:
-        selected = top_k(
-            prepared_records,
-            field=ranking_field,
-            k=limit,
-            order=effective_order,
-        )
-    else:
-        selected = prepared_records[:]
+    selected = select_top_k_records(
+        prepared_records,
+        field=ranking_field,
+        limit=limit,
+        order=effective_order,
+    )
 
     sorted_selected = sort_records(
         selected,
-        build_recommend_sort_rules(sort_field, ranking_field, effective_order),
+        (
+            build_match_first_sort_rules(sort_field, ranking_field, effective_order)
+            if has_match_scores(prepared_records)
+            else build_recommend_sort_rules(sort_field, ranking_field, effective_order)
+        ),
     )
     return strip_internal_ranking_fields(sorted_selected)
+
+
+def select_top_k_records(
+    records: list[Record],
+    *,
+    field: str,
+    limit: int,
+    order: str,
+) -> list[Record]:
+    """先用堆选出前 K 条，避免为展示前 K 对全量候选做完整排序。"""
+    if len(records) > limit:
+        return top_k(
+            records,
+            field=field,
+            k=limit,
+            order=order,
+        )
+    return records[:]
 
 
 def prepare_ranking_records(records: list[Record]) -> list[Record]:
@@ -147,8 +167,19 @@ def build_match_first_sort_rules(
     ranking_field: str,
     sort_order: str,
 ) -> list[SortRule]:
-    """构造“先按匹配分，再按业务排序”的规则。"""
-    rules: list[SortRule] = [{ "field": MATCH_SCORE_FIELD, "order": "desc" }]
+    """构造“先按用户选择字段，再按匹配分兜底”的规则。"""
+    rules = build_recommend_sort_rules(sort_field, ranking_field, sort_order)
+    rules.insert(1, {"field": MATCH_SCORE_FIELD, "order": "desc"})
+    return rules
+
+
+def build_match_score_first_sort_rules(
+    sort_field: str,
+    ranking_field: str,
+    sort_order: str,
+) -> list[SortRule]:
+    """构造旧版综合查询使用的“匹配分优先”排序规则。"""
+    rules: list[SortRule] = [{"field": MATCH_SCORE_FIELD, "order": "desc"}]
     rules.extend(build_recommend_sort_rules(sort_field, ranking_field, sort_order))
     return rules
 

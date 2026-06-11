@@ -410,6 +410,7 @@ def search_and_recommend(
     distance_strategy: str = "shortest_distance",
     interests: list[str] | str | None = None,
     allow_empty_query: bool = False,
+    match_score_primary: bool = True,
 ) -> dict[str, Any]:
     """
     查询推荐主入口。
@@ -506,6 +507,7 @@ def search_and_recommend(
             sort_field=sort_field,
             sort_order=filters["sort_order"],
             limit=limit,
+            match_score_primary=match_score_primary,
         )
     metadata = build_response_metadata(
         records=top_records,
@@ -910,6 +912,7 @@ def rank_records(
     sort_field: str = "heat",
     sort_order: str = "",
     limit: int = 10,
+    match_score_primary: bool = True,
 ) -> list[Record]:
     """按指定字段选出推荐结果。"""
     return recommend_top_k(
@@ -917,6 +920,7 @@ def rank_records(
         sort_field=sort_field,
         sort_order=sort_order,
         limit=limit,
+        match_score_primary=match_score_primary,
     )
 
 

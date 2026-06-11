@@ -24,7 +24,7 @@ from typing import Any
 from src.compress.huffman import compress_text, decompress_text
 from src.diary.diary_service import DiaryService
 from src.graph.loader import GraphLoader
-from src.recommend.catering_service import recommend_catering
+from src.recommend.catering_service import CUISINE_KEYWORD_GROUPS, recommend_catering
 from src.recommend.interest import (
     build_user_options,
     collect_interest_options,
@@ -603,6 +603,12 @@ class DemoUIService:
                     {"value": "heat", "label": "按热度"},
                     {"value": "rating", "label": "按评分"},
                     {"value": "distance_m", "label": "按真实距离"},
+                ],
+                "catering_cuisine_options": [
+                    {"value": "", "label": "全部菜系"}
+                ] + [
+                    {"value": label, "label": label}
+                    for label, _ in CUISINE_KEYWORD_GROUPS
                 ],
                 "scenic_sort_options": [
                     {"value": "interest", "label": "按兴趣综合"},
@@ -1731,11 +1737,15 @@ class DemoUIService:
     def catering_search(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         request = payload or {}
         start_node_id = self._normalize_start_node(request.get("start_node_id"))
+        center_node_id = normalize_text(request.get("center_node_id"))
+        if center_node_id and center_node_id not in self.graph.nodes:
+            center_node_id = ""
         response = recommend_catering(
             keyword=normalize_text(request.get("keyword")),
             cuisine=normalize_text(request.get("cuisine")),
             site_id=self.site_id,
             start_node_id=start_node_id,
+            center_node_id=center_node_id,
             match_mode="fuzzy",
             sort_field=normalize_text(request.get("sort_field")) or "distance_m",
             limit=self._normalize_limit(request.get("limit"), default=6),
@@ -4100,6 +4110,14 @@ class DemoUIService:
             copied = self._merge_diary_record_fields(copied, diary_id)
         category = normalize_text(copied.get("category")) or "diary"
         route_target_node_id = self._resolve_target_node_id(copied)
+        if "_match_score" in copied and copied.get("score") is None:
+            copied["score"] = copied["_match_score"]
+        if isinstance(copied.get("cuisine_labels"), list):
+            copied["cuisine_label"] = " / ".join(
+                normalize_text(label)
+                for label in copied["cuisine_labels"]
+                if normalize_text(label)
+            )
         copied["category_label"] = CATEGORY_LABELS.get(category, category if category != "diary" else "日记")
         copied["route_target_node_id"] = route_target_node_id
         copied["route_target_name"] = self._resolve_node_name(route_target_node_id) if route_target_node_id else ""

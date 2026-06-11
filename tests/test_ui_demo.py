@@ -11273,6 +11273,30 @@ def test_demo_static_m22_nearby_place_search_controls():
     print("test_demo_static_m22_nearby_place_search_controls passed.")
 
 
+def test_demo_static_catering_recommendation_controls_cover_rubric():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert 'id="catering-keyword"' in html
+    assert 'id="catering-cuisine"' in html
+    assert 'id="catering-cuisine-options"' in html
+    assert 'id="catering-center-node"' in html
+    assert 'id="catering-sort"' in html
+    assert "推荐中心" in html
+    assert "catering_cuisine_options" in script
+    assert "center_node_id: document.querySelector(\"#catering-center-node\").value" in script
+    assert "currentQueryFilters" in script
+    assert "renderPrimarySortMetric" in script
+    assert "热度" in script
+    print("test_demo_static_catering_recommendation_controls_cover_rubric passed.")
+
+
 def test_demo_static_m31b_nearby_profiles_are_used_by_ui():
     repo_root = os.path.join(os.path.dirname(__file__), "..")
     js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
@@ -12004,6 +12028,7 @@ def run_all_tests():
     test_demo_static_indoor_navigation_ui_contains_panel_and_entry_hooks()
     test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly()
     test_demo_static_m22_nearby_place_search_controls()
+    test_demo_static_catering_recommendation_controls_cover_rubric()
     test_demo_static_m31b_nearby_profiles_are_used_by_ui()
     test_demo_aigc_preview_returns_template_storyboard()
     test_demo_aigc_live_image_without_key_falls_back_to_template()

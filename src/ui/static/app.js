@@ -56,6 +56,7 @@ const state = {
   nearbyCenterNodeId: "",
   currentResults: [],
   currentQueryType: "",
+  currentQueryFilters: {},
   currentRoute: null,
   recentSearches: [],
   selectedResultIndex: -1,
@@ -408,6 +409,7 @@ function bindForms() {
       cuisine: document.querySelector("#catering-cuisine").value.trim(),
       sort_field: document.querySelector("#catering-sort").value,
       start_node_id: state.currentStartNodeId,
+      center_node_id: document.querySelector("#catering-center-node").value,
       limit: 6,
     });
   });
@@ -984,6 +986,7 @@ function clearUserInputs() {
   setSelectValue("#scenic-category", "");
   setSelectValue("#place-category", "");
   setSelectValue("#place-center-node", "");
+  setSelectValue("#catering-center-node", "");
   setSelectValue("#place-radius", "500");
   setSelectValue("#scenic-sort", "interest");
   setSelectValue("#place-sort", "distance_m");
@@ -1582,6 +1585,13 @@ function hydrateBootstrap(bootstrap) {
     })),
   );
   populateSelect(document.querySelector("#place-center-node"), nearbyCenterOptions, "");
+  const cateringCenterOptions = [{ value: "", label: "当前起点" }].concat(
+    bootstrap.route_targets.map((item) => ({
+      value: item.id,
+      label: routeTargetLabel(item),
+    })),
+  );
+  populateSelect(document.querySelector("#catering-center-node"), cateringCenterOptions, "");
   const nearbyRadiusOptions = (bootstrap.controls.nearby_radius_options || [
     { value: 200, label: "200 m" },
     { value: 500, label: "500 m" },
@@ -1612,6 +1622,7 @@ function hydrateBootstrap(bootstrap) {
   populateSelect(document.querySelector("#scenic-sort"), scenicSortOptions, "interest");
   populateSelect(document.querySelector("#place-sort"), sortOptions, "distance_m");
   populateSelect(document.querySelector("#catering-sort"), sortOptions, "distance_m");
+  populateSelect(document.querySelector("#catering-cuisine-options"), bootstrap.controls.catering_cuisine_options || [], "");
   populateSelect(document.querySelector("#diary-list-sort"), diarySortOptions, "interest");
 
   renderPresetButtons("#scenic-presets", bootstrap.presets.scenic, handleScenicPreset);
@@ -2636,6 +2647,7 @@ function handleCateringPreset(preset) {
     cuisine: preset.cuisine || "",
     sort_field: document.querySelector("#catering-sort").value,
     start_node_id: state.currentStartNodeId,
+    center_node_id: document.querySelector("#catering-center-node").value,
     limit: 6,
   });
 }
@@ -3303,6 +3315,7 @@ async function runQuery(url, payload) {
     const response = await apiPost(url, payload);
     rememberSearch(searchLabelFromPayload(payload), response.query_type, payload, url);
     state.currentResults = response.results || response.data || [];
+    state.currentQueryFilters = response.filters || {};
     state.currentRoute = null;
     state.focusedNodeId = firstMappableNodeId(state.currentResults);
     renderResults(response);
@@ -3327,6 +3340,7 @@ async function runQuery(url, payload) {
     );
   } catch (error) {
     state.currentResults = [];
+    state.currentQueryFilters = {};
     state.currentRoute = null;
     state.focusedNodeId = "";
     renderResults({
@@ -3446,6 +3460,7 @@ function renderResults(response) {
   const items = response.results || response.data || [];
   const queryType = response.query_type || "query";
   state.currentQueryType = queryType;
+  state.currentQueryFilters = response.filters || {};
 
   if (!items.length) {
     state.selectedResultIndex = -1;
@@ -3613,6 +3628,19 @@ function renderResultDetailMetrics(item, routeTarget) {
     item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
     item.created_at ? `<span class="metric-pill">${escapeHtml(item.created_at)}</span>` : "",
   ].filter(Boolean).join("");
+}
+
+function renderPrimarySortMetric(item, sortField, distanceText = "") {
+  if (sortField === "distance_m" && distanceText) {
+    return `<span class="metric-pill metric-pill-strong">距离 ${escapeHtml(distanceText)}</span>`;
+  }
+  if (sortField === "rating" && item.rating !== undefined) {
+    return `<span class="metric-pill metric-pill-strong">评分 ${Number(item.rating).toFixed(1)}${item.rating_count !== undefined ? ` (${item.rating_count}人)` : ""}</span>`;
+  }
+  if (sortField === "heat" && item.heat !== undefined) {
+    return `<span class="metric-pill metric-pill-strong">热度 ${item.heat}${item.views !== undefined ? ` / 浏览 ${item.views}` : ""}</span>`;
+  }
+  return "";
 }
 
 function resultTypeLabel(queryType) {
@@ -3964,22 +3992,32 @@ function renderResultCard(item, index, queryType = "") {
   const interestMarkup = item.interest_reason
     ? `<p class="interest-reason">${escapeHtml(item.interest_reason)}</p>`
     : "";
+  const sortField = state.currentQueryFilters?.sort_field || "";
+  const primarySortMetric = renderPrimarySortMetric(item, sortField, distanceText);
+  const ratingMetric = item.rating !== undefined
+    ? `<span class="metric-pill${sortField === "rating" ? " metric-pill-strong" : ""}">评分 ${Number(item.rating).toFixed(1)}${item.rating_count !== undefined ? ` (${item.rating_count}人)` : ""}</span>`
+    : "";
+  const heatMetric = item.heat !== undefined
+    ? `<span class="metric-pill${sortField === "heat" ? " metric-pill-strong" : ""}">热度 ${item.heat}${item.views !== undefined ? ` / 浏览 ${item.views}` : ""}</span>`
+    : "";
 
   const metrics = [
     routeTargetName ? `<span class="metric-pill metric-pill-strong">目的地 ${escapeHtml(routeTargetName)}</span>` : "",
+    primarySortMetric,
     item.interest_match_score !== undefined ? `<span class="metric-pill metric-pill-strong">兴趣 ${Number(item.interest_match_score).toFixed(1)}</span>` : "",
     item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
-    distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
+    sortField !== "distance_m" && distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
     item.nearby_reason ? `<span class="metric-pill">${escapeHtml(item.nearby_reason)}</span>` : "",
     item.category_label ? `<span class="metric-pill">${escapeHtml(item.category_label)}</span>` : "",
+    item.cuisine_label ? `<span class="metric-pill">菜系 ${escapeHtml(item.cuisine_label)}</span>` : "",
     item.algorithm ? `<span class="metric-pill">${escapeHtml(item.algorithm)}</span>` : "",
     item.original_size_bytes !== undefined ? `<span class="metric-pill">原文 ${item.original_size_bytes} bytes</span>` : "",
     item.estimated_package_size_bytes !== undefined ? `<span class="metric-pill">压缩 ${item.estimated_package_size_bytes} bytes</span>` : "",
     item.estimated_compression_ratio !== undefined ? `<span class="metric-pill">压缩比 ${(Number(item.estimated_compression_ratio) * 100).toFixed(1)}%${item.roundtrip_ok !== undefined ? ` · ${item.roundtrip_ok ? "校验通过" : "校验失败"}` : ""}</span>` : "",
-    item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}${item.rating_count !== undefined ? ` (${item.rating_count}人)` : ""}</span>` : "",
+    sortField !== "rating" ? ratingMetric : "",
     item.destination ? `<span class="metric-pill">目的地 ${escapeHtml(item.destination)}</span>` : "",
     scoreText ? `<span class="metric-pill">${escapeHtml(scoreText)}</span>` : "",
-    item.heat !== undefined ? `<span class="metric-pill">热度 ${item.heat}${item.views !== undefined ? ` / 浏览 ${item.views}` : ""}</span>` : "",
+    sortField !== "heat" ? heatMetric : "",
     item.style_label ? `<span class="metric-pill">${escapeHtml(item.style_label)}</span>` : "",
     item.duration_s !== undefined ? `<span class="metric-pill">${item.duration_s} 秒</span>` : "",
     item.status ? `<span class="metric-pill">${escapeHtml(item.status)}</span>` : "",

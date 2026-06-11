@@ -175,6 +175,202 @@ def test_recommend_catering_optional_cuisine_filter():
     print("test_recommend_catering_optional_cuisine_filter passed.")
 
 
+def test_recommend_catering_keyword_sort_uses_user_field_first():
+    records = [
+        {
+            "id": "food_low_rating",
+            "name": "餐饮综合楼（家园食堂）",
+            "category": "catering",
+            "heat": 99,
+            "rating": 4.2,
+            "tags": ["食堂"],
+            "keywords": ["食堂"],
+            "node_id": "jiayuan",
+        },
+        {
+            "id": "food_high_rating",
+            "name": "北大青鸟总部食堂",
+            "category": "catering",
+            "heat": 80,
+            "rating": 4.8,
+            "tags": ["食堂"],
+            "keywords": ["食堂"],
+            "node_id": "qingniao",
+        },
+        {
+            "id": "food_mid_rating",
+            "name": "农园食堂",
+            "category": "catering",
+            "heat": 90,
+            "rating": 4.5,
+            "tags": ["食堂"],
+            "keywords": ["食堂"],
+            "node_id": "nongyuan",
+        },
+    ]
+
+    response = recommend_catering(
+        keyword="食堂",
+        records=records,
+        sort_field="rating",
+        limit=3,
+    )
+
+    assert response["success"] is True
+    assert [item["rating"] for item in response["data"]] == [4.8, 4.5, 4.2]
+    assert response["data"][0]["_match_score"] > 0
+    print("test_recommend_catering_keyword_sort_uses_user_field_first passed.")
+
+
+def test_recommend_catering_keyword_keeps_direct_food_intent():
+    def distance_provider(start_node_id, target_node_id, strategy):
+        distances = {
+            "near_coffee": 20.0,
+            "generic_cafe": 30.0,
+            "real_canteen": 200.0,
+        }
+        return distances[target_node_id]
+
+    records = [
+        {
+            "id": "near_coffee",
+            "name": "图书馆咖啡服务点",
+            "category": "catering",
+            "heat": 80,
+            "rating": 4.5,
+            "tags": ["咖啡", "餐饮"],
+            "keywords": ["咖啡", "餐饮", "catering"],
+            "description": "作为非食堂餐饮推荐的补充样例。",
+            "node_id": "near_coffee",
+        },
+        {
+            "id": "generic_cafe",
+            "name": "图书馆咖啡厅",
+            "category": "catering",
+            "heat": 78,
+            "rating": 4.6,
+            "tags": ["咖啡", "轻食"],
+            "keywords": ["咖啡", "catering"],
+            "node_id": "generic_cafe",
+        },
+        {
+            "id": "real_canteen",
+            "name": "德智园学生食堂",
+            "category": "catering",
+            "heat": 88,
+            "rating": 4.7,
+            "tags": ["食堂"],
+            "keywords": ["学生食堂", "餐饮"],
+            "node_id": "real_canteen",
+        },
+    ]
+
+    response = recommend_catering(
+        keyword="食堂",
+        records=records,
+        start_node_id="gate",
+        sort_field="distance_m",
+        distance_provider=distance_provider,
+        use_default_distance_provider=False,
+        limit=3,
+    )
+
+    assert response["success"] is True
+    assert [item["id"] for item in response["data"]] == ["real_canteen"]
+    assert "食堂" in response["data"][0]["cuisine_labels"]
+    assert "食堂" not in [
+        label
+        for record in records[:2]
+        for label in recommend_catering(records=[record], limit=1)["data"][0]["cuisine_labels"]
+    ]
+    print("test_recommend_catering_keyword_keeps_direct_food_intent passed.")
+
+
+def test_recommend_catering_center_node_controls_distance_origin():
+    calls = []
+
+    def distance_provider(start_node_id, target_node_id, strategy):
+        calls.append((start_node_id, target_node_id, strategy))
+        distances = {
+            ("library", "near_cafe"): 80.0,
+            ("library", "far_canteen"): 320.0,
+            ("gate_north", "near_cafe"): 500.0,
+            ("gate_north", "far_canteen"): 100.0,
+        }
+        return distances[(start_node_id, target_node_id)]
+
+    records = [
+        {
+            "id": "near_cafe",
+            "name": "图书馆咖啡厅",
+            "category": "catering",
+            "heat": 80,
+            "rating": 4.6,
+            "tags": ["咖啡"],
+            "node_id": "near_cafe",
+        },
+        {
+            "id": "far_canteen",
+            "name": "远处食堂",
+            "category": "catering",
+            "heat": 90,
+            "rating": 4.8,
+            "tags": ["食堂"],
+            "node_id": "far_canteen",
+        },
+    ]
+
+    response = recommend_catering(
+        records=records,
+        start_node_id="gate_north",
+        center_node_id="library",
+        sort_field="distance_m",
+        distance_provider=distance_provider,
+        use_default_distance_provider=False,
+        limit=2,
+    )
+
+    assert response["success"] is True
+    assert [item["id"] for item in response["data"]] == ["near_cafe", "far_canteen"]
+    assert response["filters"]["distance_origin_node_id"] == "library"
+    assert response["metadata"]["business"]["distance_basis"] == "selected_center"
+    assert all(call[0] == "library" for call in calls)
+    print("test_recommend_catering_center_node_controls_distance_origin passed.")
+
+
+def test_recommend_catering_infers_cuisine_labels():
+    response = recommend_catering(
+        cuisine="咖啡",
+        records=[
+            {
+                "id": "coffee",
+                "name": "泊星地咖啡馆",
+                "category": "catering",
+                "heat": 80,
+                "rating": 4.5,
+                "tags": ["amenity:cafe"],
+                "node_id": "coffee",
+            },
+            {
+                "id": "canteen",
+                "name": "普通食堂",
+                "category": "catering",
+                "heat": 90,
+                "rating": 4.4,
+                "tags": ["食堂"],
+                "node_id": "canteen",
+            },
+        ],
+        sort_field="heat",
+        limit=5,
+    )
+
+    assert response["success"] is True
+    assert [item["id"] for item in response["data"]] == ["coffee"]
+    assert "咖啡" in response["data"][0]["cuisine_labels"]
+    print("test_recommend_catering_infers_cuisine_labels passed.")
+
+
 def test_interest_aware_ranking_uses_interest_heat_rating_and_distance():
     records = [
         {
@@ -240,6 +436,10 @@ def run_all_tests():
     test_recommend_catering_top_k()
     test_recommend_catering_distance_sort()
     test_recommend_catering_optional_cuisine_filter()
+    test_recommend_catering_keyword_sort_uses_user_field_first()
+    test_recommend_catering_keyword_keeps_direct_food_intent()
+    test_recommend_catering_center_node_controls_distance_origin()
+    test_recommend_catering_infers_cuisine_labels()
     test_interest_aware_ranking_uses_interest_heat_rating_and_distance()
     print("All recommend tests passed.")
 
