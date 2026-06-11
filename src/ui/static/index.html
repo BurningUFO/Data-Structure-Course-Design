@@ -291,7 +291,23 @@
                           </label>
                           <label class="field">
                             <span class="field-label">推荐中心</span>
-                            <select id="catering-center-node"></select>
+                            <div class="combo-field" data-combobox="cateringCenter">
+                              <div class="combo-input-wrap">
+                                <input
+                                  id="catering-center-node-search"
+                                  type="search"
+                                  autocomplete="off"
+                                  placeholder="输入地点名 / 类别"
+                                  role="combobox"
+                                  aria-autocomplete="list"
+                                  aria-expanded="false"
+                                  aria-controls="catering-center-node-results"
+                                />
+                                <button class="combo-arrow-button" type="button" data-combobox-toggle="cateringCenter" aria-label="展开推荐中心列表"></button>
+                              </div>
+                              <input id="catering-center-node" type="hidden" />
+                              <div id="catering-center-node-results" class="combo-results" role="listbox"></div>
+                            </div>
                           </label>
                           <label class="field">
                             <span class="field-label">排序</span>

@@ -11286,11 +11286,22 @@ def test_demo_static_catering_recommendation_controls_cover_rubric():
     assert 'id="catering-keyword"' in html
     assert 'id="catering-cuisine"' in html
     assert 'id="catering-cuisine-options"' in html
+    assert 'data-combobox="cateringCenter"' in html
+    assert 'id="catering-center-node-search"' in html
     assert 'id="catering-center-node"' in html
+    assert 'id="catering-center-node-results"' in html
+    assert 'data-combobox-toggle="cateringCenter"' in html
     assert 'id="catering-sort"' in html
     assert "推荐中心" in html
+    assert 'aria-controls="catering-center-node-results"' in html
     assert "catering_cuisine_options" in script
-    assert "center_node_id: document.querySelector(\"#catering-center-node\").value" in script
+    assert "cateringCenter" in script
+    assert "cateringCenterComboboxItems" in script
+    assert "resolveCateringCenterComboboxSelection" in script
+    assert "clearCateringCenterComboboxSelection" in script
+    assert "center_node_id: centerNodeId" in script
+    assert "syncContextComboboxValue(\"cateringCenter\", \"\")" in script
+    assert "当前起点" in script
     assert "currentQueryFilters" in script
     assert "renderPrimarySortMetric" in script
     assert "热度" in script

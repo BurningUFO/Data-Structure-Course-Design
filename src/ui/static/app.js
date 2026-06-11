@@ -404,12 +404,13 @@ function bindForms() {
 
   document.querySelector("#catering-form").addEventListener("submit", async (event) => {
     event.preventDefault();
+    const centerNodeId = resolveCateringCenterComboboxSelection();
     await runQuery("/api/recommend/catering", {
       keyword: document.querySelector("#catering-keyword").value.trim(),
       cuisine: document.querySelector("#catering-cuisine").value.trim(),
       sort_field: document.querySelector("#catering-sort").value,
       start_node_id: state.currentStartNodeId,
-      center_node_id: document.querySelector("#catering-center-node").value,
+      center_node_id: centerNodeId,
       limit: 6,
     });
   });
@@ -992,6 +993,7 @@ function clearUserInputs() {
   setSelectValue("#place-sort", "distance_m");
   setSelectValue("#catering-sort", "distance_m");
   setSelectValue("#diary-list-sort", "interest");
+  syncContextComboboxValue("cateringCenter", "");
   setSelectValue("#route-target", defaultRouteTargetId());
   setMultipleSelectValues("#multi-route-targets", []);
   setSelectValue("#route-strategy", "shortest_distance");
@@ -1099,7 +1101,7 @@ function currentInterestStatusText() {
 }
 
 function bindContextComboboxes() {
-  ["site", "start", "user"].forEach((comboId) => {
+  ["site", "start", "user", "cateringCenter"].forEach((comboId) => {
     const config = contextComboboxConfig(comboId);
     const input = document.querySelector(config.inputSelector);
     const results = document.querySelector(config.resultsSelector);
@@ -1113,6 +1115,7 @@ function bindContextComboboxes() {
       openContextCombobox(comboId, "");
     });
     input.addEventListener("input", () => {
+      config.onInput?.(input.value);
       openContextCombobox(comboId, input.value);
     });
     input.addEventListener("keydown", (event) => {
@@ -1186,6 +1189,33 @@ function contextComboboxConfig(comboId) {
       optionBadge: () => "用户",
       searchFields: (user) => [user.id, user.name, user.interest_text, ...(Array.isArray(user.interests) ? user.interests : [])],
       onSelect: selectUserFromCombobox,
+    },
+    cateringCenter: {
+      inputSelector: "#catering-center-node-search",
+      hiddenSelector: "#catering-center-node",
+      resultsSelector: "#catering-center-node-results",
+      toggleSelector: '[data-combobox-toggle="cateringCenter"]',
+      emptyText: "未找到匹配推荐中心",
+      getItems: cateringCenterComboboxItems,
+      currentValue: () => currentCateringCenterNodeId(),
+      label: (node) => comboValue(node) ? routeTargetLabel(node) : "当前起点",
+      optionName: (node) => node.name || node.id || "当前起点",
+      optionMeta: (node) => comboValue(node)
+        ? [node.id, node.category_label || node.category, node.building_name, node.floor_label].filter(Boolean).join(" · ")
+        : String(node.description || "未指定推荐中心时按当前起点计算距离"),
+      optionBadge: (node) => comboValue(node) ? (node.category_label || node.category || "推荐中心") : "默认",
+      searchFields: (node) => [
+        node.id,
+        node.name,
+        node.category_label,
+        node.category,
+        node.building_name,
+        node.floor_label,
+        node.description,
+        ...(Array.isArray(node.search_aliases) ? node.search_aliases : []),
+      ],
+      onInput: clearCateringCenterComboboxSelection,
+      onSelect: selectCateringCenterFromCombobox,
     },
   };
   return configs[comboId];
@@ -1448,6 +1478,66 @@ function selectUserFromCombobox(user) {
   setStatus(currentInterestStatusText(), "info");
 }
 
+function cateringCenterComboboxItems() {
+  const currentStartName = getNodeName(state.currentStartNodeId);
+  const defaultItem = {
+    id: "",
+    name: "当前起点",
+    category: "default_origin",
+    category_label: "默认距离基准",
+    description: currentStartName ? `当前起点：${currentStartName}` : "未指定推荐中心时按当前起点计算距离",
+    search_aliases: ["默认", "距离基准", "推荐中心", "center"],
+  };
+  return [defaultItem].concat(state.bootstrap?.route_targets || []);
+}
+
+function currentCateringCenterNodeId() {
+  return document.querySelector("#catering-center-node")?.value || "";
+}
+
+function clearCateringCenterComboboxSelection() {
+  const hidden = document.querySelector("#catering-center-node");
+  if (hidden) {
+    hidden.value = "";
+  }
+}
+
+function selectCateringCenterFromCombobox(node) {
+  syncContextComboboxValue("cateringCenter", comboValue(node));
+}
+
+function resolveCateringCenterComboboxSelection() {
+  const input = document.querySelector("#catering-center-node-search");
+  const hidden = document.querySelector("#catering-center-node");
+  if (!input || !hidden) {
+    return "";
+  }
+  if (hidden.value) {
+    return hidden.value;
+  }
+
+  const query = input.value.trim();
+  if (!query) {
+    syncContextComboboxValue("cateringCenter", "");
+    return "";
+  }
+
+  const comboState = comboboxState("cateringCenter");
+  const selected = comboState.results[comboState.activeIndex]
+    || exactContextComboboxMatch("cateringCenter", query)
+    || filterContextComboboxResults("cateringCenter", query)[0]
+    || null;
+
+  if (!selected) {
+    syncContextComboboxValue("cateringCenter", "");
+    return "";
+  }
+
+  const resolvedValue = comboValue(selected);
+  syncContextComboboxValue("cateringCenter", resolvedValue);
+  return resolvedValue;
+}
+
 function closeContextCombobox(comboId) {
   const comboState = comboboxState(comboId);
   comboState.isOpen = false;
@@ -1585,13 +1675,6 @@ function hydrateBootstrap(bootstrap) {
     })),
   );
   populateSelect(document.querySelector("#place-center-node"), nearbyCenterOptions, "");
-  const cateringCenterOptions = [{ value: "", label: "当前起点" }].concat(
-    bootstrap.route_targets.map((item) => ({
-      value: item.id,
-      label: routeTargetLabel(item),
-    })),
-  );
-  populateSelect(document.querySelector("#catering-center-node"), cateringCenterOptions, "");
   const nearbyRadiusOptions = (bootstrap.controls.nearby_radius_options || [
     { value: 200, label: "200 m" },
     { value: 500, label: "500 m" },
@@ -1624,6 +1707,7 @@ function hydrateBootstrap(bootstrap) {
   populateSelect(document.querySelector("#catering-sort"), sortOptions, "distance_m");
   populateSelect(document.querySelector("#catering-cuisine-options"), bootstrap.controls.catering_cuisine_options || [], "");
   populateSelect(document.querySelector("#diary-list-sort"), diarySortOptions, "interest");
+  syncContextComboboxValue("cateringCenter", "");
 
   renderPresetButtons("#scenic-presets", bootstrap.presets.scenic, handleScenicPreset);
   renderPresetButtons("#place-presets", bootstrap.presets.place, handlePlacePreset);
@@ -2642,12 +2726,13 @@ async function runNearbySearch(centerNodeId, options = {}) {
 function handleCateringPreset(preset) {
   document.querySelector("#catering-keyword").value = preset.keyword || "";
   document.querySelector("#catering-cuisine").value = preset.cuisine || "";
+  const centerNodeId = resolveCateringCenterComboboxSelection();
   void runQuery("/api/recommend/catering", {
     keyword: preset.keyword || "",
     cuisine: preset.cuisine || "",
     sort_field: document.querySelector("#catering-sort").value,
     start_node_id: state.currentStartNodeId,
-    center_node_id: document.querySelector("#catering-center-node").value,
+    center_node_id: centerNodeId,
     limit: 6,
   });
 }

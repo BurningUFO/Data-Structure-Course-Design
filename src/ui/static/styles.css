@@ -1331,6 +1331,9 @@ select[multiple] {
 }
 
 .form-advanced {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
   border: 1px solid rgba(35, 51, 63, 0.08);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.56);
@@ -1350,21 +1353,45 @@ select[multiple] {
   border-bottom: 1px solid rgba(35, 51, 63, 0.08);
 }
 
+.form-advanced[open] {
+  z-index: 20;
+}
+
 .form-advanced-grid {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
   display: grid;
   gap: 12px;
   padding: 12px;
 }
 
 .nested-form {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
   padding: 12px;
 }
 
 .inner-advanced {
+  position: relative;
+  z-index: 2;
+  overflow: visible;
   background: rgba(35, 51, 63, 0.03);
 }
 
+.inner-advanced .combo-field {
+  width: 100%;
+}
+
+.inner-advanced .combo-results {
+  z-index: 10000;
+}
+
 .management-details {
+  position: relative;
+  z-index: 5;
+  overflow: visible;
   background: rgba(255, 255, 255, 0.64);
 }
 
