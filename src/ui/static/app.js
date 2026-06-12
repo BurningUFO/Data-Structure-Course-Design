@@ -7,6 +7,14 @@ const MAP_ZOOM_STEP = 0.0016;
 const ROUTE_ARROW_SPACING_PX = 92;
 const ROUTE_ARROW_ICON_SIZE = 18;
 const ROUTE_MAIN_COLOR = "#1677ff";
+const MAP_RESULT_MARKER_LIMIT = 5;
+const MAP_MARKER_ROLE_PRIORITY = {
+  result: 10,
+  selected_result: 20,
+  route_waypoint: 30,
+  destination: 40,
+  start: 50,
+};
 const PRIORITY_METRIC_LIMIT = 4;
 const UX_STORAGE_KEY = "tourgraph_ux_state_v1";
 const RECENT_SEARCH_LIMIT = 5;
@@ -65,6 +73,11 @@ const state = {
   aigcCapabilities: {},
   mapRenderer: "simple_svg",
   mapRenderToken: 0,
+  mapViewportFit: {
+    token: 0,
+    fittedToken: 0,
+    reason: "",
+  },
   basemapMode: "real_map",
   basemapSourceIndex: 0,
   basemapError: "",
@@ -114,6 +127,7 @@ const state = {
     osmLayersPayload: null,
     baseGeoJson: null,
     routeLayer: null,
+    markerLayer: null,
     routeZoomHandler: null,
     fittedSiteId: "",
     siteBoundsFitted: false,
@@ -357,6 +371,8 @@ function refreshMapAfterLayoutChange() {
         invalidateLeafletSize();
         fitLeafletToData();
         syncLeafletRouteLayer();
+        syncLeafletMarkerLayer();
+        applyPendingLeafletViewportFit();
         syncLeafletCaption();
         syncMapDemoPanel();
         return;
@@ -799,6 +815,7 @@ function resetMapView() {
     setMapRendererVisibility(selectedMapRenderer());
     return;
   }
+  markMapViewportFitHandled();
   resetMapViewState();
   if (selectedMapRenderer() === "leaflet_geo") {
     fitLeafletToData();
@@ -1465,6 +1482,8 @@ function selectStartNodeFromCombobox(node) {
   syncContextComboboxValue("start", state.currentStartNodeId);
   if (state.currentRoute) {
     clearRoute();
+  } else {
+    renderMap();
   }
   updateActiveFeatureCaption();
   persistUserContext();
@@ -3270,6 +3289,7 @@ function refreshLeafletInspectionLayers() {
   state.leaflet.baseGeoJson = null;
   syncLeafletBaseLayers(state.mapGeoJson);
   syncLeafletRouteLayer();
+  syncLeafletMarkerLayer();
   syncLeafletLayerOrder();
   syncLeafletCaption();
   syncMapDemoPanel();
@@ -3403,6 +3423,9 @@ async function runQuery(url, payload) {
     state.currentQueryFilters = response.filters || {};
     state.currentRoute = null;
     state.focusedNodeId = firstMappableNodeId(state.currentResults);
+    if (response.success && state.currentResults.length) {
+      requestMapViewportFit("results");
+    }
     renderResults(response);
     revealResultPanel();
     renderRoute(null);
@@ -3472,6 +3495,7 @@ async function planRoute(targetNodeId) {
 
     state.currentRoute = response;
     state.focusedNodeId = response.target_node_id;
+    requestMapViewportFit("route");
     await syncIndoorStateFromRoute(response);
     renderRoute(response);
     renderMap();
@@ -3518,6 +3542,7 @@ async function planMultiRoute(targetNodeIds) {
 
     state.currentRoute = response;
     state.focusedNodeId = "";
+    requestMapViewportFit("route");
     await syncIndoorStateFromRoute(response);
     renderRoute(response);
     renderMap();
@@ -5318,6 +5343,49 @@ function svgNumber(value) {
   return String(Math.round(number * 100) / 100);
 }
 
+function renderSvgMapMarkerMarkup(markers, screenNodes) {
+  if (!Array.isArray(markers) || !markers.length) {
+    return "";
+  }
+
+  return markers
+    .map((marker) => {
+      const anchorNodeId = marker.anchorNodeId || marker.nodeId;
+      const targetNodeId = marker.targetNodeId || marker.nodeId;
+      const point = screenNodes.get(anchorNodeId);
+      if (!point) {
+        return "";
+      }
+      const role = markerRoleClass(marker.role);
+      const isSelected = isSelectedMapMarker(marker);
+      const label = marker.label || "";
+      const title = marker.name || getNodeName(targetNodeId) || getNodeName(anchorNodeId) || targetNodeId || anchorNodeId;
+      const classes = [
+        "svg-map-marker",
+        `svg-map-marker-${role}`,
+        marker.aggregate ? "is-aggregate" : "",
+        isSelected ? "is-selected" : "",
+      ].filter(Boolean).join(" ");
+      return `
+        <g
+          class="${escapeHtml(classes)}"
+          data-map-node="${escapeHtml(targetNodeId)}"
+          data-map-marker-anchor="${escapeHtml(anchorNodeId)}"
+          data-map-marker-role="${escapeHtml(role)}"
+          transform="translate(${svgNumber(point.x)} ${svgNumber(point.y)})"
+          aria-label="${escapeHtml(title)}"
+        >
+          <title>${escapeHtml(title)}</title>
+          <path class="svg-map-marker-shadow" d="M -12 -30 C -22 -20 -20 -4 0 15 C 20 -4 22 -20 12 -30 C 5 -37 -5 -37 -12 -30 Z"></path>
+          <path class="svg-map-marker-pin" d="M -12 -30 C -22 -20 -20 -4 0 15 C 20 -4 22 -20 12 -30 C 5 -37 -5 -37 -12 -30 Z"></path>
+          <circle class="svg-map-marker-core" cx="0" cy="-18" r="12"></circle>
+          <text class="svg-map-marker-label" x="0" y="-13" text-anchor="middle">${escapeHtml(label)}</text>
+        </g>
+      `;
+    })
+    .join("");
+}
+
 function buildSvgRouteMarkup(routeScreenPoints) {
   const points = (routeScreenPoints || [])
     .filter((point) => Number.isFinite(point?.x) && Number.isFinite(point?.y));
@@ -5764,6 +5832,8 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
   const mapData = state.bootstrap.map;
   const routePath = state.currentRoute?.ui?.mappable_path_node_ids || [];
   const highlightNodeIds = getMapHighlightNodeIds();
+  applyPendingSvgViewportFit(mapData);
+  const overlayMarkers = getMapOverlayMarkers();
 
   const projectedNodes = new Map(
     mapData.nodes.map((node) => [node.id, projectNode(node, mapData.bounds)]),
@@ -5790,6 +5860,7 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
     .map((nodeId) => screenNodes.get(nodeId))
     .filter(Boolean);
   const routeMarkup = buildSvgRouteMarkup(routeScreenPoints);
+  const markerMarkup = renderSvgMapMarkerMarkup(overlayMarkers, screenNodes);
 
   const visibleNodes = mapData.nodes.filter((node) => state.pathNodesVisible || !isPathNodeData(node));
   const nodeMarkup = visibleNodes
@@ -5840,6 +5911,7 @@ function renderSvgMap(fallbackMessage = "", renderToken = state.mapRenderToken) 
     </g>
     ${routeMarkup}
     ${nodeMarkup}
+    ${markerMarkup}
   `;
 
   const captionText = state.currentRoute
@@ -5882,7 +5954,9 @@ async function renderLeafletMap(renderToken = state.mapRenderToken) {
     syncLeafletOsmLayers(osmPayload);
     syncLeafletBaseLayers(geojson);
     syncLeafletRouteLayer();
+    syncLeafletMarkerLayer();
     syncLeafletLayerOrder();
+    applyPendingLeafletViewportFit();
     invalidateLeafletSize();
 
     syncLeafletCaption();
@@ -6485,6 +6559,179 @@ function syncLeafletRouteLayer() {
   syncLeafletLayerOrder();
 }
 
+function syncLeafletMarkerLayer() {
+  const map = state.leaflet.map;
+  if (!map || !window.L) {
+    return;
+  }
+
+  removeLeafletLayer("markerLayer");
+  const markers = getMapOverlayMarkers();
+  if (!markers.length) {
+    syncLeafletLayerOrder();
+    return;
+  }
+
+  const nodeIndex = mapNodeIndex();
+  const layer = L.layerGroup().addTo(map);
+  markers.forEach((marker) => {
+    const anchorNodeId = marker.anchorNodeId || marker.nodeId;
+    const targetNodeId = marker.targetNodeId || marker.nodeId;
+    const node = nodeIndex.get(anchorNodeId);
+    if (!node) {
+      return;
+    }
+
+    const leafletMarker = L.marker([node.lat, node.lng], {
+      icon: L.divIcon({
+        className: "leaflet-map-marker-icon",
+        html: leafletMapMarkerHtml(marker),
+        iconSize: [36, 46],
+        iconAnchor: [18, 42],
+        popupAnchor: [0, -38],
+      }),
+      keyboard: true,
+      title: marker.name || node.name || targetNodeId,
+      zIndexOffset: 900 + mapMarkerPriority(marker.role),
+    }).addTo(layer);
+    leafletMarker._mapOverlayNodeId = targetNodeId;
+    leafletMarker._mapOverlayAnchorNodeId = anchorNodeId;
+
+    leafletMarker.bindTooltip(marker.name || node.name || targetNodeId, {
+      direction: "top",
+      opacity: 0.92,
+    });
+    leafletMarker.bindPopup(leafletMarkerPopupHtml(marker));
+    leafletMarker.on("click", () => {
+      state.focusedNodeId = targetNodeId;
+      selectResultByNodeId(targetNodeId, {
+        focusMap: false,
+        openDetail: true,
+        scrollIntoView: true,
+      });
+      refreshLeafletMarkerSelectionClasses();
+      syncLeafletRouteLayer();
+      syncMapDemoPanel();
+    });
+  });
+
+  state.leaflet.markerLayer = layer;
+  syncLeafletLayerOrder();
+}
+
+function leafletMapMarkerHtml(marker) {
+  const role = markerRoleClass(marker.role);
+  const classes = [
+    "leaflet-map-marker",
+    `leaflet-map-marker-${role}`,
+    marker.aggregate ? "is-aggregate" : "",
+    isSelectedMapMarker(marker) ? "is-selected" : "",
+  ].filter(Boolean).join(" ");
+  return `
+    <div class="${escapeHtml(classes)}" data-map-marker-role="${escapeHtml(role)}">
+      <span class="leaflet-map-marker-pin" aria-hidden="true"></span>
+      <span class="leaflet-map-marker-label">${escapeHtml(marker.label || "")}</span>
+    </div>
+  `;
+}
+
+function leafletMarkerPopupHtml(marker) {
+  const targetNodeId = marker.targetNodeId || marker.nodeId || "";
+  const anchorNodeId = marker.anchorNodeId || marker.nodeId || "";
+  const nodeName = marker.name || getNodeName(targetNodeId) || getNodeName(anchorNodeId) || targetNodeId || anchorNodeId;
+  const roleLabel = mapMarkerRoleLabel(marker.role);
+  const canPlanRoute = marker.role !== "start" && Boolean(targetNodeId);
+  const indoorContext = resolveIndoorContextForTarget(targetNodeId);
+  const resultList = renderLeafletMarkerResultList(marker);
+  const routeButton = canPlanRoute
+    ? `
+      <button class="route-button leaflet-popup-button" type="button" data-route-target="${escapeHtml(targetNodeId)}">
+        从当前起点规划路线
+      </button>
+    `
+    : "";
+  const nearbyButton = targetNodeId
+    ? `
+      <button class="ghost-button leaflet-popup-button" type="button" data-nearby-center="${escapeHtml(targetNodeId)}">
+        查附近设施
+      </button>
+    `
+    : "";
+  const indoorButton = indoorContext
+    ? `
+      <button
+        class="ghost-button leaflet-popup-button"
+        type="button"
+        data-enter-indoor="${escapeHtml(indoorContext.buildingId)}"
+        data-indoor-floor="${escapeHtml(indoorContext.floorId || "")}"
+        data-indoor-zone-target="${escapeHtml(indoorContext.targetNodeId || "")}"
+      >
+        进入室内导航
+      </button>
+    `
+    : "";
+
+  return `
+    <strong>${escapeHtml(nodeName)}</strong><br>
+    <span>${escapeHtml(roleLabel)}</span>
+    ${resultList}
+    ${routeButton}
+    ${nearbyButton}
+    ${indoorButton}
+  `;
+}
+
+function renderLeafletMarkerResultList(marker) {
+  const items = Array.isArray(marker.items) ? marker.items : [];
+  if (items.length <= 1) {
+    return "";
+  }
+  return `
+    <ol class="leaflet-marker-result-list">
+      ${items.map((item) => `
+        <li>
+          <span>#${escapeHtml(item.rank)}</span>
+          <strong>${escapeHtml(item.name || getNodeName(item.targetNodeId) || item.targetNodeId)}</strong>
+        </li>
+      `).join("")}
+    </ol>
+  `;
+}
+
+function mapMarkerRoleLabel(role) {
+  const labels = {
+    start: "当前起点",
+    result: "查询结果",
+    selected_result: "当前选中",
+    destination: "路线终点",
+    route_waypoint: "途经点",
+  };
+  return labels[role] || "地图标识";
+}
+
+function refreshLeafletMarkerSelectionClasses() {
+  const markerLayer = state.leaflet.markerLayer;
+  if (!markerLayer || typeof markerLayer.eachLayer !== "function") {
+    return;
+  }
+
+  markerLayer.eachLayer((layer) => {
+    const element = typeof layer.getElement === "function" ? layer.getElement() : null;
+    const markerElement = element?.querySelector(".leaflet-map-marker");
+    if (!markerElement) {
+      return;
+    }
+    const nodeId = layer._mapOverlayNodeId || "";
+    markerElement.classList.toggle(
+      "is-selected",
+      Boolean(nodeId && (
+        nodeId === selectedResultNodeId()
+        || nodeId === state.focusedNodeId
+      )),
+    );
+  });
+}
+
 function syncLeafletLayerOrder() {
   const order = [
     state.leaflet.tileLayer,
@@ -6494,6 +6741,7 @@ function syncLeafletLayerOrder() {
     state.leaflet.edgeLayer,
     state.leaflet.nodeLayer,
     state.leaflet.routeLayer,
+    state.leaflet.markerLayer,
   ];
 
   order.forEach((layer, index) => {
@@ -6867,6 +7115,7 @@ function clearLeafletLayers() {
   removeLeafletLayer("edgeLayer");
   removeLeafletLayer("nodeLayer");
   removeLeafletLayer("routeLayer");
+  removeLeafletLayer("markerLayer");
   state.leaflet.tileLayerMode = "";
   state.leaflet.tileLayerSourceId = "";
   state.leaflet.osmLayersPayload = null;
@@ -6892,6 +7141,58 @@ function removeLeafletLayer(layerName) {
     map.removeLayer(layer);
   }
   state.leaflet[layerName] = null;
+}
+
+function applyPendingLeafletViewportFit() {
+  const map = state.leaflet.map;
+  if (!map || !window.L || !hasPendingMapViewportFit()) {
+    return false;
+  }
+
+  const latLngs = collectLeafletViewportFitLatLngs();
+  if (!latLngs.length) {
+    markMapViewportFitHandled();
+    return false;
+  }
+
+  const bounds = L.latLngBounds(latLngs);
+  if (!bounds.isValid()) {
+    markMapViewportFitHandled();
+    return false;
+  }
+
+  map.fitBounds(bounds.pad(0.22), {
+    animate: false,
+    maxZoom: 18,
+  });
+  state.leaflet.fittedSiteId = currentSiteId();
+  markMapViewportFitHandled();
+  return true;
+}
+
+function collectLeafletViewportFitLatLngs() {
+  const nodeIndex = mapNodeIndex();
+  const latLngs = Array.from(mapViewportFitNodeIds())
+    .map((nodeId) => nodeIndex.get(nodeId))
+    .filter((node) => node && Number.isFinite(node.lat) && Number.isFinite(node.lng))
+    .map((node) => [node.lat, node.lng]);
+
+  const routeGeoJson = state.currentRoute?.ui?.route_geojson || state.currentRoute?.ui?.geojson;
+  if (isRenderableRouteGeoJson(routeGeoJson)) {
+    try {
+      routeLatLngSegmentsFromGeoJson(routeGeoJson).forEach((segment) => {
+        segment.forEach((latLng) => {
+          if (Number.isFinite(latLng?.[0]) && Number.isFinite(latLng?.[1])) {
+            latLngs.push(latLng);
+          }
+        });
+      });
+    } catch (error) {
+      console.warn("Leaflet viewport route bounds failed; using marker bounds.", error);
+    }
+  }
+
+  return latLngs;
 }
 
 function fitLeafletToData() {
@@ -6998,6 +7299,411 @@ function getMapHighlightNodeIds() {
     });
   }
   return highlightNodeIds;
+}
+
+function requestMapViewportFit(reason = "context") {
+  state.mapViewportFit.token += 1;
+  state.mapViewportFit.reason = reason;
+}
+
+function hasPendingMapViewportFit() {
+  return state.mapViewportFit.token !== state.mapViewportFit.fittedToken;
+}
+
+function markMapViewportFitHandled() {
+  state.mapViewportFit.fittedToken = state.mapViewportFit.token;
+}
+
+function selectedResultNodeId() {
+  if (state.selectedResultIndex < 0 || state.selectedResultIndex >= state.currentResults.length) {
+    return "";
+  }
+  return resolveResultRouteTargetId(state.currentResults[state.selectedResultIndex]);
+}
+
+function getMapOverlayMarkers() {
+  const nodeIndex = mapNodeIndex();
+  const selectedNodeId = selectedResultNodeId();
+  const markers = [];
+
+  addMapOverlayMarker(markers, {
+    anchorNodeId: state.currentStartNodeId,
+    targetNodeId: state.currentStartNodeId,
+    role: "start",
+    label: "起",
+    rank: 0,
+    source: "current_start",
+  }, nodeIndex);
+
+  mapResultMarkerItems().forEach(({ item, index }) => {
+    const marker = mapMarkerForResultItem(item, index, selectedNodeId, nodeIndex);
+    if (marker) {
+      addMapOverlayMarker(markers, marker, nodeIndex);
+    }
+  });
+
+  routeOverlayMarkers(state.currentRoute).forEach((marker) => {
+    addMapOverlayMarker(markers, marker, nodeIndex);
+  });
+
+  if (state.focusedNodeId && state.focusedNodeId !== selectedNodeId) {
+    const focusAnchor = resolveMapMarkerAnchorForTarget(state.focusedNodeId, { nodeIndex });
+    if (focusAnchor) {
+      addMapOverlayMarker(markers, {
+        anchorNodeId: focusAnchor.anchorNodeId,
+        targetNodeId: state.focusedNodeId,
+        role: "selected_result",
+        label: "选",
+        rank: 0,
+        name: getNodeName(state.focusedNodeId),
+        source: "focus",
+        anchorSource: focusAnchor.anchorSource,
+      }, nodeIndex);
+    }
+  }
+
+  return dedupeMapOverlayMarkers(aggregateResultMarkers(markers));
+}
+
+function addMapOverlayMarker(markers, marker, nodeIndex = mapNodeIndex()) {
+  const anchorNodeId = marker?.anchorNodeId || marker?.nodeId || "";
+  if (!anchorNodeId || !nodeIndex.has(anchorNodeId)) {
+    return;
+  }
+  const targetNodeId = marker.targetNodeId || marker.nodeId || anchorNodeId;
+  markers.push({
+    nodeId: anchorNodeId,
+    anchorNodeId,
+    targetNodeId,
+    role: marker.role || "result",
+    label: marker.label || "",
+    rank: Number(marker.rank) || 0,
+    name: marker.name || getNodeName(targetNodeId) || getNodeName(anchorNodeId),
+    source: marker.source || "",
+    anchorSource: marker.anchorSource || "",
+    aggregate: Boolean(marker.aggregate),
+    items: Array.isArray(marker.items) ? marker.items : [],
+  });
+}
+
+function mapResultMarkerItems() {
+  const items = Array.isArray(state.currentResults) ? state.currentResults : [];
+  const scopedItems = isLimitedResultMarkerQuery() ? items.slice(0, MAP_RESULT_MARKER_LIMIT) : items;
+  return scopedItems.map((item, index) => ({ item, index }));
+}
+
+function isLimitedResultMarkerQuery(queryType = state.currentQueryType) {
+  return ["place_search", "catering_recommend", "food_recommend"].includes(queryType);
+}
+
+function mapMarkerForResultItem(item, index, selectedNodeId, nodeIndex = mapNodeIndex()) {
+  const targetNodeId = resolveResultRouteTargetId(item);
+  if (!targetNodeId) {
+    return null;
+  }
+
+  const anchor = resolveMapMarkerAnchorForTarget(targetNodeId, { nodeIndex });
+  if (!anchor) {
+    return null;
+  }
+
+  const rank = index + 1;
+  const name = item.name || item.title || item.route_target_name || getNodeName(targetNodeId) || targetNodeId;
+  return {
+    anchorNodeId: anchor.anchorNodeId,
+    targetNodeId,
+    role: targetNodeId === selectedNodeId ? "selected_result" : "result",
+    label: String(rank),
+    rank,
+    name,
+    source: state.currentQueryType || "result",
+    anchorSource: anchor.anchorSource,
+    items: [
+      {
+        rank,
+        targetNodeId,
+        anchorNodeId: anchor.anchorNodeId,
+        name,
+        categoryLabel: item.category_label || item.category || "",
+      },
+    ],
+  };
+}
+
+function routeOverlayMarkers(route) {
+  if (!route) {
+    return [];
+  }
+
+  const markers = [];
+  const startNodeId = route.start_node_id || state.currentStartNodeId;
+  addMapOverlayMarker(markers, {
+    anchorNodeId: startNodeId,
+    targetNodeId: startNodeId,
+    role: "start",
+    label: "起",
+    rank: 0,
+    name: route.start_node_name || getNodeName(startNodeId),
+    source: "route",
+  });
+
+  if (route.route_type !== "multi_target") {
+    addRouteTargetMarker(markers, route, route.target_node_id, {
+      role: "destination",
+      label: "终",
+      rank: 0,
+    });
+    return markers;
+  }
+
+  const targetIds = new Set(
+    (route.target_node_ids || [])
+      .concat((route.ui?.leg_summaries || []).map((leg) => leg.target_node_id))
+      .filter(Boolean),
+  );
+  const visitTargets = (route.visit_order || [])
+    .filter((nodeId) => nodeId && nodeId !== startNodeId && (!targetIds.size || targetIds.has(nodeId)));
+  const orderedTargets = visitTargets.length ? visitTargets : Array.from(targetIds);
+  const lastTargetId = orderedTargets[orderedTargets.length - 1] || "";
+
+  orderedTargets.forEach((nodeId, index) => {
+    addRouteTargetMarker(markers, route, nodeId, {
+      role: nodeId === lastTargetId ? "destination" : "route_waypoint",
+      label: nodeId === lastTargetId ? "终" : "经",
+      rank: index + 1,
+    });
+  });
+  return markers;
+}
+
+function addRouteTargetMarker(markers, route, targetNodeId, options = {}) {
+  const anchor = resolveMapMarkerAnchorForTarget(targetNodeId, {
+    route,
+    allowRouteFallback: true,
+  });
+  if (!anchor) {
+    return;
+  }
+
+  addMapOverlayMarker(markers, {
+    anchorNodeId: anchor.anchorNodeId,
+    targetNodeId,
+    role: options.role || "destination",
+    label: options.label || "",
+    rank: Number(options.rank) || 0,
+    name: routeMarkerTargetName(route, targetNodeId),
+    source: "route",
+    anchorSource: anchor.anchorSource,
+  });
+}
+
+function routeMarkerTargetName(route, targetNodeId) {
+  if (!targetNodeId) {
+    return "";
+  }
+  if (route?.target_node_id === targetNodeId && route.target_node_name) {
+    return route.target_node_name;
+  }
+  const leg = (route?.ui?.leg_summaries || []).find((item) => item.target_node_id === targetNodeId);
+  return leg?.target_node_name || getNodeName(targetNodeId) || targetNodeId;
+}
+
+function resolveMapMarkerAnchorForTarget(targetNodeId, options = {}) {
+  const nodeIndex = options.nodeIndex || mapNodeIndex();
+  if (!targetNodeId) {
+    return null;
+  }
+  if (nodeIndex.has(targetNodeId)) {
+    return { anchorNodeId: targetNodeId, anchorSource: "direct" };
+  }
+
+  const indoorContext = resolveIndoorContextForTarget(targetNodeId);
+  if (indoorContext?.entryNodeId && nodeIndex.has(indoorContext.entryNodeId)) {
+    return { anchorNodeId: indoorContext.entryNodeId, anchorSource: "indoor_entry" };
+  }
+
+  const targetRecord = routeTargetRecord(targetNodeId);
+  const candidateAnchors = [
+    targetRecord?.entry_node_id,
+    targetRecord?.building_id,
+  ];
+  for (const candidate of candidateAnchors) {
+    if (candidate && nodeIndex.has(candidate)) {
+      return { anchorNodeId: candidate, anchorSource: "target_record" };
+    }
+  }
+
+  if (options.allowRouteFallback) {
+    const routePath = options.route?.ui?.mappable_path_node_ids || [];
+    for (let index = routePath.length - 1; index >= 0; index -= 1) {
+      const nodeId = routePath[index];
+      if (nodeId && nodeIndex.has(nodeId)) {
+        return { anchorNodeId: nodeId, anchorSource: "route_tail" };
+      }
+    }
+  }
+
+  return null;
+}
+
+function aggregateResultMarkers(markers) {
+  const passthrough = [];
+  const groups = new Map();
+
+  markers.forEach((marker) => {
+    if (!isAggregatableResultMarker(marker)) {
+      passthrough.push(marker);
+      return;
+    }
+    const key = marker.anchorNodeId || marker.nodeId;
+    if (!groups.has(key)) {
+      groups.set(key, []);
+    }
+    groups.get(key).push(marker);
+  });
+
+  groups.forEach((group) => {
+    if (group.length === 1) {
+      passthrough.push(group[0]);
+      return;
+    }
+
+    const sorted = group.slice().sort((a, b) => a.rank - b.rank);
+    const items = sorted
+      .flatMap((marker) => marker.items || [])
+      .sort((a, b) => a.rank - b.rank);
+    const selectedMarker = sorted.find((marker) => isSelectedMapMarker(marker));
+    const primary = selectedMarker || sorted[0];
+    const previewNames = items.slice(0, 3).map((item) => item.name).filter(Boolean).join("、");
+    passthrough.push({
+      ...primary,
+      role: selectedMarker ? "selected_result" : "result",
+      label: `${items.length}项`,
+      rank: sorted[0].rank,
+      name: previewNames ? `${items.length}个地点：${previewNames}` : `${items.length}个地点`,
+      aggregate: true,
+      items,
+      source: `${primary.source || "result"}_aggregate`,
+    });
+  });
+
+  return passthrough;
+}
+
+function isAggregatableResultMarker(marker) {
+  return ["result", "selected_result"].includes(marker.role)
+    && marker.source !== "focus"
+    && Array.isArray(marker.items)
+    && marker.items.length > 0;
+}
+
+function dedupeMapOverlayMarkers(markers) {
+  const byNodeId = new Map();
+  markers.forEach((marker) => {
+    const markerNodeId = marker.anchorNodeId || marker.nodeId;
+    const existing = byNodeId.get(markerNodeId);
+    if (!existing || shouldReplaceMapOverlayMarker(existing, marker)) {
+      byNodeId.set(markerNodeId, marker);
+    }
+  });
+
+  return Array.from(byNodeId.values()).sort((a, b) => {
+    const priorityDelta = mapMarkerPriority(a.role) - mapMarkerPriority(b.role);
+    if (priorityDelta !== 0) {
+      return priorityDelta;
+    }
+    return a.rank - b.rank;
+  });
+}
+
+function shouldReplaceMapOverlayMarker(existing, candidate) {
+  const priorityDelta = mapMarkerPriority(candidate.role) - mapMarkerPriority(existing.role);
+  if (priorityDelta !== 0) {
+    return priorityDelta > 0;
+  }
+  if (!existing.rank) {
+    return false;
+  }
+  return Boolean(candidate.rank) && candidate.rank < existing.rank;
+}
+
+function mapMarkerPriority(role) {
+  return MAP_MARKER_ROLE_PRIORITY[role] || 0;
+}
+
+function markerRoleClass(role) {
+  return MAP_MARKER_ROLE_PRIORITY[role] ? role : "result";
+}
+
+function isSelectedMapMarker(marker) {
+  const selectedNodeId = selectedResultNodeId();
+  const targetNodeId = marker?.targetNodeId || marker?.nodeId || "";
+  return Boolean(
+    targetNodeId
+      && (
+        targetNodeId === selectedNodeId
+        || targetNodeId === state.focusedNodeId
+        || (marker.items || []).some((item) => (
+          item.targetNodeId === selectedNodeId || item.targetNodeId === state.focusedNodeId
+        ))
+      ),
+  );
+}
+
+function mapViewportFitNodeIds() {
+  const nodeIds = new Set(getMapOverlayMarkers().map((marker) => marker.anchorNodeId || marker.nodeId));
+  (state.currentRoute?.ui?.mappable_path_node_ids || []).forEach((nodeId) => {
+    if (nodeId) {
+      nodeIds.add(nodeId);
+    }
+  });
+  return nodeIds;
+}
+
+function applyPendingSvgViewportFit(mapData) {
+  if (!hasPendingMapViewportFit() || !mapData?.nodes?.length) {
+    return;
+  }
+
+  const nodeLookup = new Map(mapData.nodes.map((node) => [node.id, node]));
+  const points = Array.from(mapViewportFitNodeIds())
+    .map((nodeId) => nodeLookup.get(nodeId))
+    .filter((node) => node && Number.isFinite(node.lat) && Number.isFinite(node.lng))
+    .map((node) => projectNode(node, mapData.bounds));
+
+  if (!points.length) {
+    markMapViewportFitHandled();
+    return;
+  }
+
+  fitSvgViewportToProjectedPoints(points);
+  markMapViewportFitHandled();
+}
+
+function fitSvgViewportToProjectedPoints(points) {
+  const xValues = points.map((point) => point.x);
+  const yValues = points.map((point) => point.y);
+  const minX = Math.min(...xValues);
+  const maxX = Math.max(...xValues);
+  const minY = Math.min(...yValues);
+  const maxY = Math.max(...yValues);
+  const centerX = (minX + maxX) / 2;
+  const centerY = (minY + maxY) / 2;
+  const bboxWidth = Math.max(maxX - minX, 180);
+  const bboxHeight = Math.max(maxY - minY, 140);
+  const padding = 92;
+  const nextScale = clamp(
+    Math.min(
+      (MAP_WIDTH - padding * 2) / bboxWidth,
+      (MAP_HEIGHT - padding * 2) / bboxHeight,
+    ),
+    MAP_MIN_SCALE,
+    MAP_MAX_SCALE,
+  );
+
+  state.mapView.scale = nextScale;
+  state.mapView.translateX = MAP_WIDTH / 2 - centerX * nextScale;
+  state.mapView.translateY = MAP_HEIGHT / 2 - centerY * nextScale;
 }
 
 function projectNode(node, bounds) {

@@ -3374,6 +3374,151 @@ select[multiple] {
   stroke-width: 4;
 }
 
+.svg-map-marker {
+  --map-marker-fill: #1677ff;
+  cursor: pointer;
+  filter: drop-shadow(0 8px 12px rgba(15, 23, 42, 0.24));
+}
+
+.svg-map-marker-start {
+  --map-marker-fill: #15905f;
+}
+
+.svg-map-marker-destination {
+  --map-marker-fill: #d94841;
+}
+
+.svg-map-marker-route_waypoint {
+  --map-marker-fill: #c47a1e;
+}
+
+.svg-map-marker-selected_result {
+  --map-marker-fill: #0f5ed7;
+}
+
+.svg-map-marker-shadow {
+  fill: rgba(15, 23, 42, 0.2);
+  transform: translate(3px, 4px);
+}
+
+.svg-map-marker-pin {
+  fill: var(--map-marker-fill);
+  stroke: #ffffff;
+  stroke-width: 4;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+.svg-map-marker-core {
+  fill: rgba(255, 255, 255, 0.12);
+}
+
+.svg-map-marker-label {
+  fill: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  paint-order: stroke;
+  stroke: rgba(15, 23, 42, 0.22);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}
+
+.svg-map-marker.is-aggregate .svg-map-marker-label {
+  font-size: 12px;
+}
+
+.svg-map-marker.is-selected .svg-map-marker-pin,
+.svg-map-marker:hover .svg-map-marker-pin {
+  stroke-width: 5;
+  filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.8));
+}
+
+.leaflet-map-marker-icon {
+  border: 0;
+  background: transparent;
+}
+
+.leaflet-map-marker {
+  --map-marker-fill: #1677ff;
+  position: relative;
+  width: 36px;
+  height: 46px;
+  transform: translateY(-1px);
+  filter: drop-shadow(0 8px 12px rgba(15, 23, 42, 0.24));
+}
+
+.leaflet-map-marker-start {
+  --map-marker-fill: #15905f;
+}
+
+.leaflet-map-marker-destination {
+  --map-marker-fill: #d94841;
+}
+
+.leaflet-map-marker-route_waypoint {
+  --map-marker-fill: #c47a1e;
+}
+
+.leaflet-map-marker-selected_result {
+  --map-marker-fill: #0f5ed7;
+}
+
+.leaflet-map-marker-pin {
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  width: 30px;
+  height: 30px;
+  border: 3px solid #ffffff;
+  border-radius: 50% 50% 50% 6px;
+  background: var(--map-marker-fill);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+  transform: rotate(-45deg);
+}
+
+.leaflet-map-marker-label {
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 36px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.34);
+}
+
+.leaflet-map-marker.is-aggregate .leaflet-map-marker-label {
+  top: 8px;
+  font-size: 12px;
+}
+
+.leaflet-map-marker.is-selected .leaflet-map-marker-pin,
+.leaflet-map-marker:hover .leaflet-map-marker-pin {
+  border-width: 4px;
+  box-shadow:
+    0 0 0 4px rgba(22, 119, 255, 0.18),
+    0 8px 14px rgba(15, 23, 42, 0.26);
+}
+
+.leaflet-marker-result-list {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 2px;
+  padding-left: 18px;
+}
+
+.leaflet-marker-result-list li {
+  line-height: 1.35;
+}
+
+.leaflet-marker-result-list span {
+  margin-right: 4px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .leaflet-route-arrow {
   border: 0;
   background: transparent;

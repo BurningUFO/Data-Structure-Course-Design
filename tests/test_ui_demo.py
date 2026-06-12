@@ -8207,6 +8207,61 @@ def test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order():
     print("test_demo_map_geojson_contains_nodes_edges_and_lng_lat_order passed.")
 
 
+def test_demo_map_marker_source_data_keeps_top_indoor_results_routeable():
+    service = DemoUIService("PKU")
+
+    place = service.place_search(
+        {
+            "keyword": "洗手间",
+            "category": "restroom",
+            "sort_field": "distance_m",
+            "start_node_id": "gate_north",
+            "limit": 6,
+        }
+    )
+    assert place["success"] is True
+    place_top_five = place["results"][:5]
+    assert len(place_top_five) == 5
+    assert any(item["has_map_location"] for item in place_top_five)
+    assert any(
+        not item["has_map_location"] and item.get("route_target_node_id")
+        for item in place_top_five
+    )
+    assert "lib_toilet_1f" in {
+        item["route_target_node_id"]
+        for item in place_top_five
+    }
+
+    catering = service.catering_search(
+        {
+            "keyword": "食堂",
+            "sort_field": "distance_m",
+            "start_node_id": "gate_north",
+            "limit": 6,
+        }
+    )
+    assert catering["success"] is True
+    catering_top_five = catering["results"][:5]
+    assert len(catering_top_five) == 5
+    assert any(
+        not item["has_map_location"] and item.get("route_target_node_id")
+        for item in catering_top_five
+    )
+
+    indoor_route = service.plan_route(
+        {
+            "start_node_id": "gate_north",
+            "target_node_id": "lib_toilet_1f",
+            "strategy": "shortest_distance",
+            "transport_mode": "walk",
+        }
+    )
+    assert indoor_route["success"] is True
+    assert indoor_route["target_node_id"] == "lib_toilet_1f"
+    assert indoor_route["ui"]["mappable_path_node_ids"][-1] == "library"
+    print("test_demo_map_marker_source_data_keeps_top_indoor_results_routeable passed.")
+
+
 def test_demo_map_geojson_reports_geometry_coverage_stats():
     service = DemoUIService("PKU")
     payload = service.get_map_geojson_payload()
@@ -11142,6 +11197,24 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert "shouldRenderWhiteRoadEdge" in script
     assert 'edgeType === "white_road" || edgeType === "poi_access"' in script
     assert "syncLeafletRouteLayer" in script
+    assert "MAP_RESULT_MARKER_LIMIT = 5" in script
+    assert "mapViewportFit" in script
+    assert "requestMapViewportFit" in script
+    assert "getMapOverlayMarkers" in script
+    assert "resolveMapMarkerAnchorForTarget" in script
+    assert "aggregateResultMarkers" in script
+    assert "mapResultMarkerItems" in script
+    assert "targetNodeId" in script
+    assert "anchorNodeId" in script
+    assert "route_tail" in script
+    assert "dedupeMapOverlayMarkers" in script
+    assert "renderSvgMapMarkerMarkup" in script
+    assert "syncLeafletMarkerLayer" in script
+    assert "applyPendingLeafletViewportFit" in script
+    assert "applyPendingSvgViewportFit" in script
+    assert "markerLayer" in script
+    assert "leaflet-map-marker" in script
+    assert "svg-map-marker" in script
     assert "ROUTE_ARROW_SPACING_PX = 92" in script
     assert "buildSvgRouteMarkup" in script
     assert "routeDirectionSamples" in script
@@ -11178,6 +11251,15 @@ def test_demo_static_leaflet_renderer_contains_local_assets_and_fallback():
     assert '"/api/map/geojson"' in script
     assert '"/api/map/osm-layers"' in script
     assert ".leaflet-route-arrow" in styles
+    assert ".leaflet-map-marker" in styles
+    assert ".leaflet-map-marker-start" in styles
+    assert ".leaflet-map-marker-destination" in styles
+    assert ".leaflet-map-marker.is-aggregate" in styles
+    assert ".leaflet-marker-result-list" in styles
+    assert ".svg-map-marker" in styles
+    assert ".svg-map-marker-start" in styles
+    assert ".svg-map-marker-destination" in styles
+    assert ".svg-map-marker.is-aggregate" in styles
     assert ".route-arrow" in styles
     assert ".route-line-halo" in styles
     assert "stroke: #1677ff" in styles
