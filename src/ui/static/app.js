@@ -1361,9 +1361,11 @@ function filterContextComboboxResults(comboId, query) {
   const items = contextComboboxItems(comboId);
   const normalizedQuery = normalizeSearchText(query);
   if (!normalizedQuery) {
-    return prioritizeContextComboboxItems(comboId, items).slice(0, 12);
+    // No query: show all items (capped at 500 to keep DOM responsive).
+    return prioritizeContextComboboxItems(comboId, items).slice(0, 500);
   }
 
+  // With query: sort by score and return top 50.
   return items
     .map((item) => ({
       item,
@@ -1371,7 +1373,7 @@ function filterContextComboboxResults(comboId, query) {
     }))
     .filter((entry) => entry.score > 0)
     .sort((left, right) => right.score - left.score || config.label(left.item).localeCompare(config.label(right.item)))
-    .slice(0, 12)
+    .slice(0, 50)
     .map((entry) => entry.item);
 }
 
@@ -1484,7 +1486,7 @@ function renderContextCombobox(comboId) {
   }
 
   if (!comboState.results.length) {
-    results.innerHTML = `<div class="combo-empty" role="option">${escapeHtml(config.emptyText)}</div>`;
+    results.innerHTML = `<div class="combo-empty" role="option">${escapeHtml(config.emptyText)}</div><div class="combo-footer">显示 0 / 共 ${contextComboboxItems(comboId).length} 项</div>`;
     syncContextComboboxLayerClasses();
     return;
   }
@@ -1507,7 +1509,7 @@ function renderContextCombobox(comboId) {
         <span class="combo-option-badge">${escapeHtml(badge)}</span>
       </button>
     `;
-  }).join("");
+  }).join("") + `<div class="combo-footer">显示 ${comboState.results.length} / 共 ${contextComboboxItems(comboId).length} 项${comboState.query ? "（已按关键字过滤）" : ""}</div>`;
   syncContextComboboxLayerClasses();
 }
 
@@ -1730,6 +1732,38 @@ function hydrateBootstrap(bootstrap) {
   const statDiaries = document.querySelector("#stat-diaries");
   if (statDiaries) {
     statDiaries.textContent = String(bootstrap.stats.diary_count);
+  }
+
+  // Data-requirement stat strip on the home hero: sites / users / buildings / edges.
+  const statSites = document.querySelector("#stat-sites");
+  if (statSites) {
+    statSites.textContent = String(bootstrap.stats.site_count || 0);
+  }
+  const statUsers = document.querySelector("#stat-users");
+  if (statUsers) {
+    statUsers.textContent = String(bootstrap.stats.user_count || 0);
+  }
+  const statBuildings = document.querySelector("#stat-buildings");
+  if (statBuildings) {
+    statBuildings.textContent = String(bootstrap.stats.indoor_building_count || 0);
+  }
+  const statEdges = document.querySelector("#stat-edges");
+  if (statEdges && bootstrap.site && bootstrap.site.id) {
+    // Pull edge count from the map geojson endpoint. Fire-and-forget; fall back to em dash on error.
+    const siteId = bootstrap.site.id;
+    fetch(`/api/map/geojson?site_id=${encodeURIComponent(siteId)}`)
+      .then((resp) => (resp.ok ? resp.json() : null))
+      .then((data) => {
+        const count = data && data.stats && data.stats.edge_feature_count;
+        if (typeof count === "number") {
+          statEdges.textContent = String(count);
+        } else {
+          statEdges.textContent = "—";
+        }
+      })
+      .catch(() => {
+        statEdges.textContent = "—";
+      });
   }
 
   syncContextComboboxValue("site", bootstrap.site.id);
@@ -4737,7 +4771,13 @@ function renderRoute(route, emptyMessage = "暂无路径") {
 
   const steps = route.path_steps || [];
   const pathNodeCount = Array.isArray(route.path_node_names) ? route.path_node_names.length : 0;
-  routeMeta.textContent = `${steps.length} 步 · ${pathNodeCount} 个路径点`;
+  const usedEdges = Math.max(0, pathNodeCount - 1);
+  const totalEdges = Number((state.mapGeoJsonStats && state.mapGeoJsonStats.edge_feature_count) || 0);
+  const siteName = (state.bootstrap && state.bootstrap.site && state.bootstrap.site.name) || "当前站点";
+  const edgeCaption = totalEdges > 0
+    ? `本路线使用 ${usedEdges} 条边 · ${siteName} 共 ${totalEdges} 条边`
+    : `本路线使用 ${usedEdges} 条边`;
+  routeMeta.textContent = `${steps.length} 步 · ${pathNodeCount} 个路径点 · ${edgeCaption}`;
   stepsContainer.className = "step-list";
   stepsContainer.innerHTML = renderStepDetails(
     `${steps.length} 个详细步骤`,
@@ -4767,7 +4807,17 @@ function renderMultiRoute(route, summaryContainer, stepsContainer, routeMeta) {
 
   const legSummaries = route.ui?.leg_summaries || [];
   const displaySteps = route.ui?.display_steps || [];
-  routeMeta.textContent = `${legSummaries.length} 段 · ${displaySteps.length} 个关键步骤`;
+  const totalPathNodes = legSummaries.reduce(
+    (sum, leg) => sum + ((leg.path_node_names || []).length - 1),
+    0
+  );
+  const usedEdges = Math.max(0, totalPathNodes);
+  const totalEdges = Number((state.mapGeoJsonStats && state.mapGeoJsonStats.edge_feature_count) || 0);
+  const siteName = (state.bootstrap && state.bootstrap.site && state.bootstrap.site.name) || "当前站点";
+  const edgeCaption = totalEdges > 0
+    ? `本多目标路线使用 ${usedEdges} 条边 · ${siteName} 共 ${totalEdges} 条边`
+    : `本多目标路线使用 ${usedEdges} 条边`;
+  routeMeta.textContent = `${legSummaries.length} 段 · ${displaySteps.length} 个关键步骤 · ${edgeCaption}`;
   stepsContainer.className = "step-list";
 
   const legMarkup = legSummaries

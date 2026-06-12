@@ -450,7 +450,13 @@ def build_handler(
             self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(payload)))
             self.end_headers()
-            self.wfile.write(payload)
+            try:
+                self.wfile.write(payload)
+            except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
+                # Client navigated away or closed the socket before we finished
+                # writing. Swallow the error so a single bad tile request
+                # cannot kill the whole demo server.
+                pass
 
         def log_message(self, format: str, *args: object) -> None:
             print(f"[demo-ui] {self.address_string()} - {format % args}")

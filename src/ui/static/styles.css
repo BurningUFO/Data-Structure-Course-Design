@@ -382,6 +382,47 @@ button {
   line-height: 1.6;
 }
 
+.hero-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(40, 90, 130, 0.45), rgba(20, 50, 80, 0.35));
+}
+
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(8, 30, 50, 0.45);
+  border: 1px solid rgba(120, 200, 230, 0.18);
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: rgba(190, 220, 240, 0.78);
+  letter-spacing: 0.04em;
+}
+
+.stat-value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #ffe79b;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-unit {
+  font-size: 0.72rem;
+  color: rgba(190, 220, 240, 0.7);
+}
+
 .tour-strip {
   display: grid;
   gap: 12px;
@@ -935,6 +976,15 @@ button {
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 800;
+}
+
+.combo-footer {
+  padding: 6px 9px;
+  border-top: 1px solid var(--border-soft, rgba(255,255,255,0.08));
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-align: center;
+  background: rgba(255,255,255,0.02);
 }
 
 .context-secondary-row {
