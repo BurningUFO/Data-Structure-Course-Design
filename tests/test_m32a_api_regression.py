@@ -152,11 +152,16 @@ def test_m32a_http_api_matrix_covers_pku_and_twenty_extension_sites():
             status, catering = _post_json(
                 base_url,
                 "/api/recommend/catering",
-                {**common_query, "sort_field": "distance_m"},
+                {
+                    "site_id": site_id,
+                    "start_node_id": start_node_id,
+                    "sort_field": "distance_m",
+                },
             )
             assert status == 200
             _assert_search_response(catering, site_id)
             assert catering["filters"]["site_id"] == site_id
+            assert catering["filters"]["limit"] == 10
 
             outdoor_route_body = {
                 "site_id": site_id,

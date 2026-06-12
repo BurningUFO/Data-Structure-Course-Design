@@ -114,6 +114,30 @@ def test_recommend_catering_top_k():
     print("test_recommend_catering_top_k passed.")
 
 
+def test_recommend_catering_defaults_to_top_ten():
+    records = [
+        {
+            "id": f"food_{index:03d}",
+            "name": f"餐饮 {index}",
+            "category": "catering",
+            "heat": 200 - index,
+            "rating": 4.0 + ((11 - index) * 0.01),
+            "node_id": f"food_node_{index}",
+        }
+        for index in range(12)
+    ]
+
+    response = recommend_catering(records=records, sort_field="heat")
+
+    assert response["success"] is True
+    assert response["filters"]["limit"] == 10
+    assert response["total"] == 10
+    assert len(response["data"]) == 10
+    assert response["data"][0]["name"] == "餐饮 0"
+    assert response["data"][-1]["name"] == "餐饮 9"
+    print("test_recommend_catering_defaults_to_top_ten passed.")
+
+
 def test_recommend_catering_distance_sort():
     response = recommend_catering(
         start_node_id="gate_north",
@@ -434,6 +458,7 @@ def run_all_tests():
     test_recommend_top_k_by_distance()
     test_recommend_top_k_heat_uses_distance_tiebreaker()
     test_recommend_catering_top_k()
+    test_recommend_catering_defaults_to_top_ten()
     test_recommend_catering_distance_sort()
     test_recommend_catering_optional_cuisine_filter()
     test_recommend_catering_keyword_sort_uses_user_field_first()

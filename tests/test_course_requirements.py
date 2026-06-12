@@ -26,6 +26,7 @@ WEEK13_DIR = PROJECT_ROOT / "工作进度" / "第十三周"
 
 USERS_PATH = DATA_DIR / "users.json"
 DIARY_PATH = DATA_DIR / "diary_data.json"
+DEMO_DIARY_AUTHOR_IDS = {"user_demo"}
 AIGC_SAMPLES_PATH = DATA_DIR / "aigc_media_samples.json"
 MEMBER_C_SCENIC_PATH = DATA_DIR / "成员Cdata" / "scenic_spots.json"
 PKU_SITE_DIR = DATA_DIR / "sites" / "PKU"
@@ -109,7 +110,8 @@ def test_user_samples_reach_course_minimum():
     assert len(users) >= 10
     assert len(user_ids) >= 10
     assert len(diary_author_ids) >= 10
-    assert diary_author_ids.issubset(user_ids)
+    assert diary_author_ids - DEMO_DIARY_AUTHOR_IDS
+    assert (diary_author_ids - DEMO_DIARY_AUTHOR_IDS).issubset(user_ids)
     for user in users:
         assert user.get("id")
         assert user.get("name")

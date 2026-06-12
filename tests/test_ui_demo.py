@@ -11107,11 +11107,14 @@ def test_demo_static_diary_center_contains_management_controls():
     repo_root = os.path.join(os.path.dirname(__file__), "..")
     html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
     js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+    css_path = os.path.join(repo_root, "src", "ui", "static", "styles.css")
 
     with open(html_path, encoding="utf-8") as file:
         html = file.read()
     with open(js_path, encoding="utf-8") as file:
         script = file.read()
+    with open(css_path, encoding="utf-8") as file:
+        css = file.read()
 
     assert 'id="diary-create-form"' in html
     assert 'id="diary-list-form"' in html
@@ -11124,7 +11127,12 @@ def test_demo_static_diary_center_contains_management_controls():
     assert 'id="diary-compress-form"' in html
     assert 'id="diary-compress-id"' in html
     assert 'id="diary-compress-text"' in html
+    assert 'data-combobox="diaryDestination"' in html
+    assert 'id="diary-destination-node-search"' in html
     assert 'id="diary-destination-node"' in html
+    assert 'id="diary-destination-node-results"' in html
+    assert 'data-combobox-toggle="diaryDestination"' in html
+    assert 'aria-controls="diary-destination-node-results"' in html
     assert 'id="diary-images"' in html
     assert 'id="diary-videos"' in html
     assert 'data-diary-view-id' in script
@@ -11137,6 +11145,16 @@ def test_demo_static_diary_center_contains_management_controls():
     assert '"/api/diaries/delete"' in script
     assert '"/api/diaries/list"' in script
     assert '"/api/diaries/compress"' in script
+    assert 'resetResultPanelScroll' in script
+    assert '.result-detail-drawer' in css
+    assert 'height: min(72vh, 620px, calc(100vh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));' in css
+    assert 'resolveDiaryDestinationComboboxSelection' in script
+    assert 'diaryDestinationComboboxItems' in script
+    assert 'syncContextComboboxValue("diaryDestination"' in script
+    assert 'clearDiaryDestinationComboboxSelection' in script
+    assert 'selectDiaryDestinationFromCombobox' in script
+    assert 'currentDiaryDestinationNodeId' in script
+    assert '不绑定路线目标' in script
     assert "match_mode: \"exact\"" in script
     assert "<video" in script
     assert "normalizeMediaSource" in script

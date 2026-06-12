@@ -816,6 +816,10 @@ button {
   z-index: 80;
 }
 
+.combo-field.combobox-layer-active {
+  z-index: 160;
+}
+
 .combo-input-wrap {
   position: relative;
   display: flex;
@@ -1355,6 +1359,9 @@ select[multiple] {
 
 .form-advanced[open] {
   z-index: 20;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 34px rgba(17, 32, 49, 0.12);
+  isolation: isolate;
 }
 
 .form-advanced-grid {
@@ -1373,11 +1380,20 @@ select[multiple] {
   padding: 12px;
 }
 
+.form-advanced-grid.combobox-host-active,
+.nested-form.combobox-host-active,
+.stack-form.combobox-host-active {
+  position: relative;
+  z-index: 140;
+  isolation: isolate;
+}
+
 .inner-advanced {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   overflow: visible;
-  background: rgba(35, 51, 63, 0.03);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: inset 0 0 0 1px rgba(35, 51, 63, 0.06);
 }
 
 .inner-advanced .combo-field {
@@ -1393,6 +1409,39 @@ select[multiple] {
   z-index: 5;
   overflow: visible;
   background: rgba(255, 255, 255, 0.64);
+}
+
+.management-details[open] {
+  z-index: 90;
+  background: var(--panel-strong);
+  box-shadow: 0 20px 38px rgba(17, 32, 49, 0.14);
+}
+
+.management-details[open] > summary {
+  background: linear-gradient(180deg, rgba(247, 250, 252, 0.98), rgba(255, 255, 255, 0.98));
+  border-radius: 14px 14px 0 0;
+}
+
+.management-details[open] > .nested-form {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  border-radius: 0 0 14px 14px;
+  background: var(--panel-strong);
+}
+
+.management-details[open] > .nested-form.combobox-host-active {
+  z-index: 140;
+}
+
+.management-details .inner-advanced summary {
+  background: linear-gradient(180deg, rgba(247, 250, 252, 0.98), rgba(255, 255, 255, 0.98));
+}
+
+.management-details .inner-advanced[open] {
+  z-index: 1;
+  background: var(--panel-strong);
+  box-shadow: 0 12px 24px rgba(17, 32, 49, 0.08);
 }
 
 .check-field {
@@ -1577,7 +1626,7 @@ select[multiple] {
 
 .result-detail-drawer {
   position: fixed;
-  z-index: 58;
+  z-index: 79;
   top: 84px;
   right: 24px;
   bottom: 24px;
@@ -3677,11 +3726,12 @@ select[multiple] {
     bottom: calc(14px + env(safe-area-inset-bottom));
     left: 14px;
     width: auto;
-    max-height: min(72vh, 620px);
+    height: min(72vh, 620px, calc(100vh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+    max-height: none;
   }
 
   .result-detail-shell {
-    max-height: min(72vh, 620px);
+    max-height: 100%;
   }
 
   .feature-grid {
@@ -3768,14 +3818,16 @@ select[multiple] {
   }
 
   .result-detail-drawer {
+    top: auto;
     right: 10px;
     bottom: calc(92px + env(safe-area-inset-bottom));
     left: 10px;
-    max-height: min(68vh, 560px);
+    height: min(68vh, 560px, calc(100vh - 102px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+    max-height: none;
   }
 
   .result-detail-shell {
-    max-height: min(68vh, 560px);
+    max-height: 100%;
     border-radius: 18px;
   }
 

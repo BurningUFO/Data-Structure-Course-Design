@@ -202,7 +202,7 @@ def recommend_catering(
     match_mode: str = "fuzzy",
     sort_field: str = "heat",
     sort_order: str = "",
-    limit: int = 5,
+    limit: int = 10,
     records: list[Record] | None = None,
     distance_provider: Any | None = None,
     use_default_distance_provider: bool = True,

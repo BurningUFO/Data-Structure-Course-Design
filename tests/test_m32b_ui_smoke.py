@@ -178,18 +178,28 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
     assert ".aigc-cinematic-progress" in styles_css
     assert ".aigc-loading-film" in styles_css
     assert "@media (prefers-reduced-motion: reduce)" in styles_css
-    assert html.count('role="combobox"') >= 3
-    assert html.count('type="search"') >= 3
-    assert html.count('data-combobox-toggle=') == 3
+    assert html.count('role="combobox"') >= 4
+    assert html.count('type="search"') >= 4
+    assert html.count('data-combobox-toggle=') == 5
     assert 'data-combobox="site"' in html
     assert 'data-combobox="start"' in html
     assert 'data-combobox="user"' in html
+    assert 'data-combobox="diaryDestination"' in html
     assert "bindContextComboboxes" in app_js
     assert "filterContextComboboxResults" in app_js
     assert "selectContextComboboxOption" in app_js
+    assert "syncContextComboboxLayerClasses" in app_js
+    assert "resetResultPanelScroll" in app_js
     assert ".combo-results" in styles_css
     assert ".context-settings[open]" in styles_css
+    assert ".management-details[open]" in styles_css
+    assert ".management-details .inner-advanced[open]" in styles_css
+    assert "isolation: isolate;" in styles_css
     assert ".combo-field:focus-within" in styles_css
+    assert ".combo-field.combobox-layer-active" in styles_css
+    assert ".form-advanced-grid.combobox-host-active" in styles_css
+    assert ".result-detail-drawer" in styles_css
+    assert "height: min(72vh, 620px, calc(100vh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));" in styles_css
     assert "z-index: 9999" in styles_css
     assert "top: calc(50% - 1px)" in styles_css
     assert "transform: translateY(-50%)" in styles_css

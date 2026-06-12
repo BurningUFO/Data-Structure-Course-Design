@@ -56,6 +56,7 @@ from src.site_registry import (
 
 
 Record = dict[str, Any]
+DEFAULT_CATERING_LIMIT = 10
 
 CATEGORY_LABELS = {
     "entrance": "校门",
@@ -1748,7 +1749,9 @@ class DemoUIService:
             center_node_id=center_node_id,
             match_mode="fuzzy",
             sort_field=normalize_text(request.get("sort_field")) or "distance_m",
-            limit=self._normalize_limit(request.get("limit"), default=6),
+            limit=self._normalize_limit(
+                request.get("limit"), default=DEFAULT_CATERING_LIMIT
+            ),
             records=self.site_records,
             distance_provider=self._distance_provider,
             use_default_distance_provider=False,

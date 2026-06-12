@@ -8,6 +8,8 @@ const ROUTE_ARROW_SPACING_PX = 92;
 const ROUTE_ARROW_ICON_SIZE = 18;
 const ROUTE_MAIN_COLOR = "#1677ff";
 const MAP_RESULT_MARKER_LIMIT = 5;
+const DEFAULT_RESULT_LIMIT = 6;
+const DEFAULT_CATERING_LIMIT = 10;
 const MAP_MARKER_ROLE_PRIORITY = {
   result: 10,
   selected_result: 20,
@@ -133,6 +135,14 @@ const state = {
     siteBoundsFitted: false,
   },
 };
+
+function defaultResultLimitForQuery(options = {}) {
+  const queryType = options.queryType || "";
+  const endpoint = options.endpoint || "";
+  return queryType === "catering_recommend" || queryType === "food_recommend" || endpoint === "/api/recommend/catering"
+    ? DEFAULT_CATERING_LIMIT
+    : DEFAULT_RESULT_LIMIT;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   void init();
@@ -427,7 +437,7 @@ function bindForms() {
       sort_field: document.querySelector("#catering-sort").value,
       start_node_id: state.currentStartNodeId,
       center_node_id: centerNodeId,
-      limit: 6,
+      limit: DEFAULT_CATERING_LIMIT,
     });
   });
 
@@ -1118,7 +1128,7 @@ function currentInterestStatusText() {
 }
 
 function bindContextComboboxes() {
-  ["site", "start", "user", "cateringCenter"].forEach((comboId) => {
+  ["site", "start", "user", "cateringCenter", "diaryDestination"].forEach((comboId) => {
     const config = contextComboboxConfig(comboId);
     const input = document.querySelector(config.inputSelector);
     const results = document.querySelector(config.resultsSelector);
@@ -1234,6 +1244,33 @@ function contextComboboxConfig(comboId) {
       onInput: clearCateringCenterComboboxSelection,
       onSelect: selectCateringCenterFromCombobox,
     },
+    diaryDestination: {
+      inputSelector: "#diary-destination-node-search",
+      hiddenSelector: "#diary-destination-node",
+      resultsSelector: "#diary-destination-node-results",
+      toggleSelector: '[data-combobox-toggle="diaryDestination"]',
+      emptyText: "未找到匹配路线目标",
+      getItems: diaryDestinationComboboxItems,
+      currentValue: () => currentDiaryDestinationNodeId(),
+      label: (node) => comboValue(node) ? routeTargetLabel(node) : "不绑定路线目标",
+      optionName: (node) => node.name || node.id || "不绑定路线目标",
+      optionMeta: (node) => comboValue(node)
+        ? [node.id, node.category_label || node.category, node.building_name, node.floor_label].filter(Boolean).join(" · ")
+        : String(node.description || "不为日记绑定路线目标"),
+      optionBadge: (node) => comboValue(node) ? (node.category_label || node.category || "路线目标") : "默认",
+      searchFields: (node) => [
+        node.id,
+        node.name,
+        node.category_label,
+        node.category,
+        node.building_name,
+        node.floor_label,
+        node.description,
+        ...(Array.isArray(node.search_aliases) ? node.search_aliases : []),
+      ],
+      onInput: clearDiaryDestinationComboboxSelection,
+      onSelect: selectDiaryDestinationFromCombobox,
+    },
   };
   return configs[comboId];
 }
@@ -1279,6 +1316,34 @@ function syncContextComboboxValue(comboId, value) {
 function contextComboboxItems(comboId) {
   const config = contextComboboxConfig(comboId);
   return config ? config.getItems() : [];
+}
+
+function clearContextComboboxLayerClasses() {
+  document.querySelectorAll(".combobox-layer-active").forEach((element) => {
+    element.classList.remove("combobox-layer-active");
+  });
+  document.querySelectorAll(".combobox-host-active").forEach((element) => {
+    element.classList.remove("combobox-host-active");
+  });
+}
+
+function syncContextComboboxLayerClasses() {
+  clearContextComboboxLayerClasses();
+  Object.entries(state.comboboxes).forEach(([comboId, comboState]) => {
+    if (!comboState?.isOpen) {
+      return;
+    }
+    const config = contextComboboxConfig(comboId);
+    const results = config ? document.querySelector(config.resultsSelector) : null;
+    const comboField = results?.closest(".combo-field");
+    if (!comboField) {
+      return;
+    }
+    comboField.classList.add("combobox-layer-active");
+    comboField.closest(".form-advanced-grid")?.classList.add("combobox-host-active");
+    comboField.closest(".nested-form")?.classList.add("combobox-host-active");
+    comboField.closest(".stack-form")?.classList.add("combobox-host-active");
+  });
 }
 
 function openContextCombobox(comboId, query) {
@@ -1406,6 +1471,7 @@ function renderContextCombobox(comboId) {
   const input = document.querySelector(config.inputSelector);
   const results = document.querySelector(config.resultsSelector);
   if (!input || !results) {
+    syncContextComboboxLayerClasses();
     return;
   }
 
@@ -1413,11 +1479,13 @@ function renderContextCombobox(comboId) {
   results.classList.toggle("is-open", comboState.isOpen);
   if (!comboState.isOpen) {
     results.innerHTML = "";
+    syncContextComboboxLayerClasses();
     return;
   }
 
   if (!comboState.results.length) {
     results.innerHTML = `<div class="combo-empty" role="option">${escapeHtml(config.emptyText)}</div>`;
+    syncContextComboboxLayerClasses();
     return;
   }
 
@@ -1440,6 +1508,7 @@ function renderContextCombobox(comboId) {
       </button>
     `;
   }).join("");
+  syncContextComboboxLayerClasses();
 }
 
 async function selectContextComboboxOption(comboId, value) {
@@ -1525,6 +1594,32 @@ function selectCateringCenterFromCombobox(node) {
   syncContextComboboxValue("cateringCenter", comboValue(node));
 }
 
+function diaryDestinationComboboxItems() {
+  return [{
+    id: "",
+    name: "不绑定路线目标",
+    category: "default_target",
+    category_label: "默认",
+    description: "创建或编辑日记时，不为该记录绑定可直接规划路线的目标点。",
+    search_aliases: ["默认", "不绑定", "无目标", "none"],
+  }].concat(state.bootstrap?.route_targets || []);
+}
+
+function currentDiaryDestinationNodeId() {
+  return document.querySelector("#diary-destination-node")?.value || "";
+}
+
+function clearDiaryDestinationComboboxSelection() {
+  const hidden = document.querySelector("#diary-destination-node");
+  if (hidden) {
+    hidden.value = "";
+  }
+}
+
+function selectDiaryDestinationFromCombobox(node) {
+  syncContextComboboxValue("diaryDestination", comboValue(node));
+}
+
 function resolveCateringCenterComboboxSelection() {
   const input = document.querySelector("#catering-center-node-search");
   const hidden = document.querySelector("#catering-center-node");
@@ -1554,6 +1649,38 @@ function resolveCateringCenterComboboxSelection() {
 
   const resolvedValue = comboValue(selected);
   syncContextComboboxValue("cateringCenter", resolvedValue);
+  return resolvedValue;
+}
+
+function resolveDiaryDestinationComboboxSelection() {
+  const input = document.querySelector("#diary-destination-node-search");
+  const hidden = document.querySelector("#diary-destination-node");
+  if (!input || !hidden) {
+    return "";
+  }
+  if (hidden.value) {
+    return hidden.value;
+  }
+
+  const query = input.value.trim();
+  if (!query || normalizeSearchText(query) === normalizeSearchText("不绑定路线目标")) {
+    syncContextComboboxValue("diaryDestination", "");
+    return "";
+  }
+
+  const comboState = comboboxState("diaryDestination");
+  const selected = comboState.results[comboState.activeIndex]
+    || exactContextComboboxMatch("diaryDestination", query)
+    || filterContextComboboxResults("diaryDestination", query)[0]
+    || null;
+
+  if (!selected) {
+    syncContextComboboxValue("diaryDestination", "");
+    return "";
+  }
+
+  const resolvedValue = comboValue(selected);
+  syncContextComboboxValue("diaryDestination", resolvedValue);
   return resolvedValue;
 }
 
@@ -1628,13 +1755,7 @@ function hydrateBootstrap(bootstrap) {
     "",
   );
 
-  const diaryDestinationOptions = [{ value: "", label: "不绑定路线目标" }].concat(
-    bootstrap.route_targets.map((item) => ({
-      value: item.id,
-      label: routeTargetLabel(item),
-    })),
-  );
-  populateSelect(document.querySelector("#diary-destination-node"), diaryDestinationOptions, "");
+  syncContextComboboxValue("diaryDestination", "");
 
   populateSelect(
     document.querySelector("#aigc-sample"),
@@ -1874,7 +1995,10 @@ async function runRecentSearch(index) {
   await runQuery(entry.endpoint || endpointForQueryType(entry.query_type), {
     ...(entry.payload || {}),
     start_node_id: state.currentStartNodeId,
-    limit: 6,
+    limit: defaultResultLimitForQuery({
+      queryType: entry.query_type,
+      endpoint: entry.endpoint || endpointForQueryType(entry.query_type),
+    }),
     ...(tab === "scenic" ? buildInterestPayload() : {}),
   });
 }
@@ -2752,7 +2876,7 @@ function handleCateringPreset(preset) {
     sort_field: document.querySelector("#catering-sort").value,
     start_node_id: state.currentStartNodeId,
     center_node_id: centerNodeId,
-    limit: 6,
+    limit: DEFAULT_CATERING_LIMIT,
   });
 }
 
@@ -3065,11 +3189,12 @@ async function runDiaryCompression() {
 
 function collectDiaryFormPayload() {
   const ratingValue = document.querySelector("#diary-rating").value;
+  const destinationNodeId = resolveDiaryDestinationComboboxSelection();
   const payload = {
     title: document.querySelector("#diary-title").value.trim(),
     content: document.querySelector("#diary-content").value.trim(),
     destination: document.querySelector("#diary-destination").value.trim(),
-    destination_node_id: document.querySelector("#diary-destination-node").value,
+    destination_node_id: destinationNodeId,
     tags: splitListInput(document.querySelector("#diary-tags").value),
     images: splitListInput(document.querySelector("#diary-images").value),
     videos: splitListInput(document.querySelector("#diary-videos").value),
@@ -3117,7 +3242,7 @@ function fillDiaryManagementForm(diary) {
   document.querySelector("#diary-title").value = diary.title || "";
   document.querySelector("#diary-content").value = diary.content || diary.snippet || "";
   document.querySelector("#diary-destination").value = diary.destination || "";
-  setSelectValue("#diary-destination-node", diary.destination_node_id || diary.route_target_node_id || "");
+  syncContextComboboxValue("diaryDestination", diary.destination_node_id || diary.route_target_node_id || "");
   document.querySelector("#diary-rating").value = diary.rating !== undefined ? diary.rating : "";
   document.querySelector("#diary-tags").value = Array.isArray(diary.tags) ? diary.tags.join(", ") : "";
   document.querySelector("#diary-images").value = Array.isArray(diary.images) ? diary.images.join(", ") : "";
@@ -3146,7 +3271,7 @@ function clearDiaryManagementForm() {
       element.value = "";
     }
   });
-  setSelectValue("#diary-destination-node", "");
+  syncContextComboboxValue("diaryDestination", "");
   const selectedLabel = document.querySelector("#diary-selected-label");
   if (selectedLabel) {
     selectedLabel.textContent = "当前为新建模式";
@@ -3564,6 +3689,29 @@ function clearRoute(message = "暂无路径") {
   renderMap();
 }
 
+function resetResultPanelScroll(options = {}) {
+  if (options.results !== false) {
+    const resultsList = document.querySelector("#results-list");
+    if (resultsList) {
+      resultsList.scrollTop = 0;
+    }
+  }
+
+  if (options.steps !== false) {
+    const routeSteps = document.querySelector("#route-steps");
+    if (routeSteps) {
+      routeSteps.scrollTop = 0;
+    }
+  }
+
+  if (options.detail !== false) {
+    const detailContent = document.querySelector("#result-detail-content");
+    if (detailContent) {
+      detailContent.scrollTop = 0;
+    }
+  }
+}
+
 function renderResults(response) {
   const container = document.querySelector("#results-list");
   const meta = document.querySelector("#result-meta");
@@ -3576,6 +3724,7 @@ function renderResults(response) {
     state.selectedResultIndex = -1;
     container.className = "card-list empty-state";
     container.innerHTML = renderEmptyResultState(response);
+    resetResultPanelScroll({ steps: false });
     meta.textContent = "0 条结果";
     closeResultDetailDrawer();
     return;
@@ -3586,6 +3735,7 @@ function renderResults(response) {
   container.innerHTML = items
     .map((item, index) => renderResultCard(item, index, queryType))
     .join("");
+  resetResultPanelScroll({ steps: false });
   if (state.selectedResultIndex < 0 || state.selectedResultIndex >= items.length) {
     state.selectedResultIndex = firstSelectableResultIndex(items);
   }
@@ -3722,6 +3872,7 @@ function renderResultDetailDrawer(index = state.selectedResultIndex) {
     ${mediaMarkup}
     ${aigcMarkup}
   `;
+  content.scrollTop = 0;
 }
 
 function renderResultDetailMetrics(item, routeTarget) {

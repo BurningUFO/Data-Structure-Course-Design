@@ -7,12 +7,21 @@
     "author_name": "张三",
     "destination": "北京大学",
     "destination_node_id": "gate_north",
-    "heat": 85,
+    "heat": 1200,
     "rating": 4.7,
-    "tags": ["校园","秋景","游记"],
+    "rating_count": 1,
+    "rating_total": 4.7,
+    "user_ratings": {},
+    "tags": [
+      "校园",
+      "秋景",
+      "游记"
+    ],
     "views": 1200,
     "created_at": "2026-09-15",
-    "images": ["media/placeholders/pku_autumn_yanyuan.jpg"]
+    "images": [
+      "media/placeholders/pku_autumn_yanyuan.jpg"
+    ]
   },
   {
     "id": "diary_002",
@@ -22,12 +31,24 @@
     "author_name": "李四",
     "destination": "北京大学",
     "destination_node_id": "canteen",
-    "heat": 92,
-    "rating": 4.9,
-    "tags": ["美食","食堂","北大"],
-    "views": 2500,
+    "heat": 2501,
+    "rating": 4.9667,
+    "rating_count": 3,
+    "rating_total": 14.9,
+    "user_ratings": {
+      "user_001": 5.0,
+      "user_002": 5.0
+    },
+    "tags": [
+      "美食",
+      "食堂",
+      "北大"
+    ],
+    "views": 2501,
     "created_at": "2026-10-08",
-    "images": ["media/placeholders/pku_canteen_food.jpg"]
+    "images": [
+      "media/placeholders/pku_canteen_food.jpg"
+    ]
   },
   {
     "id": "diary_003",
@@ -37,12 +58,23 @@
     "author_name": "张三",
     "destination": "北京大学",
     "destination_node_id": "library",
-    "heat": 78,
-    "rating": 4.5,
-    "tags": ["学习","图书馆","攻略"],
-    "views": 980,
+    "heat": 981,
+    "rating": 5.0,
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {
+      "user_demo": 5.0
+    },
+    "tags": [
+      "学习",
+      "图书馆",
+      "攻略"
+    ],
+    "views": 981,
     "created_at": "2026-11-20",
-    "images": ["media/placeholders/pku_library_study.jpg"]
+    "images": [
+      "media/placeholders/pku_library_study.jpg"
+    ]
   },
   {
     "id": "diary_004",
@@ -52,9 +84,17 @@
     "author_name": "王五",
     "destination": "黄山风景区",
     "destination_node_id": null,
-    "heat": 96,
+    "heat": 3200,
     "rating": 4.8,
-    "tags": ["黄山","日出","云海","五一"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "黄山",
+      "日出",
+      "云海",
+      "五一"
+    ],
     "views": 3200,
     "created_at": "2026-05-05",
     "images": []
@@ -67,9 +107,16 @@
     "author_name": "郑十",
     "destination": "北京大学",
     "destination_node_id": "sports_ground",
-    "heat": 65,
+    "heat": 450,
     "rating": 4.3,
-    "tags": ["运动","跑步","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.3,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "校园生活"
+    ],
     "views": 450,
     "created_at": "2026-12-03",
     "images": []
@@ -82,9 +129,17 @@
     "author_name": "赵六",
     "destination": "故宫博物院",
     "destination_node_id": null,
-    "heat": 88,
+    "heat": 1800,
     "rating": 4.7,
-    "tags": ["故宫","秋景","摄影","文化"],
+    "rating_count": 1,
+    "rating_total": 4.7,
+    "user_ratings": {},
+    "tags": [
+      "故宫",
+      "秋景",
+      "摄影",
+      "文化"
+    ],
     "views": 1800,
     "created_at": "2026-11-10",
     "images": []
@@ -97,9 +152,17 @@
     "author_name": "孙七",
     "destination": "北京大学",
     "destination_node_id": "canteen",
-    "heat": 72,
+    "heat": 620,
     "rating": 4.4,
-    "tags": ["美食","食堂","家常","温暖"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "美食",
+      "食堂",
+      "家常",
+      "温暖"
+    ],
     "views": 620,
     "created_at": "2026-12-15",
     "images": []
@@ -112,9 +175,17 @@
     "author_name": "冯十一",
     "destination": "泰山风景区",
     "destination_node_id": null,
-    "heat": 94,
+    "heat": 2800,
     "rating": 4.9,
-    "tags": ["泰山","日出","夜爬","挑战"],
+    "rating_count": 1,
+    "rating_total": 4.9,
+    "user_ratings": {},
+    "tags": [
+      "泰山",
+      "日出",
+      "夜爬",
+      "挑战"
+    ],
     "views": 2800,
     "created_at": "2026-08-20",
     "images": []
@@ -127,9 +198,17 @@
     "author_name": "周八",
     "destination": "北京大学",
     "destination_node_id": "dormitory_1",
-    "heat": 60,
+    "heat": 380,
     "rating": 4.2,
-    "tags": ["宿舍","生活","日常","室友"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活",
+      "日常",
+      "室友"
+    ],
     "views": 380,
     "created_at": "2027-01-08",
     "images": []
@@ -142,9 +221,17 @@
     "author_name": "吴九",
     "destination": "西湖风景名胜区",
     "destination_node_id": null,
-    "heat": 83,
+    "heat": 1500,
     "rating": 4.6,
-    "tags": ["西湖","骑行","休闲","茶文化"],
+    "rating_count": 1,
+    "rating_total": 4.6,
+    "user_ratings": {},
+    "tags": [
+      "西湖",
+      "骑行",
+      "休闲",
+      "茶文化"
+    ],
     "views": 1500,
     "created_at": "2026-04-12",
     "images": []
@@ -157,12 +244,22 @@
     "author_name": "周八",
     "destination": "北京大学",
     "destination_node_id": "gate_north",
-    "heat": 70,
+    "heat": 550,
     "rating": 4.5,
-    "tags": ["未名湖","冬景","期末","心情"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "未名湖",
+      "冬景",
+      "期末",
+      "心情"
+    ],
     "views": 550,
     "created_at": "2027-01-15",
-    "images": ["media/placeholders/pku_winter_lake.jpg"]
+    "images": [
+      "media/placeholders/pku_winter_lake.jpg"
+    ]
   },
   {
     "id": "diary_012",
@@ -172,9 +269,17 @@
     "author_name": "陈十二",
     "destination": "成都大熊猫繁育基地",
     "destination_node_id": null,
-    "heat": 91,
+    "heat": 2100,
     "rating": 4.8,
-    "tags": ["成都","美食","熊猫","旅行"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "成都",
+      "美食",
+      "熊猫",
+      "旅行"
+    ],
     "views": 2100,
     "created_at": "2026-07-25",
     "images": []
@@ -187,9 +292,17 @@
     "author_name": "清华校园游访客",
     "destination": "清华大学",
     "destination_node_id": "second_gate",
-    "heat": 72,
+    "heat": 860,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 860,
     "created_at": "2026-05-21",
     "images": []
@@ -202,9 +315,17 @@
     "author_name": "清华学习访客",
     "destination": "清华大学",
     "destination_node_id": "library",
-    "heat": 89,
+    "heat": 1443,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1443,
     "created_at": "2026-05-22",
     "images": []
@@ -217,9 +338,17 @@
     "author_name": "清华食堂体验访客",
     "destination": "清华大学",
     "destination_node_id": "canteen",
-    "heat": 95,
+    "heat": 1926,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 1926,
     "created_at": "2026-05-23",
     "images": []
@@ -232,9 +361,17 @@
     "author_name": "清华食堂体验访客",
     "destination": "清华大学",
     "destination_node_id": "dormitory_1",
-    "heat": 72,
+    "heat": 809,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 809,
     "created_at": "2026-05-24",
     "images": []
@@ -247,9 +384,17 @@
     "author_name": "清华学习访客",
     "destination": "清华大学",
     "destination_node_id": "sports_ground",
-    "heat": 80,
+    "heat": 1062,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1062,
     "created_at": "2026-05-25",
     "images": []
@@ -262,9 +407,17 @@
     "author_name": "清华校园游访客",
     "destination": "清华大学",
     "destination_node_id": "qinghua_xuetang",
-    "heat": 84,
+    "heat": 1375,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1375,
     "created_at": "2026-05-26",
     "images": []
@@ -277,9 +430,17 @@
     "author_name": "武大樱顶访客",
     "destination": "武汉大学",
     "destination_node_id": "main_arch",
-    "heat": 73,
+    "heat": 897,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 897,
     "created_at": "2026-05-27",
     "images": []
@@ -292,9 +453,17 @@
     "author_name": "武大学习访客",
     "destination": "武汉大学",
     "destination_node_id": "library",
-    "heat": 90,
+    "heat": 1480,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1480,
     "created_at": "2026-05-28",
     "images": []
@@ -307,9 +476,17 @@
     "author_name": "武大桂园生活访客",
     "destination": "武汉大学",
     "destination_node_id": "canteen",
-    "heat": 96,
+    "heat": 1963,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 1963,
     "created_at": "2026-05-29",
     "images": []
@@ -322,9 +499,17 @@
     "author_name": "武大桂园生活访客",
     "destination": "武汉大学",
     "destination_node_id": "dormitory_1",
-    "heat": 73,
+    "heat": 846,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 846,
     "created_at": "2026-05-30",
     "images": []
@@ -337,9 +522,17 @@
     "author_name": "武大学习访客",
     "destination": "武汉大学",
     "destination_node_id": "sports_ground",
-    "heat": 76,
+    "heat": 1099,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1099,
     "created_at": "2026-05-31",
     "images": []
@@ -352,9 +545,17 @@
     "author_name": "武大樱顶访客",
     "destination": "武汉大学",
     "destination_node_id": "old_library",
-    "heat": 85,
+    "heat": 1412,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1412,
     "created_at": "2026-06-01",
     "images": []
@@ -367,9 +568,17 @@
     "author_name": "厦大隧道游访客",
     "destination": "厦门大学",
     "destination_node_id": "qinxian_buildings",
-    "heat": 74,
+    "heat": 934,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 934,
     "created_at": "2026-06-02",
     "images": []
@@ -382,9 +591,17 @@
     "author_name": "厦大学习访客",
     "destination": "厦门大学",
     "destination_node_id": "library",
-    "heat": 91,
+    "heat": 1517,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1517,
     "created_at": "2026-06-03",
     "images": []
@@ -397,9 +614,17 @@
     "author_name": "厦大芙蓉生活访客",
     "destination": "厦门大学",
     "destination_node_id": "canteen",
-    "heat": 97,
+    "heat": 2000,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2000,
     "created_at": "2026-06-04",
     "images": []
@@ -412,9 +637,17 @@
     "author_name": "厦大芙蓉生活访客",
     "destination": "厦门大学",
     "destination_node_id": "dormitory_1",
-    "heat": 69,
+    "heat": 883,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 883,
     "created_at": "2026-06-05",
     "images": []
@@ -427,9 +660,17 @@
     "author_name": "厦大学习访客",
     "destination": "厦门大学",
     "destination_node_id": "sports_ground",
-    "heat": 77,
+    "heat": 1136,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1136,
     "created_at": "2026-06-06",
     "images": []
@@ -442,9 +683,17 @@
     "author_name": "厦大隧道游访客",
     "destination": "厦门大学",
     "destination_node_id": "jiageng_complex",
-    "heat": 86,
+    "heat": 1449,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1449,
     "created_at": "2026-06-07",
     "images": []
@@ -457,9 +706,17 @@
     "author_name": "浙大求是访客",
     "destination": "浙江大学",
     "destination_node_id": "qiushi_square",
-    "heat": 75,
+    "heat": 971,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 971,
     "created_at": "2026-06-08",
     "images": []
@@ -472,9 +729,17 @@
     "author_name": "浙大学习访客",
     "destination": "浙江大学",
     "destination_node_id": "library",
-    "heat": 92,
+    "heat": 1554,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1554,
     "created_at": "2026-06-09",
     "images": []
@@ -487,9 +752,17 @@
     "author_name": "浙大丹青生活访客",
     "destination": "浙江大学",
     "destination_node_id": "canteen",
-    "heat": 93,
+    "heat": 2037,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2037,
     "created_at": "2026-06-10",
     "images": []
@@ -502,9 +775,17 @@
     "author_name": "浙大丹青生活访客",
     "destination": "浙江大学",
     "destination_node_id": "dormitory_1",
-    "heat": 70,
+    "heat": 920,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 920,
     "created_at": "2026-06-11",
     "images": []
@@ -517,9 +798,17 @@
     "author_name": "浙大学习访客",
     "destination": "浙江大学",
     "destination_node_id": "sports_ground",
-    "heat": 78,
+    "heat": 1173,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1173,
     "created_at": "2026-06-12",
     "images": []
@@ -532,9 +821,17 @@
     "author_name": "浙大求是访客",
     "destination": "浙江大学",
     "destination_node_id": "qiushi_great_hall",
-    "heat": 87,
+    "heat": 1486,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1486,
     "created_at": "2026-06-13",
     "images": []
@@ -547,9 +844,17 @@
     "author_name": "南大仙林游访客",
     "destination": "南京大学",
     "destination_node_id": "er_yuan_square",
-    "heat": 76,
+    "heat": 1008,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1008,
     "created_at": "2026-06-14",
     "images": []
@@ -562,9 +867,17 @@
     "author_name": "南大学习访客",
     "destination": "南京大学",
     "destination_node_id": "library",
-    "heat": 88,
+    "heat": 1591,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1591,
     "created_at": "2026-06-15",
     "images": []
@@ -577,9 +890,17 @@
     "author_name": "南大九食堂生活访客",
     "destination": "南京大学",
     "destination_node_id": "canteen",
-    "heat": 94,
+    "heat": 2074,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2074,
     "created_at": "2026-06-16",
     "images": []
@@ -592,9 +913,17 @@
     "author_name": "南大九食堂生活访客",
     "destination": "南京大学",
     "destination_node_id": "dormitory_1",
-    "heat": 71,
+    "heat": 957,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 957,
     "created_at": "2026-06-17",
     "images": []
@@ -607,9 +936,17 @@
     "author_name": "南大学习访客",
     "destination": "南京大学",
     "destination_node_id": "sports_center",
-    "heat": 79,
+    "heat": 1210,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1210,
     "created_at": "2026-06-18",
     "images": []
@@ -622,9 +959,17 @@
     "author_name": "南大仙林游访客",
     "destination": "南京大学",
     "destination_node_id": "nju_ding",
-    "heat": 88,
+    "heat": 1523,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1523,
     "created_at": "2026-06-19",
     "images": []
@@ -637,9 +982,17 @@
     "author_name": "复旦校园游访客",
     "destination": "复旦大学",
     "destination_node_id": "guanghua_tower",
-    "heat": 72,
+    "heat": 1045,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1045,
     "created_at": "2026-06-20",
     "images": []
@@ -652,9 +1005,17 @@
     "author_name": "复旦学习访客",
     "destination": "复旦大学",
     "destination_node_id": "library",
-    "heat": 89,
+    "heat": 1628,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1628,
     "created_at": "2026-06-21",
     "images": []
@@ -667,9 +1028,17 @@
     "author_name": "复旦邯郸生活访客",
     "destination": "复旦大学",
     "destination_node_id": "canteen",
-    "heat": 95,
+    "heat": 2111,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2111,
     "created_at": "2026-06-22",
     "images": []
@@ -682,9 +1051,17 @@
     "author_name": "复旦邯郸生活访客",
     "destination": "复旦大学",
     "destination_node_id": "dormitory_1",
-    "heat": 72,
+    "heat": 994,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 994,
     "created_at": "2026-06-23",
     "images": []
@@ -697,9 +1074,17 @@
     "author_name": "复旦学习访客",
     "destination": "复旦大学",
     "destination_node_id": "sports_ground",
-    "heat": 80,
+    "heat": 1247,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1247,
     "created_at": "2026-06-24",
     "images": []
@@ -712,9 +1097,17 @@
     "author_name": "复旦校园游访客",
     "destination": "复旦大学",
     "destination_node_id": "history_museum",
-    "heat": 84,
+    "heat": 1560,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1560,
     "created_at": "2026-06-25",
     "images": []
@@ -727,9 +1120,17 @@
     "author_name": "交大校园游访客",
     "destination": "上海交通大学",
     "destination_node_id": "siyuan_lake",
-    "heat": 73,
+    "heat": 1082,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1082,
     "created_at": "2026-06-26",
     "images": []
@@ -742,9 +1143,17 @@
     "author_name": "交大学习访客",
     "destination": "上海交通大学",
     "destination_node_id": "library",
-    "heat": 90,
+    "heat": 1665,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1665,
     "created_at": "2026-06-27",
     "images": []
@@ -757,9 +1166,17 @@
     "author_name": "交大闵行生活访客",
     "destination": "上海交通大学",
     "destination_node_id": "canteen",
-    "heat": 96,
+    "heat": 2148,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2148,
     "created_at": "2026-06-28",
     "images": []
@@ -772,9 +1189,17 @@
     "author_name": "交大闵行生活访客",
     "destination": "上海交通大学",
     "destination_node_id": "dormitory_1",
-    "heat": 73,
+    "heat": 1031,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1031,
     "created_at": "2026-06-29",
     "images": []
@@ -787,9 +1212,17 @@
     "author_name": "交大学习访客",
     "destination": "上海交通大学",
     "destination_node_id": "sports_ground",
-    "heat": 76,
+    "heat": 1284,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1284,
     "created_at": "2026-06-30",
     "images": []
@@ -802,9 +1235,17 @@
     "author_name": "交大校园游访客",
     "destination": "上海交通大学",
     "destination_node_id": "culture_square",
-    "heat": 85,
+    "heat": 1597,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1597,
     "created_at": "2026-07-01",
     "images": []
@@ -817,9 +1258,17 @@
     "author_name": "同济校园游访客",
     "destination": "同济大学",
     "destination_node_id": "auditorium",
-    "heat": 74,
+    "heat": 1119,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1119,
     "created_at": "2026-07-02",
     "images": []
@@ -832,9 +1281,17 @@
     "author_name": "同济学习访客",
     "destination": "同济大学",
     "destination_node_id": "library",
-    "heat": 91,
+    "heat": 1702,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1702,
     "created_at": "2026-07-03",
     "images": []
@@ -847,9 +1304,17 @@
     "author_name": "同济四平路生活访客",
     "destination": "同济大学",
     "destination_node_id": "canteen",
-    "heat": 97,
+    "heat": 2185,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2185,
     "created_at": "2026-07-04",
     "images": []
@@ -862,9 +1327,17 @@
     "author_name": "同济四平路生活访客",
     "destination": "同济大学",
     "destination_node_id": "dormitory_1",
-    "heat": 69,
+    "heat": 1068,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1068,
     "created_at": "2026-07-05",
     "images": []
@@ -877,9 +1350,17 @@
     "author_name": "同济学习访客",
     "destination": "同济大学",
     "destination_node_id": "sports_ground",
-    "heat": 77,
+    "heat": 1321,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1321,
     "created_at": "2026-07-06",
     "images": []
@@ -892,9 +1373,17 @@
     "author_name": "同济校园游访客",
     "destination": "同济大学",
     "destination_node_id": "sakura_avenue",
-    "heat": 86,
+    "heat": 1634,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1634,
     "created_at": "2026-07-07",
     "images": []
@@ -907,9 +1396,17 @@
     "author_name": "东大九龙湖访客",
     "destination": "东南大学",
     "destination_node_id": "gate_west",
-    "heat": 75,
+    "heat": 1156,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1156,
     "created_at": "2026-07-08",
     "images": []
@@ -922,9 +1419,17 @@
     "author_name": "东大学习访客",
     "destination": "东南大学",
     "destination_node_id": "library",
-    "heat": 92,
+    "heat": 1739,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1739,
     "created_at": "2026-07-09",
     "images": []
@@ -937,9 +1442,17 @@
     "author_name": "东大桃园生活访客",
     "destination": "东南大学",
     "destination_node_id": "canteen",
-    "heat": 93,
+    "heat": 2222,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2222,
     "created_at": "2026-07-10",
     "images": []
@@ -952,9 +1465,17 @@
     "author_name": "东大桃园生活访客",
     "destination": "东南大学",
     "destination_node_id": "dormitory_1",
-    "heat": 70,
+    "heat": 1105,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1105,
     "created_at": "2026-07-11",
     "images": []
@@ -967,9 +1488,17 @@
     "author_name": "东大学习访客",
     "destination": "东南大学",
     "destination_node_id": "sports_ground",
-    "heat": 78,
+    "heat": 1358,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1358,
     "created_at": "2026-07-12",
     "images": []
@@ -982,9 +1511,17 @@
     "author_name": "东大九龙湖访客",
     "destination": "东南大学",
     "destination_node_id": "jiulong_lake",
-    "heat": 87,
+    "heat": 1671,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1671,
     "created_at": "2026-07-13",
     "images": []
@@ -997,9 +1534,17 @@
     "author_name": "中大校史游访客",
     "destination": "中山大学",
     "destination_node_id": "gate_west",
-    "heat": 76,
+    "heat": 1193,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1193,
     "created_at": "2026-07-14",
     "images": []
@@ -1012,9 +1557,17 @@
     "author_name": "中大学习访客",
     "destination": "中山大学",
     "destination_node_id": "library",
-    "heat": 88,
+    "heat": 1776,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1776,
     "created_at": "2026-07-15",
     "images": []
@@ -1027,9 +1580,17 @@
     "author_name": "中大东区生活访客",
     "destination": "中山大学",
     "destination_node_id": "canteen",
-    "heat": 94,
+    "heat": 2259,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2259,
     "created_at": "2026-07-16",
     "images": []
@@ -1042,9 +1603,17 @@
     "author_name": "中大东区生活访客",
     "destination": "中山大学",
     "destination_node_id": "dormitory_1",
-    "heat": 71,
+    "heat": 1142,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1142,
     "created_at": "2026-07-17",
     "images": []
@@ -1057,9 +1626,17 @@
     "author_name": "中大学习访客",
     "destination": "中山大学",
     "destination_node_id": "sports_ground",
-    "heat": 79,
+    "heat": 1395,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1395,
     "created_at": "2026-07-18",
     "images": []
@@ -1072,9 +1649,17 @@
     "author_name": "中大校史游访客",
     "destination": "中山大学",
     "destination_node_id": "sun_yat_sen_statue",
-    "heat": 88,
+    "heat": 1708,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1708,
     "created_at": "2026-07-19",
     "images": []
@@ -1087,9 +1672,17 @@
     "author_name": "川大校史游访客",
     "destination": "四川大学",
     "destination_node_id": "gate_west",
-    "heat": 72,
+    "heat": 1230,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1230,
     "created_at": "2026-07-20",
     "images": []
@@ -1102,9 +1695,17 @@
     "author_name": "川大学习访客",
     "destination": "四川大学",
     "destination_node_id": "library",
-    "heat": 89,
+    "heat": 1813,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1813,
     "created_at": "2026-07-21",
     "images": []
@@ -1117,9 +1718,17 @@
     "author_name": "川大望江生活访客",
     "destination": "四川大学",
     "destination_node_id": "canteen",
-    "heat": 95,
+    "heat": 2296,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2296,
     "created_at": "2026-07-22",
     "images": []
@@ -1132,9 +1741,17 @@
     "author_name": "川大望江生活访客",
     "destination": "四川大学",
     "destination_node_id": "dormitory_1",
-    "heat": 72,
+    "heat": 1179,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1179,
     "created_at": "2026-07-23",
     "images": []
@@ -1147,9 +1764,17 @@
     "author_name": "川大学习访客",
     "destination": "四川大学",
     "destination_node_id": "sports_ground",
-    "heat": 80,
+    "heat": 1432,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1432,
     "created_at": "2026-07-24",
     "images": []
@@ -1162,9 +1787,17 @@
     "author_name": "川大校史游访客",
     "destination": "四川大学",
     "destination_node_id": "history_museum",
-    "heat": 84,
+    "heat": 1745,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1745,
     "created_at": "2026-07-25",
     "images": []
@@ -1177,9 +1810,17 @@
     "author_name": "湖大书院游访客",
     "destination": "湖南大学",
     "destination_node_id": "gate_west",
-    "heat": 73,
+    "heat": 1267,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1267,
     "created_at": "2026-07-26",
     "images": []
@@ -1192,9 +1833,17 @@
     "author_name": "湖大学习访客",
     "destination": "湖南大学",
     "destination_node_id": "library",
-    "heat": 90,
+    "heat": 1850,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1850,
     "created_at": "2026-07-27",
     "images": []
@@ -1207,9 +1856,17 @@
     "author_name": "湖大德智生活访客",
     "destination": "湖南大学",
     "destination_node_id": "canteen",
-    "heat": 96,
+    "heat": 2333,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2333,
     "created_at": "2026-07-28",
     "images": []
@@ -1222,9 +1879,17 @@
     "author_name": "湖大德智生活访客",
     "destination": "湖南大学",
     "destination_node_id": "dormitory_1",
-    "heat": 73,
+    "heat": 1216,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1216,
     "created_at": "2026-07-29",
     "images": []
@@ -1237,9 +1902,17 @@
     "author_name": "湖大学习访客",
     "destination": "湖南大学",
     "destination_node_id": "sports_ground",
-    "heat": 76,
+    "heat": 1469,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1469,
     "created_at": "2026-07-30",
     "images": []
@@ -1252,9 +1925,17 @@
     "author_name": "湖大书院游访客",
     "destination": "湖南大学",
     "destination_node_id": "history_museum",
-    "heat": 85,
+    "heat": 1782,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1782,
     "created_at": "2026-07-31",
     "images": []
@@ -1267,9 +1948,17 @@
     "author_name": "山大广场游访客",
     "destination": "山东大学",
     "destination_node_id": "central_square",
-    "heat": 74,
+    "heat": 1304,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1304,
     "created_at": "2026-08-01",
     "images": []
@@ -1282,9 +1971,17 @@
     "author_name": "山大学习访客",
     "destination": "山东大学",
     "destination_node_id": "library",
-    "heat": 91,
+    "heat": 1887,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1887,
     "created_at": "2026-08-02",
     "images": []
@@ -1297,9 +1994,17 @@
     "author_name": "山大齐园生活访客",
     "destination": "山东大学",
     "destination_node_id": "canteen",
-    "heat": 97,
+    "heat": 2370,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2370,
     "created_at": "2026-08-03",
     "images": []
@@ -1312,9 +2017,17 @@
     "author_name": "山大齐园生活访客",
     "destination": "山东大学",
     "destination_node_id": "dormitory_1",
-    "heat": 69,
+    "heat": 1253,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1253,
     "created_at": "2026-08-04",
     "images": []
@@ -1327,9 +2040,17 @@
     "author_name": "山大学习访客",
     "destination": "山东大学",
     "destination_node_id": "sports_ground",
-    "heat": 77,
+    "heat": 1506,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1506,
     "created_at": "2026-08-05",
     "images": []
@@ -1342,9 +2063,17 @@
     "author_name": "山大广场游访客",
     "destination": "山东大学",
     "destination_node_id": "history_museum",
-    "heat": 86,
+    "heat": 1819,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1819,
     "created_at": "2026-08-06",
     "images": []
@@ -1357,9 +2086,17 @@
     "author_name": "华科喻家山访客",
     "destination": "华中科技大学",
     "destination_node_id": "central_square",
-    "heat": 75,
+    "heat": 1341,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1341,
     "created_at": "2026-08-07",
     "images": []
@@ -1372,9 +2109,17 @@
     "author_name": "华科学习访客",
     "destination": "华中科技大学",
     "destination_node_id": "library",
-    "heat": 92,
+    "heat": 1924,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1924,
     "created_at": "2026-08-08",
     "images": []
@@ -1387,9 +2132,17 @@
     "author_name": "华科韵苑生活访客",
     "destination": "华中科技大学",
     "destination_node_id": "canteen",
-    "heat": 93,
+    "heat": 2407,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2407,
     "created_at": "2026-08-09",
     "images": []
@@ -1402,9 +2155,17 @@
     "author_name": "华科韵苑生活访客",
     "destination": "华中科技大学",
     "destination_node_id": "dormitory_1",
-    "heat": 70,
+    "heat": 1290,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1290,
     "created_at": "2026-08-10",
     "images": []
@@ -1417,9 +2178,17 @@
     "author_name": "华科学习访客",
     "destination": "华中科技大学",
     "destination_node_id": "sports_ground",
-    "heat": 78,
+    "heat": 1543,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1543,
     "created_at": "2026-08-11",
     "images": []
@@ -1432,9 +2201,17 @@
     "author_name": "华科喻家山访客",
     "destination": "华中科技大学",
     "destination_node_id": "history_museum",
-    "heat": 87,
+    "heat": 1856,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1856,
     "created_at": "2026-08-12",
     "images": []
@@ -1447,9 +2224,17 @@
     "author_name": "华工西湖游访客",
     "destination": "华南理工大学",
     "destination_node_id": "central_square",
-    "heat": 76,
+    "heat": 1378,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1378,
     "created_at": "2026-08-13",
     "images": []
@@ -1462,9 +2247,17 @@
     "author_name": "华工学习访客",
     "destination": "华南理工大学",
     "destination_node_id": "library",
-    "heat": 88,
+    "heat": 1961,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1961,
     "created_at": "2026-08-14",
     "images": []
@@ -1477,9 +2270,17 @@
     "author_name": "华工东区生活访客",
     "destination": "华南理工大学",
     "destination_node_id": "canteen",
-    "heat": 94,
+    "heat": 2444,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2444,
     "created_at": "2026-08-15",
     "images": []
@@ -1492,9 +2293,17 @@
     "author_name": "华工东区生活访客",
     "destination": "华南理工大学",
     "destination_node_id": "dormitory_1",
-    "heat": 71,
+    "heat": 1327,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1327,
     "created_at": "2026-08-16",
     "images": []
@@ -1507,9 +2316,17 @@
     "author_name": "华工学习访客",
     "destination": "华南理工大学",
     "destination_node_id": "sports_ground",
-    "heat": 79,
+    "heat": 1580,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1580,
     "created_at": "2026-08-17",
     "images": []
@@ -1522,9 +2339,17 @@
     "author_name": "华工西湖游访客",
     "destination": "华南理工大学",
     "destination_node_id": "history_museum",
-    "heat": 88,
+    "heat": 1893,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1893,
     "created_at": "2026-08-18",
     "images": []
@@ -1537,9 +2362,17 @@
     "author_name": "海大海洋文化访客",
     "destination": "中国海洋大学",
     "destination_node_id": "central_square",
-    "heat": 72,
+    "heat": 1415,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1415,
     "created_at": "2026-08-19",
     "images": []
@@ -1552,9 +2385,17 @@
     "author_name": "海大学习访客",
     "destination": "中国海洋大学",
     "destination_node_id": "library",
-    "heat": 89,
+    "heat": 1998,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 1998,
     "created_at": "2026-08-20",
     "images": []
@@ -1567,9 +2408,17 @@
     "author_name": "海大北区生活访客",
     "destination": "中国海洋大学",
     "destination_node_id": "canteen",
-    "heat": 95,
+    "heat": 2481,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2481,
     "created_at": "2026-08-21",
     "images": []
@@ -1582,9 +2431,17 @@
     "author_name": "海大北区生活访客",
     "destination": "中国海洋大学",
     "destination_node_id": "dormitory_1",
-    "heat": 72,
+    "heat": 1364,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1364,
     "created_at": "2026-08-22",
     "images": []
@@ -1597,9 +2454,17 @@
     "author_name": "海大学习访客",
     "destination": "中国海洋大学",
     "destination_node_id": "sports_ground",
-    "heat": 80,
+    "heat": 1617,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1617,
     "created_at": "2026-08-23",
     "images": []
@@ -1612,9 +2477,17 @@
     "author_name": "海大海洋文化访客",
     "destination": "中国海洋大学",
     "destination_node_id": "history_museum",
-    "heat": 84,
+    "heat": 1930,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1930,
     "created_at": "2026-08-24",
     "images": []
@@ -1627,9 +2500,17 @@
     "author_name": "苏大老校区漫游访客",
     "destination": "苏州大学",
     "destination_node_id": "central_square",
-    "heat": 73,
+    "heat": 1452,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1452,
     "created_at": "2026-08-25",
     "images": []
@@ -1642,9 +2523,17 @@
     "author_name": "苏大学习访客",
     "destination": "苏州大学",
     "destination_node_id": "library",
-    "heat": 90,
+    "heat": 2035,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 2035,
     "created_at": "2026-08-26",
     "images": []
@@ -1657,9 +2546,17 @@
     "author_name": "苏大天赐庄生活访客",
     "destination": "苏州大学",
     "destination_node_id": "canteen",
-    "heat": 96,
+    "heat": 2518,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2518,
     "created_at": "2026-08-27",
     "images": []
@@ -1672,9 +2569,17 @@
     "author_name": "苏大天赐庄生活访客",
     "destination": "苏州大学",
     "destination_node_id": "dormitory_1",
-    "heat": 73,
+    "heat": 1401,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1401,
     "created_at": "2026-08-28",
     "images": []
@@ -1687,9 +2592,17 @@
     "author_name": "苏大学习访客",
     "destination": "苏州大学",
     "destination_node_id": "sports_ground",
-    "heat": 76,
+    "heat": 1654,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1654,
     "created_at": "2026-08-29",
     "images": []
@@ -1702,9 +2615,17 @@
     "author_name": "苏大老校区漫游访客",
     "destination": "苏州大学",
     "destination_node_id": "history_museum",
-    "heat": 85,
+    "heat": 1967,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 1967,
     "created_at": "2026-08-30",
     "images": []
@@ -1717,9 +2638,17 @@
     "author_name": "哈工大主楼访客",
     "destination": "哈尔滨工业大学",
     "destination_node_id": "central_square",
-    "heat": 74,
+    "heat": 1489,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1489,
     "created_at": "2026-08-31",
     "images": []
@@ -1732,9 +2661,17 @@
     "author_name": "哈工大学习访客",
     "destination": "哈尔滨工业大学",
     "destination_node_id": "library",
-    "heat": 91,
+    "heat": 2072,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 2072,
     "created_at": "2026-09-01",
     "images": []
@@ -1747,9 +2684,17 @@
     "author_name": "哈工大北区生活访客",
     "destination": "哈尔滨工业大学",
     "destination_node_id": "canteen",
-    "heat": 97,
+    "heat": 2555,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2555,
     "created_at": "2026-09-02",
     "images": []
@@ -1762,9 +2707,17 @@
     "author_name": "哈工大北区生活访客",
     "destination": "哈尔滨工业大学",
     "destination_node_id": "dormitory_1",
-    "heat": 69,
+    "heat": 1438,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1438,
     "created_at": "2026-09-03",
     "images": []
@@ -1777,9 +2730,17 @@
     "author_name": "哈工大学习访客",
     "destination": "哈尔滨工业大学",
     "destination_node_id": "sports_ground",
-    "heat": 77,
+    "heat": 1691,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1691,
     "created_at": "2026-09-04",
     "images": []
@@ -1792,9 +2753,17 @@
     "author_name": "哈工大主楼访客",
     "destination": "哈尔滨工业大学",
     "destination_node_id": "history_museum",
-    "heat": 86,
+    "heat": 2004,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 2004,
     "created_at": "2026-09-05",
     "images": []
@@ -1807,9 +2776,17 @@
     "author_name": "云大会泽院访客",
     "destination": "云南大学",
     "destination_node_id": "central_square",
-    "heat": 75,
+    "heat": 1526,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1526,
     "created_at": "2026-09-06",
     "images": []
@@ -1822,9 +2799,17 @@
     "author_name": "云大学习访客",
     "destination": "云南大学",
     "destination_node_id": "library",
-    "heat": 92,
+    "heat": 2109,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 2109,
     "created_at": "2026-09-07",
     "images": []
@@ -1837,9 +2822,17 @@
     "author_name": "云大北区生活访客",
     "destination": "云南大学",
     "destination_node_id": "canteen",
-    "heat": 93,
+    "heat": 2592,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2592,
     "created_at": "2026-09-08",
     "images": []
@@ -1852,9 +2845,17 @@
     "author_name": "云大北区生活访客",
     "destination": "云南大学",
     "destination_node_id": "dormitory_1",
-    "heat": 70,
+    "heat": 1475,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1475,
     "created_at": "2026-09-09",
     "images": []
@@ -1867,9 +2868,17 @@
     "author_name": "云大学习访客",
     "destination": "云南大学",
     "destination_node_id": "sports_ground",
-    "heat": 78,
+    "heat": 1728,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1728,
     "created_at": "2026-09-10",
     "images": []
@@ -1882,9 +2891,17 @@
     "author_name": "云大会泽院访客",
     "destination": "云南大学",
     "destination_node_id": "history_museum",
-    "heat": 87,
+    "heat": 2041,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 2041,
     "created_at": "2026-09-11",
     "images": []
@@ -1897,9 +2914,17 @@
     "author_name": "华农狮子山访客",
     "destination": "华中农业大学",
     "destination_node_id": "central_square",
-    "heat": 76,
+    "heat": 1563,
     "rating": 4.5,
-    "tags": ["校园初印象","入口导览","校园漫步","打卡"],
+    "rating_count": 1,
+    "rating_total": 4.5,
+    "user_ratings": {},
+    "tags": [
+      "校园初印象",
+      "入口导览",
+      "校园漫步",
+      "打卡"
+    ],
     "views": 1563,
     "created_at": "2026-09-12",
     "images": []
@@ -1912,9 +2937,17 @@
     "author_name": "华农学习访客",
     "destination": "华中农业大学",
     "destination_node_id": "library",
-    "heat": 88,
+    "heat": 2146,
     "rating": 4.8,
-    "tags": ["图书馆","自习","学习","学术"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "图书馆",
+      "自习",
+      "学习",
+      "学术"
+    ],
     "views": 2146,
     "created_at": "2026-09-13",
     "images": []
@@ -1927,9 +2960,17 @@
     "author_name": "华农荟园生活访客",
     "destination": "华中农业大学",
     "destination_node_id": "canteen",
-    "heat": 94,
+    "heat": 2629,
     "rating": 4.8,
-    "tags": ["食堂","美食","校园生活","餐饮"],
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "食堂",
+      "美食",
+      "校园生活",
+      "餐饮"
+    ],
     "views": 2629,
     "created_at": "2026-09-14",
     "images": []
@@ -1942,9 +2983,17 @@
     "author_name": "华农荟园生活访客",
     "destination": "华中农业大学",
     "destination_node_id": "dormitory_1",
-    "heat": 71,
+    "heat": 1512,
     "rating": 4.2,
-    "tags": ["宿舍","生活区","服务设施","校园生活"],
+    "rating_count": 1,
+    "rating_total": 4.2,
+    "user_ratings": {},
+    "tags": [
+      "宿舍",
+      "生活区",
+      "服务设施",
+      "校园生活"
+    ],
     "views": 1512,
     "created_at": "2026-09-15",
     "images": []
@@ -1957,9 +3006,17 @@
     "author_name": "华农学习访客",
     "destination": "华中农业大学",
     "destination_node_id": "sports_ground",
-    "heat": 79,
+    "heat": 1765,
     "rating": 4.4,
-    "tags": ["运动","跑步","体育场","夜跑"],
+    "rating_count": 1,
+    "rating_total": 4.4,
+    "user_ratings": {},
+    "tags": [
+      "运动",
+      "跑步",
+      "体育场",
+      "夜跑"
+    ],
     "views": 1765,
     "created_at": "2026-09-16",
     "images": []
@@ -1972,11 +3029,115 @@
     "author_name": "华农狮子山访客",
     "destination": "华中农业大学",
     "destination_node_id": "history_museum",
-    "heat": 88,
+    "heat": 2078,
     "rating": 5.0,
-    "tags": ["历史文化","摄影","校史","校园景观"],
+    "rating_count": 1,
+    "rating_total": 5.0,
+    "user_ratings": {},
+    "tags": [
+      "历史文化",
+      "摄影",
+      "校史",
+      "校园景观"
+    ],
     "views": 2078,
     "created_at": "2026-09-17",
     "images": []
+  },
+  {
+    "id": "diary_133",
+    "title": "图书馆自习复盘（已更新）",
+    "content": "今天在图书馆自习体验很好。",
+    "author_id": "user_demo",
+    "author_name": "演示用户",
+    "destination": "北京大学",
+    "destination_node_id": "library",
+    "heat": 0,
+    "rating": 4.8,
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "自习",
+      "图书馆"
+    ],
+    "views": 0,
+    "created_at": "2026-05-11",
+    "images": [
+      "media/placeholders/pku_canteen_food.jpg"
+    ],
+    "videos": [
+      "/assets/demo.mp4"
+    ]
+  },
+  {
+    "id": "diary_134",
+    "title": "图书馆自习复盘（已更新）",
+    "content": "今天在图书馆自习体验很好。",
+    "author_id": "user_demo",
+    "author_name": "演示用户",
+    "destination": "北京大学",
+    "destination_node_id": "library",
+    "heat": 0,
+    "rating": 4.8,
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "自习",
+      "图书馆"
+    ],
+    "views": 0,
+    "created_at": "2026-05-11",
+    "images": [
+      "media/placeholders/pku_canteen_food.jpg"
+    ],
+    "videos": [
+      "/assets/demo.mp4"
+    ]
+  },
+  {
+    "id": "diary_135",
+    "title": "图书馆自习复盘",
+    "content": "体验很好",
+    "author_id": "user_demo",
+    "author_name": "演示用户",
+    "destination": "北京大学",
+    "destination_node_id": null,
+    "heat": 0,
+    "rating": 0.0,
+    "rating_count": 0,
+    "rating_total": 0.0,
+    "user_ratings": {},
+    "tags": [],
+    "views": 0,
+    "created_at": "2026-05-11",
+    "images": []
+  },
+  {
+    "id": "diary_136",
+    "title": "图书馆自习复盘",
+    "content": "体验很好",
+    "author_id": "user_demo",
+    "author_name": "演示用户",
+    "destination": "北京大学",
+    "destination_node_id": null,
+    "heat": 0,
+    "rating": 4.8,
+    "rating_count": 1,
+    "rating_total": 4.8,
+    "user_ratings": {},
+    "tags": [
+      "自习",
+      "图书馆"
+    ],
+    "views": 0,
+    "created_at": "2026-05-11",
+    "images": [
+      "media/placeholders/pku_canteen_food.jpg"
+    ],
+    "videos": [
+      "/assets/demo.mp4"
+    ]
   }
 ]

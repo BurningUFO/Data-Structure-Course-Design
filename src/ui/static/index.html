@@ -398,7 +398,23 @@
                         </label>
                         <label class="field">
                           <span class="field-label">绑定路线目标</span>
-                          <select id="diary-destination-node"></select>
+                          <div class="combo-field" data-combobox="diaryDestination">
+                            <div class="combo-input-wrap">
+                              <input
+                                id="diary-destination-node-search"
+                                type="search"
+                                autocomplete="off"
+                                placeholder="输入地点名 / 类别"
+                                role="combobox"
+                                aria-autocomplete="list"
+                                aria-expanded="false"
+                                aria-controls="diary-destination-node-results"
+                              />
+                              <button class="combo-arrow-button" type="button" data-combobox-toggle="diaryDestination" aria-label="展开路线目标列表"></button>
+                            </div>
+                            <input id="diary-destination-node" type="hidden" />
+                            <div id="diary-destination-node-results" class="combo-results" role="listbox"></div>
+                          </div>
                         </label>
                       </div>
                       <details class="form-advanced inner-advanced">

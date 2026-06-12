@@ -20,6 +20,7 @@ LEGACY_DIARY_PATH = os.path.join(
 DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
 DEFAULT_DIARY_PATH = DATA_ROOT / "diary_data.json"
 GLOBAL_SITES_PATH = DATA_ROOT / "global_sites.json"
+EXPECTED_PKU_DIARY_COUNT = 11
 
 
 def load_global_site_names():
@@ -98,7 +99,7 @@ def test_search_by_destination_exact():
     service = DiaryService()
     result = service.search_by_destination("北京大学", match_mode="exact")
 
-    assert len(result) == 7
+    assert len(result) == EXPECTED_PKU_DIARY_COUNT
     print("test_search_by_destination_exact passed.")
 
 
@@ -154,7 +155,7 @@ def test_search_limit_and_total_matched():
     result = search_diaries(destination="北京大学", limit=3)
 
     assert result["total"] == 3
-    assert result["metadata"]["total_matched"] == 7
+    assert result["metadata"]["total_matched"] == EXPECTED_PKU_DIARY_COUNT
     print("test_search_limit_and_total_matched passed.")
 
 
