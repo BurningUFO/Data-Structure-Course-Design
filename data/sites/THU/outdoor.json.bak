@@ -1,0 +1,3144 @@
+{
+  "graph_id": "THU_outdoor",
+  "graph_type": "outdoor",
+  "metadata": {
+    "stage": "M27X",
+    "site_id": "THU",
+    "site_name": "清华大学",
+    "scaffold": false,
+    "batch": "first_5_outdoor",
+    "ready_for_first_batch_regression": true,
+    "scope": "M27X THU outdoor batch graph: gates, main-road waypoints, core POI, search/place/catering targets, and single/multi-route demo targets. Indoor graphs are intentionally not declared in this stage.",
+    "capabilities": [
+      "leaflet_geojson",
+      "scenic_search",
+      "place_search",
+      "catering_recommend",
+      "single_route",
+      "multi_route",
+      "indoor_navigation",
+      "indoor_floorplan",
+      "indoor_route_view_switch"
+    ],
+    "core_poi_categories": [
+      "entrance",
+      "landmark",
+      "education",
+      "dormitory",
+      "catering",
+      "sports",
+      "service",
+      "shopping",
+      "restroom"
+    ],
+    "transport_calibration_stage": "M31A_THU",
+    "transport_modes": [
+      "walk",
+      "bike",
+      "mixed"
+    ],
+    "transport_notes": [
+      "清华主路按步行与自行车共享通行估时。",
+      "东南门和南区入口保留步行短接，并补充非机动车绕行接驳，便于展示 walk、bike、mixed 的可解释差异。",
+      "室内与入楼 gate_link 继续保持步行语义。"
+    ],
+    "nearby_calibration_stage": "M31B_THU",
+    "nearby_radius_options": [
+      200,
+      300,
+      400,
+      500,
+      800
+    ],
+    "nearby_profiles": [
+      {
+        "center_node_id": "library",
+        "default_radius_m": 300,
+        "default_category": "service",
+        "notes": "图书馆周边查附近优先命中馆内服务台、自助借还和洗手间。"
+      },
+      {
+        "center_node_id": "teaching_building",
+        "default_radius_m": 300,
+        "default_category": "service",
+        "notes": "第三教室楼周边优先命中教学服务台、共享学习区和近侧洗手间。"
+      },
+      {
+        "center_node_id": "main_building",
+        "default_radius_m": 300,
+        "default_category": "service",
+        "notes": "中央主楼查附近优先展示票务、医务和器材服务等楼内服务设施。"
+      },
+      {
+        "center_node_id": "canteen",
+        "default_radius_m": 300,
+        "default_category": "service",
+        "notes": "桃李园查附近优先展示餐盘回收、调料区和自助取餐等餐饮服务设施。"
+      },
+      {
+        "center_node_id": "dormitory_1",
+        "default_radius_m": 400,
+        "default_category": "shopping",
+        "notes": "紫荆宿舍区查附近优先命中便利服务点，再扩展到食堂和生活配套。"
+      },
+      {
+        "center_node_id": "second_gate",
+        "default_radius_m": 800,
+        "default_category": "restroom",
+        "notes": "二校门作为参观动线中心时，扩大范围以覆盖学堂路与图书馆片区的洗手间。"
+      }
+    ],
+    "interest_calibration_stage": "M31C_THU",
+    "interest_highlights": [
+      {
+        "profile_id": "study",
+        "interests": [
+          "图书馆",
+          "自习",
+          "学术报告"
+        ],
+        "highlight_node_ids": [
+          "library",
+          "main_building",
+          "teaching_building"
+        ]
+      },
+      {
+        "profile_id": "history",
+        "interests": [
+          "历史文化",
+          "大礼堂",
+          "校史"
+        ],
+        "highlight_node_ids": [
+          "second_gate",
+          "auditorium",
+          "qinghua_xuetang",
+          "sundial"
+        ]
+      },
+      {
+        "profile_id": "campus_life",
+        "interests": [
+          "食堂",
+          "桃李园",
+          "校园生活"
+        ],
+        "highlight_node_ids": [
+          "canteen",
+          "guanchouyuan_canteen",
+          "dormitory_1",
+          "convenience_store"
+        ]
+      }
+    ],
+    "coordinate_sources": [
+      "TsinghuaCoordinates public building centroids, 2014 Google Earth seed data",
+      "OpenStreetMap Nominatim west-gate lookup",
+      "M26A manual campus-axis estimates carried forward for M27X THU outdoor batch",
+      "M32D WGS84 normalization for Leaflet/OSM basemap alignment"
+    ],
+    "needs_review": [
+      "Road geometries still use endpoint fallback lines until a later offline OSM geometry stage.",
+      "No indoor graph is declared in M27X.",
+      "M29X THU 室内图复用 PKU 模板，后续阶段可替换为真实楼内结构。"
+    ],
+    "indoor_stage": "M29X",
+    "indoor_site_id": "THU",
+    "indoor_template_source": "PKU",
+    "indoor_supported_building_count": 5,
+    "indoor_supported_buildings": [
+      "library",
+      "teaching_building",
+      "dormitory_1",
+      "canteen",
+      "main_building"
+    ],
+    "ready_for_first_batch_indoor_regression": true
+  },
+  "nodes": [
+    {
+      "id": "gate_west",
+      "name": "清华大学西门",
+      "type": "entrance",
+      "is_gate": true,
+      "sub_graph_id": null,
+      "tags": [
+        "校门",
+        "西门",
+        "入口",
+        "清华西路"
+      ],
+      "keywords": [
+        "清华大学西门",
+        "西门",
+        "校门",
+        "入口"
+      ],
+      "description": "清华大学西门，连接清华西路、二校门参观动线和西侧入校步行入口。",
+      "category": "entrance",
+      "facilities": [
+        "安保"
+      ],
+      "open_hours": "24/7",
+      "heat": 88,
+      "rating": 4.7,
+      "source": "nominatim_west_gate_seed",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9967499,
+        "lng": 116.3088897
+      }
+    },
+    {
+      "id": "gate_south",
+      "name": "清华大学南区入口",
+      "type": "entrance",
+      "is_gate": true,
+      "sub_graph_id": null,
+      "tags": [
+        "校门",
+        "南门",
+        "入口",
+        "清华南路"
+      ],
+      "keywords": [
+        "清华大学南门",
+        "南区入口",
+        "南门",
+        "校门"
+      ],
+      "description": "清华大学南区入口，连接主教学区、主楼中轴和南侧到达路线。",
+      "category": "entrance",
+      "facilities": [
+        "安保"
+      ],
+      "open_hours": "24/7",
+      "heat": 82,
+      "rating": 4.5,
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9961261,
+        "lng": 116.3182629
+      }
+    },
+    {
+      "id": "gate_east",
+      "name": "清华大学东南门",
+      "type": "entrance",
+      "is_gate": true,
+      "sub_graph_id": null,
+      "tags": [
+        "校门",
+        "东南门",
+        "入口",
+        "主楼东侧"
+      ],
+      "keywords": [
+        "清华大学东南门",
+        "东南门",
+        "东门",
+        "校门"
+      ],
+      "description": "清华大学东南门，靠近中央主楼东侧，是教学科研片区常用出入口。",
+      "category": "entrance",
+      "facilities": [
+        "安保"
+      ],
+      "open_hours": "24/7",
+      "heat": 86,
+      "rating": 4.6,
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0004034,
+        "lng": 116.328707
+      }
+    },
+    {
+      "id": "gate_north",
+      "name": "清华大学北区入口",
+      "type": "entrance",
+      "is_gate": true,
+      "sub_graph_id": null,
+      "tags": [
+        "校门",
+        "北区",
+        "入口",
+        "紫荆公寓"
+      ],
+      "keywords": [
+        "清华大学北门",
+        "北区入口",
+        "北门",
+        "紫荆公寓入口"
+      ],
+      "description": "清华大学北区入口，服务紫荆公寓、桃李园和北区校园生活动线。",
+      "category": "entrance",
+      "facilities": [
+        "安保"
+      ],
+      "open_hours": "24/7",
+      "heat": 80,
+      "rating": 4.4,
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0115783,
+        "lng": 116.3234391
+      }
+    },
+    {
+      "id": "second_gate",
+      "name": "二校门",
+      "type": "landmark",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "二校门",
+        "地标",
+        "校史",
+        "历史文化",
+        "摄影",
+        "打卡地"
+      ],
+      "keywords": [
+        "二校门",
+        "清华二校门",
+        "清华园地标",
+        "校史打卡"
+      ],
+      "description": "二校门是清华园最具辨识度的历史地标之一，常作为校史讲解、合影和校园参观路线起点。",
+      "category": "landmark",
+      "facilities": [],
+      "open_hours": "全天开放",
+      "heat": 96,
+      "rating": 4.9,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 39.9996335,
+        "lng": 116.3182427
+      }
+    },
+    {
+      "id": "library",
+      "name": "清华大学图书馆",
+      "type": "building",
+      "is_gate": true,
+      "sub_graph_id": "indoor_LIB",
+      "tags": [
+        "图书馆",
+        "学习",
+        "自习",
+        "阅览",
+        "逸夫馆",
+        "学术"
+      ],
+      "keywords": [
+        "清华大学图书馆",
+        "图书馆",
+        "逸夫馆",
+        "老馆",
+        "自习",
+        "学术报告"
+      ],
+      "description": "清华大学图书馆与逸夫馆阅读区，是自习、借阅和学术活动最集中的学习类 POI。",
+      "category": "education",
+      "facilities": [
+        "阅览",
+        "自习",
+        "借阅"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 94,
+      "rating": 4.8,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 40.0035771,
+        "lng": 116.3182659
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_LIB",
+      "indoor_entry_node_id": "library"
+    },
+    {
+      "id": "auditorium",
+      "name": "清华大学大礼堂",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "大礼堂",
+        "地标",
+        "活动",
+        "校史",
+        "新生典礼",
+        "毕业典礼",
+        "历史文化"
+      ],
+      "keywords": [
+        "清华大学大礼堂",
+        "大礼堂",
+        "新生典礼",
+        "毕业典礼",
+        "校史"
+      ],
+      "description": "清华大学大礼堂是校园参观、典礼与校史叙事中的代表性地标，适合历史文化和摄影兴趣推荐。",
+      "category": "landmark",
+      "facilities": [
+        "活动空间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 93,
+      "rating": 4.8,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 40.0023551,
+        "lng": 116.3182759
+      }
+    },
+    {
+      "id": "qinghua_xuetang",
+      "name": "清华学堂",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "清华学堂",
+        "校史",
+        "历史文化",
+        "讲堂",
+        "摄影"
+      ],
+      "keywords": [
+        "清华学堂",
+        "学堂",
+        "校史",
+        "历史建筑",
+        "摄影"
+      ],
+      "description": "清华学堂是清华园历史建筑代表之一，常与二校门、大礼堂组成校园游览与校史路线。",
+      "category": "landmark",
+      "facilities": [
+        "历史建筑",
+        "讲堂"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 92,
+      "rating": 4.8,
+      "source": "m31c_thu_interest_calibration",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0005835,
+        "lng": 116.3188802
+      }
+    },
+    {
+      "id": "sundial",
+      "name": "清华日晷",
+      "type": "poi",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "日晷",
+        "地标",
+        "校史",
+        "摄影",
+        "打卡"
+      ],
+      "keywords": [
+        "清华日晷",
+        "日晷",
+        "校园地标",
+        "校史",
+        "摄影"
+      ],
+      "description": "清华日晷是校园参观和合影常见打卡点，适合历史文化与摄影兴趣推荐。",
+      "category": "landmark",
+      "facilities": [
+        "景观"
+      ],
+      "open_hours": "全天开放",
+      "heat": 90,
+      "rating": 4.7,
+      "source": "m31c_thu_interest_calibration",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0008887,
+        "lng": 116.3193572
+      }
+    },
+    {
+      "id": "teaching_building",
+      "name": "第三教室楼",
+      "type": "building",
+      "is_gate": true,
+      "sub_graph_id": "indoor_TB1",
+      "tags": [
+        "教学楼",
+        "教室",
+        "上课",
+        "三教",
+        "自习"
+      ],
+      "keywords": [
+        "第三教室楼",
+        "三教",
+        "教学楼",
+        "教室",
+        "自习"
+      ],
+      "description": "第三教室楼是清华本科教学与日常自习场景中最常见的教学类 POI 之一。",
+      "category": "education",
+      "facilities": [
+        "教室",
+        "教学空间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 88,
+      "rating": 4.6,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 40.0014494,
+        "lng": 116.3225873
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_TB1",
+      "indoor_entry_node_id": "teaching_building"
+    },
+    {
+      "id": "main_building",
+      "name": "中央主楼",
+      "type": "building",
+      "is_gate": true,
+      "sub_graph_id": "indoor_MAIN_BUILDING",
+      "tags": [
+        "主楼",
+        "行政",
+        "教学科研",
+        "地标",
+        "学术报告",
+        "科研"
+      ],
+      "keywords": [
+        "中央主楼",
+        "清华主楼",
+        "主楼",
+        "学术报告",
+        "科研"
+      ],
+      "description": "中央主楼位于清华东侧主轴，承接教学科研、学术报告和主楼片区打卡场景。",
+      "category": "education",
+      "facilities": [
+        "教学科研",
+        "办公"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 89,
+      "rating": 4.7,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 40.0004203,
+        "lng": 116.3263191
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_MAIN_BUILDING",
+      "indoor_entry_node_id": "main_building"
+    },
+    {
+      "id": "science_hall",
+      "name": "科学馆",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "科学馆",
+        "建筑",
+        "教学科研",
+        "实验",
+        "校园建筑"
+      ],
+      "keywords": [
+        "科学馆",
+        "清华科学馆",
+        "教学科研建筑",
+        "实验楼"
+      ],
+      "description": "科学馆补充为清华学堂路片区的建筑类 POI，用于满足校园建筑物数量硬指标和路线目标覆盖。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "实验空间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 82,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 40.00204,
+        "lng": 116.3194571
+      }
+    },
+    {
+      "id": "engineering_hall",
+      "name": "工程馆",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "工程馆",
+        "建筑",
+        "工科",
+        "教学科研",
+        "校园建筑"
+      ],
+      "keywords": [
+        "工程馆",
+        "清华工程馆",
+        "工科楼",
+        "教学科研建筑"
+      ],
+      "description": "工程馆补充为二校门主轴附近的工科建筑 POI，提供建筑类查询和路径规划目标。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "办公"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 81,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0001518,
+        "lng": 116.3206485
+      }
+    },
+    {
+      "id": "tongfang_building",
+      "name": "同方部",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "同方部",
+        "建筑",
+        "历史建筑",
+        "办公",
+        "校园建筑"
+      ],
+      "keywords": [
+        "同方部",
+        "清华同方部",
+        "历史建筑",
+        "办公楼"
+      ],
+      "description": "同方部补充为二校门周边历史建筑类 POI，可作为校园参观和建筑物数量核验目标。",
+      "category": "building",
+      "facilities": [
+        "办公",
+        "历史建筑"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 80,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9997417,
+        "lng": 116.3196547
+      }
+    },
+    {
+      "id": "humanities_building",
+      "name": "人文社科楼",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "人文社科楼",
+        "建筑",
+        "学院楼",
+        "办公",
+        "校园建筑"
+      ],
+      "keywords": [
+        "人文社科楼",
+        "清华人文社科楼",
+        "学院楼",
+        "办公楼"
+      ],
+      "description": "人文社科楼补充为西侧教学科研片区的学院建筑 POI，用于扩充 THU 建筑物目标。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "办公"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 79,
+      "rating": 4.4,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9980998,
+        "lng": 116.316079
+      }
+    },
+    {
+      "id": "architecture_building",
+      "name": "建筑馆",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "建筑馆",
+        "建筑",
+        "学院楼",
+        "设计",
+        "校园建筑"
+      ],
+      "keywords": [
+        "建筑馆",
+        "清华建筑馆",
+        "建筑学院",
+        "学院楼"
+      ],
+      "description": "建筑馆补充为主楼中轴西侧的学院建筑 POI，支持建筑类检索和路线规划演示。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "设计空间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 80,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9991178,
+        "lng": 116.3224372
+      }
+    },
+    {
+      "id": "mechanical_engineering_building",
+      "name": "机械工程馆",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "机械工程馆",
+        "建筑",
+        "工科",
+        "实验",
+        "校园建筑"
+      ],
+      "keywords": [
+        "机械工程馆",
+        "清华机械工程馆",
+        "机械楼",
+        "实验楼"
+      ],
+      "description": "机械工程馆补充为主楼中轴附近的工科建筑 POI，扩充可搜索和可规划建筑目标。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "实验空间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 81,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0009303,
+        "lng": 116.324029
+      }
+    },
+    {
+      "id": "electrical_engineering_building",
+      "name": "电机工程馆",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "电机工程馆",
+        "建筑",
+        "工科",
+        "实验",
+        "校园建筑"
+      ],
+      "keywords": [
+        "电机工程馆",
+        "清华电机工程馆",
+        "电机楼",
+        "实验楼"
+      ],
+      "description": "电机工程馆补充为主楼中轴附近的工程建筑 POI，满足 THU 建筑物数量补齐要求。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "实验空间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 81,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9997848,
+        "lng": 116.3247249
+      }
+    },
+    {
+      "id": "information_science_building",
+      "name": "信息科学技术大楼",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "信息科学技术大楼",
+        "建筑",
+        "信息",
+        "科研",
+        "校园建筑"
+      ],
+      "keywords": [
+        "信息科学技术大楼",
+        "信息楼",
+        "清华信息楼",
+        "科研楼"
+      ],
+      "description": "信息科学技术大楼补充为主楼东侧的信息类建筑 POI，便于展示东侧教学科研路线。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "实验空间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 82,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 39.999398,
+        "lng": 116.3272128
+      }
+    },
+    {
+      "id": "automation_building",
+      "name": "自动化系馆",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "自动化系馆",
+        "建筑",
+        "工科",
+        "科研",
+        "校园建筑"
+      ],
+      "keywords": [
+        "自动化系馆",
+        "清华自动化系馆",
+        "自动化楼",
+        "科研楼"
+      ],
+      "description": "自动化系馆补充为主楼中轴附近的系馆建筑 POI，用于建筑类规模补齐和路线演示。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "办公"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 80,
+      "rating": 4.4,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0017876,
+        "lng": 116.3251237
+      }
+    },
+    {
+      "id": "meng_minwei_science_building",
+      "name": "蒙民伟科技大楼",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "蒙民伟科技大楼",
+        "建筑",
+        "科技",
+        "科研",
+        "校园建筑"
+      ],
+      "keywords": [
+        "蒙民伟科技大楼",
+        "蒙民伟楼",
+        "科技大楼",
+        "科研楼"
+      ],
+      "description": "蒙民伟科技大楼补充为南区教学科研建筑 POI，连接南区入口与主教学区演示路线。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "办公"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 81,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9976677,
+        "lng": 116.3224367
+      }
+    },
+    {
+      "id": "law_school_building",
+      "name": "法学院楼",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "法学院楼",
+        "建筑",
+        "学院楼",
+        "教学",
+        "校园建筑"
+      ],
+      "keywords": [
+        "法学院楼",
+        "清华法学院楼",
+        "学院楼",
+        "教学楼"
+      ],
+      "description": "法学院楼补充为南区学院建筑 POI，用于补足建筑物数量并保留可规划路线目标。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "办公"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 79,
+      "rating": 4.4,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9973543,
+        "lng": 116.3209456
+      }
+    },
+    {
+      "id": "economics_management_building",
+      "name": "经管学院楼",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "经管学院楼",
+        "建筑",
+        "学院楼",
+        "教学",
+        "校园建筑"
+      ],
+      "keywords": [
+        "经管学院楼",
+        "清华经管学院楼",
+        "经济管理学院",
+        "学院楼"
+      ],
+      "description": "经管学院楼补充为南区学院建筑 POI，支持建筑类搜索和南区路线规划演示。",
+      "category": "building",
+      "facilities": [
+        "教学科研",
+        "办公"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 80,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9978362,
+        "lng": 116.3191573
+      }
+    },
+    {
+      "id": "student_activity_center",
+      "name": "学生文化活动中心",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "学生文化活动中心",
+        "建筑",
+        "活动",
+        "服务",
+        "校园建筑"
+      ],
+      "keywords": [
+        "学生文化活动中心",
+        "清华学生活动中心",
+        "活动中心",
+        "公共建筑"
+      ],
+      "description": "学生文化活动中心补充为学堂路北侧公共建筑 POI，适合校园生活路线和建筑物规模核验。",
+      "category": "building",
+      "facilities": [
+        "活动空间",
+        "学生服务"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 83,
+      "rating": 4.6,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0055566,
+        "lng": 116.3210488
+      }
+    },
+    {
+      "id": "zijing_apartment_2",
+      "name": "紫荆学生公寓二区",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "紫荆学生公寓二区",
+        "建筑",
+        "宿舍",
+        "住宿",
+        "校园建筑"
+      ],
+      "keywords": [
+        "紫荆学生公寓二区",
+        "紫荆公寓二区",
+        "宿舍楼",
+        "学生公寓"
+      ],
+      "description": "紫荆学生公寓二区补充为北区宿舍建筑 POI，扩展紫荆生活区的建筑物目标。",
+      "category": "building",
+      "facilities": [
+        "住宿",
+        "生活服务"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 80,
+      "rating": 4.4,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0098674,
+        "lng": 116.3221452
+      }
+    },
+    {
+      "id": "sports_center_building",
+      "name": "综合体育馆",
+      "type": "building",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "综合体育馆",
+        "建筑",
+        "体育",
+        "场馆",
+        "校园建筑"
+      ],
+      "keywords": [
+        "综合体育馆",
+        "清华体育馆",
+        "体育场馆",
+        "公共建筑"
+      ],
+      "description": "综合体育馆补充为北区体育建筑 POI，与紫荆操场共同支撑运动路线和建筑物数量要求。",
+      "category": "building",
+      "facilities": [
+        "体育场馆",
+        "活动空间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 82,
+      "rating": 4.5,
+      "source": "m32d_thu_building_minimum",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0067732,
+        "lng": 116.3229384
+      }
+    },
+    {
+      "id": "canteen",
+      "name": "桃李园",
+      "type": "facility",
+      "is_gate": true,
+      "sub_graph_id": "indoor_CANTEEN_TAOLI",
+      "tags": [
+        "食堂",
+        "餐饮",
+        "美食",
+        "桃李园",
+        "学生食堂",
+        "夜宵",
+        "紫荆",
+        "校园生活"
+      ],
+      "keywords": [
+        "桃李园",
+        "桃李园食堂",
+        "清华食堂",
+        "学生食堂",
+        "夜宵",
+        "餐饮"
+      ],
+      "description": "桃李园是紫荆学生生活区最常用的食堂之一，适合食堂、美食和校园生活兴趣推荐。",
+      "category": "catering",
+      "facilities": [
+        "餐饮",
+        "学生食堂"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 92,
+      "rating": 4.7,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 40.0095664,
+        "lng": 116.3199471
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_CANTEEN_TAOLI",
+      "indoor_entry_node_id": "canteen"
+    },
+    {
+      "id": "guanchouyuan_canteen",
+      "name": "观畴园食堂",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "食堂",
+        "观畴园",
+        "清华食堂",
+        "学生食堂",
+        "校园生活"
+      ],
+      "keywords": [
+        "观畴园食堂",
+        "观畴园",
+        "清华食堂",
+        "学生食堂",
+        "餐饮"
+      ],
+      "description": "观畴园食堂靠近主教学与参观片区，是体验清华食堂与校园生活的代表性餐饮点。",
+      "category": "catering",
+      "facilities": [
+        "餐饮",
+        "学生食堂"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 89,
+      "rating": 4.6,
+      "source": "m31c_thu_interest_calibration",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0038572,
+        "lng": 116.3211472
+      }
+    },
+    {
+      "id": "dormitory_1",
+      "name": "紫荆学生公寓",
+      "type": "dormitory",
+      "is_gate": true,
+      "sub_graph_id": "indoor_DORM1",
+      "tags": [
+        "宿舍",
+        "紫荆",
+        "住宿",
+        "生活区",
+        "校园生活"
+      ],
+      "keywords": [
+        "紫荆学生公寓",
+        "紫荆公寓",
+        "宿舍",
+        "学生区",
+        "校园生活"
+      ],
+      "description": "紫荆学生公寓是清华北区生活动线核心节点，串联宿舍、桃李园和紫荆操场。",
+      "category": "dormitory",
+      "facilities": [
+        "住宿",
+        "生活服务"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 87,
+      "rating": 4.5,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 40.0094715,
+        "lng": 116.322642
+      },
+      "indoor_supported": true,
+      "indoor_graph_id": "indoor_DORM1",
+      "indoor_entry_node_id": "dormitory_1"
+    },
+    {
+      "id": "sports_ground",
+      "name": "紫荆操场",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "操场",
+        "体育",
+        "运动",
+        "跑步",
+        "紫荆"
+      ],
+      "keywords": [
+        "紫荆操场",
+        "操场",
+        "运动",
+        "体育",
+        "跑步"
+      ],
+      "description": "紫荆操场是紫荆宿舍区常用的跑步与夜间运动点。",
+      "category": "sports",
+      "facilities": [
+        "操场",
+        "运动场"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 82,
+      "rating": 4.5,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 40.0086298,
+        "lng": 116.3232988
+      }
+    },
+    {
+      "id": "service_center",
+      "name": "学生服务中心",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "学生服务",
+        "服务中心",
+        "校园卡",
+        "办事",
+        "新生事务"
+      ],
+      "keywords": [
+        "学生服务中心",
+        "服务中心",
+        "校园卡",
+        "办事",
+        "新生事务"
+      ],
+      "description": "学生服务中心承接校园卡、学生事务和新生入校相关服务。",
+      "category": "service",
+      "facilities": [
+        "咨询",
+        "校园服务"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 78,
+      "rating": 4.4,
+      "source": "tsinghua_coordinates_2014_centroid",
+      "needs_review": false,
+      "location": {
+        "lat": 40.0085461,
+        "lng": 116.3220817
+      }
+    },
+    {
+      "id": "convenience_store",
+      "name": "紫荆便利服务点",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "便利店",
+        "购物",
+        "生活服务",
+        "紫荆",
+        "夜宵补给",
+        "校园生活"
+      ],
+      "keywords": [
+        "紫荆便利服务点",
+        "紫荆便利店",
+        "便利店",
+        "购物",
+        "生活服务",
+        "夜宵补给"
+      ],
+      "description": "紫荆学生区常用的便利补给点，适合校园生活与夜宵补给场景。",
+      "category": "shopping",
+      "facilities": [
+        "便利服务"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 74,
+      "rating": 4.3,
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 40.010444,
+        "lng": 116.3259253
+      }
+    },
+    {
+      "id": "restroom_main",
+      "name": "图书馆区公共洗手间",
+      "type": "facility",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "洗手间",
+        "卫生间",
+        "图书馆区",
+        "服务设施"
+      ],
+      "keywords": [
+        "图书馆区公共洗手间",
+        "洗手间",
+        "卫生间",
+        "厕所"
+      ],
+      "description": "图书馆区公共洗手间，便于二校门和图书馆参观动线补给使用。",
+      "category": "restroom",
+      "facilities": [
+        "洗手间"
+      ],
+      "open_hours": "以校方公告为准",
+      "heat": 70,
+      "rating": 4.2,
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0031417,
+        "lng": 116.3196066
+      }
+    },
+    {
+      "id": "road_west_axis",
+      "name": "清华路西段路口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "道路",
+        "清华路",
+        "主路",
+        "路网点"
+      ],
+      "keywords": [
+        "清华路西段",
+        "主路",
+        "路口"
+      ],
+      "description": "M26A 清华路西段主路 waypoint，用于连通西门和二校门轴线。",
+      "category": "road",
+      "facilities": [],
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9982,
+        "lng": 116.3136
+      }
+    },
+    {
+      "id": "road_second_gate",
+      "name": "二校门主轴路口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "道路",
+        "清华路",
+        "二校门",
+        "主路"
+      ],
+      "keywords": [
+        "二校门主轴",
+        "清华路",
+        "主路",
+        "路口"
+      ],
+      "description": "M26A 二校门主轴 waypoint，连接清华路、学堂路和南区入口。",
+      "category": "road",
+      "facilities": [],
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9996464,
+        "lng": 116.3182541
+      }
+    },
+    {
+      "id": "road_central_axis",
+      "name": "主楼中轴路口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "道路",
+        "主楼",
+        "主轴",
+        "主路"
+      ],
+      "keywords": [
+        "主楼中轴",
+        "主路",
+        "路口"
+      ],
+      "description": "M26A 主楼中轴 waypoint，连接中央主楼、第三教室楼和东南门方向。",
+      "category": "road",
+      "facilities": [],
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 40.000423,
+        "lng": 116.3261182
+      }
+    },
+    {
+      "id": "road_east_gate",
+      "name": "东南门内侧路口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "道路",
+        "东南门",
+        "入口",
+        "主路"
+      ],
+      "keywords": [
+        "东南门内侧",
+        "东门路口",
+        "主路"
+      ],
+      "description": "M26A 东南门内侧 waypoint，连接东南门和主楼中轴。",
+      "category": "road",
+      "facilities": [],
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0004025,
+        "lng": 116.3284082
+      }
+    },
+    {
+      "id": "road_south_gate",
+      "name": "南区入口内侧路口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "道路",
+        "南区",
+        "入口",
+        "路口"
+      ],
+      "keywords": [
+        "南区入口内侧",
+        "南门路口",
+        "路口"
+      ],
+      "description": "M26A 南区入口 waypoint，连接南侧入口和二校门轴线。",
+      "category": "road",
+      "facilities": [],
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 39.9965267,
+        "lng": 116.3183127
+      }
+    },
+    {
+      "id": "road_xuetang_south",
+      "name": "学堂路南段路口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "道路",
+        "学堂路",
+        "图书馆",
+        "主路"
+      ],
+      "keywords": [
+        "学堂路南段",
+        "图书馆路口",
+        "主路"
+      ],
+      "description": "M26A 学堂路南段 waypoint，连接二校门、图书馆和大礼堂区域。",
+      "category": "road",
+      "facilities": [],
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0031484,
+        "lng": 116.3202525
+      }
+    },
+    {
+      "id": "road_zijing_axis",
+      "name": "紫荆区主路路口",
+      "type": "waypoint",
+      "is_gate": false,
+      "sub_graph_id": null,
+      "tags": [
+        "道路",
+        "紫荆",
+        "学生区",
+        "主路"
+      ],
+      "keywords": [
+        "紫荆区主路",
+        "紫荆路口",
+        "学生区主路"
+      ],
+      "description": "M26A 紫荆区主路 waypoint，连接宿舍、食堂、运动和北区入口。",
+      "category": "road",
+      "facilities": [],
+      "source": "m26a_manual_axis_estimate",
+      "needs_review": true,
+      "location": {
+        "lat": 40.0093277,
+        "lng": 116.3234374
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "gate_west",
+      "to": "road_west_axis",
+      "distance": 780.93,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "清华大学西门 至 清华路西段路口",
+      "description": "清华西门至清华路主轴的步骑共享段，骑行按校内主路速度估时。"
+    },
+    {
+      "from": "road_west_axis",
+      "to": "gate_west",
+      "distance": 780.93,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "清华路西段路口 至 清华大学西门",
+      "description": "清华西门至清华路主轴的步骑共享段，骑行按校内主路速度估时。"
+    },
+    {
+      "from": "road_west_axis",
+      "to": "road_second_gate",
+      "distance": 1403.72,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "清华路西段路口 至 二校门主轴路口",
+      "description": "清华路东西向主路，步行与自行车共享通行，长距离骑行更省时。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "road_west_axis",
+      "distance": 1403.72,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "二校门主轴路口 至 清华路西段路口",
+      "description": "清华路东西向主路，步行与自行车共享通行，长距离骑行更省时。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "road_central_axis",
+      "distance": 678.32,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "二校门主轴路口 至 主楼中轴路口",
+      "description": "二校门至中央主楼方向的中轴共享路段，混合交通可在此切换为骑行估时。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "road_second_gate",
+      "distance": 678.32,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "主楼中轴路口 至 二校门主轴路口",
+      "description": "二校门至中央主楼方向的中轴共享路段，混合交通可在此切换为骑行估时。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "road_east_gate",
+      "distance": 195.92,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "主楼中轴路口 至 东南门内侧路口",
+      "description": "中央主楼至东南门方向的步骑共享主路，适合清华东南侧进出校园。"
+    },
+    {
+      "from": "road_east_gate",
+      "to": "road_central_axis",
+      "distance": 195.92,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "东南门内侧路口 至 主楼中轴路口",
+      "description": "中央主楼至东南门方向的步骑共享主路，适合清华东南侧进出校园。"
+    },
+    {
+      "from": "road_east_gate",
+      "to": "gate_east",
+      "distance": 25.55,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_gate_shortcut",
+      "name": "东南门内侧路口 至 清华大学东南门",
+      "description": "清华东南门步行短接，骑行模式需走东南门非机动车绕行接驳。"
+    },
+    {
+      "from": "gate_east",
+      "to": "road_east_gate",
+      "distance": 25.55,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_gate_shortcut",
+      "name": "清华大学东南门 至 东南门内侧路口",
+      "description": "清华东南门步行短接，骑行模式需走东南门非机动车绕行接驳。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "road_south_gate",
+      "distance": 346.97,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_branch_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "二校门主轴路口 至 南区入口内侧路口",
+      "description": "二校门至南区入口方向的校内支路，步行和自行车均可通行。"
+    },
+    {
+      "from": "road_south_gate",
+      "to": "road_second_gate",
+      "distance": 346.97,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_branch_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "南区入口内侧路口 至 二校门主轴路口",
+      "description": "二校门至南区入口方向的校内支路，步行和自行车均可通行。"
+    },
+    {
+      "from": "road_south_gate",
+      "to": "gate_south",
+      "distance": 44.68,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_branch_road",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_gate_shortcut",
+      "name": "南区入口内侧路口 至 清华大学南区入口",
+      "description": "清华南区入口步行短接；自行车按校门外侧非机动车接驳绕行。"
+    },
+    {
+      "from": "gate_south",
+      "to": "road_south_gate",
+      "distance": 44.68,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_branch_road",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_gate_shortcut",
+      "name": "清华大学南区入口 至 南区入口内侧路口",
+      "description": "清华南区入口步行短接；自行车按校门外侧非机动车接驳绕行。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "road_xuetang_south",
+      "distance": 423.13,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "二校门主轴路口 至 学堂路南段路口",
+      "description": "二校门至学堂路南段的主路，适合由中轴步行转为清华校内骑行。"
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "road_second_gate",
+      "distance": 423.13,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "学堂路南段路口 至 二校门主轴路口",
+      "description": "二校门至学堂路南段的主路，适合由中轴步行转为清华校内骑行。"
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "road_zijing_axis",
+      "distance": 736.15,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "学堂路南段路口 至 紫荆区主路路口",
+      "description": "学堂路通往紫荆学生区的长距离共享主路，骑行时间优势明显。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "road_xuetang_south",
+      "distance": 736.15,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_main_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "紫荆区主路路口 至 学堂路南段路口",
+      "description": "学堂路通往紫荆学生区的长距离共享主路，骑行时间优势明显。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "gate_north",
+      "distance": 250.19,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_branch_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "紫荆区主路路口 至 清华大学北区入口",
+      "description": "紫荆学生区至北区入口的步骑共享接驳段。"
+    },
+    {
+      "from": "gate_north",
+      "to": "road_zijing_axis",
+      "distance": 250.19,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "campus_branch_road",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 4.6
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "清华大学北区入口 至 紫荆区主路路口",
+      "description": "紫荆学生区至北区入口的步骑共享接驳段。"
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "library",
+      "distance": 177.53,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.2
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "学堂路南段路口 至 清华大学图书馆",
+      "description": "清华图书馆外侧接驳段，可步行进入，也可骑行到馆外停放区域后入楼。"
+    },
+    {
+      "from": "library",
+      "to": "road_xuetang_south",
+      "distance": 177.53,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.2
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "清华大学图书馆 至 学堂路南段路口",
+      "description": "清华图书馆外侧接驳段，可步行进入，也可骑行到馆外停放区域后入楼。"
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "auditorium",
+      "distance": 189.12,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "学堂路南段路口 至 清华大学大礼堂",
+      "description": "清华大礼堂外侧接驳段，靠近校史参观区域，骑行按低速共享估时。"
+    },
+    {
+      "from": "auditorium",
+      "to": "road_xuetang_south",
+      "distance": 189.12,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "清华大学大礼堂 至 学堂路南段路口",
+      "description": "清华大礼堂外侧接驳段，靠近校史参观区域，骑行按低速共享估时。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "qinghua_xuetang",
+      "distance": 88.0,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_landmark_access",
+      "source": "m31c_thu_interest_calibration",
+      "name": "二校门主轴路口 至 清华学堂",
+      "description": "清华学堂历史建筑接驳段，适合与二校门、大礼堂组成步行参观路线。"
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "road_second_gate",
+      "distance": 88.0,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_landmark_access",
+      "source": "m31c_thu_interest_calibration",
+      "name": "清华学堂 至 二校门主轴路口",
+      "description": "清华学堂历史建筑接驳段，适合与二校门、大礼堂组成步行参观路线。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "sundial",
+      "distance": 96.0,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_landmark_access",
+      "source": "m31c_thu_interest_calibration",
+      "name": "二校门主轴路口 至 清华日晷",
+      "description": "清华日晷打卡点接驳段，适合校史参观与摄影路线步行进入。"
+    },
+    {
+      "from": "sundial",
+      "to": "road_second_gate",
+      "distance": 96.0,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_landmark_access",
+      "source": "m31c_thu_interest_calibration",
+      "name": "清华日晷 至 二校门主轴路口",
+      "description": "清华日晷打卡点接驳段，适合校史参观与摄影路线步行进入。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "second_gate",
+      "distance": 1.72,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_landmark_access",
+      "name": "二校门主轴路口 至 二校门",
+      "description": "二校门地标近距离参观点，按步行进入，不作为骑行穿越边。"
+    },
+    {
+      "from": "second_gate",
+      "to": "road_second_gate",
+      "distance": 1.72,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_landmark_access",
+      "name": "二校门 至 二校门主轴路口",
+      "description": "二校门地标近距离参观点，按步行进入，不作为骑行穿越边。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "main_building",
+      "distance": 15.33,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "主楼中轴路口 至 中央主楼",
+      "description": "中央主楼外侧接驳段，步行和低速骑行均可抵达楼前区域。"
+    },
+    {
+      "from": "main_building",
+      "to": "road_central_axis",
+      "distance": 15.33,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "中央主楼 至 主楼中轴路口",
+      "description": "中央主楼外侧接驳段，步行和低速骑行均可抵达楼前区域。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "teaching_building",
+      "distance": 324.11,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "name": "主楼中轴路口 至 第三教室楼",
+      "description": "M26A 第三教室楼 POI 接驳边。"
+    },
+    {
+      "from": "teaching_building",
+      "to": "road_central_axis",
+      "distance": 324.11,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "name": "第三教室楼 至 主楼中轴路口",
+      "description": "M26A 第三教室楼 POI 接驳边。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "canteen",
+      "distance": 301.05,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.2
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "紫荆区主路路口 至 桃李园",
+      "description": "桃李园外侧接驳段，支持从紫荆区主路步行或低速骑行到达。"
+    },
+    {
+      "from": "canteen",
+      "to": "road_zijing_axis",
+      "distance": 301.05,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.2
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "桃李园 至 紫荆区主路路口",
+      "description": "桃李园外侧接驳段，支持从紫荆区主路步行或低速骑行到达。"
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "guanchouyuan_canteen",
+      "distance": 128.0,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_catering_access",
+      "source": "m31c_thu_interest_calibration",
+      "name": "学堂路南段路口 至 观畴园食堂",
+      "description": "观畴园食堂接驳段，服务主教学区与参观片区的食堂体验路线。"
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "road_xuetang_south",
+      "distance": 128.0,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.25
+      },
+      "transport_semantics": "pedestrian_catering_access",
+      "source": "m31c_thu_interest_calibration",
+      "name": "观畴园食堂 至 学堂路南段路口",
+      "description": "观畴园食堂接驳段，服务主教学区与参观片区的食堂体验路线。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "dormitory_1",
+      "distance": 70.14,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "name": "紫荆区主路路口 至 紫荆学生公寓",
+      "description": "M26A 紫荆学生公寓 POI 接驳边。"
+    },
+    {
+      "from": "dormitory_1",
+      "to": "road_zijing_axis",
+      "distance": 70.14,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "name": "紫荆学生公寓 至 紫荆区主路路口",
+      "description": "M26A 紫荆学生公寓 POI 接驳边。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "sports_ground",
+      "distance": 78.88,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.2
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "紫荆区主路路口 至 紫荆操场",
+      "description": "紫荆操场外侧接驳段，适合南区步行入校后在主路切换骑行。"
+    },
+    {
+      "from": "sports_ground",
+      "to": "road_zijing_axis",
+      "distance": 78.88,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.2
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "紫荆操场 至 紫荆区主路路口",
+      "description": "紫荆操场外侧接驳段，适合南区步行入校后在主路切换骑行。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "service_center",
+      "distance": 144.1,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "name": "紫荆区主路路口 至 学生服务中心",
+      "description": "M26A 学生服务中心 POI 接驳边。"
+    },
+    {
+      "from": "service_center",
+      "to": "road_zijing_axis",
+      "distance": 144.1,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "name": "学生服务中心 至 紫荆区主路路口",
+      "description": "M26A 学生服务中心 POI 接驳边。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "convenience_store",
+      "distance": 245.53,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "name": "紫荆区主路路口 至 紫荆便利服务点",
+      "description": "紫荆便利服务点接驳段，便于宿舍与桃李园生活线顺路补给。"
+    },
+    {
+      "from": "convenience_store",
+      "to": "road_zijing_axis",
+      "distance": 245.53,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "name": "紫荆便利服务点 至 紫荆区主路路口",
+      "description": "紫荆便利服务点接驳段，便于宿舍与桃李园生活线顺路补给。"
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "restroom_main",
+      "distance": 55.36,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "学堂路南段路口 至 图书馆区公共洗手间",
+      "description": "图书馆区公共洗手间接驳段，靠近步行密集区域，骑行按低速共享估时。"
+    },
+    {
+      "from": "restroom_main",
+      "to": "road_xuetang_south",
+      "distance": 55.36,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "name": "图书馆区公共洗手间 至 学堂路南段路口",
+      "description": "图书馆区公共洗手间接驳段，靠近步行密集区域，骑行按低速共享估时。"
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "science_hall",
+      "distance": 140.01,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "学堂路南段路口 至 科学馆",
+      "description": "科学馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "science_hall",
+      "to": "road_xuetang_south",
+      "distance": 140.01,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "科学馆 至 学堂路南段路口",
+      "description": "科学馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "engineering_hall",
+      "distance": 212.09,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "二校门主轴路口 至 工程馆",
+      "description": "工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "engineering_hall",
+      "to": "road_second_gate",
+      "distance": 212.09,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "工程馆 至 二校门主轴路口",
+      "description": "工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "tongfang_building",
+      "distance": 120.42,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "二校门主轴路口 至 同方部",
+      "description": "同方部建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "tongfang_building",
+      "to": "road_second_gate",
+      "distance": 120.42,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "同方部 至 二校门主轴路口",
+      "description": "同方部建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_second_gate",
+      "to": "humanities_building",
+      "distance": 251.71,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "二校门主轴路口 至 人文社科楼",
+      "description": "人文社科楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "humanities_building",
+      "to": "road_second_gate",
+      "distance": 251.71,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "人文社科楼 至 二校门主轴路口",
+      "description": "人文社科楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "architecture_building",
+      "distance": 345.79,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "主楼中轴路口 至 建筑馆",
+      "description": "建筑馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "architecture_building",
+      "to": "road_central_axis",
+      "distance": 345.79,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "建筑馆 至 主楼中轴路口",
+      "description": "建筑馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "mechanical_engineering_building",
+      "distance": 187.97,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "主楼中轴路口 至 机械工程馆",
+      "description": "机械工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "road_central_axis",
+      "distance": 187.97,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "机械工程馆 至 主楼中轴路口",
+      "description": "机械工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "electrical_engineering_building",
+      "distance": 138.3,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "主楼中轴路口 至 电机工程馆",
+      "description": "电机工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "road_central_axis",
+      "distance": 138.3,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "电机工程馆 至 主楼中轴路口",
+      "description": "电机工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "information_science_building",
+      "distance": 147.97,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "主楼中轴路口 至 信息科学技术大楼",
+      "description": "信息科学技术大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "information_science_building",
+      "to": "road_central_axis",
+      "distance": 147.97,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "信息科学技术大楼 至 主楼中轴路口",
+      "description": "信息科学技术大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_central_axis",
+      "to": "automation_building",
+      "distance": 174.53,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "主楼中轴路口 至 自动化系馆",
+      "description": "自动化系馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "automation_building",
+      "to": "road_central_axis",
+      "distance": 174.53,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "自动化系馆 至 主楼中轴路口",
+      "description": "自动化系馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_south_gate",
+      "to": "meng_minwei_science_building",
+      "distance": 374.04,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "南区入口内侧路口 至 蒙民伟科技大楼",
+      "description": "蒙民伟科技大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "road_south_gate",
+      "distance": 374.04,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "蒙民伟科技大楼 至 南区入口内侧路口",
+      "description": "蒙民伟科技大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_south_gate",
+      "to": "law_school_building",
+      "distance": 242.61,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "南区入口内侧路口 至 法学院楼",
+      "description": "法学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "law_school_building",
+      "to": "road_south_gate",
+      "distance": 242.61,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "法学院楼 至 南区入口内侧路口",
+      "description": "法学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_south_gate",
+      "to": "economics_management_building",
+      "distance": 161.67,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "南区入口内侧路口 至 经管学院楼",
+      "description": "经管学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "economics_management_building",
+      "to": "road_south_gate",
+      "distance": 161.67,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "经管学院楼 至 南区入口内侧路口",
+      "description": "经管学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "student_activity_center",
+      "distance": 275.43,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "学堂路南段路口 至 学生文化活动中心",
+      "description": "学生文化活动中心建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "student_activity_center",
+      "to": "road_xuetang_south",
+      "distance": 275.43,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "学生文化活动中心 至 学堂路南段路口",
+      "description": "学生文化活动中心建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "zijing_apartment_2",
+      "distance": 126.48,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "紫荆区主路路口 至 紫荆学生公寓二区",
+      "description": "紫荆学生公寓二区建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "road_zijing_axis",
+      "distance": 126.48,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "紫荆学生公寓二区 至 紫荆区主路路口",
+      "description": "紫荆学生公寓二区建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "sports_center_building",
+      "distance": 286.73,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "紫荆区主路路口 至 综合体育馆",
+      "description": "综合体育馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "sports_center_building",
+      "to": "road_zijing_axis",
+      "distance": 286.73,
+      "congestion": 1.0,
+      "ideal_speed": 1.25,
+      "type": "poi_access",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "walk",
+        "bike"
+      ],
+      "transport_speeds": {
+        "walk": 1.25,
+        "bike": 3.0
+      },
+      "transport_semantics": "shared_walk_bike",
+      "source": "m32d_thu_building_minimum",
+      "name": "综合体育馆 至 紫荆区主路路口",
+      "description": "综合体育馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+    },
+    {
+      "from": "gate_east",
+      "to": "road_east_gate",
+      "distance": 900.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "thu_east_gate_bike_detour",
+      "source": "m31a_thu_transport_calibration",
+      "name": "清华东南门非机动车绕行接驳",
+      "description": "东南门自行车模式使用的绕行接驳段；步行用户走校门短接，短距离前往主楼时步行更合适。"
+    },
+    {
+      "from": "road_east_gate",
+      "to": "gate_east",
+      "distance": 900.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "thu_east_gate_bike_detour",
+      "source": "m31a_thu_transport_calibration",
+      "name": "清华东南门非机动车绕行接驳",
+      "description": "东南门自行车模式使用的绕行接驳段；步行用户走校门短接，短距离前往主楼时步行更合适。"
+    },
+    {
+      "from": "gate_south",
+      "to": "road_south_gate",
+      "distance": 240.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "thu_south_gate_bike_detour",
+      "source": "m31a_thu_transport_calibration",
+      "name": "清华南区入口非机动车绕行接驳",
+      "description": "南区入口自行车模式使用的绕行接驳段；mixed 会先走步行短接，再在校内主路切换为骑行。"
+    },
+    {
+      "from": "road_south_gate",
+      "to": "gate_south",
+      "distance": 240.0,
+      "congestion": 1.0,
+      "ideal_speed": 4.8,
+      "type": "bike_lane",
+      "vehicle_access": "all",
+      "allowed_transports": [
+        "bike"
+      ],
+      "transport_speeds": {
+        "bike": 4.8
+      },
+      "transport_semantics": "bike_only",
+      "m31a_demo_role": "thu_south_gate_bike_detour",
+      "source": "m31a_thu_transport_calibration",
+      "name": "清华南区入口非机动车绕行接驳",
+      "description": "南区入口自行车模式使用的绕行接驳段；mixed 会先走步行短接，再在校内主路切换为骑行。"
+    }
+  ]
+}
