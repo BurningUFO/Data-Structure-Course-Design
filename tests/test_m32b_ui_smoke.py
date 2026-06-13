@@ -132,6 +132,12 @@ def test_m32b_static_shell_exposes_multicampus_ui_contract():
         "interest-tags",
         "scenic-form",
         "place-form",
+        "scenic-weight-heat",
+        "scenic-weight-rating",
+        "scenic-weight-distance",
+        "scenic-weight-heat-lock",
+        "scenic-weight-rating-lock",
+        "scenic-weight-distance-lock",
         "catering-form",
         "diary-list-form",
         "diary-form",
@@ -250,7 +256,11 @@ def test_m32b_twenty_extension_sites_have_ui_demo_materials():
             assert _option_values(controls["transport_modes"]) == {"walk", "bike", "mixed"}
             assert controls["scenic_categories"]
             assert controls["place_categories"]
+            assert controls["place_sort_options"]
             assert controls["scenic_sort_options"]
+            assert any(item["value"] == "weighted" for item in controls["scenic_sort_options"])
+            assert all(item["value"] != "weighted" for item in controls["place_sort_options"])
+            assert controls["scenic_weight_defaults"] == {"heat": 40, "rating": 30, "distance_m": 30}
             assert controls["diary_sort_options"]
             assert controls["nearby_radius_options"]
             assert controls["nearby_profiles"]

@@ -26,7 +26,13 @@ from src.recommend.interest import (
     normalize_interest_list,
     rank_interest_aware_records,
 )
-from src.recommend.ranking import recommend_top_k
+from src.recommend.ranking import (
+    WEIGHTED_SORT_FIELD,
+    normalize_weighted_ranking_weights,
+    recommend_top_k,
+    rank_weighted_records,
+    weighted_ranking_metadata,
+)
 from src.search.exact_search import canonicalize_category, filter_by_category, search_records
 from src.search.distance_adapter import DistanceProvider, build_distance_provider
 from src.search.fuzzy_search import fuzzy_search
@@ -411,6 +417,7 @@ def search_and_recommend(
     interests: list[str] | str | None = None,
     allow_empty_query: bool = False,
     match_score_primary: bool = True,
+    ranking_weights: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     查询推荐主入口。
@@ -428,6 +435,8 @@ def search_and_recommend(
     """
     normalized_interests = normalize_interest_list(interests)
     interest_ranking_active = bool(normalized_interests) and is_interest_sort_field(sort_field)
+    weighted_ranking_active = sort_field == WEIGHTED_SORT_FIELD
+    normalized_ranking_weights = normalize_weighted_ranking_weights(ranking_weights)
     filters = {
         "keyword": keyword,
         "category": category,
@@ -441,6 +450,8 @@ def search_and_recommend(
         "use_default_distance_provider": use_default_distance_provider,
         "interests": normalized_interests,
     }
+    if weighted_ranking_active:
+        filters["ranking_weights"] = normalized_ranking_weights
     base_metadata = build_response_metadata(
         records=[],
         sort_field=sort_field,
@@ -451,9 +462,11 @@ def search_and_recommend(
         distance_provider_active=False,
         interests=normalized_interests,
         interest_ranking_active=interest_ranking_active,
+        weighted_ranking_active=weighted_ranking_active,
+        ranking_weights=normalized_ranking_weights,
     )
 
-    if not keyword and not category and not allow_empty_query and not interest_ranking_active:
+    if not keyword and not category and not allow_empty_query and not interest_ranking_active and not weighted_ranking_active:
         return build_error_response(
             "keyword and category cannot both be empty",
             query_type="scenic_search",
@@ -494,7 +507,13 @@ def search_and_recommend(
         distance_provider=active_distance_provider,
         distance_strategy=distance_strategy,
     )
-    if interest_ranking_active:
+    if weighted_ranking_active:
+        top_records = rank_weighted_records(
+            enriched_records,
+            weights=normalized_ranking_weights,
+            limit=limit,
+        )
+    elif interest_ranking_active:
         top_records = rank_interest_aware_records(
             enriched_records,
             interests=normalized_interests,
@@ -519,6 +538,8 @@ def search_and_recommend(
         distance_provider_active=active_distance_provider is not None,
         interests=normalized_interests,
         interest_ranking_active=interest_ranking_active,
+        weighted_ranking_active=weighted_ranking_active,
+        ranking_weights=normalized_ranking_weights,
     )
 
     return build_success_response(
@@ -546,6 +567,7 @@ def search_places(
     distance_provider: DistanceProvider | None = None,
     use_default_distance_provider: bool = True,
     distance_strategy: str = "shortest_distance",
+    ranking_weights: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """第九周新增：明确的设施/场所查询入口。"""
     normalized_category = canonicalize_category(category)
@@ -573,7 +595,11 @@ def search_places(
         "nearby_search": bool(normalized_center_node_id),
         "match_mode": match_mode,
         "sort_field": effective_sort_field,
-        "sort_order": "asc" if normalized_center_node_id else _resolve_sort_order(effective_sort_field, sort_order),
+        "sort_order": (
+            "asc"
+            if normalized_center_node_id
+            else _resolve_sort_order(effective_sort_field, sort_order)
+        ),
         "limit": limit,
         "distance_strategy": distance_strategy,
     }
@@ -619,6 +645,7 @@ def search_places(
             distance_provider=distance_provider,
             use_default_distance_provider=use_default_distance_provider,
             distance_strategy=distance_strategy,
+            sort_field=effective_sort_field,
         )
 
     response = search_and_recommend(
@@ -662,6 +689,7 @@ def search_nearby_places(
     distance_provider: DistanceProvider | None,
     use_default_distance_provider: bool,
     distance_strategy: str,
+    sort_field: str,
 ) -> dict[str, Any]:
     """围绕已选地点执行真实路径距离半径查询。"""
     center_name = resolve_record_name_by_node_id(records, center_node_id)
@@ -708,7 +736,7 @@ def search_nearby_places(
     )
     metadata = build_response_metadata(
         records=top_records,
-        sort_field="distance_m",
+        sort_field=sort_field,
         sort_order=sort_order,
         limit=limit,
         start_node_id=center_node_id,
@@ -935,6 +963,8 @@ def build_response_metadata(
     distance_provider_active: bool,
     interests: list[str] | None = None,
     interest_ranking_active: bool = False,
+    weighted_ranking_active: bool = False,
+    ranking_weights: dict[str, float] | None = None,
 ) -> dict[str, Any]:
     """构造统一响应的业务元信息。"""
     status_counts = count_distance_status(records)
@@ -957,6 +987,14 @@ def build_response_metadata(
                 "interest_reason",
             ]
         )
+    if weighted_ranking_active:
+        result_fields.extend(
+            [
+                "recommendation_score",
+                "recommendation_components",
+                "recommendation_reason",
+            ]
+        )
     return {
         "ranking": {
             "sort_field": sort_field,
@@ -964,7 +1002,12 @@ def build_response_metadata(
             "limit": limit,
             "distance_used_for_ranking": sort_field == "distance_m",
             "interest_used_for_ranking": interest_ranking_active,
+            "weighted_used_for_ranking": weighted_ranking_active,
         },
+        "weighted_ranking": weighted_ranking_metadata(
+            active=weighted_ranking_active,
+            weights=ranking_weights,
+        ),
         "interest": {
             "requested": bool(normalized_interests),
             "active_for_ranking": interest_ranking_active,
@@ -1044,4 +1087,6 @@ def _resolve_sort_order(sort_field: str, sort_order: str) -> str:
         return normalized_order
     if sort_field == "distance_m":
         return "asc"
+    if sort_field == WEIGHTED_SORT_FIELD:
+        return "desc"
     return "desc"

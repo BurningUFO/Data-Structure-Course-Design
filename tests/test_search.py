@@ -684,6 +684,198 @@ def test_search_places_nearby_radius_uses_graph_distance():
     print("test_search_places_nearby_radius_uses_graph_distance passed.")
 
 
+def test_search_and_recommend_weighted_sort_uses_default_weights():
+    records = [
+        {
+            "id": "balanced",
+            "name": "综合较优服务点",
+            "category": "service",
+            "node_id": "balanced",
+            "heat": 85,
+            "rating": 4.8,
+            "keywords": ["服务"],
+            "tags": [],
+            "description": "",
+        },
+        {
+            "id": "hot_far",
+            "name": "高热度远处服务点",
+            "category": "service",
+            "node_id": "hot_far",
+            "heat": 100,
+            "rating": 4.0,
+            "keywords": ["服务"],
+            "tags": [],
+            "description": "",
+        },
+    ]
+
+    def provider(start_node_id, target_node_id, strategy):
+        return {"balanced": 300, "hot_far": 1500}[target_node_id]
+
+    response = search_and_recommend(
+        keyword="",
+        category="service",
+        start_node_id="library",
+        sort_field="weighted",
+        records=records,
+        distance_provider=provider,
+        use_default_distance_provider=False,
+        limit=10,
+    )
+
+    assert response["success"] is True
+    assert response["filters"]["sort_field"] == "weighted"
+    assert response["filters"]["ranking_weights"] == {
+        "heat": 0.4,
+        "rating": 0.3,
+        "distance_m": 0.3,
+    }
+    assert response["metadata"]["weighted_ranking"]["active"] is True
+    assert response["metadata"]["ranking"]["weighted_used_for_ranking"] is True
+    assert [item["id"] for item in response["data"]] == ["balanced", "hot_far"]
+    assert response["data"][0]["recommendation_score"] > response["data"][1]["recommendation_score"]
+    assert "综合权重" in response["data"][0]["recommendation_reason"]
+    print("test_search_and_recommend_weighted_sort_uses_default_weights passed.")
+
+
+def test_search_and_recommend_weighted_sort_custom_distance_weight_changes_order():
+    records = [
+        {
+            "id": "near",
+            "name": "近处服务点",
+            "category": "service",
+            "node_id": "near",
+            "heat": 65,
+            "rating": 3.5,
+            "keywords": ["服务"],
+            "tags": [],
+            "description": "",
+        },
+        {
+            "id": "far",
+            "name": "远处高分服务点",
+            "category": "service",
+            "node_id": "far",
+            "heat": 98,
+            "rating": 4.9,
+            "keywords": ["服务"],
+            "tags": [],
+            "description": "",
+        },
+    ]
+
+    def provider(start_node_id, target_node_id, strategy):
+        return {"near": 50, "far": 1400}[target_node_id]
+
+    response = search_and_recommend(
+        keyword="",
+        category="service",
+        start_node_id="library",
+        sort_field="weighted",
+        ranking_weights={"heat": 0, "rating": 0, "distance_m": 100},
+        records=records,
+        distance_provider=provider,
+        use_default_distance_provider=False,
+        limit=10,
+    )
+
+    assert response["success"] is True
+    assert response["filters"]["ranking_weights"] == {
+        "heat": 0.0,
+        "rating": 0.0,
+        "distance_m": 1.0,
+    }
+    assert [item["id"] for item in response["data"]] == ["near", "far"]
+    print("test_search_and_recommend_weighted_sort_custom_distance_weight_changes_order passed.")
+
+
+def test_search_places_weighted_sort_falls_back_to_distance_sort():
+    records = [
+        {
+            "id": "near",
+            "name": "近处服务点",
+            "category": "service",
+            "node_id": "near",
+            "heat": 65,
+            "rating": 3.5,
+            "keywords": ["服务"],
+            "tags": [],
+            "description": "",
+        },
+        {
+            "id": "far",
+            "name": "远处高分服务点",
+            "category": "service",
+            "node_id": "far",
+            "heat": 98,
+            "rating": 4.9,
+            "keywords": ["服务"],
+            "tags": [],
+            "description": "",
+        },
+    ]
+
+    def provider(start_node_id, target_node_id, strategy):
+        return {"near": 50, "far": 1400}[target_node_id]
+
+    response = search_places(
+        keyword="",
+        category="service",
+        start_node_id="library",
+        sort_field="weighted",
+        ranking_weights={"heat": 70, "rating": 30, "distance_m": 0},
+        records=records,
+        distance_provider=provider,
+        use_default_distance_provider=False,
+        limit=10,
+    )
+
+    assert response["success"] is True
+    assert response["filters"]["sort_field"] == "distance_m"
+    assert "ranking_weights" not in response["filters"]
+    assert response["metadata"]["weighted_ranking"]["active"] is False
+    assert [item["id"] for item in response["data"]] == ["near", "far"]
+    assert "recommendation_score" not in response["data"][0]
+    print("test_search_places_weighted_sort_falls_back_to_distance_sort passed.")
+
+
+def test_search_and_recommend_weighted_sort_invalid_weights_fall_back_and_missing_distance_is_safe():
+    records = [
+        {
+            "id": "missing_distance",
+            "name": "无距离服务点",
+            "category": "service",
+            "node_id": "missing_distance",
+            "heat": 80,
+            "rating": 4.0,
+            "keywords": ["服务"],
+            "tags": [],
+            "description": "",
+        }
+    ]
+
+    response = search_and_recommend(
+        keyword="",
+        category="service",
+        sort_field="weighted",
+        ranking_weights={"heat": "bad", "rating": -1, "distance_m": 0},
+        records=records,
+        use_default_distance_provider=False,
+        limit=10,
+    )
+
+    assert response["success"] is True
+    assert response["filters"]["ranking_weights"] == {
+        "heat": 0.4,
+        "rating": 0.3,
+        "distance_m": 0.3,
+    }
+    assert response["data"][0]["recommendation_components"]["normalized"]["distance_m"] == 0.0
+    assert response["data"][0]["recommendation_score"] >= 0
+    print("test_search_and_recommend_weighted_sort_invalid_weights_fall_back_and_missing_distance_is_safe passed.")
+
+
 def test_search_places_legacy_start_node_call_stays_unbounded():
     records = [
         {
@@ -976,6 +1168,10 @@ def run_all_tests():
     test_search_places_keyword_only_scope()
     test_search_places_keyword_only_restroom_aliases()
     test_search_places_nearby_radius_uses_graph_distance()
+    test_search_and_recommend_weighted_sort_uses_default_weights()
+    test_search_and_recommend_weighted_sort_custom_distance_weight_changes_order()
+    test_search_places_weighted_sort_falls_back_to_distance_sort()
+    test_search_and_recommend_weighted_sort_invalid_weights_fall_back_and_missing_distance_is_safe()
     test_search_places_legacy_start_node_call_stays_unbounded()
     test_distance_adapter_uses_member_a_router()
     test_search_service_distance_integration()

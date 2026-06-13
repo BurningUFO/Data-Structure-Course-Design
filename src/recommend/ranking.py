@@ -24,6 +24,15 @@ SortRule = dict[str, str]
 DISTANCE_FIELD = "distance_m"
 DISTANCE_RANK_FIELD = "_distance_rank"
 MATCH_SCORE_FIELD = "_match_score"
+WEIGHTED_SORT_FIELD = "weighted"
+RECOMMENDATION_SCORE_FIELD = "recommendation_score"
+DEFAULT_WEIGHTED_RANKING_WEIGHTS = {
+    "heat": 0.4,
+    "rating": 0.3,
+    DISTANCE_FIELD: 0.3,
+}
+WEIGHTED_RANKING_FIELDS = tuple(DEFAULT_WEIGHTED_RANKING_WEIGHTS)
+WEIGHTED_DISTANCE_LIMIT_M = 1500.0
 
 
 def recommend_top_k(
@@ -72,6 +81,129 @@ def recommend_top_k(
         ),
     )
     return strip_internal_ranking_fields(sorted_selected)
+
+
+def normalize_weighted_ranking_weights(value: Any) -> dict[str, float]:
+    """Normalize percentage-like user weights for heat, rating, and distance."""
+    if not isinstance(value, dict):
+        return dict(DEFAULT_WEIGHTED_RANKING_WEIGHTS)
+
+    weights: dict[str, float] = {}
+    total = 0.0
+    for field in WEIGHTED_RANKING_FIELDS:
+        try:
+            weight = float(value.get(field, 0))
+        except (TypeError, ValueError):
+            weight = 0.0
+        if math.isinf(weight) or math.isnan(weight) or weight < 0:
+            weight = 0.0
+        weights[field] = weight
+        total += weight
+
+    if total <= 0:
+        return dict(DEFAULT_WEIGHTED_RANKING_WEIGHTS)
+    return {field: round(weight / total, 6) for field, weight in weights.items()}
+
+
+def weighted_ranking_metadata(
+    *,
+    active: bool,
+    weights: dict[str, float] | None = None,
+) -> dict[str, Any]:
+    """Describe the weighted ranking contract in API metadata."""
+    normalized_weights = weights or dict(DEFAULT_WEIGHTED_RANKING_WEIGHTS)
+    return {
+        "active": active,
+        "weights": normalized_weights,
+        "score_field": RECOMMENDATION_SCORE_FIELD,
+        "component_field": "recommendation_components",
+        "reason_field": "recommendation_reason",
+        "distance_limit_m": WEIGHTED_DISTANCE_LIMIT_M,
+    }
+
+
+def rank_weighted_records(
+    records: list[Record],
+    *,
+    weights: dict[str, float] | None = None,
+    limit: int = 10,
+) -> list[Record]:
+    """Rank records by a user-configurable heat/rating/distance weighted score."""
+    if limit <= 0 or not records:
+        return []
+
+    active_weights = weights or dict(DEFAULT_WEIGHTED_RANKING_WEIGHTS)
+    scored_records = [enrich_weighted_record(record, active_weights) for record in records]
+    selected = select_top_k_records(
+        scored_records,
+        field=RECOMMENDATION_SCORE_FIELD,
+        limit=limit,
+        order="desc",
+    )
+    ranked = sort_records(
+        selected,
+        [
+            {"field": RECOMMENDATION_SCORE_FIELD, "order": "desc"},
+            {"field": "heat", "order": "desc"},
+            {"field": "rating", "order": "desc"},
+            {"field": DISTANCE_RANK_FIELD, "order": "asc"},
+            {"field": "id", "order": "asc"},
+        ],
+    )
+    return strip_internal_ranking_fields(ranked)
+
+
+def enrich_weighted_record(record: Record, weights: dict[str, float]) -> Record:
+    copied = record.copy()
+    components = build_weighted_components(copied)
+    score = round(
+        sum(components[field] * weights.get(field, 0.0) for field in WEIGHTED_RANKING_FIELDS) * 100,
+        2,
+    )
+    copied[RECOMMENDATION_SCORE_FIELD] = score
+    copied["recommendation_components"] = {
+        "weights": weights,
+        "normalized": components,
+    }
+    copied["recommendation_reason"] = build_weighted_reason(weights)
+    copied[DISTANCE_RANK_FIELD] = get_distance_rank_value(copied)
+    return copied
+
+
+def build_weighted_components(record: Record) -> dict[str, float]:
+    return {
+        "heat": clamp(coerce_float(record.get("heat")) / 100.0),
+        "rating": clamp(coerce_float(record.get("rating")) / 5.0),
+        DISTANCE_FIELD: distance_component(record),
+    }
+
+
+def distance_component(record: Record) -> float:
+    distance = coerce_float(record.get(DISTANCE_FIELD), default=math.inf)
+    if math.isinf(distance) or math.isnan(distance) or distance < 0:
+        return 0.0
+    return clamp(1.0 - min(distance, WEIGHTED_DISTANCE_LIMIT_M) / WEIGHTED_DISTANCE_LIMIT_M)
+
+
+def build_weighted_reason(weights: dict[str, float]) -> str:
+    return (
+        f"综合权重：热度 {weights.get('heat', 0.0) * 100:.0f}%、"
+        f"评分 {weights.get('rating', 0.0) * 100:.0f}%、"
+        f"距离 {weights.get(DISTANCE_FIELD, 0.0) * 100:.0f}%。"
+    )
+
+
+def coerce_float(value: Any, *, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def clamp(value: float, lower: float = 0.0, upper: float = 1.0) -> float:
+    if math.isnan(value):
+        return lower
+    return max(lower, min(upper, value))
 
 
 def select_top_k_records(

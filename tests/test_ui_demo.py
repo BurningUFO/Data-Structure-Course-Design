@@ -530,7 +530,14 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["scenic_categories"])
     assert any(item["value"] == "building_entrance" for item in payload["controls"]["place_categories"])
     assert any(item["value"] == "interest" for item in payload["controls"]["scenic_sort_options"])
+    assert any(item["value"] == "weighted" for item in payload["controls"]["scenic_sort_options"])
     assert any(item["value"] == "interest" for item in payload["controls"]["diary_sort_options"])
+    assert all(item["value"] != "weighted" for item in payload["controls"]["place_sort_options"])
+    assert payload["controls"]["scenic_weight_defaults"] == {
+        "heat": 40,
+        "rating": 30,
+        "distance_m": 30,
+    }
     assert any(item["value"] == "图书馆" for item in payload["controls"]["interest_options"])
     assert [item["value"] for item in payload["controls"]["nearby_radius_options"]] == [200, 500, 800, 1200]
     assert [item["value"] for item in payload["controls"]["transport_modes"]] == ["walk", "bike", "mixed"]
@@ -9171,6 +9178,38 @@ def test_demo_place_search_distance_order():
     print("test_demo_place_search_distance_order passed.")
 
 
+def test_demo_scenic_search_weighted_sort_returns_explainable_score():
+    service = DemoUIService("PKU")
+    response = service.scenic_search(
+        {
+            "keyword": "",
+            "category": "service",
+            "sort_field": "weighted",
+            "start_node_id": "gate_north",
+            "ranking_weights": {
+                "heat": 40,
+                "rating": 30,
+                "distance_m": 30,
+            },
+        }
+    )
+
+    assert response["success"] is True
+    assert response["filters"]["sort_field"] == "weighted"
+    assert response["query_type"] == "scenic_search"
+    assert response["metadata"]["weighted_ranking"]["active"] is True
+    assert response["metadata"]["weighted_ranking"]["weights"] == {
+        "heat": 0.4,
+        "rating": 0.3,
+        "distance_m": 0.3,
+    }
+    assert response["results"]
+    assert "recommendation_score" in response["results"][0]
+    assert "recommendation_components" in response["results"][0]
+    assert "综合权重" in response["results"][0]["recommendation_reason"]
+    print("test_demo_scenic_search_weighted_sort_returns_explainable_score passed.")
+
+
 def assert_nearby_place_response(response, *, center_node_id, radius_m, category):
     assert response["success"] is True
     assert response["query_type"] == "place_search"
@@ -11361,9 +11400,22 @@ def test_demo_static_m22_nearby_place_search_controls():
 
     assert 'id="place-center-node"' in html
     assert 'id="place-radius"' in html
+    assert 'id="scenic-weight-heat"' in html
+    assert 'id="scenic-weight-rating"' in html
+    assert 'id="scenic-weight-distance"' in html
+    assert 'id="scenic-weight-heat-lock"' in html
+    assert 'id="scenic-weight-rating-lock"' in html
+    assert 'id="scenic-weight-distance-lock"' in html
     assert "附近中心" in html
     assert "范围" in html
     assert "buildPlaceSearchPayload" in script
+    assert "buildScenicSearchPayload" in script
+    assert "readScenicRankingWeights" in script
+    assert "rebalanceScenicRankingWeights" in script
+    assert "updateScenicWeightLock" in script
+    assert "getScenicLockedWeightField" in script
+    assert "ranking_weights" in script
+    assert 'sortField === "weighted"' in script
     assert "runNearbySearch" in script
     assert "data-nearby-center" in script
     assert "center_node_id" in script
@@ -12083,6 +12135,7 @@ def run_all_tests():
     test_demo_waypoints_are_not_regular_route_targets_or_search_results()
     test_demo_scenic_search_is_routeable()
     test_demo_place_search_distance_order()
+    test_demo_scenic_search_weighted_sort_returns_explainable_score()
     test_demo_m22_fixed_nearby_facility_scenarios()
     test_demo_m31b_thu_bootstrap_nearby_profiles()
     test_demo_m31b_thu_nearby_queries_use_calibrated_center_name_and_scope()

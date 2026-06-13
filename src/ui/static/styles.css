@@ -1423,6 +1423,57 @@ select[multiple] {
   padding: 12px;
 }
 
+.weight-panel {
+  padding: 0 12px 12px;
+  transition: opacity 0.18s ease;
+}
+
+.weight-panel.is-disabled {
+  opacity: 0.46;
+}
+
+.weight-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.weight-field input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.weight-field input[type="range"]:disabled {
+  opacity: 0.58;
+}
+
+.weight-field .field-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.weight-lock-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: 28px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.weight-lock-control input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.weight-lock-control input:disabled + span {
+  opacity: 0.58;
+}
+
 .nested-form {
   position: relative;
   z-index: 1;
@@ -3216,7 +3267,8 @@ select[multiple] {
   line-height: 1.65;
 }
 
-.result-card .interest-reason {
+.result-card .interest-reason,
+.result-card .recommendation-reason {
   color: var(--primary-strong);
   font-size: 0.88rem;
   font-weight: 800;

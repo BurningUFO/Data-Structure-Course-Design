@@ -252,6 +252,34 @@
                           <select id="scenic-sort"></select>
                         </label>
                       </div>
+                      <div class="weight-panel" id="scenic-weight-panel">
+                        <div class="weight-row">
+                          <label class="field weight-field">
+                            <span class="field-label">热度权重 <strong id="scenic-weight-heat-value">40%</strong></span>
+                            <input id="scenic-weight-heat" type="range" min="0" max="100" step="1" value="40" />
+                            <span class="weight-lock-control">
+                              <input id="scenic-weight-heat-lock" type="checkbox" data-weight-lock="heat" />
+                              <span>固定</span>
+                            </span>
+                          </label>
+                          <label class="field weight-field">
+                            <span class="field-label">评分权重 <strong id="scenic-weight-rating-value">30%</strong></span>
+                            <input id="scenic-weight-rating" type="range" min="0" max="100" step="1" value="30" />
+                            <span class="weight-lock-control">
+                              <input id="scenic-weight-rating-lock" type="checkbox" data-weight-lock="rating" />
+                              <span>固定</span>
+                            </span>
+                          </label>
+                          <label class="field weight-field">
+                            <span class="field-label">距离权重 <strong id="scenic-weight-distance-value">30%</strong></span>
+                            <input id="scenic-weight-distance" type="range" min="0" max="100" step="1" value="30" />
+                            <span class="weight-lock-control">
+                              <input id="scenic-weight-distance-lock" type="checkbox" data-weight-lock="distance_m" />
+                              <span>固定</span>
+                            </span>
+                          </label>
+                        </div>
+                      </div>
                     </details>
                   </form>
                 </section>

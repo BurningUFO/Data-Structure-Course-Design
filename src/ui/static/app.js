@@ -10,6 +10,11 @@ const ROUTE_MAIN_COLOR = "#1677ff";
 const MAP_RESULT_MARKER_LIMIT = 5;
 const DEFAULT_RESULT_LIMIT = 6;
 const DEFAULT_CATERING_LIMIT = 10;
+const DEFAULT_SCENIC_WEIGHTS = {
+  heat: 40,
+  rating: 30,
+  distance_m: 30,
+};
 const MAP_MARKER_ROLE_PRIORITY = {
   result: 10,
   selected_result: 20,
@@ -407,14 +412,7 @@ function bindTabSwitching() {
 function bindForms() {
   document.querySelector("#scenic-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    await runQuery("/api/search/scenic", {
-      keyword: document.querySelector("#scenic-keyword").value.trim(),
-      category: document.querySelector("#scenic-category").value,
-      sort_field: document.querySelector("#scenic-sort").value,
-      start_node_id: state.currentStartNodeId,
-      limit: 6,
-      ...buildInterestPayload(),
-    });
+    await runQuery("/api/search/scenic", buildScenicSearchPayload());
   });
 
   document.querySelector("#place-form").addEventListener("submit", async (event) => {
@@ -422,10 +420,29 @@ function bindForms() {
     await runQuery("/api/search/places", buildPlaceSearchPayload());
   });
 
+  document.querySelector("#scenic-sort").addEventListener("change", syncScenicWeightControls);
+  [
+    ["#scenic-weight-heat", "heat"],
+    ["#scenic-weight-rating", "rating"],
+    ["#scenic-weight-distance", "distance_m"],
+  ].forEach(([selector, field]) => {
+    document.querySelector(selector).addEventListener("input", () => {
+      rebalanceScenicRankingWeights(field);
+    });
+  });
+  document.querySelectorAll("[data-weight-lock]").forEach((control) => {
+    control.addEventListener("change", () => {
+      updateScenicWeightLock(control.dataset.weightLock, control.checked);
+    });
+  });
+
   document.querySelector("#place-center-node").addEventListener("change", (event) => {
     const centerNodeId = event.target.value;
     state.nearbyCenterNodeId = centerNodeId;
     applyNearbyProfile(centerNodeId);
+    if (centerNodeId) {
+      setSelectValue("#place-sort", "distance_m");
+    }
   });
 
   document.querySelector("#catering-form").addEventListener("submit", async (event) => {
@@ -1018,6 +1035,7 @@ function clearUserInputs() {
   setSelectValue("#place-radius", "500");
   setSelectValue("#scenic-sort", "interest");
   setSelectValue("#place-sort", "distance_m");
+  resetScenicWeightInputs();
   setSelectValue("#catering-sort", "distance_m");
   setSelectValue("#diary-list-sort", "interest");
   syncContextComboboxValue("cateringCenter", "");
@@ -1864,6 +1882,10 @@ function hydrateBootstrap(bootstrap) {
     value: item.value,
     label: item.label,
   }));
+  const placeSortOptions = (bootstrap.controls.place_sort_options || bootstrap.controls.sort_options).map((item) => ({
+    value: item.value,
+    label: item.label,
+  }));
   const scenicSortOptions = (bootstrap.controls.scenic_sort_options || bootstrap.controls.sort_options).map((item) => ({
     value: item.value,
     label: item.label,
@@ -1877,7 +1899,7 @@ function hydrateBootstrap(bootstrap) {
     label: item.label,
   }));
   populateSelect(document.querySelector("#scenic-sort"), scenicSortOptions, "interest");
-  populateSelect(document.querySelector("#place-sort"), sortOptions, "distance_m");
+  populateSelect(document.querySelector("#place-sort"), placeSortOptions, "distance_m");
   populateSelect(document.querySelector("#catering-sort"), sortOptions, "distance_m");
   populateSelect(document.querySelector("#catering-cuisine-options"), bootstrap.controls.catering_cuisine_options || [], "");
   populateSelect(document.querySelector("#diary-list-sort"), diarySortOptions, "interest");
@@ -1902,6 +1924,8 @@ function hydrateBootstrap(bootstrap) {
   renderFeatureGrid(bootstrap.navigation);
   renderDemoTour(bootstrap.demo_tour || []);
   renderHelpPanel(bootstrap.help);
+  resetScenicWeightInputs(bootstrap.controls.scenic_weight_defaults);
+  syncScenicWeightControls();
   updateActiveFeatureCaption();
   updateWorkspaceHeading();
 }
@@ -2026,15 +2050,19 @@ async function runRecentSearch(index) {
     tab,
     payload: entry.payload || {},
   });
-  await runQuery(entry.endpoint || endpointForQueryType(entry.query_type), {
-    ...(entry.payload || {}),
-    start_node_id: state.currentStartNodeId,
-    limit: defaultResultLimitForQuery({
-      queryType: entry.query_type,
-      endpoint: entry.endpoint || endpointForQueryType(entry.query_type),
-    }),
-    ...(tab === "scenic" ? buildInterestPayload() : {}),
+  const endpoint = entry.endpoint || endpointForQueryType(entry.query_type);
+  const limit = defaultResultLimitForQuery({
+    queryType: entry.query_type,
+    endpoint,
   });
+  const payload = tab === "scenic"
+    ? buildScenicSearchPayload({ ...(entry.payload || {}), limit })
+    : {
+        ...(entry.payload || {}),
+        start_node_id: state.currentStartNodeId,
+        limit,
+      };
+  await runQuery(endpoint, payload);
 }
 
 function tabForQueryType(queryType) {
@@ -2595,14 +2623,11 @@ async function runTourStep(stepId, options = {}) {
   if (step.action === "scenic_search") {
     document.querySelector("#scenic-keyword").value = step.keyword || "";
     setSelectValue("#scenic-category", step.category || "");
-    await runQuery("/api/search/scenic", {
+    await runQuery("/api/search/scenic", buildScenicSearchPayload({
       keyword: step.keyword || "",
       category: step.category || "",
-      sort_field: document.querySelector("#scenic-sort").value,
-      start_node_id: state.currentStartNodeId,
       limit: 6,
-      ...buildInterestPayload(),
-    });
+    }));
     return;
   }
 
@@ -2799,14 +2824,11 @@ function renderPresetButtons(containerSelector, presets, onClick) {
 function handleScenicPreset(preset) {
   document.querySelector("#scenic-keyword").value = preset.keyword || "";
   document.querySelector("#scenic-category").value = preset.category || "";
-  void runQuery("/api/search/scenic", {
+  void runQuery("/api/search/scenic", buildScenicSearchPayload({
     keyword: preset.keyword || "",
     category: preset.category || "",
-    sort_field: document.querySelector("#scenic-sort").value,
-    start_node_id: state.currentStartNodeId,
     limit: 6,
-    ...buildInterestPayload(),
-  });
+  }));
 }
 
 function handlePlacePreset(preset) {
@@ -2851,10 +2873,11 @@ function applyNearbyProfile(centerNodeId, overrides = {}) {
 function buildPlaceSearchPayload(overrides = {}) {
   const centerNodeId = overrides.center_node_id ?? document.querySelector("#place-center-node").value;
   const radiusM = overrides.radius_m ?? document.querySelector("#place-radius").value;
+  const sortField = centerNodeId ? "distance_m" : (overrides.sort_field ?? document.querySelector("#place-sort").value);
   const payload = {
     keyword: overrides.keyword ?? document.querySelector("#place-keyword").value.trim(),
     category: overrides.category ?? document.querySelector("#place-category").value,
-    sort_field: "distance_m",
+    sort_field: sortField,
     start_node_id: state.currentStartNodeId,
     limit: overrides.limit ?? 6,
   };
@@ -2862,11 +2885,183 @@ function buildPlaceSearchPayload(overrides = {}) {
   if (centerNodeId) {
     payload.center_node_id = centerNodeId;
     payload.radius_m = Number(radiusM || 500);
-  } else {
-    payload.sort_field = overrides.sort_field ?? document.querySelector("#place-sort").value;
   }
 
   return payload;
+}
+
+function buildScenicSearchPayload(overrides = {}) {
+  const sortField = overrides.sort_field ?? document.querySelector("#scenic-sort").value;
+  const payload = {
+    keyword: overrides.keyword ?? document.querySelector("#scenic-keyword").value.trim(),
+    category: overrides.category ?? document.querySelector("#scenic-category").value,
+    sort_field: sortField,
+    start_node_id: state.currentStartNodeId,
+    limit: overrides.limit ?? 6,
+    ...buildInterestPayload(),
+  };
+
+  if (sortField === "weighted") {
+    payload.ranking_weights = overrides.ranking_weights || readScenicRankingWeights();
+  }
+
+  return payload;
+}
+
+function readScenicRankingWeights() {
+  return {
+    heat: readNumericInput("#scenic-weight-heat", DEFAULT_SCENIC_WEIGHTS.heat),
+    rating: readNumericInput("#scenic-weight-rating", DEFAULT_SCENIC_WEIGHTS.rating),
+    distance_m: readNumericInput("#scenic-weight-distance", DEFAULT_SCENIC_WEIGHTS.distance_m),
+  };
+}
+
+function readNumericInput(selector, fallback) {
+  const value = Number(document.querySelector(selector)?.value);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function resetScenicWeightInputs(defaults = null) {
+  const activeDefaults = defaults || state.bootstrap?.controls?.scenic_weight_defaults || DEFAULT_SCENIC_WEIGHTS;
+  setInputValue("#scenic-weight-heat", activeDefaults.heat ?? DEFAULT_SCENIC_WEIGHTS.heat);
+  setInputValue("#scenic-weight-rating", activeDefaults.rating ?? DEFAULT_SCENIC_WEIGHTS.rating);
+  setInputValue("#scenic-weight-distance", activeDefaults.distance_m ?? DEFAULT_SCENIC_WEIGHTS.distance_m);
+  setScenicLockedWeightField("");
+  normalizeScenicWeightInputs();
+  syncScenicWeightControls();
+}
+
+function setInputValue(selector, value) {
+  const element = document.querySelector(selector);
+  if (element) {
+    element.value = String(value);
+  }
+}
+
+function syncScenicWeightControls() {
+  const sortField = document.querySelector("#scenic-sort")?.value || "";
+  const panel = document.querySelector("#scenic-weight-panel");
+  const active = sortField === "weighted";
+  if (panel) {
+    panel.classList.toggle("is-disabled", !active);
+  }
+
+  const weights = readScenicRankingWeights();
+  const lockedField = getScenicLockedWeightField();
+  [
+    ["#scenic-weight-heat-value", weights.heat],
+    ["#scenic-weight-rating-value", weights.rating],
+    ["#scenic-weight-distance-value", weights.distance_m],
+  ].forEach(([selector, value]) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      element.textContent = `${value}%`;
+    }
+  });
+  [
+    ["#scenic-weight-heat", "heat"],
+    ["#scenic-weight-rating", "rating"],
+    ["#scenic-weight-distance", "distance_m"],
+  ].forEach(([selector, field]) => {
+    const input = document.querySelector(selector);
+    if (input) {
+      input.disabled = active && lockedField === field;
+    }
+  });
+  document.querySelectorAll("[data-weight-lock]").forEach((control) => {
+    control.disabled = !active;
+  });
+}
+
+function normalizeScenicWeightInputs() {
+  const weights = readScenicRankingWeights();
+  const total = weights.heat + weights.rating + weights.distance_m;
+  if (total === 100) {
+    syncScenicWeightControls();
+    return;
+  }
+  if (total <= 0) {
+    setScenicWeightValues(DEFAULT_SCENIC_WEIGHTS);
+    return;
+  }
+  const heat = Math.round((weights.heat / total) * 100);
+  const rating = Math.round((weights.rating / total) * 100);
+  const distance_m = Math.max(0, 100 - heat - rating);
+  setScenicWeightValues({ heat, rating, distance_m });
+}
+
+function rebalanceScenicRankingWeights(changedField) {
+  const fields = ["heat", "rating", "distance_m"];
+  const current = readScenicRankingWeights();
+  const fixed = clampPercentage(current[changedField]);
+  const next = { ...current, [changedField]: fixed };
+  const lockedField = getScenicLockedWeightField();
+
+  if (lockedField && lockedField !== changedField) {
+    const lockedValue = clampPercentage(current[lockedField]);
+    const adjustableField = fields.find((field) => field !== changedField && field !== lockedField);
+    next[lockedField] = lockedValue;
+    next[adjustableField] = Math.max(0, 100 - fixed - lockedValue);
+    if (fixed + lockedValue > 100) {
+      next[changedField] = 100 - lockedValue;
+      next[adjustableField] = 0;
+    }
+    setScenicWeightValues(next);
+    syncScenicWeightControls();
+    return;
+  }
+
+  if (lockedField === changedField) {
+    setScenicWeightValues(current);
+    syncScenicWeightControls();
+    return;
+  }
+
+  const remainingTotal = 100 - fixed;
+  const otherFields = fields.filter((field) => field !== changedField);
+  const otherCurrentTotal = otherFields.reduce((sum, field) => sum + clampPercentage(current[field]), 0);
+
+  if (otherCurrentTotal <= 0) {
+    next[otherFields[0]] = Math.floor(remainingTotal / 2);
+    next[otherFields[1]] = remainingTotal - next[otherFields[0]];
+  } else {
+    next[otherFields[0]] = Math.round((clampPercentage(current[otherFields[0]]) / otherCurrentTotal) * remainingTotal);
+    next[otherFields[1]] = Math.max(0, remainingTotal - next[otherFields[0]]);
+  }
+
+  setScenicWeightValues(next);
+  syncScenicWeightControls();
+}
+
+function updateScenicWeightLock(field, locked) {
+  setScenicLockedWeightField(locked ? field : "");
+  normalizeScenicWeightInputs();
+  syncScenicWeightControls();
+}
+
+function getScenicLockedWeightField() {
+  const checked = document.querySelector("[data-weight-lock]:checked");
+  return checked?.dataset?.weightLock || "";
+}
+
+function setScenicLockedWeightField(field) {
+  document.querySelectorAll("[data-weight-lock]").forEach((control) => {
+    control.checked = control.dataset.weightLock === field;
+  });
+}
+
+function setScenicWeightValues(weights) {
+  setInputValue("#scenic-weight-heat", clampPercentage(weights.heat));
+  setInputValue("#scenic-weight-rating", clampPercentage(weights.rating));
+  setInputValue("#scenic-weight-distance", clampPercentage(weights.distance_m));
+}
+
+function clampPercentage(value) {
+  const numberValue = Number(value);
+  if (!Number.isFinite(numberValue)) {
+    return 0;
+  }
+  return Math.max(0, Math.min(100, Math.round(numberValue)));
 }
 
 async function runNearbySearch(centerNodeId, options = {}) {
@@ -2882,13 +3077,14 @@ async function runNearbySearch(centerNodeId, options = {}) {
   const nextCategoryValue = options.category !== undefined
     ? options.category
     : (profile ? (profile.default_category ?? "") : currentCategoryValue);
+  const nextSortField = options.sort_field ?? "distance_m";
 
   state.nearbyCenterNodeId = centerNodeId;
   switchTab("place");
   setSelectValue("#place-center-node", centerNodeId);
   setSelectValue("#place-radius", String(nextRadiusValue));
   document.querySelector("#place-keyword").value = options.keyword || "";
-  document.querySelector("#place-sort").value = "distance_m";
+  setSelectValue("#place-sort", nextSortField);
   setSelectValue("#place-category", nextCategoryValue);
 
   await runQuery("/api/search/places", buildPlaceSearchPayload({
@@ -2896,7 +3092,7 @@ async function runNearbySearch(centerNodeId, options = {}) {
     radius_m: nextRadiusValue,
     keyword: options.keyword || "",
     category: nextCategoryValue,
-    sort_field: "distance_m",
+    sort_field: nextSortField,
   }));
 }
 
@@ -3935,6 +4131,9 @@ function renderPrimarySortMetric(item, sortField, distanceText = "") {
   if (sortField === "heat" && item.heat !== undefined) {
     return `<span class="metric-pill metric-pill-strong">热度 ${item.heat}${item.views !== undefined ? ` / 浏览 ${item.views}` : ""}</span>`;
   }
+  if (sortField === "weighted" && item.recommendation_score !== undefined) {
+    return `<span class="metric-pill metric-pill-strong">综合 ${Number(item.recommendation_score).toFixed(1)}</span>`;
+  }
   return "";
 }
 
@@ -4287,6 +4486,9 @@ function renderResultCard(item, index, queryType = "") {
   const interestMarkup = item.interest_reason
     ? `<p class="interest-reason">${escapeHtml(item.interest_reason)}</p>`
     : "";
+  const recommendationMarkup = item.recommendation_reason
+    ? `<p class="recommendation-reason">${escapeHtml(item.recommendation_reason)}</p>`
+    : "";
   const sortField = state.currentQueryFilters?.sort_field || "";
   const primarySortMetric = renderPrimarySortMetric(item, sortField, distanceText);
   const ratingMetric = item.rating !== undefined
@@ -4300,7 +4502,7 @@ function renderResultCard(item, index, queryType = "") {
     routeTargetName ? `<span class="metric-pill metric-pill-strong">目的地 ${escapeHtml(routeTargetName)}</span>` : "",
     primarySortMetric,
     item.interest_match_score !== undefined ? `<span class="metric-pill metric-pill-strong">兴趣 ${Number(item.interest_match_score).toFixed(1)}</span>` : "",
-    item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
+    sortField !== "weighted" && item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
     sortField !== "distance_m" && distanceText ? `<span class="metric-pill metric-pill-strong">${escapeHtml(distanceText)}</span>` : "",
     item.nearby_reason ? `<span class="metric-pill">${escapeHtml(item.nearby_reason)}</span>` : "",
     item.category_label ? `<span class="metric-pill">${escapeHtml(item.category_label)}</span>` : "",
@@ -4360,6 +4562,7 @@ function renderResultCard(item, index, queryType = "") {
       <p>${description}</p>
       ${facetMarkup}
       ${interestMarkup}
+      ${recommendationMarkup}
       ${matchMarkup}
       ${mediaMarkup}
       ${aigcMarkup}
@@ -4404,12 +4607,15 @@ async function runEmptySuggestion(key) {
 
   switchTab(suggestion.tab || "scenic", { openPage: true });
   applySuggestionToForm(suggestion);
-  await runQuery(suggestion.endpoint || "/api/search/scenic", {
-    ...(suggestion.payload || {}),
-    start_node_id: state.currentStartNodeId,
-    limit: 6,
-    ...((suggestion.tab || "") === "scenic" ? buildInterestPayload() : {}),
-  });
+  const endpoint = suggestion.endpoint || "/api/search/scenic";
+  const payload = (suggestion.tab || "") === "scenic"
+    ? buildScenicSearchPayload({ ...(suggestion.payload || {}), limit: 6 })
+    : {
+        ...(suggestion.payload || {}),
+        start_node_id: state.currentStartNodeId,
+        limit: 6,
+      };
+  await runQuery(endpoint, payload);
 }
 
 function applySuggestionToForm(suggestion) {

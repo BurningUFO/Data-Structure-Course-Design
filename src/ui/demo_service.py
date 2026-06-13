@@ -37,6 +37,7 @@ from src.recommend.interest import (
 from src.routing.router import Router
 from src.search.search_service import (
     PLACE_CATEGORY_SET,
+    WEIGHTED_SORT_FIELD,
     get_default_site_id,
     get_site_graph_paths,
     load_global_sites,
@@ -57,6 +58,11 @@ from src.site_registry import (
 
 Record = dict[str, Any]
 DEFAULT_CATERING_LIMIT = 10
+DEFAULT_SCENIC_RANKING_WEIGHTS = {
+    "heat": 40,
+    "rating": 30,
+    "distance_m": 30,
+}
 
 CATEGORY_LABELS = {
     "entrance": "校门",
@@ -605,6 +611,11 @@ class DemoUIService:
                     {"value": "rating", "label": "按评分"},
                     {"value": "distance_m", "label": "按真实距离"},
                 ],
+                "place_sort_options": [
+                    {"value": "distance_m", "label": "按真实距离"},
+                    {"value": "heat", "label": "按热度"},
+                    {"value": "rating", "label": "按评分"},
+                ],
                 "catering_cuisine_options": [
                     {"value": "", "label": "全部菜系"}
                 ] + [
@@ -613,10 +624,12 @@ class DemoUIService:
                 ],
                 "scenic_sort_options": [
                     {"value": "interest", "label": "按兴趣综合"},
+                    {"value": WEIGHTED_SORT_FIELD, "label": "按综合权重"},
                     {"value": "heat", "label": "按热度"},
                     {"value": "rating", "label": "按评分"},
                     {"value": "distance_m", "label": "按真实距离"},
                 ],
+                "scenic_weight_defaults": DEFAULT_SCENIC_RANKING_WEIGHTS,
                 "diary_sort_options": [
                     {"value": "interest", "label": "按兴趣推荐"},
                     {"value": "heat", "label": "按热度"},
@@ -1701,7 +1714,8 @@ class DemoUIService:
             distance_provider=self._distance_provider,
             use_default_distance_provider=False,
             interests=interest_context["interests"],
-            allow_empty_query=is_interest_sort_field(sort_field),
+            allow_empty_query=is_interest_sort_field(sort_field) or sort_field == WEIGHTED_SORT_FIELD,
+            ranking_weights=self._normalize_ranking_weights(request.get("ranking_weights")),
         )
         response = self._attach_interest_context(response, interest_context)
         return self._decorate_query_response(response, source="scenic_search")
@@ -3991,6 +4005,18 @@ class DemoUIService:
         if normalized in {"0", "false", "no", "n", "off", "不返回"}:
             return False
         return default
+
+    def _normalize_ranking_weights(self, value: Any) -> dict[str, float]:
+        if not isinstance(value, dict):
+            return DEFAULT_SCENIC_RANKING_WEIGHTS.copy()
+        normalized: dict[str, float] = {}
+        for field, default in DEFAULT_SCENIC_RANKING_WEIGHTS.items():
+            try:
+                weight = float(value.get(field, default))
+            except (TypeError, ValueError):
+                weight = float(default)
+            normalized[field] = weight
+        return normalized
 
     def _decorate_query_response(
         self,
