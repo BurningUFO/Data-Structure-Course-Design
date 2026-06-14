@@ -200,6 +200,10 @@ async function loadSiteBootstrap(siteId) {
   resetInteractionState({ clearForms: true });
   restoreUserContext();
   syncUserContextControls();
+  // Keep the home hero stat strip in sync with the new site even when the home
+  // page is not currently visible, so the user sees live numbers the moment they
+  // navigate back to the overview.
+  refreshHeroStatStrip(bootstrap);
   if (state.activePage === "app") {
     renderMap();
   }
@@ -1704,6 +1708,98 @@ function resolveDiaryDestinationComboboxSelection() {
   return resolvedValue;
 }
 
+/**
+ * Refresh the four data-requirement stat blocks on the home hero.
+ *
+ * Sites count is global; users / buildings / edges track the current site and
+ * therefore update every time loadSiteBootstrap runs. The unit captions also
+ * follow the current site so the strip does not lie when the user is viewing
+ * a non-PKU campus.
+ */
+function refreshHeroStatStrip(bootstrap) {
+  if (!bootstrap) return;
+  const siteName = (bootstrap.site && bootstrap.site.name) || "当前站点";
+  const siteId = (bootstrap.site && bootstrap.site.id) || "";
+
+  const statSites = document.querySelector("#stat-sites");
+  if (statSites) {
+    statSites.textContent = String((bootstrap.stats && bootstrap.stats.site_count) || 0);
+  }
+  const statUsers = document.querySelector("#stat-users");
+  if (statUsers) {
+    statUsers.textContent = String((bootstrap.stats && bootstrap.stats.user_count) || 0);
+  }
+
+  // Indoor buildings: how many buildings have a dedicated indoor floor plan JSON.
+  // PKU has 20; the 20 other real campuses each have 5; template clones inherit PKU's 20.
+  const statIndoorBuildings = document.querySelector("#stat-indoor-buildings");
+  if (statIndoorBuildings) {
+    statIndoorBuildings.textContent = String(
+      (bootstrap.stats && bootstrap.stats.indoor_building_count) || 0
+    );
+  }
+
+  // Outdoor "buildings" POI count, which is what the course requirement actually
+  // counts: 教学楼/办公楼/宿舍楼/景点 (building + education + dormitory + landmark).
+  // We fetch the map geojson to count these on the client, since the bootstrap
+  // stats do not expose the outdoor building POI count directly.
+  const statBuildings = document.querySelector("#stat-buildings");
+  if (statBuildings) {
+    statBuildings.textContent = "—";
+    if (!siteId) return;
+    fetch(`/api/map/geojson?site_id=${encodeURIComponent(siteId)}`)
+      .then((resp) => (resp.ok ? resp.json() : null))
+      .then((data) => {
+        if (!data || !data.geojson || !Array.isArray(data.geojson.features)) {
+          statBuildings.textContent = "—";
+          return;
+        }
+        const buildingCats = new Set([
+          "building",
+          "building_entrance",
+          "education",
+          "dormitory",
+          "landmark",
+        ]);
+        const n = data.geojson.features.filter(
+          (f) =>
+            f &&
+            f.properties &&
+            f.properties.kind === "node" &&
+            buildingCats.has(f.properties.category),
+        ).length;
+        statBuildings.textContent = String(n);
+      })
+      .catch(() => {
+        statBuildings.textContent = "—";
+      });
+  }
+
+  // Per-site unit captions.
+  document.querySelectorAll("[data-stat-site-label]").forEach((el) => {
+    el.textContent = `${siteName} 一站`;
+  });
+
+  // Edge count for the current site, pulled from the map geojson endpoint.
+  const statEdges = document.querySelector("#stat-edges");
+  if (statEdges) {
+    if (!siteId) {
+      statEdges.textContent = "—";
+      return;
+    }
+    statEdges.textContent = "—";
+    fetch(`/api/map/geojson?site_id=${encodeURIComponent(siteId)}`)
+      .then((resp) => (resp.ok ? resp.json() : null))
+      .then((data) => {
+        const count = data && data.stats && data.stats.edge_feature_count;
+        statEdges.textContent = typeof count === "number" ? String(count) : "—";
+      })
+      .catch(() => {
+        statEdges.textContent = "—";
+      });
+  }
+}
+
 function closeContextCombobox(comboId) {
   const comboState = comboboxState(comboId);
   comboState.isOpen = false;
@@ -1753,36 +1849,10 @@ function hydrateBootstrap(bootstrap) {
   }
 
   // Data-requirement stat strip on the home hero: sites / users / buildings / edges.
-  const statSites = document.querySelector("#stat-sites");
-  if (statSites) {
-    statSites.textContent = String(bootstrap.stats.site_count || 0);
-  }
-  const statUsers = document.querySelector("#stat-users");
-  if (statUsers) {
-    statUsers.textContent = String(bootstrap.stats.user_count || 0);
-  }
-  const statBuildings = document.querySelector("#stat-buildings");
-  if (statBuildings) {
-    statBuildings.textContent = String(bootstrap.stats.indoor_building_count || 0);
-  }
-  const statEdges = document.querySelector("#stat-edges");
-  if (statEdges && bootstrap.site && bootstrap.site.id) {
-    // Pull edge count from the map geojson endpoint. Fire-and-forget; fall back to em dash on error.
-    const siteId = bootstrap.site.id;
-    fetch(`/api/map/geojson?site_id=${encodeURIComponent(siteId)}`)
-      .then((resp) => (resp.ok ? resp.json() : null))
-      .then((data) => {
-        const count = data && data.stats && data.stats.edge_feature_count;
-        if (typeof count === "number") {
-          statEdges.textContent = String(count);
-        } else {
-          statEdges.textContent = "—";
-        }
-      })
-      .catch(() => {
-        statEdges.textContent = "—";
-      });
-  }
+  // These are now per-site (the user_count, indoor_building_count and edge count all
+  // change when the current site switches), so we re-fill them here AND every time
+  // loadSiteBootstrap runs. Sites count stays global and is pulled from stats.
+  refreshHeroStatStrip(bootstrap);
 
   syncContextComboboxValue("site", bootstrap.site.id);
   syncContextComboboxValue("start", bootstrap.default_start_node);

@@ -1546,7 +1546,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "清华大学西门 至 清华路西段路口",
-      "description": "清华西门至清华路主轴的步骑共享段，骑行按校内主路速度估时。"
+      "description": "清华西门至清华路主轴的步骑共享段，骑行按校内主路速度估时。",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        }
+      ]
     },
     {
       "from": "road_west_axis",
@@ -1566,7 +1576,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "清华路西段路口 至 清华大学西门",
-      "description": "清华西门至清华路主轴的步骑共享段，骑行按校内主路速度估时。"
+      "description": "清华西门至清华路主轴的步骑共享段，骑行按校内主路速度估时。",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        }
+      ]
     },
     {
       "from": "road_west_axis",
@@ -1586,7 +1606,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "清华路西段路口 至 二校门主轴路口",
-      "description": "清华路东西向主路，步行与自行车共享通行，长距离骑行更省时。"
+      "description": "清华路东西向主路，步行与自行车共享通行，长距离骑行更省时。",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -1606,7 +1636,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "二校门主轴路口 至 清华路西段路口",
-      "description": "清华路东西向主路，步行与自行车共享通行，长距离骑行更省时。"
+      "description": "清华路东西向主路，步行与自行车共享通行，长距离骑行更省时。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -1626,7 +1666,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "二校门主轴路口 至 主楼中轴路口",
-      "description": "二校门至中央主楼方向的中轴共享路段，混合交通可在此切换为骑行估时。"
+      "description": "二校门至中央主楼方向的中轴共享路段，混合交通可在此切换为骑行估时。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -1646,7 +1696,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "主楼中轴路口 至 二校门主轴路口",
-      "description": "二校门至中央主楼方向的中轴共享路段，混合交通可在此切换为骑行估时。"
+      "description": "二校门至中央主楼方向的中轴共享路段，混合交通可在此切换为骑行估时。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -1666,7 +1726,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "主楼中轴路口 至 东南门内侧路口",
-      "description": "中央主楼至东南门方向的步骑共享主路，适合清华东南侧进出校园。"
+      "description": "中央主楼至东南门方向的步骑共享主路，适合清华东南侧进出校园。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        }
+      ]
     },
     {
       "from": "road_east_gate",
@@ -1686,7 +1756,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "东南门内侧路口 至 主楼中轴路口",
-      "description": "中央主楼至东南门方向的步骑共享主路，适合清华东南侧进出校园。"
+      "description": "中央主楼至东南门方向的步骑共享主路，适合清华东南侧进出校园。",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_east_gate",
@@ -1704,7 +1784,17 @@
       },
       "transport_semantics": "pedestrian_gate_shortcut",
       "name": "东南门内侧路口 至 清华大学东南门",
-      "description": "清华东南门步行短接，骑行模式需走东南门非机动车绕行接驳。"
+      "description": "清华东南门步行短接，骑行模式需走东南门非机动车绕行接驳。",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        }
+      ]
     },
     {
       "from": "gate_east",
@@ -1722,7 +1812,17 @@
       },
       "transport_semantics": "pedestrian_gate_shortcut",
       "name": "清华大学东南门 至 东南门内侧路口",
-      "description": "清华东南门步行短接，骑行模式需走东南门非机动车绕行接驳。"
+      "description": "清华东南门步行短接，骑行模式需走东南门非机动车绕行接驳。",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -1742,7 +1842,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "二校门主轴路口 至 南区入口内侧路口",
-      "description": "二校门至南区入口方向的校内支路，步行和自行车均可通行。"
+      "description": "二校门至南区入口方向的校内支路，步行和自行车均可通行。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
     },
     {
       "from": "road_south_gate",
@@ -1762,7 +1872,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "南区入口内侧路口 至 二校门主轴路口",
-      "description": "二校门至南区入口方向的校内支路，步行和自行车均可通行。"
+      "description": "二校门至南区入口方向的校内支路，步行和自行车均可通行。",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_south_gate",
@@ -1780,7 +1900,17 @@
       },
       "transport_semantics": "pedestrian_gate_shortcut",
       "name": "南区入口内侧路口 至 清华大学南区入口",
-      "description": "清华南区入口步行短接；自行车按校门外侧非机动车接驳绕行。"
+      "description": "清华南区入口步行短接；自行车按校门外侧非机动车接驳绕行。",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        }
+      ]
     },
     {
       "from": "gate_south",
@@ -1798,7 +1928,17 @@
       },
       "transport_semantics": "pedestrian_gate_shortcut",
       "name": "清华大学南区入口 至 南区入口内侧路口",
-      "description": "清华南区入口步行短接；自行车按校门外侧非机动车接驳绕行。"
+      "description": "清华南区入口步行短接；自行车按校门外侧非机动车接驳绕行。",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -1818,7 +1958,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "二校门主轴路口 至 学堂路南段路口",
-      "description": "二校门至学堂路南段的主路，适合由中轴步行转为清华校内骑行。"
+      "description": "二校门至学堂路南段的主路，适合由中轴步行转为清华校内骑行。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
     },
     {
       "from": "road_xuetang_south",
@@ -1838,7 +1988,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 二校门主轴路口",
-      "description": "二校门至学堂路南段的主路，适合由中轴步行转为清华校内骑行。"
+      "description": "二校门至学堂路南段的主路，适合由中轴步行转为清华校内骑行。",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_xuetang_south",
@@ -1858,7 +2018,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 紫荆区主路路口",
-      "description": "学堂路通往紫荆学生区的长距离共享主路，骑行时间优势明显。"
+      "description": "学堂路通往紫荆学生区的长距离共享主路，骑行时间优势明显。",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -1878,7 +2048,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "紫荆区主路路口 至 学堂路南段路口",
-      "description": "学堂路通往紫荆学生区的长距离共享主路，骑行时间优势明显。"
+      "description": "学堂路通往紫荆学生区的长距离共享主路，骑行时间优势明显。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -1898,7 +2078,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "紫荆区主路路口 至 清华大学北区入口",
-      "description": "紫荆学生区至北区入口的步骑共享接驳段。"
+      "description": "紫荆学生区至北区入口的步骑共享接驳段。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        }
+      ]
     },
     {
       "from": "gate_north",
@@ -1918,7 +2108,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "清华大学北区入口 至 紫荆区主路路口",
-      "description": "紫荆学生区至北区入口的步骑共享接驳段。"
+      "description": "紫荆学生区至北区入口的步骑共享接驳段。",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "road_xuetang_south",
@@ -1938,7 +2138,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 清华大学图书馆",
-      "description": "清华图书馆外侧接驳段，可步行进入，也可骑行到馆外停放区域后入楼。"
+      "description": "清华图书馆外侧接驳段，可步行进入，也可骑行到馆外停放区域后入楼。",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
     },
     {
       "from": "library",
@@ -1958,7 +2168,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "清华大学图书馆 至 学堂路南段路口",
-      "description": "清华图书馆外侧接驳段，可步行进入，也可骑行到馆外停放区域后入楼。"
+      "description": "清华图书馆外侧接驳段，可步行进入，也可骑行到馆外停放区域后入楼。",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
     },
     {
       "from": "road_xuetang_south",
@@ -1978,7 +2198,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 清华大学大礼堂",
-      "description": "清华大礼堂外侧接驳段，靠近校史参观区域，骑行按低速共享估时。"
+      "description": "清华大礼堂外侧接驳段，靠近校史参观区域，骑行按低速共享估时。",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
     },
     {
       "from": "auditorium",
@@ -1998,7 +2228,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "清华大学大礼堂 至 学堂路南段路口",
-      "description": "清华大礼堂外侧接驳段，靠近校史参观区域，骑行按低速共享估时。"
+      "description": "清华大礼堂外侧接驳段，靠近校史参观区域，骑行按低速共享估时。",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -2017,7 +2257,17 @@
       "transport_semantics": "pedestrian_landmark_access",
       "source": "m31c_thu_interest_calibration",
       "name": "二校门主轴路口 至 清华学堂",
-      "description": "清华学堂历史建筑接驳段，适合与二校门、大礼堂组成步行参观路线。"
+      "description": "清华学堂历史建筑接驳段，适合与二校门、大礼堂组成步行参观路线。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
     },
     {
       "from": "qinghua_xuetang",
@@ -2036,7 +2286,17 @@
       "transport_semantics": "pedestrian_landmark_access",
       "source": "m31c_thu_interest_calibration",
       "name": "清华学堂 至 二校门主轴路口",
-      "description": "清华学堂历史建筑接驳段，适合与二校门、大礼堂组成步行参观路线。"
+      "description": "清华学堂历史建筑接驳段，适合与二校门、大礼堂组成步行参观路线。",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -2055,7 +2315,17 @@
       "transport_semantics": "pedestrian_landmark_access",
       "source": "m31c_thu_interest_calibration",
       "name": "二校门主轴路口 至 清华日晷",
-      "description": "清华日晷打卡点接驳段，适合校史参观与摄影路线步行进入。"
+      "description": "清华日晷打卡点接驳段，适合校史参观与摄影路线步行进入。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
     },
     {
       "from": "sundial",
@@ -2074,7 +2344,17 @@
       "transport_semantics": "pedestrian_landmark_access",
       "source": "m31c_thu_interest_calibration",
       "name": "清华日晷 至 二校门主轴路口",
-      "description": "清华日晷打卡点接驳段，适合校史参观与摄影路线步行进入。"
+      "description": "清华日晷打卡点接驳段，适合校史参观与摄影路线步行进入。",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -2092,7 +2372,17 @@
       },
       "transport_semantics": "pedestrian_landmark_access",
       "name": "二校门主轴路口 至 二校门",
-      "description": "二校门地标近距离参观点，按步行进入，不作为骑行穿越边。"
+      "description": "二校门地标近距离参观点，按步行进入，不作为骑行穿越边。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
     },
     {
       "from": "second_gate",
@@ -2110,7 +2400,17 @@
       },
       "transport_semantics": "pedestrian_landmark_access",
       "name": "二校门 至 二校门主轴路口",
-      "description": "二校门地标近距离参观点，按步行进入，不作为骑行穿越边。"
+      "description": "二校门地标近距离参观点，按步行进入，不作为骑行穿越边。",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -2130,7 +2430,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "主楼中轴路口 至 中央主楼",
-      "description": "中央主楼外侧接驳段，步行和低速骑行均可抵达楼前区域。"
+      "description": "中央主楼外侧接驳段，步行和低速骑行均可抵达楼前区域。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        }
+      ]
     },
     {
       "from": "main_building",
@@ -2150,7 +2460,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "中央主楼 至 主楼中轴路口",
-      "description": "中央主楼外侧接驳段，步行和低速骑行均可抵达楼前区域。"
+      "description": "中央主楼外侧接驳段，步行和低速骑行均可抵达楼前区域。",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -2165,7 +2485,17 @@
         "bike"
       ],
       "name": "主楼中轴路口 至 第三教室楼",
-      "description": "M26A 第三教室楼 POI 接驳边。"
+      "description": "M26A 第三教室楼 POI 接驳边。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
     },
     {
       "from": "teaching_building",
@@ -2180,7 +2510,17 @@
         "bike"
       ],
       "name": "第三教室楼 至 主楼中轴路口",
-      "description": "M26A 第三教室楼 POI 接驳边。"
+      "description": "M26A 第三教室楼 POI 接驳边。",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -2200,7 +2540,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "紫荆区主路路口 至 桃李园",
-      "description": "桃李园外侧接驳段，支持从紫荆区主路步行或低速骑行到达。"
+      "description": "桃李园外侧接驳段，支持从紫荆区主路步行或低速骑行到达。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        }
+      ]
     },
     {
       "from": "canteen",
@@ -2220,7 +2570,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "桃李园 至 紫荆区主路路口",
-      "description": "桃李园外侧接驳段，支持从紫荆区主路步行或低速骑行到达。"
+      "description": "桃李园外侧接驳段，支持从紫荆区主路步行或低速骑行到达。",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "road_xuetang_south",
@@ -2239,7 +2599,17 @@
       "transport_semantics": "pedestrian_catering_access",
       "source": "m31c_thu_interest_calibration",
       "name": "学堂路南段路口 至 观畴园食堂",
-      "description": "观畴园食堂接驳段，服务主教学区与参观片区的食堂体验路线。"
+      "description": "观畴园食堂接驳段，服务主教学区与参观片区的食堂体验路线。",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
     },
     {
       "from": "guanchouyuan_canteen",
@@ -2258,7 +2628,17 @@
       "transport_semantics": "pedestrian_catering_access",
       "source": "m31c_thu_interest_calibration",
       "name": "观畴园食堂 至 学堂路南段路口",
-      "description": "观畴园食堂接驳段，服务主教学区与参观片区的食堂体验路线。"
+      "description": "观畴园食堂接驳段，服务主教学区与参观片区的食堂体验路线。",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -2273,7 +2653,17 @@
         "bike"
       ],
       "name": "紫荆区主路路口 至 紫荆学生公寓",
-      "description": "M26A 紫荆学生公寓 POI 接驳边。"
+      "description": "M26A 紫荆学生公寓 POI 接驳边。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        }
+      ]
     },
     {
       "from": "dormitory_1",
@@ -2288,7 +2678,17 @@
         "bike"
       ],
       "name": "紫荆学生公寓 至 紫荆区主路路口",
-      "description": "M26A 紫荆学生公寓 POI 接驳边。"
+      "description": "M26A 紫荆学生公寓 POI 接驳边。",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -2308,7 +2708,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "紫荆区主路路口 至 紫荆操场",
-      "description": "紫荆操场外侧接驳段，适合南区步行入校后在主路切换骑行。"
+      "description": "紫荆操场外侧接驳段，适合南区步行入校后在主路切换骑行。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        }
+      ]
     },
     {
       "from": "sports_ground",
@@ -2328,7 +2738,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "紫荆操场 至 紫荆区主路路口",
-      "description": "紫荆操场外侧接驳段，适合南区步行入校后在主路切换骑行。"
+      "description": "紫荆操场外侧接驳段，适合南区步行入校后在主路切换骑行。",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -2343,7 +2763,17 @@
         "bike"
       ],
       "name": "紫荆区主路路口 至 学生服务中心",
-      "description": "M26A 学生服务中心 POI 接驳边。"
+      "description": "M26A 学生服务中心 POI 接驳边。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        }
+      ]
     },
     {
       "from": "service_center",
@@ -2358,7 +2788,17 @@
         "bike"
       ],
       "name": "学生服务中心 至 紫荆区主路路口",
-      "description": "M26A 学生服务中心 POI 接驳边。"
+      "description": "M26A 学生服务中心 POI 接驳边。",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -2373,7 +2813,17 @@
         "bike"
       ],
       "name": "紫荆区主路路口 至 紫荆便利服务点",
-      "description": "紫荆便利服务点接驳段，便于宿舍与桃李园生活线顺路补给。"
+      "description": "紫荆便利服务点接驳段，便于宿舍与桃李园生活线顺路补给。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        }
+      ]
     },
     {
       "from": "convenience_store",
@@ -2388,7 +2838,17 @@
         "bike"
       ],
       "name": "紫荆便利服务点 至 紫荆区主路路口",
-      "description": "紫荆便利服务点接驳段，便于宿舍与桃李园生活线顺路补给。"
+      "description": "紫荆便利服务点接驳段，便于宿舍与桃李园生活线顺路补给。",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "road_xuetang_south",
@@ -2408,7 +2868,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "学堂路南段路口 至 图书馆区公共洗手间",
-      "description": "图书馆区公共洗手间接驳段，靠近步行密集区域，骑行按低速共享估时。"
+      "description": "图书馆区公共洗手间接驳段，靠近步行密集区域，骑行按低速共享估时。",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
     },
     {
       "from": "restroom_main",
@@ -2428,7 +2898,17 @@
       },
       "transport_semantics": "shared_walk_bike",
       "name": "图书馆区公共洗手间 至 学堂路南段路口",
-      "description": "图书馆区公共洗手间接驳段，靠近步行密集区域，骑行按低速共享估时。"
+      "description": "图书馆区公共洗手间接驳段，靠近步行密集区域，骑行按低速共享估时。",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
     },
     {
       "from": "road_xuetang_south",
@@ -2449,7 +2929,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "学堂路南段路口 至 科学馆",
-      "description": "科学馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "科学馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
     },
     {
       "from": "science_hall",
@@ -2470,7 +2960,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "科学馆 至 学堂路南段路口",
-      "description": "科学馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "科学馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -2491,7 +2991,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "二校门主轴路口 至 工程馆",
-      "description": "工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
     },
     {
       "from": "engineering_hall",
@@ -2512,7 +3022,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "工程馆 至 二校门主轴路口",
-      "description": "工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -2533,7 +3053,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "二校门主轴路口 至 同方部",
-      "description": "同方部建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "同方部建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
     },
     {
       "from": "tongfang_building",
@@ -2554,7 +3084,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "同方部 至 二校门主轴路口",
-      "description": "同方部建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "同方部建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_second_gate",
@@ -2575,7 +3115,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "二校门主轴路口 至 人文社科楼",
-      "description": "人文社科楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "人文社科楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        }
+      ]
     },
     {
       "from": "humanities_building",
@@ -2596,7 +3146,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "人文社科楼 至 二校门主轴路口",
-      "description": "人文社科楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "人文社科楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -2617,7 +3177,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "主楼中轴路口 至 建筑馆",
-      "description": "建筑馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "建筑馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
     },
     {
       "from": "architecture_building",
@@ -2638,7 +3208,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "建筑馆 至 主楼中轴路口",
-      "description": "建筑馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "建筑馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -2659,7 +3239,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "主楼中轴路口 至 机械工程馆",
-      "description": "机械工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "机械工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
     },
     {
       "from": "mechanical_engineering_building",
@@ -2680,7 +3270,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "机械工程馆 至 主楼中轴路口",
-      "description": "机械工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "机械工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -2701,7 +3301,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "主楼中轴路口 至 电机工程馆",
-      "description": "电机工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "电机工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
     },
     {
       "from": "electrical_engineering_building",
@@ -2722,7 +3332,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "电机工程馆 至 主楼中轴路口",
-      "description": "电机工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "电机工程馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -2743,7 +3363,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "主楼中轴路口 至 信息科学技术大楼",
-      "description": "信息科学技术大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "信息科学技术大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        }
+      ]
     },
     {
       "from": "information_science_building",
@@ -2764,7 +3394,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "信息科学技术大楼 至 主楼中轴路口",
-      "description": "信息科学技术大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "信息科学技术大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_central_axis",
@@ -2785,7 +3425,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "主楼中轴路口 至 自动化系馆",
-      "description": "自动化系馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "自动化系馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
     },
     {
       "from": "automation_building",
@@ -2806,7 +3456,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "自动化系馆 至 主楼中轴路口",
-      "description": "自动化系馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "自动化系馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
     },
     {
       "from": "road_south_gate",
@@ -2827,7 +3487,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "南区入口内侧路口 至 蒙民伟科技大楼",
-      "description": "蒙民伟科技大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "蒙民伟科技大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
     },
     {
       "from": "meng_minwei_science_building",
@@ -2848,7 +3518,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "蒙民伟科技大楼 至 南区入口内侧路口",
-      "description": "蒙民伟科技大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "蒙民伟科技大楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
     },
     {
       "from": "road_south_gate",
@@ -2869,7 +3549,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "南区入口内侧路口 至 法学院楼",
-      "description": "法学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "法学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
     },
     {
       "from": "law_school_building",
@@ -2890,7 +3580,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "法学院楼 至 南区入口内侧路口",
-      "description": "法学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "法学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
     },
     {
       "from": "road_south_gate",
@@ -2911,7 +3611,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "南区入口内侧路口 至 经管学院楼",
-      "description": "经管学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "经管学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
     },
     {
       "from": "economics_management_building",
@@ -2932,7 +3642,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "经管学院楼 至 南区入口内侧路口",
-      "description": "经管学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "经管学院楼建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
     },
     {
       "from": "road_xuetang_south",
@@ -2953,7 +3673,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "学堂路南段路口 至 学生文化活动中心",
-      "description": "学生文化活动中心建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "学生文化活动中心建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        }
+      ]
     },
     {
       "from": "student_activity_center",
@@ -2974,7 +3704,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "学生文化活动中心 至 学堂路南段路口",
-      "description": "学生文化活动中心建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "学生文化活动中心建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -2995,7 +3735,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "紫荆区主路路口 至 紫荆学生公寓二区",
-      "description": "紫荆学生公寓二区建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "紫荆学生公寓二区建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        }
+      ]
     },
     {
       "from": "zijing_apartment_2",
@@ -3016,7 +3766,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "紫荆学生公寓二区 至 紫荆区主路路口",
-      "description": "紫荆学生公寓二区建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "紫荆学生公寓二区建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "road_zijing_axis",
@@ -3037,7 +3797,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "紫荆区主路路口 至 综合体育馆",
-      "description": "综合体育馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "综合体育馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        }
+      ]
     },
     {
       "from": "sports_center_building",
@@ -3058,7 +3828,17 @@
       "transport_semantics": "shared_walk_bike",
       "source": "m32d_thu_building_minimum",
       "name": "综合体育馆 至 紫荆区主路路口",
-      "description": "综合体育馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。"
+      "description": "综合体育馆建筑 POI 接驳段，服务 THU 建筑物数量补齐与路线规划。",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        }
+      ]
     },
     {
       "from": "gate_east",
@@ -3078,7 +3858,17 @@
       "m31a_demo_role": "thu_east_gate_bike_detour",
       "source": "m31a_thu_transport_calibration",
       "name": "清华东南门非机动车绕行接驳",
-      "description": "东南门自行车模式使用的绕行接驳段；步行用户走校门短接，短距离前往主楼时步行更合适。"
+      "description": "东南门自行车模式使用的绕行接驳段；步行用户走校门短接，短距离前往主楼时步行更合适。",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        }
+      ]
     },
     {
       "from": "road_east_gate",
@@ -3098,7 +3888,17 @@
       "m31a_demo_role": "thu_east_gate_bike_detour",
       "source": "m31a_thu_transport_calibration",
       "name": "清华东南门非机动车绕行接驳",
-      "description": "东南门自行车模式使用的绕行接驳段；步行用户走校门短接，短距离前往主楼时步行更合适。"
+      "description": "东南门自行车模式使用的绕行接驳段；步行用户走校门短接，短距离前往主楼时步行更合适。",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        }
+      ]
     },
     {
       "from": "gate_south",
@@ -3118,7 +3918,17 @@
       "m31a_demo_role": "thu_south_gate_bike_detour",
       "source": "m31a_thu_transport_calibration",
       "name": "清华南区入口非机动车绕行接驳",
-      "description": "南区入口自行车模式使用的绕行接驳段；mixed 会先走步行短接，再在校内主路切换为骑行。"
+      "description": "南区入口自行车模式使用的绕行接驳段；mixed 会先走步行短接，再在校内主路切换为骑行。",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
     },
     {
       "from": "road_south_gate",
@@ -3138,7 +3948,5457 @@
       "m31a_demo_role": "thu_south_gate_bike_detour",
       "source": "m31a_thu_transport_calibration",
       "name": "清华南区入口非机动车绕行接驳",
-      "description": "南区入口自行车模式使用的绕行接驳段；mixed 会先走步行短接，再在校内主路切换为骑行。"
+      "description": "南区入口自行车模式使用的绕行接驳段；mixed 会先走步行短接，再在校内主路切换为骑行。",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        }
+      ]
+    },
+    {
+      "from": "gate_west",
+      "to": "road_south_gate",
+      "distance": 803.1,
+      "name": "gate_west -> road_south_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
+    },
+    {
+      "from": "gate_west",
+      "to": "gate_south",
+      "distance": 801.5,
+      "name": "gate_west -> gate_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        }
+      ]
+    },
+    {
+      "from": "gate_west",
+      "to": "humanities_building",
+      "distance": 630.5,
+      "name": "gate_west -> humanities_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        }
+      ]
+    },
+    {
+      "from": "gate_south",
+      "to": "humanities_building",
+      "distance": 287.7,
+      "name": "gate_south -> humanities_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        }
+      ]
+    },
+    {
+      "from": "gate_south",
+      "to": "law_school_building",
+      "distance": 266.2,
+      "name": "gate_south -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "gate_south",
+      "to": "economics_management_building",
+      "distance": 204.8,
+      "name": "gate_south -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "road_central_axis",
+      "distance": 220.5,
+      "name": "gate_east -> road_central_axis",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "main_building",
+      "distance": 203.4,
+      "name": "gate_east -> main_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "information_science_building",
+      "distance": 169.4,
+      "name": "gate_east -> information_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        }
+      ]
+    },
+    {
+      "from": "gate_north",
+      "to": "convenience_store",
+      "distance": 246.5,
+      "name": "gate_north -> convenience_store",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        }
+      ]
+    },
+    {
+      "from": "gate_north",
+      "to": "dormitory_1",
+      "distance": 243.9,
+      "name": "gate_north -> dormitory_1",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        }
+      ]
+    },
+    {
+      "from": "gate_north",
+      "to": "zijing_apartment_2",
+      "distance": 219.9,
+      "name": "gate_north -> zijing_apartment_2",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        }
+      ]
+    },
+    {
+      "from": "second_gate",
+      "to": "sundial",
+      "distance": 168.8,
+      "name": "second_gate -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "second_gate",
+      "to": "tongfang_building",
+      "distance": 120.9,
+      "name": "second_gate -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "second_gate",
+      "to": "qinghua_xuetang",
+      "distance": 118.8,
+      "name": "second_gate -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "library",
+      "to": "science_hall",
+      "distance": 198.8,
+      "name": "library -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "library",
+      "to": "auditorium",
+      "distance": 135.9,
+      "name": "library -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "library",
+      "to": "restroom_main",
+      "distance": 124.0,
+      "name": "library -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "auditorium",
+      "to": "sundial",
+      "distance": 187.3,
+      "name": "auditorium -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "auditorium",
+      "to": "restroom_main",
+      "distance": 143.2,
+      "name": "auditorium -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "auditorium",
+      "to": "science_hall",
+      "distance": 106.5,
+      "name": "auditorium -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "engineering_hall",
+      "distance": 158.1,
+      "name": "qinghua_xuetang -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "tongfang_building",
+      "distance": 114.5,
+      "name": "qinghua_xuetang -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "sundial",
+      "distance": 52.9,
+      "name": "qinghua_xuetang -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "sundial",
+      "to": "engineering_hall",
+      "distance": 137.2,
+      "name": "sundial -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "sundial",
+      "to": "tongfang_building",
+      "distance": 130.0,
+      "name": "sundial -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "sundial",
+      "to": "science_hall",
+      "distance": 128.3,
+      "name": "sundial -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "teaching_building",
+      "to": "engineering_hall",
+      "distance": 219.3,
+      "name": "teaching_building -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "teaching_building",
+      "to": "automation_building",
+      "distance": 219.3,
+      "name": "teaching_building -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "teaching_building",
+      "to": "mechanical_engineering_building",
+      "distance": 135.7,
+      "name": "teaching_building -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "main_building",
+      "to": "road_east_gate",
+      "distance": 178.0,
+      "name": "main_building -> road_east_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        }
+      ]
+    },
+    {
+      "from": "main_building",
+      "to": "electrical_engineering_building",
+      "distance": 153.1,
+      "name": "main_building -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "main_building",
+      "to": "information_science_building",
+      "distance": 136.8,
+      "name": "main_building -> information_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        }
+      ]
+    },
+    {
+      "from": "science_hall",
+      "to": "engineering_hall",
+      "distance": 233.2,
+      "name": "science_hall -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "science_hall",
+      "to": "qinghua_xuetang",
+      "distance": 169.2,
+      "name": "science_hall -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "science_hall",
+      "to": "restroom_main",
+      "distance": 123.2,
+      "name": "science_hall -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "engineering_hall",
+      "to": "second_gate",
+      "distance": 212.9,
+      "name": "engineering_hall -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "engineering_hall",
+      "to": "architecture_building",
+      "distance": 190.9,
+      "name": "engineering_hall -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "engineering_hall",
+      "to": "tongfang_building",
+      "distance": 96.2,
+      "name": "engineering_hall -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "tongfang_building",
+      "to": "science_hall",
+      "distance": 256.1,
+      "name": "tongfang_building -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "tongfang_building",
+      "to": "architecture_building",
+      "distance": 247.0,
+      "name": "tongfang_building -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "tongfang_building",
+      "to": "economics_management_building",
+      "distance": 216.1,
+      "name": "tongfang_building -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "humanities_building",
+      "to": "road_south_gate",
+      "distance": 258.5,
+      "name": "humanities_building -> road_south_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
+    },
+    {
+      "from": "humanities_building",
+      "to": "second_gate",
+      "distance": 251.1,
+      "name": "humanities_building -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "humanities_building",
+      "to": "road_west_axis",
+      "distance": 211.5,
+      "name": "humanities_building -> road_west_axis",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        }
+      ]
+    },
+    {
+      "from": "architecture_building",
+      "to": "law_school_building",
+      "distance": 233.7,
+      "name": "architecture_building -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "architecture_building",
+      "to": "electrical_engineering_building",
+      "distance": 208.5,
+      "name": "architecture_building -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "architecture_building",
+      "to": "meng_minwei_science_building",
+      "distance": 161.2,
+      "name": "architecture_building -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "main_building",
+      "distance": 203.1,
+      "name": "mechanical_engineering_building -> main_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        }
+      ]
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "electrical_engineering_building",
+      "distance": 140.5,
+      "name": "mechanical_engineering_building -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "automation_building",
+      "distance": 133.3,
+      "name": "mechanical_engineering_building -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "teaching_building",
+      "distance": 259.6,
+      "name": "electrical_engineering_building -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "automation_building",
+      "distance": 225.3,
+      "name": "electrical_engineering_building -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "information_science_building",
+      "distance": 216.2,
+      "name": "electrical_engineering_building -> information_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        }
+      ]
+    },
+    {
+      "from": "information_science_building",
+      "to": "mechanical_engineering_building",
+      "distance": 320.3,
+      "name": "information_science_building -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "information_science_building",
+      "to": "automation_building",
+      "distance": 319.8,
+      "name": "information_science_building -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "information_science_building",
+      "to": "road_east_gate",
+      "distance": 151.1,
+      "name": "information_science_building -> road_east_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        }
+      ]
+    },
+    {
+      "from": "automation_building",
+      "to": "gate_east",
+      "distance": 341.8,
+      "name": "automation_building -> gate_east",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        }
+      ]
+    },
+    {
+      "from": "automation_building",
+      "to": "road_east_gate",
+      "distance": 319.4,
+      "name": "automation_building -> road_east_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        }
+      ]
+    },
+    {
+      "from": "automation_building",
+      "to": "main_building",
+      "distance": 183.0,
+      "name": "automation_building -> main_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        }
+      ]
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "electrical_engineering_building",
+      "distance": 305.6,
+      "name": "meng_minwei_science_building -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "economics_management_building",
+      "distance": 280.0,
+      "name": "meng_minwei_science_building -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "law_school_building",
+      "distance": 131.7,
+      "name": "meng_minwei_science_building -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "law_school_building",
+      "to": "engineering_hall",
+      "distance": 312.1,
+      "name": "law_school_building -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "law_school_building",
+      "to": "tongfang_building",
+      "distance": 287.3,
+      "name": "law_school_building -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "law_school_building",
+      "to": "economics_management_building",
+      "distance": 161.5,
+      "name": "law_school_building -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "economics_management_building",
+      "to": "humanities_building",
+      "distance": 263.9,
+      "name": "economics_management_building -> humanities_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        }
+      ]
+    },
+    {
+      "from": "economics_management_building",
+      "to": "road_second_gate",
+      "distance": 215.5,
+      "name": "economics_management_building -> road_second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
+    },
+    {
+      "from": "economics_management_building",
+      "to": "second_gate",
+      "distance": 214.5,
+      "name": "economics_management_building -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "student_activity_center",
+      "to": "restroom_main",
+      "distance": 295.3,
+      "name": "student_activity_center -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "student_activity_center",
+      "to": "sports_center_building",
+      "distance": 210.2,
+      "name": "student_activity_center -> sports_center_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        }
+      ]
+    },
+    {
+      "from": "student_activity_center",
+      "to": "guanchouyuan_canteen",
+      "distance": 189.2,
+      "name": "student_activity_center -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "sports_ground",
+      "distance": 169.1,
+      "name": "zijing_apartment_2 -> sports_ground",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        }
+      ]
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "service_center",
+      "distance": 147.0,
+      "name": "zijing_apartment_2 -> service_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        }
+      ]
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "dormitory_1",
+      "distance": 61.1,
+      "name": "zijing_apartment_2 -> dormitory_1",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        }
+      ]
+    },
+    {
+      "from": "sports_center_building",
+      "to": "dormitory_1",
+      "distance": 301.1,
+      "name": "sports_center_building -> dormitory_1",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        }
+      ]
+    },
+    {
+      "from": "sports_center_building",
+      "to": "service_center",
+      "distance": 210.2,
+      "name": "sports_center_building -> service_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        }
+      ]
+    },
+    {
+      "from": "sports_center_building",
+      "to": "sports_ground",
+      "distance": 208.7,
+      "name": "sports_center_building -> sports_ground",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "dormitory_1",
+      "distance": 229.8,
+      "name": "canteen -> dormitory_1",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "service_center",
+      "distance": 214.3,
+      "name": "canteen -> service_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "zijing_apartment_2",
+      "distance": 190.2,
+      "name": "canteen -> zijing_apartment_2",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        }
+      ]
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "science_hall",
+      "distance": 248.1,
+      "name": "guanchouyuan_canteen -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "library",
+      "distance": 247.4,
+      "name": "guanchouyuan_canteen -> library",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "restroom_main",
+      "distance": 153.5,
+      "name": "guanchouyuan_canteen -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "convenience_store",
+      "distance": 299.8,
+      "name": "dormitory_1 -> convenience_store",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "service_center",
+      "distance": 113.4,
+      "name": "dormitory_1 -> service_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "sports_ground",
+      "distance": 109.0,
+      "name": "dormitory_1 -> sports_ground",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "canteen",
+      "distance": 303.9,
+      "name": "sports_ground -> canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "convenience_store",
+      "distance": 301.2,
+      "name": "sports_ground -> convenience_store",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "service_center",
+      "distance": 104.1,
+      "name": "sports_ground -> service_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        }
+      ]
+    },
+    {
+      "from": "service_center",
+      "to": "convenience_store",
+      "distance": 389.5,
+      "name": "service_center -> convenience_store",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        }
+      ]
+    },
+    {
+      "from": "service_center",
+      "to": "gate_north",
+      "distance": 356.4,
+      "name": "service_center -> gate_north",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        }
+      ]
+    },
+    {
+      "from": "service_center",
+      "to": "student_activity_center",
+      "distance": 343.9,
+      "name": "service_center -> student_activity_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "canteen",
+      "distance": 518.4,
+      "name": "convenience_store -> canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "sports_center_building",
+      "distance": 481.0,
+      "name": "convenience_store -> sports_center_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "zijing_apartment_2",
+      "distance": 328.3,
+      "name": "convenience_store -> zijing_apartment_2",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        }
+      ]
+    },
+    {
+      "from": "restroom_main",
+      "to": "teaching_building",
+      "distance": 316.0,
+      "name": "restroom_main -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "restroom_main",
+      "to": "qinghua_xuetang",
+      "distance": 291.1,
+      "name": "restroom_main -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "restroom_main",
+      "to": "sundial",
+      "distance": 251.4,
+      "name": "restroom_main -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "road_west_axis",
+      "to": "gate_south",
+      "distance": 459.3,
+      "name": "road_west_axis -> gate_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        }
+      ]
+    },
+    {
+      "from": "road_west_axis",
+      "to": "road_south_gate",
+      "distance": 442.5,
+      "name": "road_west_axis -> road_south_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        }
+      ]
+    },
+    {
+      "from": "road_west_axis",
+      "to": "second_gate",
+      "distance": 426.4,
+      "name": "road_west_axis -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "road_second_gate",
+      "to": "law_school_building",
+      "distance": 342.8,
+      "name": "road_second_gate -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "road_second_gate",
+      "to": "auditorium",
+      "distance": 301.2,
+      "name": "road_second_gate -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "road_second_gate",
+      "to": "science_hall",
+      "distance": 285.2,
+      "name": "road_second_gate -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "road_central_axis",
+      "to": "tongfang_building",
+      "distance": 555.7,
+      "name": "road_central_axis -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "road_central_axis",
+      "to": "engineering_hall",
+      "distance": 466.9,
+      "name": "road_central_axis -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "road_central_axis",
+      "to": "meng_minwei_science_building",
+      "distance": 438.4,
+      "name": "road_central_axis -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate",
+      "to": "teaching_building",
+      "distance": 509.3,
+      "name": "road_east_gate -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate",
+      "to": "mechanical_engineering_building",
+      "distance": 377.6,
+      "name": "road_east_gate -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate",
+      "to": "electrical_engineering_building",
+      "distance": 321.2,
+      "name": "road_east_gate -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate",
+      "to": "engineering_hall",
+      "distance": 449.5,
+      "name": "road_south_gate -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate",
+      "to": "tongfang_building",
+      "distance": 375.3,
+      "name": "road_south_gate -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate",
+      "to": "second_gate",
+      "distance": 345.5,
+      "name": "road_south_gate -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "qinghua_xuetang",
+      "distance": 308.2,
+      "name": "road_xuetang_south -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "teaching_building",
+      "distance": 274.3,
+      "name": "road_xuetang_south -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "sundial",
+      "distance": 262.6,
+      "name": "road_xuetang_south -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "restroom_main",
+      "distance": 761.3,
+      "name": "road_zijing_axis -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "guanchouyuan_canteen",
+      "distance": 638.8,
+      "name": "road_zijing_axis -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "student_activity_center",
+      "distance": 466.1,
+      "name": "road_zijing_axis -> student_activity_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        }
+      ]
+    },
+    {
+      "from": "gate_west",
+      "to": "tongfang_building",
+      "distance": 975.5,
+      "name": "gate_west -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "gate_west",
+      "to": "qinghua_xuetang",
+      "distance": 951.8,
+      "name": "gate_west -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "gate_west",
+      "to": "economics_management_building",
+      "distance": 882.9,
+      "name": "gate_west -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "gate_west",
+      "to": "road_second_gate",
+      "distance": 860.3,
+      "name": "gate_west -> road_second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
+    },
+    {
+      "from": "gate_west",
+      "to": "second_gate",
+      "distance": 858.8,
+      "name": "gate_west -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9967499,
+          "lng": 116.3088897
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "gate_south",
+      "to": "architecture_building",
+      "distance": 486.9,
+      "name": "gate_south -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "gate_south",
+      "to": "tongfang_building",
+      "distance": 419.2,
+      "name": "gate_south -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "gate_south",
+      "to": "meng_minwei_science_building",
+      "distance": 394.7,
+      "name": "gate_south -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "gate_south",
+      "to": "road_second_gate",
+      "distance": 391.4,
+      "name": "gate_south -> road_second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
+    },
+    {
+      "from": "gate_south",
+      "to": "second_gate",
+      "distance": 390.0,
+      "name": "gate_south -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9961261,
+          "lng": 116.3182629
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "meng_minwei_science_building",
+      "distance": 614.7,
+      "name": "gate_east -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "architecture_building",
+      "distance": 552.9,
+      "name": "gate_east -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "teaching_building",
+      "distance": 534.1,
+      "name": "gate_east -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "mechanical_engineering_building",
+      "distance": 402.8,
+      "name": "gate_east -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "gate_east",
+      "to": "electrical_engineering_building",
+      "distance": 346.1,
+      "name": "gate_east -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004034,
+          "lng": 116.328707
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "gate_north",
+      "to": "guanchouyuan_canteen",
+      "distance": 880.5,
+      "name": "gate_north -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "gate_north",
+      "to": "student_activity_center",
+      "distance": 699.8,
+      "name": "gate_north -> student_activity_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        }
+      ]
+    },
+    {
+      "from": "gate_north",
+      "to": "sports_center_building",
+      "distance": 536.0,
+      "name": "gate_north -> sports_center_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        }
+      ]
+    },
+    {
+      "from": "gate_north",
+      "to": "canteen",
+      "distance": 372.2,
+      "name": "gate_north -> canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        }
+      ]
+    },
+    {
+      "from": "gate_north",
+      "to": "sports_ground",
+      "distance": 328.1,
+      "name": "gate_north -> sports_ground",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0115783,
+          "lng": 116.3234391
+        },
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        }
+      ]
+    },
+    {
+      "from": "second_gate",
+      "to": "restroom_main",
+      "distance": 407.0,
+      "name": "second_gate -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "second_gate",
+      "to": "architecture_building",
+      "distance": 361.9,
+      "name": "second_gate -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "second_gate",
+      "to": "law_school_building",
+      "distance": 342.4,
+      "name": "second_gate -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "second_gate",
+      "to": "auditorium",
+      "distance": 302.6,
+      "name": "second_gate -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "second_gate",
+      "to": "science_hall",
+      "distance": 286.9,
+      "name": "second_gate -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "library",
+      "to": "road_second_gate",
+      "distance": 437.1,
+      "name": "library -> road_second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
+    },
+    {
+      "from": "library",
+      "to": "engineering_hall",
+      "distance": 431.6,
+      "name": "library -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "library",
+      "to": "qinghua_xuetang",
+      "distance": 337.0,
+      "name": "library -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "library",
+      "to": "student_activity_center",
+      "distance": 323.5,
+      "name": "library -> student_activity_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        }
+      ]
+    },
+    {
+      "from": "library",
+      "to": "sundial",
+      "distance": 313.1,
+      "name": "library -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "auditorium",
+      "to": "teaching_building",
+      "distance": 380.8,
+      "name": "auditorium -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "auditorium",
+      "to": "engineering_hall",
+      "distance": 317.6,
+      "name": "auditorium -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "auditorium",
+      "to": "tongfang_building",
+      "distance": 313.4,
+      "name": "auditorium -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "auditorium",
+      "to": "guanchouyuan_canteen",
+      "distance": 296.2,
+      "name": "auditorium -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "auditorium",
+      "to": "qinghua_xuetang",
+      "distance": 203.6,
+      "name": "auditorium -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "law_school_building",
+      "distance": 399.9,
+      "name": "qinghua_xuetang -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "humanities_building",
+      "distance": 365.0,
+      "name": "qinghua_xuetang -> humanities_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        }
+      ]
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "architecture_building",
+      "distance": 344.0,
+      "name": "qinghua_xuetang -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "teaching_building",
+      "distance": 330.1,
+      "name": "qinghua_xuetang -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "qinghua_xuetang",
+      "to": "economics_management_building",
+      "distance": 306.4,
+      "name": "qinghua_xuetang -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "sundial",
+      "to": "mechanical_engineering_building",
+      "distance": 398.0,
+      "name": "sundial -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "sundial",
+      "to": "guanchouyuan_canteen",
+      "distance": 363.6,
+      "name": "sundial -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "sundial",
+      "to": "economics_management_building",
+      "distance": 339.8,
+      "name": "sundial -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "sundial",
+      "to": "architecture_building",
+      "distance": 328.0,
+      "name": "sundial -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "sundial",
+      "to": "teaching_building",
+      "distance": 282.1,
+      "name": "sundial -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "teaching_building",
+      "to": "main_building",
+      "distance": 337.8,
+      "name": "teaching_building -> main_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        }
+      ]
+    },
+    {
+      "from": "teaching_building",
+      "to": "tongfang_building",
+      "distance": 313.8,
+      "name": "teaching_building -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "teaching_building",
+      "to": "guanchouyuan_canteen",
+      "distance": 294.5,
+      "name": "teaching_building -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "teaching_building",
+      "to": "science_hall",
+      "distance": 274.6,
+      "name": "teaching_building -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "teaching_building",
+      "to": "architecture_building",
+      "distance": 259.6,
+      "name": "teaching_building -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "main_building",
+      "to": "tongfang_building",
+      "distance": 572.7,
+      "name": "main_building -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "main_building",
+      "to": "law_school_building",
+      "distance": 570.7,
+      "name": "main_building -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "main_building",
+      "to": "engineering_hall",
+      "distance": 483.9,
+      "name": "main_building -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "main_building",
+      "to": "meng_minwei_science_building",
+      "distance": 450.6,
+      "name": "main_building -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "main_building",
+      "to": "architecture_building",
+      "distance": 361.0,
+      "name": "main_building -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "science_hall",
+      "to": "automation_building",
+      "distance": 483.5,
+      "name": "science_hall -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "science_hall",
+      "to": "economics_management_building",
+      "distance": 468.1,
+      "name": "science_hall -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "science_hall",
+      "to": "student_activity_center",
+      "distance": 413.9,
+      "name": "science_hall -> student_activity_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        }
+      ]
+    },
+    {
+      "from": "science_hall",
+      "to": "architecture_building",
+      "distance": 412.3,
+      "name": "science_hall -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "science_hall",
+      "to": "mechanical_engineering_building",
+      "distance": 408.5,
+      "name": "science_hall -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "engineering_hall",
+      "to": "restroom_main",
+      "distance": 344.1,
+      "name": "engineering_hall -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "engineering_hall",
+      "to": "road_xuetang_south",
+      "distance": 334.9,
+      "name": "engineering_hall -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "engineering_hall",
+      "to": "meng_minwei_science_building",
+      "distance": 315.4,
+      "name": "engineering_hall -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "engineering_hall",
+      "to": "mechanical_engineering_building",
+      "distance": 300.7,
+      "name": "engineering_hall -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "engineering_hall",
+      "to": "economics_management_building",
+      "distance": 287.1,
+      "name": "engineering_hall -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "tongfang_building",
+      "to": "mechanical_engineering_building",
+      "distance": 395.3,
+      "name": "tongfang_building -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "tongfang_building",
+      "to": "road_xuetang_south",
+      "distance": 382.2,
+      "name": "tongfang_building -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "tongfang_building",
+      "to": "restroom_main",
+      "distance": 378.1,
+      "name": "tongfang_building -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "tongfang_building",
+      "to": "humanities_building",
+      "distance": 355.1,
+      "name": "tongfang_building -> humanities_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        }
+      ]
+    },
+    {
+      "from": "tongfang_building",
+      "to": "meng_minwei_science_building",
+      "distance": 330.7,
+      "name": "tongfang_building -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "humanities_building",
+      "to": "science_hall",
+      "distance": 524.2,
+      "name": "humanities_building -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "humanities_building",
+      "to": "auditorium",
+      "distance": 508.8,
+      "name": "humanities_building -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "humanities_building",
+      "to": "engineering_hall",
+      "distance": 451.2,
+      "name": "humanities_building -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "humanities_building",
+      "to": "law_school_building",
+      "distance": 422.8,
+      "name": "humanities_building -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "humanities_building",
+      "to": "sundial",
+      "distance": 417.3,
+      "name": "humanities_building -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9980998,
+          "lng": 116.316079
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "architecture_building",
+      "to": "information_science_building",
+      "distance": 408.0,
+      "name": "architecture_building -> information_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        }
+      ]
+    },
+    {
+      "from": "architecture_building",
+      "to": "automation_building",
+      "distance": 374.8,
+      "name": "architecture_building -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "architecture_building",
+      "to": "road_second_gate",
+      "distance": 361.1,
+      "name": "architecture_building -> road_second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
+    },
+    {
+      "from": "architecture_building",
+      "to": "economics_management_building",
+      "distance": 313.6,
+      "name": "architecture_building -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "architecture_building",
+      "to": "mechanical_engineering_building",
+      "distance": 242.9,
+      "name": "architecture_building -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "restroom_main",
+      "distance": 449.8,
+      "name": "mechanical_engineering_building -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "qinghua_xuetang",
+      "distance": 440.3,
+      "name": "mechanical_engineering_building -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "guanchouyuan_canteen",
+      "distance": 407.6,
+      "name": "mechanical_engineering_building -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "road_xuetang_south",
+      "distance": 405.3,
+      "name": "mechanical_engineering_building -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "mechanical_engineering_building",
+      "to": "meng_minwei_science_building",
+      "distance": 387.3,
+      "name": "mechanical_engineering_building -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "qinghua_xuetang",
+      "distance": 505.7,
+      "name": "electrical_engineering_building -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "sundial",
+      "distance": 473.4,
+      "name": "electrical_engineering_building -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "tongfang_building",
+      "distance": 431.9,
+      "name": "electrical_engineering_building -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "law_school_building",
+      "distance": 420.3,
+      "name": "electrical_engineering_building -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "electrical_engineering_building",
+      "to": "engineering_hall",
+      "distance": 349.6,
+      "name": "electrical_engineering_building -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "information_science_building",
+      "to": "tongfang_building",
+      "distance": 644.9,
+      "name": "information_science_building -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "information_science_building",
+      "to": "law_school_building",
+      "distance": 580.2,
+      "name": "information_science_building -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "information_science_building",
+      "to": "engineering_hall",
+      "distance": 565.4,
+      "name": "information_science_building -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "information_science_building",
+      "to": "teaching_building",
+      "distance": 455.3,
+      "name": "information_science_building -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "information_science_building",
+      "to": "meng_minwei_science_building",
+      "distance": 450.0,
+      "name": "information_science_building -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.999398,
+          "lng": 116.3272128
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "automation_building",
+      "to": "sundial",
+      "distance": 501.2,
+      "name": "automation_building -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "automation_building",
+      "to": "restroom_main",
+      "distance": 493.5,
+      "name": "automation_building -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "automation_building",
+      "to": "road_xuetang_south",
+      "distance": 441.6,
+      "name": "automation_building -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "automation_building",
+      "to": "engineering_hall",
+      "distance": 422.4,
+      "name": "automation_building -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "automation_building",
+      "to": "guanchouyuan_canteen",
+      "distance": 409.5,
+      "name": "automation_building -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "sundial",
+      "distance": 443.9,
+      "name": "meng_minwei_science_building -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "qinghua_xuetang",
+      "distance": 443.7,
+      "name": "meng_minwei_science_building -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "teaching_building",
+      "distance": 420.7,
+      "name": "meng_minwei_science_building -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "second_gate",
+      "distance": 418.8,
+      "name": "meng_minwei_science_building -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "meng_minwei_science_building",
+      "to": "road_second_gate",
+      "distance": 418.7,
+      "name": "meng_minwei_science_building -> road_second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
+    },
+    {
+      "from": "law_school_building",
+      "to": "road_central_axis",
+      "distance": 557.3,
+      "name": "law_school_building -> road_central_axis",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
+    },
+    {
+      "from": "law_school_building",
+      "to": "science_hall",
+      "distance": 536.2,
+      "name": "law_school_building -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "law_school_building",
+      "to": "mechanical_engineering_building",
+      "distance": 476.5,
+      "name": "law_school_building -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "law_school_building",
+      "to": "teaching_building",
+      "distance": 476.3,
+      "name": "law_school_building -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "law_school_building",
+      "to": "sundial",
+      "distance": 415.6,
+      "name": "law_school_building -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "economics_management_building",
+      "to": "mechanical_engineering_building",
+      "distance": 539.0,
+      "name": "economics_management_building -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "economics_management_building",
+      "to": "electrical_engineering_building",
+      "distance": 521.4,
+      "name": "economics_management_building -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "economics_management_building",
+      "to": "auditorium",
+      "distance": 508.1,
+      "name": "economics_management_building -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "economics_management_building",
+      "to": "teaching_building",
+      "distance": 496.8,
+      "name": "economics_management_building -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "economics_management_building",
+      "to": "road_west_axis",
+      "distance": 475.1,
+      "name": "economics_management_building -> road_west_axis",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        },
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        }
+      ]
+    },
+    {
+      "from": "student_activity_center",
+      "to": "teaching_building",
+      "distance": 475.1,
+      "name": "student_activity_center -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "student_activity_center",
+      "to": "dormitory_1",
+      "distance": 456.0,
+      "name": "student_activity_center -> dormitory_1",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        }
+      ]
+    },
+    {
+      "from": "student_activity_center",
+      "to": "canteen",
+      "distance": 455.6,
+      "name": "student_activity_center -> canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        }
+      ]
+    },
+    {
+      "from": "student_activity_center",
+      "to": "auditorium",
+      "distance": 427.2,
+      "name": "student_activity_center -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "student_activity_center",
+      "to": "sports_ground",
+      "distance": 391.8,
+      "name": "student_activity_center -> sports_ground",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        },
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        }
+      ]
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "library",
+      "distance": 773.6,
+      "name": "zijing_apartment_2 -> library",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "road_xuetang_south",
+      "distance": 764.3,
+      "name": "zijing_apartment_2 -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "guanchouyuan_canteen",
+      "distance": 673.7,
+      "name": "zijing_apartment_2 -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "student_activity_center",
+      "distance": 488.4,
+      "name": "zijing_apartment_2 -> student_activity_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        }
+      ]
+    },
+    {
+      "from": "zijing_apartment_2",
+      "to": "sports_center_building",
+      "distance": 350.6,
+      "name": "zijing_apartment_2 -> sports_center_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0098674,
+          "lng": 116.3221452
+        },
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        }
+      ]
+    },
+    {
+      "from": "sports_center_building",
+      "to": "library",
+      "distance": 533.6,
+      "name": "sports_center_building -> library",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
+    },
+    {
+      "from": "sports_center_building",
+      "to": "restroom_main",
+      "distance": 493.5,
+      "name": "sports_center_building -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "sports_center_building",
+      "to": "road_xuetang_south",
+      "distance": 463.5,
+      "name": "sports_center_building -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "sports_center_building",
+      "to": "canteen",
+      "distance": 401.7,
+      "name": "sports_center_building -> canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        }
+      ]
+    },
+    {
+      "from": "sports_center_building",
+      "to": "guanchouyuan_canteen",
+      "distance": 358.3,
+      "name": "sports_center_building -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0067732,
+          "lng": 116.3229384
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "auditorium",
+      "distance": 814.4,
+      "name": "canteen -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "restroom_main",
+      "distance": 715.0,
+      "name": "canteen -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "road_xuetang_south",
+      "distance": 714.1,
+      "name": "canteen -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "library",
+      "distance": 681.2,
+      "name": "canteen -> library",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
+    },
+    {
+      "from": "canteen",
+      "to": "guanchouyuan_canteen",
+      "distance": 643.0,
+      "name": "canteen -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0095664,
+          "lng": 116.3199471
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "road_second_gate",
+      "distance": 529.1,
+      "name": "guanchouyuan_canteen -> road_second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "service_center",
+      "distance": 527.4,
+      "name": "guanchouyuan_canteen -> service_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        }
+      ]
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "tongfang_building",
+      "distance": 475.0,
+      "name": "guanchouyuan_canteen -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "engineering_hall",
+      "distance": 414.2,
+      "name": "guanchouyuan_canteen -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "guanchouyuan_canteen",
+      "to": "qinghua_xuetang",
+      "distance": 412.1,
+      "name": "guanchouyuan_canteen -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "science_hall",
+      "distance": 869.7,
+      "name": "dormitory_1 -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "library",
+      "distance": 754.0,
+      "name": "dormitory_1 -> library",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "restroom_main",
+      "distance": 749.8,
+      "name": "dormitory_1 -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "road_xuetang_south",
+      "distance": 732.0,
+      "name": "dormitory_1 -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "dormitory_1",
+      "to": "guanchouyuan_canteen",
+      "distance": 637.1,
+      "name": "dormitory_1 -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0094715,
+          "lng": 116.322642
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "automation_building",
+      "distance": 776.5,
+      "name": "sports_ground -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "library",
+      "distance": 706.7,
+      "name": "sports_ground -> library",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "restroom_main",
+      "distance": 686.5,
+      "name": "sports_ground -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "road_xuetang_south",
+      "distance": 662.4,
+      "name": "sports_ground -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "sports_ground",
+      "to": "guanchouyuan_canteen",
+      "distance": 561.4,
+      "name": "sports_ground -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0086298,
+          "lng": 116.3232988
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "service_center",
+      "to": "auditorium",
+      "distance": 760.9,
+      "name": "service_center -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "service_center",
+      "to": "science_hall",
+      "distance": 757.2,
+      "name": "service_center -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "service_center",
+      "to": "library",
+      "distance": 641.0,
+      "name": "service_center -> library",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
+    },
+    {
+      "from": "service_center",
+      "to": "restroom_main",
+      "distance": 636.8,
+      "name": "service_center -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "service_center",
+      "to": "road_xuetang_south",
+      "distance": 620.1,
+      "name": "service_center -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0085461,
+          "lng": 116.3220817
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "restroom_main",
+      "distance": 974.1,
+      "name": "convenience_store -> restroom_main",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "automation_building",
+      "distance": 965.0,
+      "name": "convenience_store -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "road_xuetang_south",
+      "distance": 944.2,
+      "name": "convenience_store -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "guanchouyuan_canteen",
+      "distance": 837.9,
+      "name": "convenience_store -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "convenience_store",
+      "to": "student_activity_center",
+      "distance": 684.0,
+      "name": "convenience_store -> student_activity_center",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.010444,
+          "lng": 116.3259253
+        },
+        {
+          "lat": 40.0055566,
+          "lng": 116.3210488
+        }
+      ]
+    },
+    {
+      "from": "restroom_main",
+      "to": "road_central_axis",
+      "distance": 631.7,
+      "name": "restroom_main -> road_central_axis",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        }
+      ]
+    },
+    {
+      "from": "restroom_main",
+      "to": "economics_management_building",
+      "distance": 591.2,
+      "name": "restroom_main -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "restroom_main",
+      "to": "electrical_engineering_building",
+      "distance": 573.9,
+      "name": "restroom_main -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "restroom_main",
+      "to": "architecture_building",
+      "distance": 508.3,
+      "name": "restroom_main -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "restroom_main",
+      "to": "road_second_gate",
+      "distance": 405.4,
+      "name": "restroom_main -> road_second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031417,
+          "lng": 116.3196066
+        },
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        }
+      ]
+    },
+    {
+      "from": "road_west_axis",
+      "to": "law_school_building",
+      "distance": 632.7,
+      "name": "road_west_axis -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "road_west_axis",
+      "to": "auditorium",
+      "distance": 610.0,
+      "name": "road_west_axis -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "road_west_axis",
+      "to": "sundial",
+      "distance": 574.4,
+      "name": "road_west_axis -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "road_west_axis",
+      "to": "tongfang_building",
+      "distance": 543.5,
+      "name": "road_west_axis -> tongfang_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 39.9997417,
+          "lng": 116.3196547
+        }
+      ]
+    },
+    {
+      "from": "road_west_axis",
+      "to": "qinghua_xuetang",
+      "distance": 522.1,
+      "name": "road_west_axis -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9982,
+          "lng": 116.3136
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "road_second_gate",
+      "to": "main_building",
+      "distance": 692.3,
+      "name": "road_second_gate -> main_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        }
+      ]
+    },
+    {
+      "from": "road_second_gate",
+      "to": "automation_building",
+      "distance": 631.7,
+      "name": "road_second_gate -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "road_second_gate",
+      "to": "electrical_engineering_building",
+      "distance": 551.4,
+      "name": "road_second_gate -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "road_second_gate",
+      "to": "mechanical_engineering_building",
+      "distance": 512.2,
+      "name": "road_second_gate -> mechanical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0009303,
+          "lng": 116.324029
+        }
+      ]
+    },
+    {
+      "from": "road_second_gate",
+      "to": "teaching_building",
+      "distance": 420.0,
+      "name": "road_second_gate -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9996464,
+          "lng": 116.3182541
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "road_central_axis",
+      "to": "qinghua_xuetang",
+      "distance": 616.8,
+      "name": "road_central_axis -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "road_central_axis",
+      "to": "science_hall",
+      "distance": 595.2,
+      "name": "road_central_axis -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "road_central_axis",
+      "to": "road_xuetang_south",
+      "distance": 584.4,
+      "name": "road_central_axis -> road_xuetang_south",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        }
+      ]
+    },
+    {
+      "from": "road_central_axis",
+      "to": "sundial",
+      "distance": 578.2,
+      "name": "road_central_axis -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "road_central_axis",
+      "to": "guanchouyuan_canteen",
+      "distance": 570.2,
+      "name": "road_central_axis -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.000423,
+          "lng": 116.3261182
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate",
+      "to": "guanchouyuan_canteen",
+      "distance": 728.1,
+      "name": "road_east_gate -> guanchouyuan_canteen",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 40.0038572,
+          "lng": 116.3211472
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate",
+      "to": "law_school_building",
+      "distance": 720.4,
+      "name": "road_east_gate -> law_school_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 39.9973543,
+          "lng": 116.3209456
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate",
+      "to": "engineering_hall",
+      "distance": 661.6,
+      "name": "road_east_gate -> engineering_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 40.0001518,
+          "lng": 116.3206485
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate",
+      "to": "meng_minwei_science_building",
+      "distance": 592.6,
+      "name": "road_east_gate -> meng_minwei_science_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 39.9976677,
+          "lng": 116.3224367
+        }
+      ]
+    },
+    {
+      "from": "road_east_gate",
+      "to": "architecture_building",
+      "distance": 528.3,
+      "name": "road_east_gate -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0004025,
+          "lng": 116.3284082
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate",
+      "to": "auditorium",
+      "distance": 648.1,
+      "name": "road_south_gate -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate",
+      "to": "science_hall",
+      "distance": 620.8,
+      "name": "road_south_gate -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate",
+      "to": "sundial",
+      "distance": 493.1,
+      "name": "road_south_gate -> sundial",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 40.0008887,
+          "lng": 116.3193572
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate",
+      "to": "architecture_building",
+      "distance": 454.4,
+      "name": "road_south_gate -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "road_south_gate",
+      "to": "qinghua_xuetang",
+      "distance": 453.7,
+      "name": "road_south_gate -> qinghua_xuetang",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 39.9965267,
+          "lng": 116.3183127
+        },
+        {
+          "lat": 40.0005835,
+          "lng": 116.3188802
+        }
+      ]
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "main_building",
+      "distance": 599.2,
+      "name": "road_xuetang_south -> main_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 40.0004203,
+          "lng": 116.3263191
+        }
+      ]
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "economics_management_building",
+      "distance": 598.0,
+      "name": "road_xuetang_south -> economics_management_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 39.9978362,
+          "lng": 116.3191573
+        }
+      ]
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "electrical_engineering_building",
+      "distance": 533.9,
+      "name": "road_xuetang_south -> electrical_engineering_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 39.9997848,
+          "lng": 116.3247249
+        }
+      ]
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "architecture_building",
+      "distance": 485.3,
+      "name": "road_xuetang_south -> architecture_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 39.9991178,
+          "lng": 116.3224372
+        }
+      ]
+    },
+    {
+      "from": "road_xuetang_south",
+      "to": "second_gate",
+      "distance": 426.7,
+      "name": "road_xuetang_south -> second_gate",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0031484,
+          "lng": 116.3202525
+        },
+        {
+          "lat": 39.9996335,
+          "lng": 116.3182427
+        }
+      ]
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "auditorium",
+      "distance": 891.3,
+      "name": "road_zijing_axis -> auditorium",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0023551,
+          "lng": 116.3182759
+        }
+      ]
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "teaching_building",
+      "distance": 879.0,
+      "name": "road_zijing_axis -> teaching_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0014494,
+          "lng": 116.3225873
+        }
+      ]
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "science_hall",
+      "distance": 878.4,
+      "name": "road_zijing_axis -> science_hall",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.00204,
+          "lng": 116.3194571
+        }
+      ]
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "automation_building",
+      "distance": 850.6,
+      "name": "road_zijing_axis -> automation_building",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0017876,
+          "lng": 116.3251237
+        }
+      ]
+    },
+    {
+      "from": "road_zijing_axis",
+      "to": "library",
+      "distance": 776.5,
+      "name": "road_zijing_axis -> library",
+      "edge_type": "auto_added",
+      "geometry": [
+        {
+          "lat": 40.0093277,
+          "lng": 116.3234374
+        },
+        {
+          "lat": 40.0035771,
+          "lng": 116.3182659
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,167 @@
+智能校园/景区导览系统 — 项目结构 & 知识体系总结
+====================================================
+
+一、项目定位
+------------
+数据结构课程设计项目，题目："个性化旅游系统的设计与实现"
+3 个 AI Agent 协作开发：Claude Code (A) + Codex CLI (B) + OpenClaw (C)
+
+
+二、完整目录结构
+----------------
+Data-Structure-Course-Design/
+├── AGENTS.md                     # AI Agent 团队行为准则
+├── README.md                     # 项目总览
+├── data/                         # ====== 数据层 ======
+│   ├── global_sites.json         # 全局景区注册表（200+）
+│   ├── users.json                # 用户样例数据（70人）
+│   ├── diary_data.json           # 日记测试数据
+│   ├── map_nodes/edges.json      # 历史兼容地图数据
+│   └── sites/
+│       ├── PKU/                  # 北京大学（完整物理数据，21子图）
+│       │   ├── outdoor.json      # 室外道路图
+│       │   ├── indoor_LIB.json   # 图书馆（多楼层）
+│       │   ├── indoor_TB1/2.json, DORM1.json, ...
+│       │   └── geo/              # OSM + 室内模板
+│       ├── THU/                  # 清华大学（独立数据）
+│       └── FDU/, HIT/, NJU/, ... # 20+站点
+├── src/                          # ====== 源码 ======
+│   ├── site_registry.py          # 景区注册表枢纽
+│   ├── graph/                    # 图结构 (Member A)
+│   │   ├── graph.py              # 邻接表 + 分层子图
+│   │   └── loader.py             # 加载/合并/桥接
+│   ├── routing/                  # 路径规划 (Member A)
+│   │   └── router.py             # Dijkstra + 状态压缩DP
+│   ├── search/                   # 查询检索 (Member B)
+│   │   ├── search_service.py     # 业务入口
+│   │   ├── fuzzy_search.py       # 模糊查询
+│   │   └── exact_search.py       # 精确查询
+│   ├── recommend/                # 推荐排序 (Member B)
+│   │   ├── topk.py               # 小顶堆 Top-K
+│   │   ├── sorter.py             # 归并排序
+│   │   ├── ranking.py            # 业务排序策略
+│   │   └── interest.py           # 兴趣加权推荐
+│   ├── diary/                    # 日记 (Member B+C)
+│   ├── compress/                 # 压缩检索 (Member C)
+│   │   ├── huffman.py            # 哈夫曼编码
+│   │   ├── fulltext.py           # 倒排索引全文检索
+│   │   └── offline_index.py      # 离线索引包装
+│   └── ui/                       # 表现层 (Member B)
+│       ├── demo_server.py        # Flask Web 服务器
+│       ├── demo_service.py       # UI 业务路由
+│       ├── desktop_app.py        # Windows桌面入口
+│       └── static/               # 前端（index.html, app.js, Leaflet）
+├── tests/                        # ====== 测试层 ======
+│   ├── test_graph_load.py, test_routing.py
+│   ├── test_search.py, test_recommend.py
+│   ├── test_diary.py, test_fulltext.py, test_compress.py
+│   ├── test_integration.py, test_ui_demo.py
+│   ├── test_course_requirements.py
+│   └── test_m31c_*_interest.py, test_m31d_regression.py, ...
+├── docs/                         # 项目文档
+└── 工作进度/                     # 周报与任务清单
+
+
+三、四层分层架构
+----------------
+  表现层 (UI/CLI)            — Flask Web + Leaflet 地图
+      |
+  业务层 (查询/推荐/日记)    — 模糊搜索、Top-K、兴趣推荐
+      |
+  算法层 (图/路径)           — Dijkstra、状态压缩 DP
+      |
+  数据层 (JSON/压缩/检索)    — 景区注册表、哈夫曼、倒排索引
+
+数据流向：
+  Member C(数据层) → Member A(建图)
+  Member C(数据层) → Member B(业务层)
+  Member A(距离接口) → Member B(排序)
+  Member C(全文检索) → Member B(日记展示)
+
+
+四、核心数据结构
+----------------
+
+1. 图结构 (Graph)
+   - 邻接表: adj = {node_id: [{to, distance, ...}, ...]}
+   - 节点属性: nodes = {node_id: {name, type, ...}}
+   - 多层嵌套: sub_graphs = {parent_node_id: Graph}
+   - 递归查找: find_node_recursive()
+
+2. 小顶堆 (MinHeap) → Top-K
+   - 自定义 _shift_up / _shift_down 堆化
+   - 降序Top-K用原值入堆，堆顶=第K大最小值
+   - O(n log k)
+
+3. 归并排序 (Merge Sort)
+   - 多字段动态排序规则
+   - 稳定排序
+   - O(n log n) / O(n)
+
+4. 哈夫曼树 (Huffman)
+   - 频率统计 → 建堆 → 两两合并 → 编码表(左0右1)
+   - 编码 → pack_bits → 字节流
+   - 带压缩比估算
+
+5. 倒排索引 (Inverted Index)
+   - CJK n-gram分词(2~8字窗口)
+   - 字段加权: title×18, tags×14, dest×10, content×6
+   - 同义词展开
+
+
+五、核心算法
+------------
+
+1. Dijkstra 最短路径
+   - heapq优先级队列 + 提前终止
+   - 交通方式过滤(walk/bike/mixed)
+   - 距离策略 / 时间策略(speed×congestion)
+
+2. 多目标路径 (Held-Karp 状态压缩DP)
+   - DP[mask][last] = 访问mask目标集、目前在last的最小代价
+   - O(n²·2ⁿ)，限制n≤12
+
+3. 模糊查询评分
+   精确160/前缀120/包含90/跳字缩写72/编辑距离64
+   同义词组：洗手间↔wc↔restroom
+   编辑距离：3字内1次编辑，4-8字2次
+
+4. 兴趣推荐
+   兴趣匹配0.45 + 热度0.25 + 评分0.20 + 距离0.10
+
+
+六、模板克隆机制
+----------------
+180+ 景区只复用 PKU 一份物理数据。
+  {"id": "BNU", "template_site_id": "PKU",
+   "display_overrides": {
+     "node_names": {"gate_north": "北师大西门"},
+     "text_replacements": {"北京大学": "北京师范大学"}}}
+
+解析流程：
+  BNU → resolve_site_data_id() → PKU → 加载PKU图 → 应用改名 → 展示
+
+
+七、成员职责
+------------
+       模块        |  Member A  |  Member B  |  Member C
+  -----------------+------------+------------+------------
+  图/路径          |  graph/ + routing/ ✅ |    —     |    —
+  查询/推荐         |  距离接口    | search/ + recommend/ ✅ |    —
+  日记/检索         |    —        |  diary/    | fulltext.py ✅
+  压缩             |    —        |    —       | huffman.py ✅
+  UI               |    —        |  ui/ ✅    |    —
+  数据             |    —        |    —       | data/ ✅
+  测试             |    —        |    —       | tests/ ✅
+
+
+八、启动方式
+------------
+  # Web 主入口
+  py -m src.ui.demo_server
+
+  # 默认地址
+  http://127.0.0.1:8765
+
+  # 运行测试
+  python -m pytest
