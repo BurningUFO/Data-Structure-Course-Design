@@ -764,6 +764,33 @@
       </div>
     </div>
 
+    <div class="site-recommendation-backdrop" id="site-recommendation-backdrop" hidden></div>
+    <aside
+      class="site-recommendation-modal"
+      id="site-recommendation-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="site-recommendation-title"
+      hidden
+    >
+      <div class="site-recommendation-shell">
+        <header class="site-recommendation-header">
+          <div>
+            <p class="site-recommendation-kicker" id="site-recommendation-kicker">站点推荐</p>
+            <h2 id="site-recommendation-title">为你推荐当前站点</h2>
+            <p id="site-recommendation-subtitle">正在根据当前偏好整理推荐。</p>
+          </div>
+          <button class="site-recommendation-close" type="button" data-close-site-recommendation aria-label="关闭站点推荐">关闭</button>
+        </header>
+        <div id="site-recommendation-list" class="site-recommendation-list" aria-live="polite"></div>
+        <footer class="site-recommendation-actions">
+          <button class="primary-button compact-button" type="button" data-site-recommendation-view>查看推荐</button>
+          <button class="secondary-button compact-button" type="button" data-site-recommendation-shuffle>换一批</button>
+          <button class="ghost-button compact-button" type="button" data-close-site-recommendation>关闭</button>
+        </footer>
+      </div>
+    </aside>
+
     <div class="panel-modal-backdrop" id="panel-modal-backdrop" hidden></div>
 
     <script src="/vendor/leaflet/leaflet.js" defer></script>

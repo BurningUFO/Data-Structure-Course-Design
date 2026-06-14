@@ -10910,6 +10910,61 @@ def test_demo_m23_interest_user_switch_changes_scenic_recommendations():
     print("test_demo_m23_interest_user_switch_changes_scenic_recommendations passed.")
 
 
+def test_demo_site_entry_recommendation_reuses_scenic_interest_and_hot_ranking():
+    service = DemoUIService("PKU")
+
+    interest_response = service.scenic_search(
+        {
+            "user_id": "user_001",
+            "interests": ["校园", "秋景", "图书馆"],
+            "sort_field": "interest",
+            "start_node_id": "gate_north",
+            "limit": 4,
+        }
+    )
+    hot_response = service.scenic_search(
+        {
+            "user_id": "",
+            "interests": [],
+            "sort_field": "weighted",
+            "ranking_weights": {"heat": 70, "rating": 30, "distance_m": 0},
+            "start_node_id": "gate_north",
+            "limit": 4,
+        }
+    )
+
+    assert interest_response["success"] is True
+    assert interest_response["query_type"] == "scenic_search"
+    assert interest_response["metadata"]["interest"]["active_for_ranking"] is True
+    assert interest_response["metadata"]["ranking"]["interest_used_for_ranking"] is True
+    assert interest_response["metadata"]["user_interest_context"]["source"] == "custom_interests"
+    assert interest_response["filters"]["sort_field"] == "interest"
+    assert interest_response["results"][0]["route_target_node_id"] == "library"
+    assert interest_response["results"][0]["interest_match_score"] > 0
+    assert "兴趣命中" in interest_response["results"][0]["interest_reason"]
+
+    interest_scores = [item["recommendation_score"] for item in interest_response["results"]]
+    assert interest_scores == sorted(interest_scores, reverse=True)
+
+    assert hot_response["success"] is True
+    assert hot_response["query_type"] == "scenic_search"
+    assert hot_response["metadata"]["interest"]["active_for_ranking"] is False
+    assert hot_response["metadata"]["ranking"]["weighted_used_for_ranking"] is True
+    assert hot_response["metadata"]["ranking"]["interest_used_for_ranking"] is False
+    assert hot_response["filters"]["sort_field"] == "weighted"
+    assert hot_response["filters"]["interests"] == []
+    assert hot_response["filters"]["ranking_weights"] == {
+        "heat": 0.7,
+        "rating": 0.3,
+        "distance_m": 0.0,
+    }
+    assert all(item["route_target_node_id"] for item in hot_response["results"])
+    assert all(item["recommendation_reason"] for item in hot_response["results"])
+    hot_scores = [item["recommendation_score"] for item in hot_response["results"]]
+    assert hot_scores == sorted(hot_scores, reverse=True)
+    print("test_demo_site_entry_recommendation_reuses_scenic_interest_and_hot_ranking passed.")
+
+
 def test_demo_m23_interest_user_switch_changes_diary_recommendations():
     service = DemoUIService("PKU")
 
@@ -11458,6 +11513,55 @@ def test_demo_static_catering_recommendation_controls_cover_rubric():
     assert "renderPrimarySortMetric" in script
     assert "热度" in script
     print("test_demo_static_catering_recommendation_controls_cover_rubric passed.")
+
+
+def test_demo_static_site_entry_recommendation_modal_uses_scenic_pipeline():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+    css_path = os.path.join(repo_root, "src", "ui", "static", "styles.css")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+    with open(css_path, encoding="utf-8") as file:
+        styles = file.read()
+
+    assert 'id="site-recommendation-modal"' in html
+    assert 'id="site-recommendation-backdrop"' in html
+    assert 'id="site-recommendation-list"' in html
+    assert "data-close-site-recommendation" in html
+    assert "data-site-recommendation-view" in html
+    assert "data-site-recommendation-shuffle" in html
+    assert "查看推荐" in html
+    assert "去这里" in script
+    assert "换一批" in html
+    assert "maybeOpenSiteRecommendation" in script
+    assert "siteRecommendationHasShown" in script
+    assert "markSiteRecommendationShown" in script
+    assert "window.sessionStorage.getItem" in script
+    assert "window.sessionStorage.setItem" in script
+    assert 'apiPost("/api/search/scenic", buildSiteRecommendationPayload(options))' in script
+    assert "SITE_RECOMMENDATION_HOT_WEIGHTS" in script
+    assert 'payload.sort_field = "interest";' in script
+    assert 'payload.sort_field = "weighted";' in script
+    assert "ranking_weights = SITE_RECOMMENDATION_HOT_WEIGHTS" in script
+    assert "metadata?.interest" in script
+    assert "active_for_ranking" in script
+    assert "interest_reason" in script
+    assert "recommendation_reason" in script
+    assert "applySiteRecommendationToResults" in script
+    assert "closeSiteRecommendationModal" in script
+    assert "isSiteRecommendationModalOpen" in script
+    assert "data-site-recommendation-route" in script
+    assert "data-site-recommendation-focus" in script
+    assert "#site-recommendation-backdrop" in script
+    assert "Escape" in script
+    assert ".site-recommendation-modal" in styles
+    assert ".site-recommendation-card" in styles
+    assert ".site-recommendation-backdrop" in styles
+    print("test_demo_static_site_entry_recommendation_modal_uses_scenic_pipeline passed.")
 
 
 def test_demo_static_m31b_nearby_profiles_are_used_by_ui():
@@ -12182,6 +12286,7 @@ def run_all_tests():
     test_demo_main_query_recommend_route_chains_remain_available()
     test_demo_diary_fulltext_search_links_to_route()
     test_demo_m23_interest_user_switch_changes_scenic_recommendations()
+    test_demo_site_entry_recommendation_reuses_scenic_interest_and_hot_ranking()
     test_demo_m23_interest_user_switch_changes_diary_recommendations()
     test_demo_diary_exact_title_and_destination_sort_queries()
     test_demo_diary_management_flow_links_to_route()
@@ -12193,6 +12298,7 @@ def run_all_tests():
     test_demo_static_m19_quickstart_and_advanced_controls_are_user_friendly()
     test_demo_static_m22_nearby_place_search_controls()
     test_demo_static_catering_recommendation_controls_cover_rubric()
+    test_demo_static_site_entry_recommendation_modal_uses_scenic_pipeline()
     test_demo_static_m31b_nearby_profiles_are_used_by_ui()
     test_demo_aigc_preview_returns_template_storyboard()
     test_demo_aigc_live_image_without_key_falls_back_to_template()

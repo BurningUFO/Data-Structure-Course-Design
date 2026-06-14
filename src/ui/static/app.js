@@ -10,6 +10,13 @@ const ROUTE_MAIN_COLOR = "#1677ff";
 const MAP_RESULT_MARKER_LIMIT = 5;
 const DEFAULT_RESULT_LIMIT = 6;
 const DEFAULT_CATERING_LIMIT = 10;
+const SITE_RECOMMENDATION_LIMIT = 4;
+const SITE_RECOMMENDATION_HOT_WEIGHTS = {
+  heat: 70,
+  rating: 30,
+  distance_m: 0,
+};
+const SITE_RECOMMENDATION_SESSION_PREFIX = "tourgraph_site_recommendation_seen_v1:";
 const DEFAULT_SCENIC_WEIGHTS = {
   heat: 40,
   rating: 30,
@@ -72,6 +79,10 @@ const state = {
   currentResults: [],
   currentQueryType: "",
   currentQueryFilters: {},
+  siteRecommendationShownSiteIds: new Set(),
+  siteRecommendationResponse: null,
+  siteRecommendationLoadingSiteId: "",
+  siteRecommendationShuffleOffset: 0,
   currentRoute: null,
   recentSearches: [],
   selectedResultIndex: -1,
@@ -196,6 +207,8 @@ async function loadSiteBootstrap(siteId) {
   state.indoor = createDefaultIndoorState();
   clearLeafletLayers();
   state.currentStartNodeId = bootstrap.default_start_node;
+  state.siteRecommendationResponse = null;
+  state.siteRecommendationShuffleOffset = 0;
   hydrateBootstrap(bootstrap);
   resetInteractionState({ clearForms: true });
   restoreUserContext();
@@ -207,11 +220,53 @@ async function loadSiteBootstrap(siteId) {
   if (state.activePage === "app") {
     renderMap();
   }
+  void maybeOpenSiteRecommendation();
   return bootstrap;
 }
 
 function bindPageShell() {
   document.addEventListener("click", (event) => {
+    const closeRecommendationButton = event.target.closest("[data-close-site-recommendation]");
+    if (closeRecommendationButton) {
+      closeSiteRecommendationModal();
+      return;
+    }
+
+    const viewRecommendationButton = event.target.closest("[data-site-recommendation-view]");
+    if (viewRecommendationButton) {
+      applySiteRecommendationToResults();
+      return;
+    }
+
+    const shuffleRecommendationButton = event.target.closest("[data-site-recommendation-shuffle]");
+    if (shuffleRecommendationButton) {
+      void refreshSiteRecommendation({ force: true });
+      return;
+    }
+
+    const recommendationRouteButton = event.target.closest("#site-recommendation-modal [data-site-recommendation-route]");
+    if (recommendationRouteButton) {
+      closeSiteRecommendationModal();
+      void planRoute(recommendationRouteButton.dataset.siteRecommendationRoute || "");
+      return;
+    }
+
+    const recommendationFocusButton = event.target.closest("#site-recommendation-modal [data-site-recommendation-focus]");
+    if (recommendationFocusButton) {
+      const nodeId = recommendationFocusButton.dataset.siteRecommendationFocus || "";
+      if (nodeId) {
+        state.focusedNodeId = nodeId;
+        renderMap();
+        setStatus(`已在地图中定位 ${getNodeName(nodeId)}。`, "info");
+      }
+      return;
+    }
+
+    if (event.target.matches("#site-recommendation-backdrop")) {
+      closeSiteRecommendationModal();
+      return;
+    }
+
     const tourRunButton = event.target.closest("[data-tour-run-all]");
     if (tourRunButton) {
       void runGuidedTour();
@@ -258,6 +313,10 @@ function bindPageShell() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      if (isSiteRecommendationModalOpen()) {
+        closeSiteRecommendationModal();
+        return;
+      }
       closeExpandedPanel();
     }
   });
@@ -347,7 +406,9 @@ function closeExpandedPanel() {
     backdrop.hidden = true;
   }
 
-  document.body.classList.remove("modal-open");
+  if (!isSiteRecommendationModalOpen()) {
+    document.body.classList.remove("modal-open");
+  }
   state.expandedPanel = "";
   state.expandedPanelElement = null;
   state.expandedPanelPlaceholder = null;
@@ -983,6 +1044,266 @@ function switchTab(tab, options = {}) {
   if (tab === "help") {
     setStatus("已打开帮助说明，可按推荐链路完成系统演示。", "info");
   }
+}
+
+async function maybeOpenSiteRecommendation() {
+  const siteId = currentSiteId();
+  if (!siteId || siteRecommendationHasShown(siteId)) {
+    return;
+  }
+
+  markSiteRecommendationShown(siteId);
+  await refreshSiteRecommendation();
+}
+
+function siteRecommendationHasShown(siteId) {
+  if (state.siteRecommendationShownSiteIds.has(siteId)) {
+    return true;
+  }
+  try {
+    return window.sessionStorage.getItem(`${SITE_RECOMMENDATION_SESSION_PREFIX}${siteId}`) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markSiteRecommendationShown(siteId) {
+  state.siteRecommendationShownSiteIds.add(siteId);
+  try {
+    window.sessionStorage.setItem(`${SITE_RECOMMENDATION_SESSION_PREFIX}${siteId}`, "1");
+  } catch {
+    // Session storage can be disabled; the in-memory set still covers this page session.
+  }
+}
+
+async function refreshSiteRecommendation(options = {}) {
+  const siteId = currentSiteId();
+  if (!siteId || !state.bootstrap) {
+    return;
+  }
+
+  const requestSiteId = siteId;
+  state.siteRecommendationLoadingSiteId = requestSiteId;
+  renderSiteRecommendationLoading();
+
+  try {
+    const response = await apiPost("/api/search/scenic", buildSiteRecommendationPayload(options));
+    if (currentSiteId() !== requestSiteId) {
+      return;
+    }
+    state.siteRecommendationResponse = response;
+    state.siteRecommendationLoadingSiteId = "";
+    renderSiteRecommendation(response);
+    openSiteRecommendationModal();
+  } catch (error) {
+    if (currentSiteId() !== requestSiteId) {
+      return;
+    }
+    state.siteRecommendationLoadingSiteId = "";
+    renderSiteRecommendationError(error);
+    openSiteRecommendationModal();
+  }
+}
+
+function buildSiteRecommendationPayload(options = {}) {
+  state.currentInterests = readInterestTags();
+  const hasInterests = state.currentInterests.length > 0;
+  const limit = options.limit ?? SITE_RECOMMENDATION_LIMIT;
+  const offset = options.force ? nextSiteRecommendationOffset() : state.siteRecommendationShuffleOffset;
+  const payload = {
+    keyword: "",
+    category: "",
+    start_node_id: state.currentStartNodeId,
+    limit: Math.min(20, limit + offset),
+    user_id: hasInterests ? state.currentUserId : "",
+    interests: hasInterests ? state.currentInterests : [],
+  };
+
+  if (hasInterests) {
+    payload.sort_field = "interest";
+  } else {
+    payload.sort_field = "weighted";
+    payload.ranking_weights = SITE_RECOMMENDATION_HOT_WEIGHTS;
+  }
+
+  return payload;
+}
+
+function nextSiteRecommendationOffset() {
+  state.siteRecommendationShuffleOffset = (state.siteRecommendationShuffleOffset + SITE_RECOMMENDATION_LIMIT) % 12;
+  return state.siteRecommendationShuffleOffset;
+}
+
+function visibleSiteRecommendationItems(response = state.siteRecommendationResponse) {
+  const items = response?.results || response?.data || [];
+  const offset = state.siteRecommendationShuffleOffset;
+  if (!offset || items.length <= SITE_RECOMMENDATION_LIMIT) {
+    return items.slice(0, SITE_RECOMMENDATION_LIMIT);
+  }
+  const rotated = items.slice(offset).concat(items.slice(0, offset));
+  return rotated.slice(0, SITE_RECOMMENDATION_LIMIT);
+}
+
+function renderSiteRecommendationLoading() {
+  const list = document.querySelector("#site-recommendation-list");
+  const title = document.querySelector("#site-recommendation-title");
+  const subtitle = document.querySelector("#site-recommendation-subtitle");
+  const siteName = state.bootstrap?.site?.name || "当前站点";
+  if (title) {
+    title.textContent = `${siteName} 推荐`;
+  }
+  if (subtitle) {
+    subtitle.textContent = "正在根据当前用户偏好和站点热度整理推荐。";
+  }
+  if (list) {
+    list.innerHTML = `<div class="site-recommendation-loading">推荐加载中...</div>`;
+  }
+}
+
+function renderSiteRecommendation(response) {
+  const title = document.querySelector("#site-recommendation-title");
+  const subtitle = document.querySelector("#site-recommendation-subtitle");
+  const kicker = document.querySelector("#site-recommendation-kicker");
+  const list = document.querySelector("#site-recommendation-list");
+  const siteName = state.bootstrap?.site?.name || "当前站点";
+  const interestMeta = response?.metadata?.interest || {};
+  const userContext = response?.metadata?.user_interest_context || {};
+  const activeForInterest = Boolean(interestMeta.active_for_ranking);
+  const interests = Array.isArray(userContext.interests) && userContext.interests.length
+    ? userContext.interests
+    : state.currentInterests;
+  const items = visibleSiteRecommendationItems(response);
+
+  if (kicker) {
+    kicker.textContent = activeForInterest ? "兴趣 + 热度推荐" : "热门推荐";
+  }
+  if (title) {
+    title.textContent = `${siteName} 为你推荐`;
+  }
+  if (subtitle) {
+    subtitle.textContent = activeForInterest
+      ? `已结合 ${interests.slice(0, 4).join("、")} 和景点热度排序。`
+      : "当前没有明确兴趣，已按热度和评分优先推荐。";
+  }
+  if (!list) {
+    return;
+  }
+
+  if (!response?.success) {
+    list.innerHTML = `<div class="site-recommendation-error">${escapeHtml(response?.message || "推荐加载失败。")}</div>`;
+    return;
+  }
+
+  if (!items.length) {
+    list.innerHTML = `<div class="site-recommendation-loading">当前站点暂时没有可推荐的景点。</div>`;
+    return;
+  }
+
+  list.innerHTML = items
+    .map((item, index) => renderSiteRecommendationCard(item, index, activeForInterest))
+    .join("");
+}
+
+function renderSiteRecommendationCard(item, index, activeForInterest) {
+  const routeTarget = resolveResultRouteTargetId(item);
+  const focusNode = item.has_map_location ? routeTarget : "";
+  const distanceText = formatDistance(item.distance_m, item.distance_status);
+  const reason = item.interest_reason
+    || item.recommendation_reason
+    || (activeForInterest ? "当前兴趣与景点标签匹配度较高。" : "热度和评分靠前，适合作为进站首个目的地。");
+  const metrics = [
+    item.category_label ? `<span class="metric-pill">${escapeHtml(item.category_label)}</span>` : "",
+    item.heat !== undefined ? `<span class="metric-pill metric-pill-strong">热度 ${escapeHtml(item.heat)}</span>` : "",
+    item.rating !== undefined ? `<span class="metric-pill">评分 ${Number(item.rating).toFixed(1)}</span>` : "",
+    distanceText ? `<span class="metric-pill">${escapeHtml(distanceText)}</span>` : "",
+    item.interest_match_score !== undefined ? `<span class="metric-pill">兴趣 ${Number(item.interest_match_score).toFixed(1)}</span>` : "",
+    item.recommendation_score !== undefined ? `<span class="metric-pill">综合 ${Number(item.recommendation_score).toFixed(1)}</span>` : "",
+  ].filter(Boolean).slice(0, 5).join("");
+  const actions = [
+    routeTarget ? `<button class="route-button" type="button" data-site-recommendation-route="${escapeHtml(routeTarget)}">去这里</button>` : "",
+    focusNode ? `<button class="ghost-button" type="button" data-site-recommendation-focus="${escapeHtml(focusNode)}">定位</button>` : "",
+  ].filter(Boolean).join("");
+
+  return `
+    <article class="site-recommendation-card${index === 0 ? " is-primary" : ""}">
+      <h3>${escapeHtml(item.name || item.title || item.route_target_name || "未命名景点")}</h3>
+      <div class="card-metrics">${metrics}</div>
+      <p class="site-recommendation-reason">${escapeHtml(reason)}</p>
+      ${actions ? `<div class="site-recommendation-card-actions">${actions}</div>` : ""}
+    </article>
+  `;
+}
+
+function renderSiteRecommendationError(error) {
+  const list = document.querySelector("#site-recommendation-list");
+  const subtitle = document.querySelector("#site-recommendation-subtitle");
+  if (subtitle) {
+    subtitle.textContent = "推荐窗口加载失败，不影响继续使用查询、路线和地图功能。";
+  }
+  if (list) {
+    list.innerHTML = `<div class="site-recommendation-error">推荐加载失败：${escapeHtml(error.message || error)}</div>`;
+  }
+}
+
+function openSiteRecommendationModal() {
+  const modal = document.querySelector("#site-recommendation-modal");
+  const backdrop = document.querySelector("#site-recommendation-backdrop");
+  if (!modal || !backdrop) {
+    return;
+  }
+  backdrop.hidden = false;
+  modal.hidden = false;
+  document.body.classList.add("modal-open");
+}
+
+function closeSiteRecommendationModal() {
+  const modal = document.querySelector("#site-recommendation-modal");
+  const backdrop = document.querySelector("#site-recommendation-backdrop");
+  if (modal) {
+    modal.hidden = true;
+  }
+  if (backdrop) {
+    backdrop.hidden = true;
+  }
+  if (!state.expandedPanel) {
+    document.body.classList.remove("modal-open");
+  }
+}
+
+function isSiteRecommendationModalOpen() {
+  const modal = document.querySelector("#site-recommendation-modal");
+  return Boolean(modal && !modal.hidden);
+}
+
+function applySiteRecommendationToResults() {
+  const response = state.siteRecommendationResponse;
+  if (!response || !response.success) {
+    closeSiteRecommendationModal();
+    return;
+  }
+
+  const items = visibleSiteRecommendationItems(response);
+  const decoratedResponse = {
+    ...response,
+    total: items.length,
+    data: items,
+    results: items,
+  };
+  state.currentResults = items;
+  state.currentQueryFilters = response.filters || {};
+  state.currentRoute = null;
+  state.focusedNodeId = firstMappableNodeId(items);
+  state.selectedResultIndex = firstSelectableResultIndex(items);
+  switchTab("scenic", { openPage: true });
+  if (state.focusedNodeId) {
+    requestMapViewportFit("results");
+  }
+  renderResults(decoratedResponse);
+  revealResultPanel();
+  renderRoute(null);
+  renderMap();
+  closeSiteRecommendationModal();
+  setStatus(`已将 ${items.length} 条站点推荐同步到结果区，可继续定位或规划路线。`, "success");
 }
 
 function resetInteractionState(options = {}) {

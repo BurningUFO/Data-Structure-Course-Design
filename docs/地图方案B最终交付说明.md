@@ -66,3 +66,10 @@
 - 后续若继续提升 20 校真实道路几何覆盖，应使用离线准备脚本产出本地文件，并放入 `data/sites/<SITE_ID>/geo/` 后再接入。
 - 不删除、不移动、不暂存无关未跟踪文件，尤其是 `scripts/`、`工作进度/`、`.codex_tmp/`、`.playwright-cli/`、`output/` 和 `data/sites/PKU/geo/pku_poi_overpass_raw.json`。
 
+## 8. 后续体验增强记录
+
+- 2026-06-15：新增“站点进入推荐弹窗”，用于用户首次进入站点或切换站点后的轻量引导推荐。
+- 数据来源：前端复用既有 `POST /api/search/scenic`，有用户兴趣时使用 `sort_field=interest`，无明确兴趣时回退到 `sort_field=weighted` 并以热度、评分优先排序；未新增独立推荐引擎，保留原有 API 契约。
+- 交互闭环：推荐窗每站点每会话自动弹出一次，支持关闭按钮、遮罩和 `ESC` 关闭；“查看推荐”同步到现有结果面板，“去这里”进入既有路线规划链路，“换一批”复用同一查询管线刷新候选。
+- 报告可写入亮点：该增强把“用户画像 + 景点热度 + 路线规划”串成进入站点后的主动推荐体验，同时不阻断地图、查询、日记、AIGC 等主流程。
+- 验证记录：`node --check src/ui/static/app.js` 通过；新增推荐相关 `pytest` 用例通过；临时端口 API 冒烟覆盖 `/api/bootstrap`、`/api/map/geojson?site_id=PKU`、`/api/search/scenic`、`/api/route`、`/api/route/multi`；浏览器冒烟覆盖首次弹窗、关闭、同会话不重复弹出、查看推荐、路线 CTA 和站点切换触发。全量 `python -m pytest` 曾运行得到 `397 passed, 37 failed`，失败集中在既有 M31A/M28/M31B 路线校准和数据期望项，非本次推荐弹窗新增失败。
