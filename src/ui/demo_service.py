@@ -571,6 +571,7 @@ class DemoUIService:
     def get_bootstrap_payload(self) -> dict[str, Any]:
         """Return all static data needed by the one-page UI."""
         map_geometry_stats = self._build_map_geometry_stats()
+        building_count = self._resolve_homepage_building_count()
         map_capabilities = json.loads(json.dumps(MAP_CAPABILITIES, ensure_ascii=False))
         indoor_buildings = self._build_indoor_building_summaries()
         map_capabilities["indoor_map_endpoint"] = "/api/map/indoor"
@@ -680,6 +681,7 @@ class DemoUIService:
                 "aigc_sample_count": len(self.aigc_samples),
                 "site_count": len(load_global_sites()),
                 "user_count": len(self.users),
+                "building_count": building_count,
                 "indoor_target_count": sum(
                     1 for item in self.route_targets if item["graph_type"] == "indoor"
                 ),
@@ -2384,6 +2386,25 @@ class DemoUIService:
             )
         return summaries
 
+    def _resolve_homepage_building_count(self) -> int:
+        metadata, _ = self._load_osm_metadata()
+        files = metadata.get("files")
+        if isinstance(files, dict):
+            building_meta = files.get(OSM_LAYER_FILES["buildings"])
+            if isinstance(building_meta, dict):
+                feature_count = building_meta.get("feature_count")
+                if isinstance(feature_count, int) and feature_count >= 0:
+                    return feature_count
+
+        buildings_geojson, _ = self._load_osm_feature_collection(
+            self._osm_geo_dir() / OSM_LAYER_FILES["buildings"]
+        )
+        features = buildings_geojson.get("features")
+        if isinstance(features, list) and features:
+            return len(features)
+
+        return len(self.indoor_building_registry)
+
     def _load_osm_metadata(self) -> tuple[dict[str, Any], str]:
         metadata_path = self._osm_geo_dir() / OSM_METADATA_FILE
         if not metadata_path.exists():
@@ -3850,7 +3871,7 @@ class DemoUIService:
             targets.append(
                 {
                     "id": node_id,
-                    "name": normalize_text(node_data.get("name")) or node_id,
+                    "name": self._display_node_name(node_id, node_data.get("name")),
                     "category": category,
                     "category_label": CATEGORY_LABELS.get(category, category),
                     "display_role": display_metadata["display_role"],
@@ -4202,7 +4223,7 @@ class DemoUIService:
         if not node_id:
             return ""
         node_data = self.graph.nodes.get(node_id, {})
-        return normalize_text(node_data.get("name")) or node_id
+        return self._display_node_name(node_id, node_data.get("name"))
 
     @staticmethod
     def _indoor_view_id(building_id: str, floor_id: str) -> str:

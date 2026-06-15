@@ -457,6 +457,8 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert site_options["HZAU"]["data_status"] == "available"
     assert payload["site"]["name"] == "北京大学"
     assert payload["default_start_node"] == "gate_north"
+    assert next(item for item in payload["start_nodes"] if item["id"] == "gate_north")["name"] == "未名湖东路入口"
+    assert next(item for item in payload["route_targets"] if item["id"] == "gate_north")["name"] == "未名湖东路入口"
     assert payload["map"]["node_count"] >= 1000
     assert payload["map"]["poi_node_count"] >= CORE_PKU_POI_COUNT + ENRICHED_NEW_POI_MIN
     assert payload["map"]["edge_count"] > 0
@@ -498,6 +500,7 @@ def test_demo_bootstrap_contains_map_and_controls():
     assert basemaps["modes"][0]["network_required"] is True
     assert basemaps["modes"][1]["network_required"] is False
     assert payload["stats"]["route_target_count"] >= 10
+    assert payload["stats"]["building_count"] == 353
     assert payload["stats"]["indoor_building_count"] >= 20
 
     assert payload["stats"]["site_count"] >= 1
@@ -10778,6 +10781,7 @@ def test_demo_main_query_recommend_route_chains_remain_available():
     assert scenic["results"][0]["distance_status"] == "available"
     assert scenic["results"][0]["distance_m"] > 0
     assert scenic_route["success"] is True
+    assert scenic_route["start_node_name"] == "未名湖东路入口"
 
     place = service.place_search(
         {

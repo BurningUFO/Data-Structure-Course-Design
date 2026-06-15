@@ -27,7 +27,12 @@
         "indoor_CANTEEN_JIAYUAN",
         "indoor_CANTEEN_XUEYI",
         "indoor_CANTEEN_YANNAN"
-      ]
+      ],
+      "display_overrides": {
+        "node_names": {
+          "gate_north": "未名湖东路入口"
+        }
+      }
     },
     {
       "id": "THU",
