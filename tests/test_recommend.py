@@ -449,6 +449,51 @@ def test_interest_aware_ranking_uses_interest_heat_rating_and_distance():
     print("test_interest_aware_ranking_uses_interest_heat_rating_and_distance passed.")
 
 
+def test_interest_aware_ranking_uses_interest_profile_weights():
+    records = [
+        {
+            "id": "library",
+            "name": "图书馆",
+            "category": "education",
+            "heat": 80,
+            "rating": 4.5,
+            "distance_m": 300,
+            "tags": ["图书馆", "自习"],
+            "description": "安静学习空间。",
+        },
+        {
+            "id": "canteen",
+            "name": "农园食堂",
+            "category": "catering",
+            "heat": 95,
+            "rating": 4.9,
+            "distance_m": 80,
+            "tags": ["食堂", "美食"],
+            "description": "校园餐饮。",
+        },
+    ]
+
+    study_result = rank_interest_aware_records(
+        records,
+        interests=["图书馆", "食堂"],
+        interest_profile={"图书馆": 5.0, "食堂": 0.5},
+        limit=2,
+    )
+    food_result = rank_interest_aware_records(
+        records,
+        interests=["图书馆", "食堂"],
+        interest_profile={"图书馆": 0.5, "食堂": 5.0},
+        limit=2,
+    )
+
+    assert study_result[0]["id"] == "library"
+    assert food_result[0]["id"] == "canteen"
+    assert study_result[0]["interest_profile_match"]["matched_weights"][0]["interest"] == "图书馆"
+    assert food_result[0]["interest_profile_match"]["matched_weights"][0]["interest"] == "食堂"
+    assert "动态权重" in study_result[0]["interest_reason"]
+    print("test_interest_aware_ranking_uses_interest_profile_weights passed.")
+
+
 def run_all_tests():
     print("Running recommend module tests...")
     test_sort_by_heat()
@@ -466,6 +511,7 @@ def run_all_tests():
     test_recommend_catering_center_node_controls_distance_origin()
     test_recommend_catering_infers_cuisine_labels()
     test_interest_aware_ranking_uses_interest_heat_rating_and_distance()
+    test_interest_aware_ranking_uses_interest_profile_weights()
     print("All recommend tests passed.")
 
 

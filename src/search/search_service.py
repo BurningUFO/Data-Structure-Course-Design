@@ -23,7 +23,9 @@ from typing import Any
 from src.recommend.interest import (
     interest_ranking_weights,
     is_interest_sort_field,
+    interest_profile_to_interests,
     normalize_interest_list,
+    normalize_interest_profile,
     rank_interest_aware_records,
 )
 from src.recommend.ranking import (
@@ -415,6 +417,7 @@ def search_and_recommend(
     use_default_distance_provider: bool = True,
     distance_strategy: str = "shortest_distance",
     interests: list[str] | str | None = None,
+    interest_profile: Any = None,
     allow_empty_query: bool = False,
     match_score_primary: bool = True,
     ranking_weights: dict[str, Any] | None = None,
@@ -433,7 +436,10 @@ def search_and_recommend(
       `sort_field="distance_m"`。
     - records/data_path: 允许测试或联调时注入数据。
     """
+    normalized_interest_profile = normalize_interest_profile(interest_profile)
     normalized_interests = normalize_interest_list(interests)
+    if normalized_interest_profile and not normalized_interests:
+        normalized_interests = interest_profile_to_interests(normalized_interest_profile)
     interest_ranking_active = bool(normalized_interests) and is_interest_sort_field(sort_field)
     weighted_ranking_active = sort_field == WEIGHTED_SORT_FIELD
     normalized_ranking_weights = normalize_weighted_ranking_weights(ranking_weights)
@@ -450,6 +456,8 @@ def search_and_recommend(
         "use_default_distance_provider": use_default_distance_provider,
         "interests": normalized_interests,
     }
+    if normalized_interest_profile:
+        filters["interest_profile"] = normalized_interest_profile
     if weighted_ranking_active:
         filters["ranking_weights"] = normalized_ranking_weights
     base_metadata = build_response_metadata(
@@ -461,6 +469,7 @@ def search_and_recommend(
         distance_strategy=distance_strategy,
         distance_provider_active=False,
         interests=normalized_interests,
+        interest_profile=normalized_interest_profile,
         interest_ranking_active=interest_ranking_active,
         weighted_ranking_active=weighted_ranking_active,
         ranking_weights=normalized_ranking_weights,
@@ -517,6 +526,7 @@ def search_and_recommend(
         top_records = rank_interest_aware_records(
             enriched_records,
             interests=normalized_interests,
+            interest_profile=normalized_interest_profile,
             include_distance=bool(start_node_id),
             limit=limit,
         )
@@ -537,6 +547,7 @@ def search_and_recommend(
         distance_strategy=distance_strategy,
         distance_provider_active=active_distance_provider is not None,
         interests=normalized_interests,
+        interest_profile=normalized_interest_profile,
         interest_ranking_active=interest_ranking_active,
         weighted_ranking_active=weighted_ranking_active,
         ranking_weights=normalized_ranking_weights,
@@ -962,6 +973,7 @@ def build_response_metadata(
     distance_strategy: str,
     distance_provider_active: bool,
     interests: list[str] | None = None,
+    interest_profile: dict[str, float] | None = None,
     interest_ranking_active: bool = False,
     weighted_ranking_active: bool = False,
     ranking_weights: dict[str, float] | None = None,
@@ -969,6 +981,7 @@ def build_response_metadata(
     """构造统一响应的业务元信息。"""
     status_counts = count_distance_status(records)
     normalized_interests = normalize_interest_list(interests)
+    normalized_interest_profile = normalize_interest_profile(interest_profile)
     result_fields = [
         "id",
         "name",
@@ -987,6 +1000,8 @@ def build_response_metadata(
                 "interest_reason",
             ]
         )
+        if normalized_interest_profile:
+            result_fields.append("interest_profile_match")
     if weighted_ranking_active:
         result_fields.extend(
             [
@@ -1012,6 +1027,10 @@ def build_response_metadata(
             "requested": bool(normalized_interests),
             "active_for_ranking": interest_ranking_active,
             "interests": normalized_interests,
+            "profile_used": bool(normalized_interest_profile),
+            "profile": normalized_interest_profile,
+            "ranking_mode": "profile_weighted" if normalized_interest_profile else "legacy_interests",
+            "explain_version": "dynamic_interest_v1",
             "score_field": "interest_match_score",
             "recommendation_score_field": "recommendation_score",
             "weights": interest_ranking_weights(include_distance=bool(start_node_id)),

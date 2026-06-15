@@ -28,9 +28,11 @@ from src.recommend.catering_service import CUISINE_KEYWORD_GROUPS, recommend_cat
 from src.recommend.interest import (
     build_user_options,
     collect_interest_options,
+    interest_profile_to_interests,
     is_interest_sort_field,
     load_users,
     normalize_interest_list,
+    normalize_interest_profile,
     resolve_user_by_id,
     resolve_user_interests,
 )
@@ -1656,13 +1658,15 @@ class DemoUIService:
             or request.get("interest_tags")
             or request.get("interest_text")
         )
+        requested_interest_profile = normalize_interest_profile(request.get("interest_profile"))
+        profile_interests = interest_profile_to_interests(requested_interest_profile)
         selected_user = self._resolve_user_for_request(user_id)
         user_interests = (
             normalize_interest_list(selected_user.get("interests"))
             if selected_user
             else resolve_user_interests(self.users, user_id)
         )
-        interests = requested_interests or user_interests
+        interests = requested_interests or profile_interests or user_interests
         display_user_id = normalize_text(selected_user.get("id")) if selected_user else user_id
 
         return {
@@ -1670,7 +1674,13 @@ class DemoUIService:
             "user_name": normalize_text(selected_user.get("name")) if selected_user else "",
             "role": normalize_text(selected_user.get("role")) if selected_user else "",
             "interests": interests,
-            "source": "custom_interests" if requested_interests else ("user_profile" if user_interests else "none"),
+            "interest_profile": requested_interest_profile,
+            "interest_profile_context": request.get("interest_profile_context") if isinstance(request.get("interest_profile_context"), dict) else {},
+            "source": (
+                "custom_interests"
+                if requested_interests
+                else ("dynamic_profile" if requested_interest_profile else ("user_profile" if user_interests else "none"))
+            ),
         }
 
     @staticmethod
@@ -1695,6 +1705,15 @@ class DemoUIService:
             "interests": list(interest_context.get("interests", [])),
             "source": interest_context.get("source", "none"),
         }
+        interest_profile = interest_context.get("interest_profile") or {}
+        if interest_profile:
+            metadata["user_interest_context"]["interest_profile"] = {
+                "requested": True,
+                "used": True,
+                "weights": dict(interest_profile),
+                "top_interests": list(interest_context.get("interests", []))[:5],
+                "context": dict(interest_context.get("interest_profile_context") or {}),
+            }
         decorated["metadata"] = metadata
         return decorated
 
@@ -1714,6 +1733,7 @@ class DemoUIService:
             distance_provider=self._distance_provider,
             use_default_distance_provider=False,
             interests=interest_context["interests"],
+            interest_profile=interest_context["interest_profile"],
             allow_empty_query=is_interest_sort_field(sort_field) or sort_field == WEIGHTED_SORT_FIELD,
             ranking_weights=self._normalize_ranking_weights(request.get("ranking_weights")),
         )
@@ -1786,6 +1806,7 @@ class DemoUIService:
             sort_order=normalize_text(request.get("sort_order")),
             limit=self._normalize_limit(request.get("limit"), default=6),
             interests=interest_context["interests"],
+            interest_profile=interest_context["interest_profile"],
         )
         response = response.copy()
         response["query_type"] = "diary_list"

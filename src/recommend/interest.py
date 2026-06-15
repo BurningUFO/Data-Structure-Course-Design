@@ -174,6 +174,67 @@ def normalize_interest_list(value: Any) -> list[str]:
     return result
 
 
+def normalize_interest_profile(value: Any) -> dict[str, float]:
+    """Normalize a dynamic interest profile mapping into positive tag weights."""
+    if value is None:
+        return {}
+
+    candidates: dict[Any, Any] = {}
+    if isinstance(value, dict):
+        raw_weights = value.get("weights") or value.get("interest_profile")
+        if isinstance(raw_weights, dict):
+            candidates.update(raw_weights)
+        for key, weight in value.items():
+            if key in {"weights", "interest_profile", "interests", "tags", "recent_keywords", "updated_at", "updatedAt"}:
+                continue
+            candidates[key] = weight
+        for profile_key in ("interests", "tags", "recent_keywords"):
+            raw_terms = value.get(profile_key)
+            for term in normalize_interest_list(raw_terms):
+                candidates.setdefault(term, 1.0)
+    elif isinstance(value, (list, tuple, set)):
+        for item in value:
+            if isinstance(item, dict):
+                term = (
+                    item.get("term")
+                    or item.get("tag")
+                    or item.get("interest")
+                    or item.get("name")
+                    or item.get("value")
+                )
+                weight = item.get("weight", item.get("score", 1.0))
+                candidates[term] = weight
+            else:
+                candidates[item] = 1.0
+    else:
+        for term in normalize_interest_list(value):
+            candidates[term] = 1.0
+
+    result: dict[str, float] = {}
+    for raw_term, raw_weight in candidates.items():
+        term = normalize_display_text(raw_term)
+        key = normalize_text(term)
+        if not key:
+            continue
+        weight = coerce_float(raw_weight, default=1.0)
+        if weight <= 0:
+            continue
+        result[term] = max(result.get(term, 0.0), round(min(weight, 10.0), 4))
+    return result
+
+
+def interest_profile_to_interests(value: Any) -> list[str]:
+    """Return profile terms sorted by weight for legacy interests compatibility."""
+    profile = normalize_interest_profile(value)
+    return [
+        term
+        for term, _weight in sorted(
+            profile.items(),
+            key=lambda item: (-item[1], normalize_text(item[0])),
+        )
+    ]
+
+
 def split_interest_text(value: Any) -> list[str]:
     normalized = normalize_display_text(value)
     for separator in ("，", "、", ";", "；", "|", "\n", "\t"):
@@ -193,17 +254,25 @@ def enrich_interest_scores(
     records: list[Record],
     *,
     interests: Any,
+    interest_profile: Any = None,
     include_distance: bool = True,
     weights: dict[str, float] | None = None,
 ) -> list[Record]:
     """Return copied records with interest and composite recommendation fields."""
     normalized_interests = normalize_interest_list(interests)
+    normalized_profile = normalize_interest_profile(interest_profile)
+    if normalized_profile and not normalized_interests:
+        normalized_interests = interest_profile_to_interests(normalized_profile)
     active_weights = weights or interest_ranking_weights(include_distance=include_distance)
     enriched: list[Record] = []
 
     for record in records:
         copied = record.copy()
-        interest_match = build_interest_match(copied, normalized_interests)
+        interest_match = build_interest_match(
+            copied,
+            normalized_interests,
+            interest_profile=normalized_profile,
+        )
         interest_score = interest_match["score"]
         components = build_recommendation_components(
             copied,
@@ -222,6 +291,12 @@ def enrich_interest_scores(
         copied["interest_match_score"] = interest_score
         copied["interest_match"] = interest_match
         copied["interest_reason"] = build_interest_reason(interest_match)
+        if normalized_profile:
+            copied["interest_profile_match"] = {
+                "weighted_score": interest_match.get("weighted_score", interest_score),
+                "matched_weights": interest_match.get("matched_weights", []),
+                "profile_weight_total": interest_match.get("profile_weight_total", 0.0),
+            }
         copied["interest_recommendation_score"] = recommendation_score
         copied["recommendation_score"] = recommendation_score
         copied["recommendation_components"] = {
@@ -238,6 +313,7 @@ def rank_interest_aware_records(
     records: list[Record],
     *,
     interests: Any,
+    interest_profile: Any = None,
     limit: int = 10,
     include_distance: bool = True,
     weights: dict[str, float] | None = None,
@@ -249,6 +325,7 @@ def rank_interest_aware_records(
     enriched = enrich_interest_scores(
         records,
         interests=interests,
+        interest_profile=interest_profile,
         include_distance=include_distance,
         weights=weights,
     )
@@ -271,8 +348,16 @@ def rank_interest_aware_records(
     return cleaned
 
 
-def build_interest_match(record: Record, interests: list[str]) -> Record:
+def build_interest_match(
+    record: Record,
+    interests: list[str],
+    *,
+    interest_profile: Any = None,
+) -> Record:
     normalized_interests = normalize_interest_list(interests)
+    normalized_profile = normalize_interest_profile(interest_profile)
+    if normalized_profile and not normalized_interests:
+        normalized_interests = interest_profile_to_interests(normalized_profile)
     if not normalized_interests:
         return {
             "score": 0.0,
@@ -280,6 +365,8 @@ def build_interest_match(record: Record, interests: list[str]) -> Record:
             "matched_categories": [],
             "matched_tags": [],
             "matched_keywords": [],
+            "matched_weights": [],
+            "profile_weight_total": 0.0,
             "source_scores": {
                 "category": 0.0,
                 "tag": 0.0,
@@ -294,16 +381,27 @@ def build_interest_match(record: Record, interests: list[str]) -> Record:
     matched_categories = find_matching_terms(normalized_interests, category_terms)
     matched_tags = find_matching_terms(normalized_interests, tag_terms)
     matched_keywords = find_matching_terms(normalized_interests, keyword_terms)
+    weighted_match = build_weighted_interest_match(
+        normalized_profile,
+        {
+            "category": matched_categories,
+            "tag": matched_tags,
+            "keyword": matched_keywords,
+        },
+    )
 
-    source_scores = {
-        "category": INTEREST_SOURCE_WEIGHTS["category"] if matched_categories else 0.0,
-        "tag": scaled_source_score(matched_tags, normalized_interests, INTEREST_SOURCE_WEIGHTS["tag"]),
-        "keyword": scaled_source_score(
-            matched_keywords,
-            normalized_interests,
-            INTEREST_SOURCE_WEIGHTS["keyword"],
-        ),
-    }
+    if normalized_profile:
+        source_scores = weighted_match["source_scores"]
+    else:
+        source_scores = {
+            "category": INTEREST_SOURCE_WEIGHTS["category"] if matched_categories else 0.0,
+            "tag": scaled_source_score(matched_tags, normalized_interests, INTEREST_SOURCE_WEIGHTS["tag"]),
+            "keyword": scaled_source_score(
+                matched_keywords,
+                normalized_interests,
+                INTEREST_SOURCE_WEIGHTS["keyword"],
+            ),
+        }
     score = round(min(100.0, sum(source_scores.values())), 2)
 
     return {
@@ -312,6 +410,10 @@ def build_interest_match(record: Record, interests: list[str]) -> Record:
         "matched_categories": matched_categories,
         "matched_tags": matched_tags,
         "matched_keywords": matched_keywords,
+        "matched_weights": weighted_match["matched_weights"] if normalized_profile else [],
+        "profile_weight_total": weighted_match["profile_weight_total"] if normalized_profile else 0.0,
+        "profile_used": bool(normalized_profile),
+        "weighted_score": score,
         "source_scores": source_scores,
     }
 
@@ -357,6 +459,65 @@ def find_matching_terms(interests: list[str], candidates: list[str]) -> list[str
                     matches.append(candidate_text)
                 break
     return matches
+
+
+def build_weighted_interest_match(
+    interest_profile: dict[str, float],
+    matched_by_source: dict[str, list[str]],
+) -> Record:
+    if not interest_profile:
+        return {
+            "source_scores": {
+                "category": 0.0,
+                "tag": 0.0,
+                "keyword": 0.0,
+            },
+            "matched_weights": [],
+            "profile_weight_total": 0.0,
+        }
+
+    max_profile_weight = max(interest_profile.values(), default=1.0) or 1.0
+    source_scores: dict[str, float] = {}
+    matched_weights: list[Record] = []
+    weighted_keys: set[tuple[str, str]] = set()
+
+    for source, matches in matched_by_source.items():
+        source_weight = INTEREST_SOURCE_WEIGHTS.get(source, 0.0)
+        source_total = 0.0
+        for term, weight in interest_profile.items():
+            for matched_text in matches:
+                if not text_matches(term, matched_text):
+                    continue
+                normalized_weight = clamp(weight / max_profile_weight)
+                contribution = source_weight * normalized_weight
+                source_total = max(source_total, contribution)
+                key = (normalize_text(term), source)
+                if key not in weighted_keys:
+                    weighted_keys.add(key)
+                    matched_weights.append(
+                        {
+                            "interest": term,
+                            "weight": round(weight, 2),
+                            "source": source,
+                            "matched_text": matched_text,
+                            "contribution": round(contribution, 2),
+                        }
+                    )
+                break
+        source_scores[source] = round(min(source_weight, source_total), 2)
+
+    return {
+        "source_scores": {
+            "category": source_scores.get("category", 0.0),
+            "tag": source_scores.get("tag", 0.0),
+            "keyword": source_scores.get("keyword", 0.0),
+        },
+        "matched_weights": sorted(
+            matched_weights,
+            key=lambda item: (-coerce_float(item.get("contribution")), normalize_text(item.get("interest"))),
+        ),
+        "profile_weight_total": round(sum(interest_profile.values()), 2),
+    }
 
 
 def text_matches(interest: Any, candidate: Any) -> bool:
@@ -418,6 +579,15 @@ def build_interest_reason(interest_match: Record) -> str:
 
     if not pieces:
         return "未命中当前兴趣，使用热度、评分和距离作为补位排序。"
+    profile_weights = interest_match.get("matched_weights") or []
+    if profile_weights:
+        top_weights = [
+            f"{item.get('interest')}×{coerce_float(item.get('weight')):.1f}"
+            for item in profile_weights[:3]
+            if item.get("interest")
+        ]
+        if top_weights:
+            pieces.append(f"动态权重 {join_limited(top_weights)}")
     return f"兴趣命中：{'；'.join(pieces)}。"
 
 

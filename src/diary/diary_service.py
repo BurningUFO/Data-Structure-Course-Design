@@ -23,8 +23,10 @@ from typing import Any
 from src.diary.fulltext_service import search_diary_fulltext_records
 from src.recommend.interest import (
     interest_ranking_weights,
+    interest_profile_to_interests,
     is_interest_sort_field,
     normalize_interest_list,
+    normalize_interest_profile,
     rank_interest_aware_records,
 )
 from src.search.response import build_error_response, build_success_response
@@ -695,9 +697,13 @@ class DiaryService:
         sort_order: str = "",
         limit: int = 10,
         interests: list[str] | str | None = None,
+        interest_profile: Any = None,
     ) -> dict[str, Any]:
         """日记统一查询入口。"""
+        normalized_interest_profile = normalize_interest_profile(interest_profile)
         normalized_interests = normalize_interest_list(interests)
+        if normalized_interest_profile and not normalized_interests:
+            normalized_interests = interest_profile_to_interests(normalized_interest_profile)
         interest_ranking_active = bool(normalized_interests) and is_interest_sort_field(sort_field)
         if not keyword and not destination:
             matched_records = self.records[:]
@@ -725,6 +731,7 @@ class DiaryService:
             ordered_records = rank_interest_aware_records(
                 matched_records,
                 interests=normalized_interests,
+                interest_profile=normalized_interest_profile,
                 include_distance=False,
                 limit=max(safe_limit, len(matched_records)),
             )
@@ -757,6 +764,8 @@ class DiaryService:
                     "interest_reason",
                 ]
             )
+            if normalized_interest_profile:
+                result_fields.append("interest_profile_match")
 
         metadata = {
             "total_matched": len(matched_records),
@@ -771,6 +780,10 @@ class DiaryService:
                 "requested": bool(normalized_interests),
                 "active_for_ranking": interest_ranking_active,
                 "interests": normalized_interests,
+                "profile_used": bool(normalized_interest_profile),
+                "profile": normalized_interest_profile,
+                "ranking_mode": "profile_weighted" if normalized_interest_profile else "legacy_interests",
+                "explain_version": "dynamic_interest_v1",
                 "score_field": "interest_match_score",
                 "recommendation_score_field": "recommendation_score",
                 "weights": interest_ranking_weights(include_distance=False),
@@ -794,6 +807,7 @@ class DiaryService:
                 "sort_order": sort_order,
                 "limit": safe_limit,
                 "interests": normalized_interests,
+                "interest_profile": normalized_interest_profile,
             },
             metadata=metadata,
         )
@@ -816,6 +830,14 @@ class DiaryService:
                 "sort_order": "desc",
                 "limit": safe_limit,
                 "distance_used_for_ranking": False,
+            },
+            "interest": {
+                "requested": False,
+                "active_for_ranking": False,
+                "interests": [],
+                "profile_used": False,
+                "ranking_mode": "fulltext_score",
+                "explain_version": "dynamic_interest_v1",
             },
             "data_source": {
                 "path": str(self.data_path),

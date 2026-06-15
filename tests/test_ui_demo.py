@@ -10963,6 +10963,44 @@ def test_demo_site_entry_recommendation_reuses_scenic_interest_and_hot_ranking()
     print("test_demo_site_entry_recommendation_reuses_scenic_interest_and_hot_ranking passed.")
 
 
+def test_demo_scenic_search_accepts_dynamic_interest_profile():
+    service = DemoUIService("PKU")
+
+    response = service.scenic_search(
+        {
+            "interest_profile": {"图书馆": 5.0, "食堂": 0.4},
+            "sort_field": "interest",
+            "start_node_id": "gate_north",
+            "limit": 5,
+        }
+    )
+
+    assert response["success"] is True
+    assert response["filters"]["interests"][0] == "图书馆"
+    assert response["filters"]["interest_profile"]["图书馆"] == 5.0
+    assert response["metadata"]["interest"]["profile_used"] is True
+    assert response["metadata"]["interest"]["ranking_mode"] == "profile_weighted"
+    assert response["metadata"]["user_interest_context"]["source"] == "dynamic_profile"
+    assert response["metadata"]["user_interest_context"]["interest_profile"]["used"] is True
+    assert response["results"][0]["route_target_node_id"] == "library"
+    assert response["results"][0]["interest_profile_match"]["matched_weights"]
+    assert "动态权重" in response["results"][0]["interest_reason"]
+
+    compat_response = service.scenic_search(
+        {
+            "interests": ["食堂"],
+            "interest_profile": {"图书馆": 5.0, "食堂": 0.4},
+            "sort_field": "interest",
+            "start_node_id": "gate_north",
+            "limit": 5,
+        }
+    )
+    assert compat_response["success"] is True
+    assert compat_response["metadata"]["user_interest_context"]["source"] == "custom_interests"
+    assert compat_response["metadata"]["user_interest_context"]["interests"][0] == "食堂"
+    print("test_demo_scenic_search_accepts_dynamic_interest_profile passed.")
+
+
 def test_demo_m23_interest_user_switch_changes_diary_recommendations():
     service = DemoUIService("PKU")
 
@@ -10997,6 +11035,35 @@ def test_demo_m23_interest_user_switch_changes_diary_recommendations():
     assert study_response["results"][0]["interest_reason"]
     assert fulltext_response["query_type"] == "diary_fulltext_search"
     print("test_demo_m23_interest_user_switch_changes_diary_recommendations passed.")
+
+
+def test_demo_diary_list_accepts_dynamic_interest_profile():
+    service = DemoUIService("PKU")
+
+    response = service.diary_list(
+        {
+            "destination": "北京大学",
+            "sort_field": "interest",
+            "interest_profile": {"图书馆": 5.0, "食堂": 0.4},
+            "limit": 10,
+        }
+    )
+    fulltext_response = service.diary_fulltext_search(
+        {
+            "query": "图书馆 自习",
+            "interest_profile": {"图书馆": 5.0},
+            "limit": 3,
+        }
+    )
+
+    assert response["success"] is True
+    assert response["metadata"]["interest"]["profile_used"] is True
+    assert response["metadata"]["interest"]["ranking_mode"] == "profile_weighted"
+    assert response["metadata"]["user_interest_context"]["source"] == "dynamic_profile"
+    assert response["results"][0]["interest_profile_match"]["matched_weights"]
+    assert fulltext_response["success"] is True
+    assert fulltext_response["metadata"]["interest"]["active_for_ranking"] is False
+    print("test_demo_diary_list_accepts_dynamic_interest_profile passed.")
 
 
 def test_demo_diary_exact_title_and_destination_sort_queries():
@@ -11560,6 +11627,37 @@ def test_demo_static_site_entry_recommendation_modal_uses_scenic_pipeline():
     assert ".site-recommendation-card" in styles
     assert ".site-recommendation-backdrop" in styles
     print("test_demo_static_site_entry_recommendation_modal_uses_scenic_pipeline passed.")
+
+
+def test_demo_static_dynamic_interest_profile_frontend_state_and_explanation():
+    repo_root = os.path.join(os.path.dirname(__file__), "..")
+    html_path = os.path.join(repo_root, "src", "ui", "static", "index.html")
+    js_path = os.path.join(repo_root, "src", "ui", "static", "app.js")
+
+    with open(html_path, encoding="utf-8") as file:
+        html = file.read()
+    with open(js_path, encoding="utf-8") as file:
+        script = file.read()
+
+    assert 'id="dynamic-interest-profile-summary"' in html
+    assert "INTEREST_PROFILE_STORAGE_PREFIX" in script
+    assert "tourgraph_interest_profile_v1:" in script
+    assert "interestProfile" in script
+    assert "interestProfileStorageKey(siteId = currentSiteId(), userId = state.currentUserId)" in script
+    assert "loadDynamicInterestProfileForContext" in script
+    assert "persistDynamicInterestProfile" in script
+    assert "recordInterestInteraction" in script
+    assert "topInterestProfileTags(INTEREST_PROFILE_TOP_N)" in script
+    assert "syncCurrentInterestsFromProfile" in script
+    assert "payload.interest_profile = interestProfile" in script
+    assert "decayDynamicInterestProfile" in script
+    assert "INTEREST_PROFILE_ACTION_WEIGHTS" in script
+    assert "route_plan: 2.0" in script
+    assert "INTEREST_PROFILE_MAX_WEIGHT" in script
+    assert "normalizeDynamicInterestProfile" in script
+    assert "interestProfileExplanationText" in script
+    assert "data/users.json" not in script
+    print("test_demo_static_dynamic_interest_profile_frontend_state_and_explanation passed.")
 
 
 def test_demo_static_m31b_nearby_profiles_are_used_by_ui():

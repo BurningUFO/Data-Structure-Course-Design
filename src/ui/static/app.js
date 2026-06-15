@@ -31,6 +31,30 @@ const MAP_MARKER_ROLE_PRIORITY = {
 };
 const PRIORITY_METRIC_LIMIT = 4;
 const UX_STORAGE_KEY = "tourgraph_ux_state_v1";
+const INTEREST_PROFILE_STORAGE_PREFIX = "tourgraph_interest_profile_v1:";
+const INTEREST_PROFILE_TOP_N = 5;
+const INTEREST_PROFILE_MAX_WEIGHT = 8;
+const INTEREST_PROFILE_MIN_WEIGHT = 0.05;
+const INTEREST_PROFILE_DECAY_PER_DAY = 0.9;
+const INTEREST_PROFILE_SESSION_DECAY = 0.985;
+const INTEREST_PROFILE_MAX_TERMS_PER_EVENT = 8;
+const INTEREST_PROFILE_ACTION_WEIGHTS = {
+  site_recommendation_card: 0.5,
+  result_card_view: 1.0,
+  result_detail_view: 1.2,
+  map_focus: 0.8,
+  route_plan: 2.0,
+  nearby_browse: 0.7,
+  diary_view: 0.6,
+};
+const INTEREST_PROFILE_TOOL_TAGS = new Set([
+  "入口",
+  "校门",
+  "服务",
+  "洗手间",
+  "卫生间",
+  "停车",
+]);
 const RECENT_SEARCH_LIMIT = 5;
 const AIGC_LIVE_REQUEST_TIMEOUT_MS = 420000;
 const MATCH_SEPARATOR_PATTERN = /[\s,，。.;；:：、/\\|_\-+()（）\[\]【】{}<>《》"'`~!！?？@#$%^&*=]+/u;
@@ -74,6 +98,9 @@ const state = {
   currentStartNodeId: "",
   currentUserId: "",
   currentInterests: [],
+  interestProfile: {},
+  interestProfileUpdatedAt: 0,
+  interestProfileLastReason: "",
   focusedNodeId: "",
   nearbyCenterNodeId: "",
   currentResults: [],
@@ -212,6 +239,7 @@ async function loadSiteBootstrap(siteId) {
   hydrateBootstrap(bootstrap);
   resetInteractionState({ clearForms: true });
   restoreUserContext();
+  loadDynamicInterestProfileForContext({ syncInterests: true });
   syncUserContextControls();
   // Keep the home hero stat strip in sync with the new site even when the home
   // page is not currently visible, so the user sees live numbers the moment they
@@ -255,6 +283,10 @@ function bindPageShell() {
     if (recommendationFocusButton) {
       const nodeId = recommendationFocusButton.dataset.siteRecommendationFocus || "";
       if (nodeId) {
+        recordInterestInteraction("map_focus", {
+          nodeId,
+          item: findSiteRecommendationItemByTarget(nodeId),
+        });
         state.focusedNodeId = nodeId;
         renderMap();
         setStatus(`已在地图中定位 ${getNodeName(nodeId)}。`, "info");
@@ -614,6 +646,7 @@ function bindForms() {
   document.querySelector("#interest-tags").addEventListener("change", () => {
     state.currentInterests = readInterestTags();
     updateActiveFeatureCaption();
+    syncDynamicInterestProfileUi();
     persistUserContext();
     setStatus(currentInterestStatusText(), "info");
   });
@@ -656,6 +689,10 @@ function bindForms() {
 
     const focusButton = event.target.closest("[data-focus-node]");
     if (focusButton) {
+      recordInterestInteraction("map_focus", {
+        nodeId: focusButton.dataset.focusNode,
+        item: findResultItemByTarget(focusButton.dataset.focusNode),
+      });
       state.focusedNodeId = focusButton.dataset.focusNode;
       renderMap();
       setStatus(`已在地图中定位 ${getNodeName(state.focusedNodeId)}。`, "info");
@@ -705,6 +742,10 @@ function bindForms() {
     if (detailDrawer) {
       const focusButton = event.target.closest("[data-focus-node]");
       if (focusButton) {
+        recordInterestInteraction("map_focus", {
+          nodeId: focusButton.dataset.focusNode,
+          item: findResultItemByTarget(focusButton.dataset.focusNode),
+        });
         state.focusedNodeId = focusButton.dataset.focusNode;
         renderMap();
         setStatus(`已在地图中定位 ${getNodeName(state.focusedNodeId)}。`, "info");
@@ -1106,8 +1147,8 @@ async function refreshSiteRecommendation(options = {}) {
 }
 
 function buildSiteRecommendationPayload(options = {}) {
-  state.currentInterests = readInterestTags();
-  const hasInterests = state.currentInterests.length > 0;
+  const interestPayload = buildInterestPayload();
+  const hasInterests = interestPayload.interests.length > 0;
   const limit = options.limit ?? SITE_RECOMMENDATION_LIMIT;
   const offset = options.force ? nextSiteRecommendationOffset() : state.siteRecommendationShuffleOffset;
   const payload = {
@@ -1115,9 +1156,13 @@ function buildSiteRecommendationPayload(options = {}) {
     category: "",
     start_node_id: state.currentStartNodeId,
     limit: Math.min(20, limit + offset),
-    user_id: hasInterests ? state.currentUserId : "",
-    interests: hasInterests ? state.currentInterests : [],
+    user_id: hasInterests ? interestPayload.user_id : "",
+    interests: hasInterests ? interestPayload.interests : [],
   };
+  if (interestPayload.interest_profile) {
+    payload.interest_profile = interestPayload.interest_profile;
+    payload.interest_profile_context = interestPayload.interest_profile_context;
+  }
 
   if (hasInterests) {
     payload.sort_field = "interest";
@@ -1283,6 +1328,7 @@ function applySiteRecommendationToResults() {
   }
 
   const items = visibleSiteRecommendationItems(response);
+  recordInterestInteractionsForItems("site_recommendation_card", items.slice(0, SITE_RECOMMENDATION_LIMIT));
   const decoratedResponse = {
     ...response,
     total: items.length,
@@ -1428,10 +1474,359 @@ function readInterestTags() {
 
 function buildInterestPayload() {
   state.currentInterests = readInterestTags();
-  return {
+  decayDynamicInterestProfile();
+  const payload = {
     user_id: state.currentUserId,
     interests: state.currentInterests,
   };
+  const interestProfile = interestProfilePayload();
+  if (Object.keys(interestProfile).length) {
+    payload.interest_profile = interestProfile;
+    payload.interest_profile_context = {
+      top_interests: topInterestProfileTags(INTEREST_PROFILE_TOP_N),
+      updated_at: state.interestProfileUpdatedAt,
+      explanation: interestProfileExplanationText(),
+    };
+  }
+  return payload;
+}
+
+function interestProfileStorageKey(siteId = currentSiteId(), userId = state.currentUserId) {
+  return `${INTEREST_PROFILE_STORAGE_PREFIX}${siteId || "unknown_site"}:${userId || "anonymous"}`;
+}
+
+function resetDynamicInterestProfile() {
+  state.interestProfile = {};
+  state.interestProfileUpdatedAt = 0;
+  state.interestProfileLastReason = "";
+}
+
+function loadDynamicInterestProfileForContext(options = {}) {
+  resetDynamicInterestProfile();
+  if (!state.bootstrap) {
+    return;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(interestProfileStorageKey());
+    if (!raw) {
+      syncDynamicInterestProfileUi();
+      return;
+    }
+    const parsed = JSON.parse(raw);
+    if (!parsed || parsed.siteId !== currentSiteId() || parsed.userId !== state.currentUserId) {
+      syncDynamicInterestProfileUi();
+      return;
+    }
+    const weights = sanitizeInterestWeightMap(parsed.weights || parsed.interest_profile || {});
+    state.interestProfile = weights;
+    state.interestProfileUpdatedAt = Number(parsed.updatedAt || parsed.updated_at || 0) || 0;
+    state.interestProfileLastReason = String(parsed.lastReason || parsed.last_reason || "");
+    decayDynamicInterestProfile({ persist: false });
+    if (options.syncInterests !== false) {
+      syncCurrentInterestsFromProfile({ preserveExistingWhenEmpty: true });
+    }
+    syncDynamicInterestProfileUi();
+  } catch {
+    resetDynamicInterestProfile();
+    syncDynamicInterestProfileUi();
+  }
+}
+
+function persistDynamicInterestProfile() {
+  if (!state.bootstrap) {
+    return;
+  }
+  try {
+    window.localStorage.setItem(interestProfileStorageKey(), JSON.stringify({
+      siteId: currentSiteId(),
+      userId: state.currentUserId,
+      version: 1,
+      weights: interestProfilePayload({ includeSmallWeights: true }),
+      updatedAt: state.interestProfileUpdatedAt || Date.now(),
+      lastReason: state.interestProfileLastReason,
+    }));
+  } catch {
+    // localStorage may be unavailable; the runtime profile still works in memory.
+  }
+}
+
+function sanitizeInterestWeightMap(value) {
+  const result = {};
+  if (!value || typeof value !== "object") {
+    return result;
+  }
+  Object.entries(value).forEach(([rawTerm, rawWeight]) => {
+    const term = normalizeInterestTerm(rawTerm);
+    const weight = Number(rawWeight);
+    if (!term || !Number.isFinite(weight) || weight <= 0) {
+      return;
+    }
+    result[term] = Math.min(INTEREST_PROFILE_MAX_WEIGHT, Math.round(weight * 100) / 100);
+  });
+  return result;
+}
+
+function interestProfilePayload(options = {}) {
+  const includeSmallWeights = options.includeSmallWeights === true;
+  const result = {};
+  Object.entries(state.interestProfile || {})
+    .filter(([, weight]) => Number(weight) > (includeSmallWeights ? 0 : INTEREST_PROFILE_MIN_WEIGHT))
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0], "zh-Hans-CN"))
+    .forEach(([term, weight]) => {
+      result[term] = Math.round(Number(weight) * 100) / 100;
+    });
+  return result;
+}
+
+function decayDynamicInterestProfile(options = {}) {
+  if (!state.interestProfile || !Object.keys(state.interestProfile).length) {
+    return false;
+  }
+
+  const now = Date.now();
+  const lastUpdated = Number(state.interestProfileUpdatedAt || now);
+  const elapsedDays = Math.max(0, (now - lastUpdated) / 86400000);
+  const factor = elapsedDays > 0 ? Math.pow(INTEREST_PROFILE_DECAY_PER_DAY, elapsedDays) : 1;
+  if (factor >= 0.999) {
+    return false;
+  }
+
+  Object.entries(state.interestProfile).forEach(([term, weight]) => {
+    const nextWeight = Number(weight) * factor;
+    if (!Number.isFinite(nextWeight) || nextWeight < INTEREST_PROFILE_MIN_WEIGHT) {
+      delete state.interestProfile[term];
+    } else {
+      state.interestProfile[term] = Math.round(nextWeight * 100) / 100;
+    }
+  });
+  state.interestProfileUpdatedAt = now;
+  normalizeDynamicInterestProfile();
+  if (options.persist !== false) {
+    persistDynamicInterestProfile();
+  }
+  syncDynamicInterestProfileUi();
+  return true;
+}
+
+function recordInterestInteraction(action, context = {}) {
+  const actionWeight = INTEREST_PROFILE_ACTION_WEIGHTS[action] || 0;
+  if (!actionWeight || !state.bootstrap) {
+    return false;
+  }
+
+  const terms = extractInterestTerms(context.item, context.nodeId);
+  if (!terms.length) {
+    return false;
+  }
+
+  decayDynamicInterestProfile({ persist: false });
+  terms.slice(0, INTEREST_PROFILE_MAX_TERMS_PER_EVENT).forEach((term, index) => {
+    const previousWeight = Number(state.interestProfile[term] || 0);
+    const repeatedDamping = 1 / (1 + previousWeight / 4);
+    const positionDamping = index < 3 ? 1 : 0.65;
+    const delta = actionWeight * repeatedDamping * positionDamping;
+    const cap = INTEREST_PROFILE_TOOL_TAGS.has(term)
+      ? Math.min(3, INTEREST_PROFILE_MAX_WEIGHT)
+      : INTEREST_PROFILE_MAX_WEIGHT;
+    const nextWeight = Math.min(cap, previousWeight * INTEREST_PROFILE_SESSION_DECAY + delta);
+    state.interestProfile[term] = Math.round(nextWeight * 100) / 100;
+  });
+
+  normalizeDynamicInterestProfile();
+  state.interestProfileUpdatedAt = Date.now();
+  state.interestProfileLastReason = interestActionReason(action, terms);
+  syncCurrentInterestsFromProfile({ preserveExistingWhenEmpty: true });
+  persistDynamicInterestProfile();
+  persistUserContext();
+  syncDynamicInterestProfileUi();
+  return true;
+}
+
+function recordInterestInteractionsForItems(action, items = []) {
+  items.forEach((item) => {
+    recordInterestInteraction(action, {
+      item,
+      nodeId: resolveResultRouteTargetId(item),
+    });
+  });
+}
+
+function normalizeDynamicInterestProfile() {
+  const entries = Object.entries(state.interestProfile || {})
+    .map(([term, weight]) => [normalizeInterestTerm(term), Number(weight)])
+    .filter(([term, weight]) => term && Number.isFinite(weight) && weight >= INTEREST_PROFILE_MIN_WEIGHT);
+  const capped = {};
+  entries.forEach(([term, weight]) => {
+    const cap = INTEREST_PROFILE_TOOL_TAGS.has(term)
+      ? Math.min(3, INTEREST_PROFILE_MAX_WEIGHT)
+      : INTEREST_PROFILE_MAX_WEIGHT;
+    capped[term] = Math.max(capped[term] || 0, Math.min(cap, weight));
+  });
+
+  const maxTotalWeight = INTEREST_PROFILE_MAX_WEIGHT * INTEREST_PROFILE_TOP_N;
+  const totalWeight = Object.values(capped).reduce((sum, weight) => sum + weight, 0);
+  const scale = totalWeight > maxTotalWeight ? maxTotalWeight / totalWeight : 1;
+  state.interestProfile = {};
+  Object.entries(capped)
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0], "zh-Hans-CN"))
+    .slice(0, 20)
+    .forEach(([term, weight]) => {
+      const nextWeight = Math.round(weight * scale * 100) / 100;
+      if (nextWeight >= INTEREST_PROFILE_MIN_WEIGHT) {
+        state.interestProfile[term] = nextWeight;
+      }
+    });
+}
+
+function syncCurrentInterestsFromProfile(options = {}) {
+  const topTags = topInterestProfileTags(INTEREST_PROFILE_TOP_N);
+  if (!topTags.length && options.preserveExistingWhenEmpty) {
+    return false;
+  }
+  state.currentInterests = topTags;
+  const interestInput = document.querySelector("#interest-tags");
+  if (interestInput && options.updateInput !== false) {
+    interestInput.value = state.currentInterests.join(", ");
+  }
+  updateActiveFeatureCaption();
+  updateWorkspaceHeading();
+  return true;
+}
+
+function topInterestProfileTags(limit = INTEREST_PROFILE_TOP_N) {
+  return Object.entries(state.interestProfile || {})
+    .filter(([, weight]) => Number(weight) >= INTEREST_PROFILE_MIN_WEIGHT)
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0], "zh-Hans-CN"))
+    .slice(0, limit)
+    .map(([term]) => term);
+}
+
+function syncDynamicInterestProfileUi() {
+  const summary = document.querySelector("#dynamic-interest-profile-summary");
+  if (summary) {
+    summary.textContent = interestProfileExplanationText();
+  }
+  updateContextSummary();
+}
+
+function interestProfileExplanationText() {
+  const topEntries = Object.entries(interestProfilePayload())
+    .slice(0, INTEREST_PROFILE_TOP_N);
+  if (!topEntries.length) {
+    return "动态兴趣画像：暂无行为记录，继续使用当前兴趣标签。";
+  }
+  const weightText = topEntries
+    .slice(0, 3)
+    .map(([term, weight]) => `${term} ${Number(weight).toFixed(1)}`)
+    .join("、");
+  const reason = state.interestProfileLastReason
+    ? `；${state.interestProfileLastReason}`
+    : "";
+  return `动态兴趣画像：${weightText}${reason}`;
+}
+
+function interestActionReason(action, terms = []) {
+  const termText = terms.slice(0, 3).join("、");
+  const actionLabels = {
+    site_recommendation_card: "最近查看推荐卡片",
+    result_card_view: "最近查看结果卡片",
+    result_detail_view: "最近打开地点详情",
+    map_focus: "最近在地图定位地点",
+    route_plan: "最近规划前往路线",
+    nearby_browse: "最近查看附近设施",
+    diary_view: "最近浏览日记",
+  };
+  return `${actionLabels[action] || "最近行为"}提高了 ${termText || "相关"} 偏好`;
+}
+
+function extractInterestTerms(item = null, nodeId = "") {
+  const source = mergeInterestSourceRecord(item, nodeId);
+  const values = [];
+  [
+    source.category_label,
+    source.category,
+    source.cuisine_label,
+    source.type_label,
+  ].forEach((value) => {
+    values.push(value);
+  });
+  ["tags", "keywords", "facilities"].forEach((field) => {
+    flattenDisplayValues(source[field]).forEach((value) => values.push(value));
+  });
+  if (!values.length) {
+    [source.name, source.title, source.route_target_name].forEach((value) => values.push(value));
+  }
+  return uniqueInterestTerms(values);
+}
+
+function mergeInterestSourceRecord(item = null, nodeId = "") {
+  const routeTarget = routeTargetRecord(nodeId || resolveResultRouteTargetId(item));
+  const mapNode = mapNodeIndex().get(nodeId || routeTarget?.id || "");
+  return {
+    ...(mapNode || {}),
+    ...(routeTarget || {}),
+    ...(item || {}),
+  };
+}
+
+function uniqueInterestTerms(values = []) {
+  const result = [];
+  const seen = new Set();
+  values.flatMap(splitInterestLikeText).forEach((value) => {
+    const term = normalizeInterestTerm(value);
+    const key = term.toLocaleLowerCase();
+    if (!term || seen.has(key) || isLowValueInterestTerm(term)) {
+      return;
+    }
+    seen.add(key);
+    result.push(term);
+  });
+  return result;
+}
+
+function splitInterestLikeText(value) {
+  if (Array.isArray(value)) {
+    return value.flatMap(splitInterestLikeText);
+  }
+  if (value === null || value === undefined) {
+    return [];
+  }
+  return String(value)
+    .replaceAll("，", ",")
+    .replaceAll("、", ",")
+    .replaceAll("；", ",")
+    .replaceAll(";", ",")
+    .replaceAll("|", ",")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeInterestTerm(value) {
+  return String(value || "").trim().replace(/\s+/g, " ");
+}
+
+function isLowValueInterestTerm(term) {
+  if (!term || term.length > 24) {
+    return true;
+  }
+  return ["室内", "室外", "outdoor", "indoor", "poi", "node"].includes(term.toLowerCase());
+}
+
+function findResultItemByTarget(nodeId) {
+  if (!nodeId) {
+    return null;
+  }
+  return state.currentResults.find((item) => resolveResultRouteTargetId(item) === nodeId) || null;
+}
+
+function findSiteRecommendationItemByTarget(nodeId) {
+  if (!nodeId) {
+    return null;
+  }
+  const items = visibleSiteRecommendationItems();
+  return items.find((item) => resolveResultRouteTargetId(item) === nodeId) || null;
 }
 
 function findBootstrapUser(userId) {
@@ -1446,11 +1841,13 @@ function applySelectedUser(userId) {
   const user = findBootstrapUser(userId) || (state.bootstrap?.users || [])[0] || null;
   state.currentUserId = user ? user.id : "";
   state.currentInterests = user && Array.isArray(user.interests) ? user.interests.slice() : [];
+  loadDynamicInterestProfileForContext({ syncInterests: true });
   syncContextComboboxValue("user", state.currentUserId);
   const interestInput = document.querySelector("#interest-tags");
   if (interestInput) {
     interestInput.value = state.currentInterests.join(", ");
   }
+  syncDynamicInterestProfileUi();
 }
 
 function syncUserContextControls() {
@@ -3460,6 +3857,10 @@ async function runNearbySearch(centerNodeId, options = {}) {
     setStatus("缺少附近查询中心点。", "error");
     return;
   }
+  recordInterestInteraction("nearby_browse", {
+    nodeId: centerNodeId,
+    item: findResultItemByTarget(centerNodeId),
+  });
 
   const profile = getNearbyProfile(centerNodeId);
   const currentRadiusValue = document.querySelector("#place-radius").value || 500;
@@ -4241,6 +4642,10 @@ async function planRoute(targetNodeId) {
 
     state.currentRoute = response;
     state.focusedNodeId = response.target_node_id;
+    recordInterestInteraction("route_plan", {
+      nodeId: response.target_node_id || targetNodeId,
+      item: findResultItemByTarget(response.target_node_id || targetNodeId),
+    });
     requestMapViewportFit("route");
     await syncIndoorStateFromRoute(response);
     renderRoute(response);
@@ -4288,6 +4693,12 @@ async function planMultiRoute(targetNodeIds) {
 
     state.currentRoute = response;
     state.focusedNodeId = "";
+    recordInterestInteractionsForItems(
+      "route_plan",
+      (response.target_node_ids || targetNodeIds).map((targetNodeId) => (
+        findResultItemByTarget(targetNodeId) || { target_node_id: targetNodeId }
+      )),
+    );
     requestMapViewportFit("route");
     await syncIndoorStateFromRoute(response);
     renderRoute(response);
@@ -4379,6 +4790,10 @@ function selectResultByIndex(index, options = {}) {
     return false;
   }
   state.selectedResultIndex = index;
+  recordInterestInteraction(options.openDetail ? "result_detail_view" : "result_card_view", {
+    item: state.currentResults[index],
+    nodeId: resolveResultRouteTargetId(state.currentResults[index]),
+  });
   if (options.focusMap) {
     focusResultMapNode(index);
   }
@@ -4418,6 +4833,10 @@ function focusResultMapNode(index) {
   if (!nodeId || state.focusedNodeId === nodeId) {
     return;
   }
+  recordInterestInteraction("map_focus", {
+    item,
+    nodeId,
+  });
   state.focusedNodeId = nodeId;
   renderMap();
 }
