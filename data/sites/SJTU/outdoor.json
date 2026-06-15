@@ -1771,7 +1771,8 @@
           "lat": 31.0252,
           "lng": 121.4332
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_central_axis",
@@ -1796,7 +1797,8 @@
           "lat": 31.0256,
           "lng": 121.431
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_central_axis",
@@ -1821,7 +1823,8 @@
           "lat": 31.0242,
           "lng": 121.4353
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_teaching_axis",
@@ -1846,7 +1849,8 @@
           "lat": 31.0252,
           "lng": 121.4332
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_teaching_axis",
@@ -1871,7 +1875,8 @@
           "lat": 31.0235,
           "lng": 121.4373
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_engineering_axis",
@@ -1896,7 +1901,8 @@
           "lat": 31.0242,
           "lng": 121.4353
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_engineering_axis",
@@ -1921,7 +1927,8 @@
           "lat": 31.025,
           "lng": 121.4402
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_east_gate",
@@ -1946,7 +1953,8 @@
           "lat": 31.0235,
           "lng": 121.4373
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_east_gate",
@@ -1971,7 +1979,8 @@
           "lat": 31.025,
           "lng": 121.4411
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "gate_east",
@@ -1996,7 +2005,8 @@
           "lat": 31.025,
           "lng": 121.4402
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "gate_south",
@@ -2197,7 +2207,8 @@
           "lat": 31.024,
           "lng": 121.4297
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_life_axis",
@@ -2222,7 +2233,8 @@
           "lat": 31.0214,
           "lng": 121.4324
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "gate_north",
@@ -2247,7 +2259,8 @@
           "lat": 31.029,
           "lng": 121.4333
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_north_gate",
@@ -2272,7 +2285,8 @@
           "lat": 31.03,
           "lng": 121.4333
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_north_gate",
@@ -2297,7 +2311,8 @@
           "lat": 31.0262,
           "lng": 121.4336
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_library_axis",
@@ -2322,7 +2337,8 @@
           "lat": 31.029,
           "lng": 121.4333
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_library_axis",
@@ -2467,7 +2483,8 @@
           "lat": 31.0235,
           "lng": 121.4373
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_engineering_axis",
@@ -2492,7 +2509,8 @@
           "lat": 31.0279,
           "lng": 121.437
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_life_axis",
@@ -2517,7 +2535,8 @@
           "lat": 31.0278,
           "lng": 121.4295
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_dormitory_axis",
@@ -2542,7 +2561,8 @@
           "lat": 31.024,
           "lng": 121.4297
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_dormitory_axis",
@@ -2567,7 +2587,8 @@
           "lat": 31.0262,
           "lng": 121.4336
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_library_axis",
@@ -2592,7 +2613,8 @@
           "lat": 31.0278,
           "lng": 121.4295
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_dormitory_axis",
@@ -2617,7 +2639,8 @@
           "lat": 31.029,
           "lng": 121.4333
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_north_gate",
@@ -2642,7 +2665,8 @@
           "lat": 31.0278,
           "lng": 121.4295
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_service_axis",
@@ -2667,7 +2691,8 @@
           "lat": 31.0262,
           "lng": 121.4336
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "road_library_axis",
@@ -2692,7 +2717,8 @@
           "lat": 31.0256,
           "lng": 121.431
         }
-      ]
+      ],
+      "transport_semantics": "shared_campus_access"
     },
     {
       "from": "library",
@@ -2716,7 +2742,8 @@
           "lat": 31.0262,
           "lng": 121.4336
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_library_axis",
@@ -2740,7 +2767,8 @@
           "lat": 31.0265,
           "lng": 121.4335
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "teaching_building",
@@ -2764,7 +2792,8 @@
           "lat": 31.0242,
           "lng": 121.4353
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_teaching_axis",
@@ -2788,7 +2817,8 @@
           "lat": 31.024,
           "lng": 121.4356
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "lab_building",
@@ -2812,7 +2842,8 @@
           "lat": 31.0235,
           "lng": 121.4373
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_engineering_axis",
@@ -2836,7 +2867,8 @@
           "lat": 31.0237,
           "lng": 121.4377
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "siyuan_lake",
@@ -2860,7 +2892,8 @@
           "lat": 31.0252,
           "lng": 121.4332
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_central_axis",
@@ -2884,7 +2917,8 @@
           "lat": 31.0258,
           "lng": 121.432
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "culture_square",
@@ -2908,7 +2942,8 @@
           "lat": 31.0252,
           "lng": 121.4332
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_central_axis",
@@ -2932,7 +2967,8 @@
           "lat": 31.0251,
           "lng": 121.4337
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "dormitory_1",
@@ -2956,7 +2992,8 @@
           "lat": 31.0278,
           "lng": 121.4295
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_dormitory_axis",
@@ -2980,7 +3017,8 @@
           "lat": 31.0276,
           "lng": 121.4288
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "dormitory_2",
@@ -3004,7 +3042,8 @@
           "lat": 31.024,
           "lng": 121.4297
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_life_axis",
@@ -3028,7 +3067,8 @@
           "lat": 31.0244,
           "lng": 121.4285
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "canteen",
@@ -3052,7 +3092,8 @@
           "lat": 31.024,
           "lng": 121.4297
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_life_axis",
@@ -3076,7 +3117,8 @@
           "lat": 31.0242,
           "lng": 121.4303
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "canteen_north",
@@ -3100,7 +3142,8 @@
           "lat": 31.0278,
           "lng": 121.4295
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_dormitory_axis",
@@ -3124,7 +3167,8 @@
           "lat": 31.0275,
           "lng": 121.4302
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "coffee_shop",
@@ -3148,7 +3192,8 @@
           "lat": 31.0262,
           "lng": 121.4336
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_library_axis",
@@ -3172,7 +3217,8 @@
           "lat": 31.0263,
           "lng": 121.4339
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "convenience_store",
@@ -3196,7 +3242,8 @@
           "lat": 31.0256,
           "lng": 121.431
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_service_axis",
@@ -3220,7 +3267,8 @@
           "lat": 31.0254,
           "lng": 121.4305
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "book_store",
@@ -3244,7 +3292,8 @@
           "lat": 31.0262,
           "lng": 121.4336
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_library_axis",
@@ -3268,7 +3317,8 @@
           "lat": 31.0261,
           "lng": 121.4331
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "service_center",
@@ -3292,7 +3342,8 @@
           "lat": 31.0256,
           "lng": 121.431
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_service_axis",
@@ -3316,7 +3367,8 @@
           "lat": 31.0257,
           "lng": 121.4313
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "service_center",
@@ -3398,7 +3450,8 @@
           "lat": 31.024,
           "lng": 121.4297
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_life_axis",
@@ -3422,7 +3475,8 @@
           "lat": 31.0238,
           "lng": 121.431
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "post_station",
@@ -3446,7 +3500,8 @@
           "lat": 31.024,
           "lng": 121.4297
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_life_axis",
@@ -3470,7 +3525,8 @@
           "lat": 31.0247,
           "lng": 121.43
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "restroom_main",
@@ -3494,7 +3550,8 @@
           "lat": 31.0262,
           "lng": 121.4336
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_library_axis",
@@ -3518,7 +3575,8 @@
           "lat": 31.0264,
           "lng": 121.4334
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "restroom_teaching",
@@ -3542,7 +3600,8 @@
           "lat": 31.0242,
           "lng": 121.4353
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_teaching_axis",
@@ -3566,7 +3625,8 @@
           "lat": 31.0241,
           "lng": 121.4354
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "sports_ground",
@@ -3590,7 +3650,8 @@
           "lat": 31.0279,
           "lng": 121.437
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_sports_axis",
@@ -3614,7 +3675,8 @@
           "lat": 31.028,
           "lng": 121.4375
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "sports_ground",
@@ -3696,7 +3758,8 @@
           "lat": 31.0279,
           "lng": 121.437
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_sports_axis",
@@ -3720,7 +3783,8 @@
           "lat": 31.0274,
           "lng": 121.438
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "parking_south",
@@ -3744,7 +3808,8 @@
           "lat": 31.0214,
           "lng": 121.4324
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "road_south_gate",
@@ -3768,7 +3833,8 @@
           "lat": 31.0216,
           "lng": 121.433
         }
-      ]
+      ],
+      "transport_semantics": "pedestrian_service_access"
     },
     {
       "from": "sjtu_library_information",
@@ -4715,7 +4781,15 @@
           "lat": 31.0244,
           "lng": 121.4285
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_west",
@@ -4732,7 +4806,15 @@
           "lat": 31.0242625,
           "lng": 121.4283503
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_west",
@@ -4749,7 +4831,15 @@
           "lat": 31.023781,
           "lng": 121.4260149
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_south",
@@ -4766,7 +4856,15 @@
           "lat": 31.0238,
           "lng": 121.431
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_south",
@@ -4783,7 +4881,15 @@
           "lat": 31.0226892,
           "lng": 121.435065
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_south",
@@ -4800,7 +4906,15 @@
           "lat": 31.0216,
           "lng": 121.433
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_east",
@@ -4817,7 +4931,15 @@
           "lat": 31.0237,
           "lng": 121.4377
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_east",
@@ -4834,7 +4956,15 @@
           "lat": 31.0245364,
           "lng": 121.4377143
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_east",
@@ -4851,7 +4981,15 @@
           "lat": 31.0240018,
           "lng": 121.4387452
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_north",
@@ -4868,7 +5006,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_north",
@@ -4885,7 +5031,15 @@
           "lat": 31.0277795,
           "lng": 121.4306061
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gate_north",
@@ -4902,7 +5056,15 @@
           "lat": 31.0281448,
           "lng": 121.4324213
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_west_gate",
@@ -4919,7 +5081,15 @@
           "lat": 31.023781,
           "lng": 121.4260149
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_west_gate",
@@ -4936,7 +5106,15 @@
           "lat": 31.0244,
           "lng": 121.4285
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_west_gate",
@@ -4953,7 +5131,15 @@
           "lat": 31.0242625,
           "lng": 121.4283503
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_life_axis",
@@ -4970,7 +5156,15 @@
           "lat": 31.0257,
           "lng": 121.4313
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_life_axis",
@@ -4987,7 +5181,15 @@
           "lat": 31.0254,
           "lng": 121.4305
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_life_axis",
@@ -5004,7 +5206,15 @@
           "lat": 31.0242625,
           "lng": 121.4283503
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_service_axis",
@@ -5021,7 +5231,15 @@
           "lat": 31.026238,
           "lng": 121.4324495
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_service_axis",
@@ -5038,7 +5256,15 @@
           "lat": 31.0247,
           "lng": 121.43
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_service_axis",
@@ -5055,7 +5281,15 @@
           "lat": 31.0258,
           "lng": 121.432
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_central_axis",
@@ -5072,7 +5306,15 @@
           "lat": 31.0264,
           "lng": 121.4334
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_central_axis",
@@ -5089,7 +5331,15 @@
           "lat": 31.0250767,
           "lng": 121.4345847
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_central_axis",
@@ -5106,7 +5356,15 @@
           "lat": 31.0261,
           "lng": 121.4331
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_library_axis",
@@ -5123,7 +5381,15 @@
           "lat": 31.0258,
           "lng": 121.432
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_library_axis",
@@ -5140,7 +5406,15 @@
           "lat": 31.0250767,
           "lng": 121.4345847
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_library_axis",
@@ -5157,7 +5431,15 @@
           "lat": 31.0251,
           "lng": 121.4337
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_teaching_axis",
@@ -5174,7 +5456,15 @@
           "lat": 31.0251,
           "lng": 121.4337
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_teaching_axis",
@@ -5191,7 +5481,15 @@
           "lat": 31.0226892,
           "lng": 121.435065
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_teaching_axis",
@@ -5208,7 +5506,15 @@
           "lat": 31.0243611,
           "lng": 121.4349385
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_engineering_axis",
@@ -5225,7 +5531,15 @@
           "lat": 31.0241,
           "lng": 121.4354
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_engineering_axis",
@@ -5242,7 +5556,15 @@
           "lat": 31.024,
           "lng": 121.4356
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_engineering_axis",
@@ -5259,7 +5581,15 @@
           "lat": 31.0236033,
           "lng": 121.4356001
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_east_gate",
@@ -5276,7 +5606,15 @@
           "lat": 31.0237,
           "lng": 121.4377
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_east_gate",
@@ -5293,7 +5631,15 @@
           "lat": 31.0245364,
           "lng": 121.4377143
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_east_gate",
@@ -5310,7 +5656,15 @@
           "lat": 31.0240018,
           "lng": 121.4387452
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_south_gate",
@@ -5327,7 +5681,15 @@
           "lat": 31.0242,
           "lng": 121.4303
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_south_gate",
@@ -5344,7 +5706,15 @@
           "lat": 31.0238,
           "lng": 121.431
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_south_gate",
@@ -5361,7 +5731,15 @@
           "lat": 31.0226892,
           "lng": 121.435065
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_north_gate",
@@ -5378,7 +5756,15 @@
           "lat": 31.0265,
           "lng": 121.4335
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_north_gate",
@@ -5395,7 +5781,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_north_gate",
@@ -5412,7 +5806,15 @@
           "lat": 31.0281448,
           "lng": 121.4324213
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_dormitory_axis",
@@ -5429,7 +5831,15 @@
           "lat": 31.0256,
           "lng": 121.431
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_generated_link"
     },
     {
       "from": "road_dormitory_axis",
@@ -5446,7 +5856,15 @@
           "lat": 31.0281448,
           "lng": 121.4324213
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_dormitory_axis",
@@ -5463,7 +5881,15 @@
           "lat": 31.0277795,
           "lng": 121.4306061
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_sports_axis",
@@ -5480,7 +5906,15 @@
           "lat": 31.0265,
           "lng": 121.4335
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_sports_axis",
@@ -5497,7 +5931,15 @@
           "lat": 31.0263,
           "lng": 121.4339
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "road_sports_axis",
@@ -5514,7 +5956,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "library",
@@ -5531,7 +5981,15 @@
           "lat": 31.0263,
           "lng": 121.4339
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "library",
@@ -5548,7 +6006,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "library",
@@ -5565,7 +6031,15 @@
           "lat": 31.0264,
           "lng": 121.4334
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "teaching_building",
@@ -5582,7 +6056,15 @@
           "lat": 31.0243611,
           "lng": 121.4349385
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "teaching_building",
@@ -5599,7 +6081,15 @@
           "lat": 31.0236033,
           "lng": 121.4356001
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "teaching_building",
@@ -5616,7 +6106,15 @@
           "lat": 31.0241,
           "lng": 121.4354
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "lab_building",
@@ -5633,7 +6131,15 @@
           "lat": 31.0236033,
           "lng": 121.4356001
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "lab_building",
@@ -5650,7 +6156,15 @@
           "lat": 31.0240018,
           "lng": 121.4387452
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "lab_building",
@@ -5667,7 +6181,15 @@
           "lat": 31.0245364,
           "lng": 121.4377143
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "siyuan_lake",
@@ -5684,7 +6206,15 @@
           "lat": 31.0261,
           "lng": 121.4331
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "siyuan_lake",
@@ -5701,7 +6231,15 @@
           "lat": 31.0257,
           "lng": 121.4313
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "siyuan_lake",
@@ -5718,7 +6256,15 @@
           "lat": 31.026238,
           "lng": 121.4324495
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "culture_square",
@@ -5735,7 +6281,15 @@
           "lat": 31.0263,
           "lng": 121.4339
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "culture_square",
@@ -5752,7 +6306,15 @@
           "lat": 31.0261,
           "lng": 121.4331
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "culture_square",
@@ -5769,7 +6331,15 @@
           "lat": 31.0250767,
           "lng": 121.4345847
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "dormitory_1",
@@ -5786,7 +6356,15 @@
           "lat": 31.0254,
           "lng": 121.4305
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "dormitory_1",
@@ -5803,7 +6381,15 @@
           "lat": 31.0277795,
           "lng": 121.4306061
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "dormitory_1",
@@ -5820,7 +6406,15 @@
           "lat": 31.0275,
           "lng": 121.4302
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "dormitory_2",
@@ -5837,7 +6431,15 @@
           "lat": 31.0242,
           "lng": 121.4303
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "dormitory_2",
@@ -5854,7 +6456,15 @@
           "lat": 31.0247,
           "lng": 121.43
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "dormitory_2",
@@ -5871,7 +6481,15 @@
           "lat": 31.0242625,
           "lng": 121.4283503
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "canteen",
@@ -5888,7 +6506,15 @@
           "lat": 31.0254,
           "lng": 121.4305
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "canteen",
@@ -5905,7 +6531,15 @@
           "lat": 31.0238,
           "lng": 121.431
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "canteen",
@@ -5922,7 +6556,15 @@
           "lat": 31.0247,
           "lng": 121.43
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "canteen_north",
@@ -5939,7 +6581,15 @@
           "lat": 31.0256,
           "lng": 121.431
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "canteen_north",
@@ -5956,7 +6606,15 @@
           "lat": 31.0281448,
           "lng": 121.4324213
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "canteen_north",
@@ -5973,7 +6631,15 @@
           "lat": 31.0277795,
           "lng": 121.4306061
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "coffee_shop",
@@ -5990,7 +6656,15 @@
           "lat": 31.0261,
           "lng": 121.4331
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "coffee_shop",
@@ -6007,7 +6681,15 @@
           "lat": 31.0264,
           "lng": 121.4334
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "coffee_shop",
@@ -6024,7 +6706,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "convenience_store",
@@ -6041,7 +6731,15 @@
           "lat": 31.0258,
           "lng": 121.432
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "convenience_store",
@@ -6058,7 +6756,15 @@
           "lat": 31.0247,
           "lng": 121.43
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "convenience_store",
@@ -6075,7 +6781,15 @@
           "lat": 31.0257,
           "lng": 121.4313
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "book_store",
@@ -6092,7 +6806,15 @@
           "lat": 31.026238,
           "lng": 121.4324495
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "book_store",
@@ -6109,7 +6831,15 @@
           "lat": 31.0265,
           "lng": 121.4335
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "book_store",
@@ -6126,7 +6856,15 @@
           "lat": 31.0264,
           "lng": 121.4334
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "service_center",
@@ -6143,7 +6881,15 @@
           "lat": 31.0261,
           "lng": 121.4331
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "service_center",
@@ -6160,7 +6906,15 @@
           "lat": 31.0247,
           "lng": 121.43
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "service_center",
@@ -6177,7 +6931,15 @@
           "lat": 31.026238,
           "lng": 121.4324495
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "hospital",
@@ -6194,7 +6956,15 @@
           "lat": 31.0256,
           "lng": 121.431
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "hospital",
@@ -6211,7 +6981,15 @@
           "lat": 31.0254,
           "lng": 121.4305
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "hospital",
@@ -6228,7 +7006,15 @@
           "lat": 31.0247,
           "lng": 121.43
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "post_station",
@@ -6245,7 +7031,15 @@
           "lat": 31.0251,
           "lng": 121.4274
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "post_station",
@@ -6262,7 +7056,15 @@
           "lat": 31.0258,
           "lng": 121.432
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "post_station",
@@ -6279,7 +7081,15 @@
           "lat": 31.0242625,
           "lng": 121.4283503
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "restroom_main",
@@ -6296,7 +7106,15 @@
           "lat": 31.0251,
           "lng": 121.4337
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "restroom_main",
@@ -6313,7 +7131,15 @@
           "lat": 31.026238,
           "lng": 121.4324495
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "restroom_main",
@@ -6330,7 +7156,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "restroom_teaching",
@@ -6347,7 +7181,15 @@
           "lat": 31.0250767,
           "lng": 121.4345847
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "restroom_teaching",
@@ -6364,7 +7206,15 @@
           "lat": 31.0236033,
           "lng": 121.4356001
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "restroom_teaching",
@@ -6381,7 +7231,15 @@
           "lat": 31.0243611,
           "lng": 121.4349385
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sports_ground",
@@ -6398,7 +7256,15 @@
           "lat": 31.0245364,
           "lng": 121.4377143
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sports_ground",
@@ -6415,7 +7281,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sports_ground",
@@ -6432,7 +7306,15 @@
           "lat": 31.0274,
           "lng": 121.438
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gymnasium",
@@ -6449,7 +7331,15 @@
           "lat": 31.0240018,
           "lng": 121.4387452
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gymnasium",
@@ -6466,7 +7356,15 @@
           "lat": 31.025,
           "lng": 121.4402
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "gymnasium",
@@ -6483,7 +7381,15 @@
           "lat": 31.0245364,
           "lng": 121.4377143
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "parking_south",
@@ -6500,7 +7406,15 @@
           "lat": 31.0236033,
           "lng": 121.4356001
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "parking_south",
@@ -6517,7 +7431,15 @@
           "lat": 31.0238,
           "lng": 121.431
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "parking_south",
@@ -6534,7 +7456,15 @@
           "lat": 31.0226892,
           "lng": 121.435065
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_library_information",
@@ -6551,7 +7481,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_library_information",
@@ -6568,7 +7506,15 @@
           "lat": 31.0265,
           "lng": 121.4335
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_library_information",
@@ -6585,7 +7531,15 @@
           "lat": 31.0277795,
           "lng": 121.4306061
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_yifu_tech",
@@ -6602,7 +7556,15 @@
           "lat": 31.0258,
           "lng": 121.432
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_yifu_tech",
@@ -6619,7 +7581,15 @@
           "lat": 31.026238,
           "lng": 121.4324495
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_yifu_tech",
@@ -6636,7 +7606,15 @@
           "lat": 31.0257,
           "lng": 121.4313
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_xinxi_building",
@@ -6653,7 +7631,15 @@
           "lat": 31.0244,
           "lng": 121.4285
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_xinxi_building",
@@ -6670,7 +7656,15 @@
           "lat": 31.0242625,
           "lng": 121.4283503
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_xinxi_building",
@@ -6687,7 +7681,15 @@
           "lat": 31.0223479,
           "lng": 121.4266321
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_shangyuan",
@@ -6704,7 +7706,15 @@
           "lat": 31.023781,
           "lng": 121.4260149
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_shangyuan",
@@ -6721,7 +7731,15 @@
           "lat": 31.0223479,
           "lng": 121.4266321
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_shangyuan",
@@ -6738,7 +7756,15 @@
           "lat": 31.020595,
           "lng": 121.4265586
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_zhongyuan",
@@ -6755,7 +7781,15 @@
           "lat": 31.0244,
           "lng": 121.4285
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_zhongyuan",
@@ -6772,7 +7806,15 @@
           "lat": 31.0242625,
           "lng": 121.4283503
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_zhongyuan",
@@ -6789,7 +7831,15 @@
           "lat": 31.020595,
           "lng": 121.4265586
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_tiesheng_hall",
@@ -6806,7 +7856,15 @@
           "lat": 31.0238,
           "lng": 121.431
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_tiesheng_hall",
@@ -6823,7 +7881,15 @@
           "lat": 31.0254,
           "lng": 121.4305
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_tiesheng_hall",
@@ -6840,7 +7906,15 @@
           "lat": 31.0242,
           "lng": 121.4303
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_dongxiayuan",
@@ -6857,7 +7931,15 @@
           "lat": 31.0252,
           "lng": 121.4332
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_dongxiayuan",
@@ -6874,7 +7956,15 @@
           "lat": 31.0266449,
           "lng": 121.4337809
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_dongxiayuan",
@@ -6891,7 +7981,15 @@
           "lat": 31.0265,
           "lng": 121.4335
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_smart_grid",
@@ -6908,7 +8006,15 @@
           "lat": 31.0251,
           "lng": 121.4337
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_smart_grid",
@@ -6925,7 +8031,15 @@
           "lat": 31.0236033,
           "lng": 121.4356001
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_smart_grid",
@@ -6942,7 +8056,15 @@
           "lat": 31.0250767,
           "lng": 121.4345847
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_chenruiqiu",
@@ -6959,7 +8081,15 @@
           "lat": 31.0251,
           "lng": 121.4337
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_chenruiqiu",
@@ -6976,7 +8106,15 @@
           "lat": 31.0252,
           "lng": 121.4332
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_chenruiqiu",
@@ -6993,7 +8131,15 @@
           "lat": 31.0261,
           "lng": 121.4331
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_humanities_library",
@@ -7010,7 +8156,15 @@
           "lat": 31.0245364,
           "lng": 121.4377143
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_humanities_library",
@@ -7027,7 +8181,15 @@
           "lat": 31.0250767,
           "lng": 121.4345847
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_humanities_library",
@@ -7044,7 +8206,15 @@
           "lat": 31.0226892,
           "lng": 121.435065
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_new_energy_lab",
@@ -7061,7 +8231,15 @@
           "lat": 31.0243611,
           "lng": 121.4349385
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_new_energy_lab",
@@ -7078,7 +8256,15 @@
           "lat": 31.0241,
           "lng": 121.4354
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_new_energy_lab",
@@ -7095,7 +8281,15 @@
           "lat": 31.024,
           "lng": 121.4356
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_old_admin",
@@ -7112,7 +8306,15 @@
           "lat": 31.0244,
           "lng": 121.4285
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_old_admin",
@@ -7129,7 +8331,15 @@
           "lat": 31.0242625,
           "lng": 121.4283503
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_old_admin",
@@ -7146,7 +8356,15 @@
           "lat": 31.023781,
           "lng": 121.4260149
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_computer_college",
@@ -7163,7 +8381,15 @@
           "lat": 31.0236033,
           "lng": 121.4356001
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_computer_college",
@@ -7180,7 +8406,15 @@
           "lat": 31.024,
           "lng": 121.4356
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_computer_college",
@@ -7197,7 +8431,15 @@
           "lat": 31.0245364,
           "lng": 121.4377143
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_software_college",
@@ -7214,7 +8456,15 @@
           "lat": 31.0242,
           "lng": 121.4353
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_software_college",
@@ -7231,7 +8481,15 @@
           "lat": 31.0241,
           "lng": 121.4354
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_software_college",
@@ -7248,7 +8506,15 @@
           "lat": 31.024,
           "lng": 121.4356
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_media_design",
@@ -7265,7 +8531,15 @@
           "lat": 31.0261,
           "lng": 121.4331
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_media_design",
@@ -7282,7 +8556,15 @@
           "lat": 31.024,
           "lng": 121.4356
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     },
     {
       "from": "sjtu_media_design",
@@ -7299,7 +8581,15 @@
           "lat": 31.0263,
           "lng": 121.4339
         }
-      ]
+      ],
+      "vehicle_access": "pedestrian_only",
+      "allowed_transports": [
+        "walk"
+      ],
+      "transport_speeds": {
+        "walk": 1.0
+      },
+      "transport_semantics": "pedestrian_interest_access"
     }
   ]
 }

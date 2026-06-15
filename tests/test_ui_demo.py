@@ -58,6 +58,13 @@ def iter_geojson_positions(geometry):
                 yield from ring
 
 
+def assert_geojson_edges_use_manual_geometry(stats):
+    assert stats["geometry_edge_count"] == stats["edge_feature_count"]
+    assert stats["manual_geometry_edge_count"] == stats["edge_feature_count"]
+    assert stats["fallback_edge_count"] == 0
+    assert stats["geometry_coverage_ratio"] == 1.0
+
+
 def make_temp_diary_data_path():
     temp_dir = tempfile.TemporaryDirectory()
     temp_path = Path(temp_dir.name) / "diary_data.json"
@@ -5493,8 +5500,7 @@ def test_m28x_fdu_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -5667,8 +5673,7 @@ def test_m28x_sjtu_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -5762,6 +5767,7 @@ def test_m28x_tongji_outdoor_main_chain_is_available_in_remaining_batch():
     assert place["results"][0]["route_target_node_id"] in {
         "restroom_main",
         "restroom_teaching",
+        "dorm1_toilet",
         "xueyuan_canteen_restroom_f1",
         "xueyuan_canteen_restroom_f2",
     }
@@ -5841,8 +5847,7 @@ def test_m28x_tongji_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -5969,7 +5974,7 @@ def test_m28x_seu_outdoor_main_chain_is_available_in_remaining_batch():
         }
     )
     assert catering["success"] is True
-    assert catering["results"][0]["route_target_node_id"] == "canteen"
+    assert catering["results"][0]["route_target_node_id"] in {"canteen", "canteen_south"}
     assert catering["results"][0]["distance_status"] == "available"
 
     route = service.plan_route(
@@ -6018,8 +6023,7 @@ def test_m28x_seu_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -6195,8 +6199,7 @@ def test_m28x_sysu_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -6372,8 +6375,7 @@ def test_m28x_scu_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -6564,8 +6566,7 @@ def test_m28x_hnu_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -6756,8 +6757,7 @@ def test_m28x_sdu_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -6948,8 +6948,7 @@ def test_m28x_hust_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -7133,8 +7132,7 @@ def test_m28x_scut_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -7317,8 +7315,7 @@ def test_m28x_ouc_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -7426,6 +7423,7 @@ def test_m28x_suda_outdoor_main_chain_is_available_in_remaining_batch():
         "restroom_main",
         "restroom_teaching",
         "dorm1_toilet",
+        "gymnasium_restroom_f1",
     }
     assert place["results"][0]["distance_status"] == "available"
 
@@ -7502,8 +7500,7 @@ def test_m28x_suda_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -7687,8 +7684,7 @@ def test_m28x_hit_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -7792,7 +7788,11 @@ def test_m28x_ynu_outdoor_main_chain_is_available_in_remaining_batch():
         }
     )
     assert place["success"] is True
-    assert place["results"][0]["route_target_node_id"] in {"restroom_main", "restroom_teaching"}
+    assert place["results"][0]["route_target_node_id"] in {
+        "restroom_main",
+        "restroom_teaching",
+        "ynu_canteen_restroom_f1",
+    }
     assert place["results"][0]["distance_status"] == "available"
 
     shopping = service.place_search(
@@ -7868,8 +7868,7 @@ def test_m28x_ynu_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -8071,8 +8070,7 @@ def test_m28x_hzau_frontend_switch_contract_and_leaflet_data():
     assert geojson_payload["stats"]["node_feature_count"] == bootstrap["map"]["node_count"]
     assert geojson_payload["stats"]["edge_feature_count"] == bootstrap["map"]["edge_count"]
     assert geojson_payload["stats"]["feature_count"] > 0
-    assert geojson_payload["stats"]["geometry_edge_count"] == 0
-    assert geojson_payload["stats"]["fallback_edge_count"] == geojson_payload["stats"]["edge_feature_count"]
+    assert_geojson_edges_use_manual_geometry(geojson_payload["stats"])
 
     node_features = [
         feature
@@ -9641,7 +9639,7 @@ def test_demo_m31b_zju_nearby_queries_use_calibrated_center_name_and_scope():
     )
     assert gate_south_education["metadata"]["nearby"]["center_name"] == "浙江大学紫金港校区南大门"
     assert gate_south_education["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 600.0
-    assert gate_south_education["results"][0]["route_target_node_id"] == "library"
+    assert gate_south_education["results"][0]["route_target_node_id"] == "teaching_building_3"
     print("test_demo_m31b_zju_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
 
@@ -9962,8 +9960,8 @@ def test_demo_m31b_seu_nearby_queries_use_calibrated_center_name_and_scope():
     assert gate_south_landmark["metadata"]["nearby"]["center_name"] == "东南大学九龙湖校区南门"
     assert gate_south_landmark["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 800.0
     assert [item["route_target_node_id"] for item in gate_south_landmark["results"][:2]] == [
-        "jiulong_lake",
         "culture_center",
+        "jiulong_lake",
     ]
     print("test_demo_m31b_seu_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
@@ -10171,8 +10169,8 @@ def test_demo_m31b_ynu_nearby_queries_use_calibrated_center_name_and_scope():
     assert gate_south_sports["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 400.0
     assert gate_south_sports["metadata"]["nearby"]["calibration_profile"]["default_category"] == "sports"
     assert [item["route_target_node_id"] for item in gate_south_sports["results"][:3]] == [
-        "gymnasium",
         "sports_ground",
+        "gymnasium",
         "gymnasium_locker_room_1f",
     ]
     assert gate_south_sports["results"][0]["nearby_reason"].startswith("距离云南大学呈贡校区南门 ")
@@ -10309,9 +10307,9 @@ def test_demo_m31b_sdu_nearby_queries_use_calibrated_center_name_and_scope():
     assert gate_east_service["metadata"]["nearby"]["center_name"] == "山东大学中心校区东门"
     assert gate_east_service["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 300.0
     assert [item["route_target_node_id"] for item in gate_east_service["results"][:3]] == [
-        "service_center",
         "administration",
         "innovation_center",
+        "service_center",
     ]
     print("test_demo_m31b_sdu_nearby_queries_use_calibrated_center_name_and_scope passed.")
 
@@ -10667,8 +10665,8 @@ def test_demo_m31b_hit_nearby_queries_use_calibrated_center_name_and_scope():
     assert gate_east_service["metadata"]["nearby"]["calibration_profile"]["default_radius_m"] == 300.0
     assert gate_east_service["metadata"]["nearby"]["calibration_profile"]["default_category"] == "service"
     assert [item["route_target_node_id"] for item in gate_east_service["results"][:2]] == [
-        "service_center",
         "innovation_center",
+        "service_center",
     ]
     assert gate_east_service["results"][0]["nearby_reason"].startswith("距离哈尔滨工业大学一校区东门 ")
     print("test_demo_m31b_hit_nearby_queries_use_calibrated_center_name_and_scope passed.")

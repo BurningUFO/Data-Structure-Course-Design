@@ -140,7 +140,36 @@ class Router:
         blocked_modes = set(self._normalize_transport_modes(edge.get("blocked_transports")))
         return modes - blocked_modes
 
-    def _is_edge_allowed(self, edge, transport_mode, from_node_id=None):
+    def _is_generated_interest_access_edge(self, edge):
+        return str(edge.get("transport_semantics", "")).strip() == "pedestrian_interest_access"
+
+    def _is_generated_interest_access_allowed(
+        self,
+        edge,
+        from_node_id=None,
+        start_node_id=None,
+        target_node_id=None,
+    ):
+        if not self._is_generated_interest_access_edge(edge):
+            return True
+        if edge.get("to") == target_node_id:
+            return True
+        if from_node_id != start_node_id:
+            return False
+
+        node_category = str(
+            self.graph.nodes.get(from_node_id, {}).get("category", "")
+        ).strip()
+        return node_category not in {"entrance", "road"}
+
+    def _is_edge_allowed(
+        self,
+        edge,
+        transport_mode,
+        from_node_id=None,
+        start_node_id=None,
+        target_node_id=None,
+    ):
         """
         根据边上声明的交通方式限制判断当前边是否可通行。
 
@@ -149,6 +178,14 @@ class Router:
         - blocked_transports
         - vehicle_access: all / pedestrian_only / vehicle_only
         """
+        if not self._is_generated_interest_access_allowed(
+            edge,
+            from_node_id,
+            start_node_id,
+            target_node_id,
+        ):
+            return False
+
         if transport_mode is None:
             return True
 
@@ -587,7 +624,13 @@ class Router:
 
             # 遍历相邻节点
             for edge in self.graph.adj.get(current_node, []):
-                if not self._is_edge_allowed(edge, transport_mode, current_node):
+                if not self._is_edge_allowed(
+                    edge,
+                    transport_mode,
+                    current_node,
+                    start_node_id,
+                    target_node_id,
+                ):
                     continue
 
                 neighbor = edge["to"]
